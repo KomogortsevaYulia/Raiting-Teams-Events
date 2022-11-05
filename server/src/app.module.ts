@@ -3,9 +3,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import DataSource from '../typeOrm.config'
+import { User } from './users/entities/user.entity';
+import { userInit1667625253170 } from './migrations/1667625253170-userInit';
+import { ConfigService } from '@nestjs/config';
+const configService = new ConfigService();
 @Module({
-  imports: [UsersModule, TypeOrmModule.forRoot(DataSource),],
+  imports: [UsersModule,TypeOrmModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
 })
