@@ -1,12 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import CONNECTION from './db.connection';
 
 @Module({
-  imports: [UsersModule, TypeOrmModule.forRoot()],
+  imports: [
+    //@ts-ignore
+    TypeOrmModule.forRoot({
+    ...CONNECTION,
+    synchronize:false,
+    autoLoadEntities:true
+    })
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
