@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { TeamsModule } from './teams/teams.module';
+import { EventsModule } from './events/events.module';
 
 import CONNECTION from './db.connection';
 
@@ -14,7 +16,9 @@ import CONNECTION from './db.connection';
     synchronize:false,
     autoLoadEntities:true
     }),
-    UsersModule
+    UsersModule,
+    TeamsModule,
+    EventsModule
   ],
   controllers: [AppController],
   providers: [AppService],
