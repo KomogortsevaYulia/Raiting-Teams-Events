@@ -6,6 +6,8 @@
 
 ```bash
 $ npm install
+
+$ npm install --save @nestjs/typeorm typeorm postgres
 ```
 
 ## Running the app
