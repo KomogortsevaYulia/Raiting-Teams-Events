@@ -1,1 +1,1 @@
-export class User_function{}
+export class UserFunction{}

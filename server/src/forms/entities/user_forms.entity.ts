@@ -1,1 +1,1 @@
-export class User_forms {}
+export class UserForms {}

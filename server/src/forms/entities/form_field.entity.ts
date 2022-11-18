@@ -1,1 +1,1 @@
-export class Form_fields {}
+export class FormFields {}
