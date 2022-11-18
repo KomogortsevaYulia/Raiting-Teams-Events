@@ -1,8 +1,8 @@
-import { Team } from "src/teams/entities/team.entity";
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Team } from "../../teams/entities/team.entity";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('functions')
-export class Functions{
+export class Function{
 
     @PrimaryGeneratedColumn()
     id: number
@@ -13,8 +13,7 @@ export class Functions{
     @Column()
     type: string
 
-    @ManyToMany(() => Team)
-    @JoinTable()
-    team_id: Team["id"]
+    @ManyToOne(() => Team, (team) =>team.id)
+    team: Team
 
 }
