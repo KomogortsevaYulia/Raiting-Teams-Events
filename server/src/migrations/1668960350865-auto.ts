@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class auto1668958597215 implements MigrationInterface {
-    name = 'auto1668958597215'
+export class auto1668960350865 implements MigrationInterface {
+    name = 'auto1668960350865'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "users" ADD "title_role" character varying`);

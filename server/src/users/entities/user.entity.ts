@@ -43,6 +43,6 @@ export class User {
 
     @ManyToOne(()=>Role, (role)=> role.title)
     @JoinColumn([{ name: "title_role" }])
-    role:Role
+    title_role: string
 }
 
