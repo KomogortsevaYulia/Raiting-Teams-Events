@@ -5,10 +5,8 @@ export class Role {
     @PrimaryColumn()
     title: string
 
-    @Column()
-    permission: string
-
-
+    @Column("simple-array")
+    permissions: string[]
 }
 
 

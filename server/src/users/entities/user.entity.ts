@@ -1,5 +1,6 @@
-import { Column, Entity,OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity,JoinColumn,ManyToOne,OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserForms } from "../../forms/entities/user_forms.entity";
+import { Role } from "./role.entity";
 
 @Entity("users")
 export class User {
@@ -35,9 +36,13 @@ export class User {
     type_time_study: string
 
     @Column("simple-array")
-    permission: string[]
+    permissions: string[]
 
-    @OneToMany(()=>UserForms, (user_forms)=> user_forms.id)
+    @OneToMany(()=>UserForms, (user_forms)=> user_forms.user_id)
     user_forms:UserForms
+
+    @ManyToOne(()=>Role, (role)=> role.title)
+    @JoinColumn([{ name: "title_role" }])
+    role:Role
 }
 

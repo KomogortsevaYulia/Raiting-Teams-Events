@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 import { Form } from "./form.entity";
 import { UserForms } from "./user_forms.entity";
 
-@Entity("form_field")
+@Entity("form_fields")
 export class FormField {
 
     @PrimaryGeneratedColumn()
@@ -15,6 +15,6 @@ export class FormField {
     @OneToMany(()=>Form, (forms)=> forms.id)
     forms:Form
 
-    @OneToMany(()=>UserForms, (fields)=> fields.id)
+    @OneToMany(()=>UserForms, (fields)=> fields.field_id)
     fields:UserForms
 }

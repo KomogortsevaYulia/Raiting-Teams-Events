@@ -8,5 +8,5 @@ export class CreateUserDto {
     phone: string   ;
     birthdate: string    ;
     type_time_study: string   ;
-    permission: string[];
+    permissions: string[];
 }

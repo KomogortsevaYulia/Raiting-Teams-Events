@@ -24,7 +24,7 @@ export class UsersService {
     user.institute = createUserDto.institute;
     user.type_time_study = createUserDto.type_time_study;
     user.phone = createUserDto.phone;
-    user.permission = createUserDto.permission;
+    user.permissions = createUserDto.permissions;
     return this.usersRepository.save(user);
   }
 

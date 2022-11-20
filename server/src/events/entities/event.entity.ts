@@ -1,5 +1,5 @@
 import { User } from "../../users/entities/user.entity"
-import { Entity, PrimaryColumn, ManyToOne, Column } from "typeorm"
+import { Entity, PrimaryColumn, ManyToOne, Column, JoinColumn } from "typeorm"
 
 @Entity('events')
 export class Event {
@@ -14,14 +14,14 @@ export class Event {
     title: string
 
     @ManyToOne((type) => User, (user) => user.id,)
-    @Column("simple-array")
-    id_users: number[]
+    @JoinColumn([{ name: "users_id" }])
+    users: number[]
 
-    @Column({ type: "date" })
-    dateStart: string
+    @Column()
+    dateStart: Date
 
-    @Column({ type: "date" })
-    dateEnd: string
+    @Column()
+    dateEnd: Date
 
     @Column()
     description: string

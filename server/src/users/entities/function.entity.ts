@@ -1,8 +1,8 @@
 import { Team } from "../../teams/entities/team.entity";
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('functions')
-export class Function{
+export class Function {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -10,10 +10,14 @@ export class Function{
     @Column()
     title: string
 
-    @Column()
+    @Column({
+        type: "enum",
+        enum: ["general", "special"],
+        default: "special"
+    })
     type: string
 
-    @ManyToOne(() => Team, (team) =>team.id)
+    @ManyToOne(() => Team, (team) => team.id)
     team: Team
 
 }

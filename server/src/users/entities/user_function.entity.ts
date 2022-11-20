@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { User } from "./user.entity";
 import { Function } from "./function.entity";
 
@@ -6,17 +6,23 @@ import { Function } from "./function.entity";
 export class UserFunction {
 
     @PrimaryColumn()
+    function_id: number
+
     @ManyToOne((type) => Function, (func) => func.id)
+    @JoinColumn([{ name: "function_id" }])
     function: number
 
     @PrimaryColumn()
+    user_id: number
+
     @ManyToOne((type) => User, (user) => user.id)
+    @JoinColumn([{ name: "user_id" }])
     user: number
 
-    @Column({ type: "date" })
-    dateStart: string
+    @Column()
+    dateStart: Date
 
-    @Column({ type: "date" })
-    dateEnd: string
+    @Column()
+    dateEnd: Date
 
 }

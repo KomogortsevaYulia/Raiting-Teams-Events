@@ -1,23 +1,25 @@
 
 import { Team } from "../../teams/entities/team.entity"
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { FormField } from "./form_field.entity"
 
-@Entity("form")
+@Entity("forms")
 export class Form {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({ type: "date" })
-    date: string
+    @Column()
+    date: Date
 
     @Column()
     description: string
 
     @ManyToOne(()=>FormField, (fields)=> fields.id)
-    fields:FormField  
+    @JoinColumn([{ name: "fields_id" }])
+    fields:FormField []
 
     @ManyToOne(()=>Team, (team)=> team.id)
+    @JoinColumn([{ name: "team_id" }])
     team:Team 
 }
 
