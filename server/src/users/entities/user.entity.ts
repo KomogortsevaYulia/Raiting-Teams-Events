@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity,OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UserForms } from "../../forms/entities/user_forms.entity";
 
 @Entity("users")
 export class User {
@@ -35,5 +36,8 @@ export class User {
 
     @Column("simple-array")
     permission: string[]
+
+    @OneToMany(()=>UserForms, (user_forms)=> user_forms.id)
+    user_forms:UserForms
 }
 

@@ -8,6 +8,7 @@ import { EventsModule } from './events/events.module';
 import { FormsModule } from './forms/forms.module';
 
 import CONNECTION from './db.connection';
+import { FormsModule } from './forms/forms.module';
 
 @Module({
   imports: [
