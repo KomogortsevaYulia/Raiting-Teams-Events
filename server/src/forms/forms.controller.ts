@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { FormsService } from './forms.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('forms')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('forms')
 export class FormsController {
   constructor(private readonly formsService: FormsService) {}

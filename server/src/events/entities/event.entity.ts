@@ -1,40 +1,52 @@
 import { User } from "../../users/entities/user.entity"
 import { Entity, PrimaryColumn, ManyToOne, Column, JoinColumn } from "typeorm"
+import { ApiProperty } from "@nestjs/swagger";
 
 @Entity('events')
 export class Event {
    
+    @ApiProperty()
     @PrimaryColumn()
     id: number
    
-    @Column()
+    @ApiProperty()
+    @ApiProperty() @Column()
     type: string
 
-    @Column()
+    @ApiProperty()
+    @ApiProperty() @Column()
     title: string
 
+    @ApiProperty()
     @ManyToOne((type) => User, (user) => user.id,)
     @JoinColumn([{ name: "users_id" }])
     users: number[]
 
-    @Column()
+    @ApiProperty()
+    @ApiProperty() @Column()
     dateStart: Date
 
-    @Column()
+    @ApiProperty()
+    @ApiProperty() @Column()
     dateEnd: Date
 
-    @Column()
+    @ApiProperty()
+    @ApiProperty() @Column()
     description: string
 
-    @Column()
+    @ApiProperty()
+    @ApiProperty() @Column()
     image: string
 
-    @Column()
+    @ApiProperty()
+    @ApiProperty() @Column()
     size: string
 
-    @Column()
+    @ApiProperty()
+    @ApiProperty() @Column()
     repeat: boolean
 
+    @ApiProperty()
     @Column("simple-array")
     tags: string[]
 }
