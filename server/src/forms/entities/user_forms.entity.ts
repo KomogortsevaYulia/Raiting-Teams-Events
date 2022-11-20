@@ -1,3 +1,4 @@
+
 import { User } from "../../users/entities/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { FormField } from "./form_field.entity";
@@ -20,4 +21,3 @@ export class UserForms {
     @ManyToOne(()=>User, (user)=> user.id)
     user:User
 }
-

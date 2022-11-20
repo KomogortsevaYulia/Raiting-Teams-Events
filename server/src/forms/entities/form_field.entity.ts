@@ -1,3 +1,4 @@
+
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Form } from "./form.entity";
 import { UserForms } from "./user_forms.entity";
@@ -17,4 +18,3 @@ export class FormField {
     @OneToMany(()=>UserForms, (fields)=> fields.id)
     fields:UserForms
 }
-

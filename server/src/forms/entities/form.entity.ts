@@ -1,3 +1,4 @@
+
 import { Team } from "../../teams/entities/team.entity"
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { FormField } from "./form_field.entity"
@@ -19,3 +20,4 @@ export class Form {
     @ManyToOne(()=>Team, (team)=> team.id)
     team:Team 
 }
+
