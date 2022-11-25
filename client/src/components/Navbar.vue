@@ -15,7 +15,7 @@ export default {
             <RouterLink class="link" to="/teams">Коллективы</RouterLink>
         </nav>
         <nav tabindex="2" class="navbar__item">
-            <font-awesome-icon icon="fa-solid fa-user-secret" />
+            <font-awesome-icon icon="fa-solid fa-user" />
         </nav>
     </div>
 </template>

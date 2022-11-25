@@ -13,7 +13,15 @@ export default {
   <header>
     <Navbar />
   </header>
-  <div>
+  <div class="container">
     <RouterView />
   </div>
 </template>
+
+<style lang="scss">
+  .container {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+</style>
