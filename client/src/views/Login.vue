@@ -1,27 +1,55 @@
 <template>
     <div class="form-login">
-        <h2>Система учета студенческих коллективов и мероприятий</h2>
-        <div class="form-login__submit-campus">
+        <a>Система учета студенческих коллективов и мероприятий ИРНИТУ</a>
+        <div class="form-login__choice">
+            <a v-on:click="show = true" :class="[show ? 'active' : '']">Авторизация</a>
+            <a v-on:click="show = false" :class="[show ? '' : 'active']">Регистрация</a>
+        </div>
+        <div v-if="show === true" class="form-login__submit-campus">
             <button class="btn-campus" type="submit">Авторизоваться через кампус</button>
         </div>
-        <form @submit.prevent="onSubmit">
+        <!-- Форма авторизации -->
+        <form v-if="show === true" @submit.prevent="">
             <div class="form-login__input">
-                <input type="text" placeholder="логин" required>
+                <input type="text" placeholder="Логин или почта" required>
             </div>
             <div class="form-login__input">
-                <input type="text" placeholder="пароль" required>
+                <input type="password" placeholder="Пароль" required>
             </div>
             <div class="form-login__submit">
+                <p>Забыли пароль?</p>
                 <button type="submit">Войти</button>
+            </div>
+        </form>
+        <!-- Форма регистрации -->
+        <form v-if="show === false" @submit.prevent="">
+            <div class="form-login__input">
+                <input type="text" placeholder="Логин" required>
+            </div>
+            <div class="form-login__input">
+                <input type="password" placeholder="Пароль" required>
+            </div>
+            <div class="form-login__input">
+                <input type="password" placeholder="Повторите пароль" required>
+            </div>
+            <div class="form-login__input">
+                <input type="email" placeholder="Электронная почта" required>
+            </div>
+            <div class="form-login__submit">
+                <button type="submit">Регистрация</button>
             </div>
         </form>
     </div>
 </template>
-<script lang="ts" setup>
-import '../assets/login.scss';
+<script lang="ts">
+import '../assets/login.scss'
 
-function onSubmit() {
-    console.log('Button is worked!');
+export default {
+    data() {
+        return {
+            show: true
+        }
+    }
 }
 
 </script>

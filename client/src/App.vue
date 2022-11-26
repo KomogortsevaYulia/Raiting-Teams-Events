@@ -1,3 +1,12 @@
+<template>
+  <header>
+    <Navbar />
+  </header>
+  <div class="container">
+    <RouterView />
+  </div>
+</template>
+
 <script lang="ts">
 import Navbar from './components/Navbar.vue';
 import './assets/navbar.scss';
@@ -8,15 +17,6 @@ export default {
   }
 }
 </script>
-
-<template>
-  <header>
-    <Navbar />
-  </header>
-  <div class="container">
-    <RouterView />
-  </div>
-</template>
 
 <style lang="scss">
   .container {
