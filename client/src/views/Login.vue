@@ -6,10 +6,10 @@
             <a v-on:click="show = false" :class="[show ? '' : 'active']">Регистрация</a>
         </div>
         <div v-if="show === true" class="form-login__submit-campus">
-            <button class="btn-campus" type="submit">Авторизоваться через кампус</button>
+            <button @click="LoginCampusSubmit" class="btn-campus" type="submit">Авторизоваться через кампус</button>
         </div>
         <!-- Форма авторизации -->
-        <form v-if="show === true" @submit.prevent="">
+        <form v-if="show === true" @submit.prevent="LoginSubmit">
             <div class="form-login__input">
                 <input type="text" placeholder="Логин или почта" required>
             </div>
@@ -22,7 +22,7 @@
             </div>
         </form>
         <!-- Форма регистрации -->
-        <form v-if="show === false" @submit.prevent="">
+        <form v-if="show === false" @submit.prevent="RegistrationSubmit">
             <div class="form-login__input">
                 <input type="text" placeholder="Логин" required>
             </div>
@@ -48,6 +48,17 @@ export default {
     data() {
         return {
             show: true
+        }
+    },
+    methods: {
+        LoginSubmit() {
+            console.log('Login is clicked!');
+        },
+        RegistrationSubmit() {
+            console.log('Registration is clicked!');
+        },
+        LoginCampusSubmit() {
+            console.log('Campus login is clicked!');
         }
     }
 }

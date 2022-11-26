@@ -21,6 +21,7 @@ export default {
 <style lang="scss">
   .container {
     padding-top: 2rem;
+    padding-inline: 10%;
     display: flex;
     justify-content: center;
   }
