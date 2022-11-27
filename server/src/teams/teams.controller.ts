@@ -34,7 +34,7 @@ export class TeamsController {
 
 
  //по ид команды найти всех юзеров
- @Get(':id')
+ @Get(':id/users')
  @ApiOperation({ summary: "Получение пользователей по id коллектива" })
  @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })

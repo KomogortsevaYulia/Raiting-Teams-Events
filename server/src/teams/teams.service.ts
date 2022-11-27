@@ -58,7 +58,7 @@ export class TeamsService {
     .addSelect("user.title_role")
    
     .getMany()
-
+  }
 
    //вывести команду
    async teamWithUsers(id: number): Promise<UserFunction[]> {
@@ -73,6 +73,7 @@ export class TeamsService {
       .innerJoin("function.team", "team")
       .where("team.id = :id", { id })
       .getMany()
+      return users;
   }
 
 
