@@ -20,48 +20,97 @@
         <div class="cards__search">
           <input placeholder="Начните поиск..." />
           <div class="search-toggle">
-            <img class="active" src="../assets/icon/grid.png">
-            <img src="../assets/icon/list.png">
+            <img v-on:click="layout = true" :class="[layout === true ? 'active' : '']" src="../assets/icon/grid.png">
+            <img v-on:click="layout = false" :class="[layout === false ? 'active' : '']" src="../assets/icon/list.png">
           </div>
         </div>
 
         <!-- Сами карточки -->
-        <div class="cards__wrapper">
+        <div :class="[layout === true ? 'wrapper-grid' : 'wrapper-list']">
 
           <div class="card">
-            <!-- <img src="../assets/icon/user.png"> -->
-            <a>Клуб "Автостопом по галактике"</a>
-            <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
-              заниматься астрономией и просто любоваться на звездное небо!</p>
-            <p>Руководитель: Иванов Иван Иванович</p>
-
-            <RouterLink to="/team-1">
-              <button>Подробнее</button>
-            </RouterLink>
+            <img src="../assets/icon/stairway.jpg">
+            <div class="wrapper-content">
+              <div>
+                <a>Клуб "Автостопом по галактике"</a>
+                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
+                  заниматься астрономией и просто любоваться на звездное небо!</p>
+                <p>Руководитель: Иванов Иван Иванович</p>
+              </div>
+              <div class="btn">
+                <RouterLink to="/team-1">
+                  <button>Подробнее</button>
+                </RouterLink>
+              </div>
+            </div>
           </div>
 
           <div class="card">
-            <!-- <img src="../assets/icon/user.png"> -->
-            <a>Клуб "Автостопом по галактике"</a>
-            <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
-              заниматься астрономией и просто любоваться на звездное небо!</p>
-            <p>Руководитель: Иванов Иван Иванович</p>
-
-            <RouterLink to="/team-1">
-              <button>Подробнее</button>
-            </RouterLink>
+            <img src="../assets/icon/stairway.jpg">
+            <div class="wrapper-content">
+              <div>
+                <a>Клуб "Автостопом по галактике"</a>
+                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
+                  заниматься астрономией и просто любоваться на звездное небо!</p>
+                <p>Руководитель: Иванов Иван Иванович</p>
+              </div>
+              <div class="btn">
+                <RouterLink to="/team-1">
+                  <button>Подробнее</button>
+                </RouterLink>
+              </div>
+            </div>
           </div>
 
           <div class="card">
-            <!-- <img src="../assets/icon/user.png"> -->
-            <a>Клуб "Автостопом по галактике"</a>
-            <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
-              заниматься астрономией и просто любоваться на звездное небо!</p>
-            <p>Руководитель: Иванов Иван Иванович</p>
+            <img src="../assets/icon/stairway.jpg">
+            <div class="wrapper-content">
+              <div>
+                <a>Клуб "Автостопом по галактике"</a>
+                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
+                  заниматься астрономией и просто любоваться на звездное небо!</p>
+                <p>Руководитель: Иванов Иван Иванович</p>
+              </div>
+              <div class="btn">
+                <RouterLink to="/team-1">
+                  <button>Подробнее</button>
+                </RouterLink>
+              </div>
+            </div>
+          </div>
 
-            <RouterLink to="/team-1">
-              <button>Подробнее</button>
-            </RouterLink>
+          <div class="card">
+            <img src="../assets/icon/stairway.jpg">
+            <div class="wrapper-content">
+              <div>
+                <a>Клуб "Автостопом по галактике"</a>
+                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
+                  заниматься астрономией и просто любоваться на звездное небо!</p>
+                <p>Руководитель: Иванов Иван Иванович</p>
+              </div>
+              <div class="btn">
+                <RouterLink to="/team-1">
+                  <button>Подробнее</button>
+                </RouterLink>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="../assets/icon/stairway.jpg">
+            <div class="wrapper-content">
+              <div>
+                <a>Клуб "Автостопом по галактике"</a>
+                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
+                  заниматься астрономией и просто любоваться на звездное небо!</p>
+                <p>Руководитель: Иванов Иван Иванович</p>
+              </div>
+              <div class="btn">
+                <RouterLink to="/team-1">
+                  <button>Подробнее</button>
+                </RouterLink>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -100,7 +149,8 @@ export default {
     data() {
         return {
             show: true,
-            showCreate: false
+            showCreate: false,
+            layout: true
         }
     },
     methods: {
