@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { UserFunction } from './entities/user_function.entity';
 
 @Injectable()
 export class UsersService {
@@ -11,8 +12,11 @@ export class UsersService {
   constructor(
     @InjectRepository(User)  // user //,
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(UserFunction)
+    private readonly userFunctionsRepository: Repository<UserFunction>,
+    @InjectRepository(Function)
+    private readonly functionsRepository: Repository<Function>,
   ) { }
-
   create(createUserDto: CreateUserDto) : Promise<User>{
     const user = new User();
     user.fullname = createUserDto.fullname;
@@ -42,6 +46,20 @@ export class UsersService {
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
+  }
+
+  async users_func(id:number): Promise<UserFunction[]>{
+    const users_info = await this.userFunctionsRepository
+    .createQueryBuilder("user_functions")
+    .select("user_functions.id")
+    .leftJoinAndSelect("user_functions.user", "user")
+    .innerJoin("user_functions.function", "function")
+    .addSelect('function.title')
+    .innerJoin("function.team", "team")
+    .addSelect('team.title')
+    .where("user.id = :id", { id })
+    .getMany()
+    return users_info;
   }
 }
 
