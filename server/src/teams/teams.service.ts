@@ -45,23 +45,6 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
-   //найти всех юзеров с определенной ролью
-   async findAlllUsersByRole(titleRole: string) {
-
-    const usersWithRole = await this.usersRepository
-      .createQueryBuilder("users")
-      .leftJoinAndSelect("users.title_role", "title_role")
-      .where("title_role.title = :titleRole", { titleRole })
-      .getMany()
-
-    return usersWithRole
-  }
-
-  //найти функцию по id
-  async findFynctionById(id: number) {
-    return this.functionsRepository.findOneBy({ id })
-  }
-
 
   //найти коллективы с определенной ролью юзера
   async teamsWithUsersOfSpecificPosition(title_role: string) {
