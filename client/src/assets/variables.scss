@@ -2,6 +2,7 @@
     --main-border-bottom: 4px solid #F4D06F;
     --main-color: #F4D06F;
     --main-color-hover: #4ddbee;
+    --main-border-card: 1px solid #D9D9D9;
 }
 
 .link {
@@ -33,6 +34,20 @@ button {
 }
 
 input {
+    background-color: #fff;
+    border: 1px solid hsl(210, 14%, 83%);
+    border-radius: 0.25rem;
+    line-height: 1.5;
+    padding: 0.75rem;
+    transition: 0.3s;
+
+    &:focus {
+        box-shadow: 0 0 0 0.35rem rgba(187, 217, 255, 0.25);
+        outline: 0;
+    }
+}
+
+textarea {
     background-color: #fff;
     border: 1px solid hsl(210, 14%, 83%);
     border-radius: 0.25rem;

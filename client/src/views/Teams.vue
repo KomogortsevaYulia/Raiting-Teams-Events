@@ -119,21 +119,22 @@
 
     <div v-if="show === false" class="wrapper-team__create">
       <p>Прежде чем создать в системе новый коллектив, нужно
-        утвердить его приказом</p>
+        утвердить его приказом!</p>
 
       <!-- Форма с полями для создания -->
-      <form v-if="showCreate === true">
-        <div class="form-team__create">
-          <div class="create-filds">
-            <input type="text">
-            <input type="text">
-            <input type="text">
-
+      <form v-if="showCreate === true" class="form-team__create">
+        <div class="create-filds">
+          <div class="filds-area">
+            <input type="text" placeholder="Название коллектива" required>
+            <input type="text" placeholder="ФИО руководителя" required>
+            <textarea placeholder="Опишите проект" required />
+          </div>
+          <div class="fuck-off-btn">
             <button v-on:click="showCreate = false">Создать коллектив</button>
           </div>
-          <div class="create-wrapper-img">
+        </div>
+        <div class="create-wrapper-img">
 
-          </div>
         </div>
       </form>
       <button v-if="showCreate === false" v-on:click="showCreate = true">Создать коллектив</button>
