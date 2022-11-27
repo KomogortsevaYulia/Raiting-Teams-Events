@@ -25,15 +25,20 @@
             cursor: pointer;
             font-size: 14px;
             padding: 0 0.75rem 0.75rem 0.75rem;
+
+            &:hover {
+                color: var(--main-color);
+            }
+
+            &:active {
+                transition: all 0.2s;
+                color: var(--main-color-hover);
+                border-bottom-color: var(--main-color-hover);
+            }
         }
 
         .active {
-            border-bottom: 4px solid #D9D9D9;
-
-            &:active {
-                transition: all 0.4s;
-                border-bottom-color: #aaa9a9;
-            }
+            border-bottom: var(--main-border-bottom);
         }
     }
 

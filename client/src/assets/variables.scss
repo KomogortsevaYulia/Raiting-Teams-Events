@@ -1,7 +1,13 @@
+:root {
+    --main-border-bottom: 4px solid #F4D06F;
+    --main-color: #F4D06F;
+    --main-color-hover: #4ddbee;
+}
+
 .link {
     text-decoration: none;
     color: black;
-    padding: 1rem;
+    padding: 0.7rem;
 }
 
 button {
