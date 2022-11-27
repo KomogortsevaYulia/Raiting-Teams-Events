@@ -34,6 +34,7 @@ export class TeamsController {
   }
 
 
+  //Получение коллектива
   @Get(':id')
   @ApiOperation({ summary: "Получение коллектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
@@ -42,32 +43,6 @@ export class TeamsController {
   findOne(@Param('id') id: number) {
     return this.teamsService.findOne(id);
   }
-  
-//   @Post()
-//   create(@Body() createTeamDto: CreateTeamDto) {
-//     return this.teamsService.create(createTeamDto);
-//   }
-
-
-// @Get('title_role/:title_role')
-// teamsAndUsersByRole(@Param('title_role') title_role: string) {
-//   return this.teamsService.teamsWithUsersOfSpecificPosition(title_role);
-// }
-
-//   @Get(':id')
-//   findOne(@Param('id') id: string) {
-//     return this.teamsService.findOne(+id);
-//   }
-
-//   @Patch(':id')
-//   update(@Param('id') id: string, @Body() updateTeamDto: UpdateTeamDto) {
-//     return this.teamsService.update(+id, updateTeamDto);
-//   }
-
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return this.teamsService.remove(+id);
-//   }
 
  //find teams with specific position user
  @Get('user_role/:title_role')
