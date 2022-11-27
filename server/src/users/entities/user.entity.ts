@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, Entity,JoinColumn,ManyToOne,OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { UserForms } from "../../forms/entities/user_forms.entity";
 import { Role } from "./role.entity";
 
 @Entity("users")
@@ -14,12 +13,10 @@ export class User {
     studnumber: number
 
     @ApiProperty()
-    @ApiProperty() 
     @Column()
     fullname: string
 
     @ApiProperty()
-    @ApiProperty() 
     @Column()
     email: string
     
@@ -39,8 +36,8 @@ export class User {
     @Column()
     phone: string
 
-    @Column({ type: "date" })
-    birthdate: string
+    @Column()
+    birthdate: Date
 
     @ApiProperty() 
     @Column()
@@ -49,9 +46,6 @@ export class User {
     @ApiProperty()
     @Column("simple-array")
     permissions: string[]
-
-    @OneToMany(()=>UserForms, (user_forms)=> user_forms.user_id)
-    user_forms:UserForms
 
     @ApiProperty()
     @ManyToOne(()=>Role, (role)=> role.title)

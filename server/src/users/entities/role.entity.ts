@@ -1,16 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryColumn, } from "typeorm"
-import { User } from "./user.entity"
+
+import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, } from "typeorm"
 
 @Entity("roles")
 export class Role {
-    @PrimaryColumn()
+
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
     title: string
 
     @Column("simple-array")
     permissions: string[]
 
-    @OneToMany(() => User, (user) => user.id)
-    user: User
 }
 
 

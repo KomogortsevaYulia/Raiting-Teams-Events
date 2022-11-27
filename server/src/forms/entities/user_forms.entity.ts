@@ -8,6 +8,10 @@ import { ApiProperty } from "@nestjs/swagger";
 export class UserForms {
 
     @ApiProperty() 
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @ApiProperty() 
     @PrimaryColumn()
     date: Date
 
@@ -15,17 +19,10 @@ export class UserForms {
     @Column()
     value: string
 
-    @ApiProperty() 
-    @PrimaryColumn()
-    field_id: number[]
-
     @ManyToOne(()=>FormField, (fields)=> fields.id)
     @JoinColumn([{ name: "field_id" }])
     field:FormField[]
 
-    @ApiProperty() 
-    @PrimaryColumn()
-    user_id: number
  
     @ManyToOne(()=>User, (user)=> user.id)
     @JoinColumn([{ name: "user_id" }])

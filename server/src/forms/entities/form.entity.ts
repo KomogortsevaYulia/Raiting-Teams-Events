@@ -19,13 +19,12 @@ export class Form {
     description: string
 
     @ApiProperty()
-    @ManyToOne(()=>FormField, (fields)=> fields.id)
-    @JoinColumn([{ name: "fields_id" }])
-    fields:FormField []
+    @Column("simple-array")
+    fields_id:number []
 
     @ApiProperty()
     @ManyToOne(()=>Team, (team)=> team.id)
     @JoinColumn([{ name: "team_id" }])
-    team:Team 
+    team_id:number
 }
 
