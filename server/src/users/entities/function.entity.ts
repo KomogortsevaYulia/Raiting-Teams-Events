@@ -1,5 +1,5 @@
 import { Team } from "../../teams/entities/team.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 
 @Entity('functions')
@@ -23,6 +23,7 @@ export class Function {
 
     @ApiProperty() 
     @ManyToOne(() => Team, (team) => team.id)
+    @JoinColumn([{ name: "team_id" }])
     team: Team
 
 }
