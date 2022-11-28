@@ -24,6 +24,6 @@ https://stackoverflow.com/questions/44019469/how-to-use-sass-scss-with-latest-vu
 ![Alt-стекТехнологий](https://psv4.userapi.com/c235031/u253826851/docs/d43/c283af0dd2c2/1.jpg?extra=NJ4c6Jn3tnGuCV7D_LemtEYq6zcWQvLYue3Byt2zvnHg71dQeRv4LfGm1kOYIYV1lXwMs1xHMa12NmIg7fZ-MiJ-5oLEwKuwyX2jsITQ-J9l5Rxbvcl1se_0PxUnikAslqpmq5LoZC_2XdV_VSDI6FNE)
 По VUE 3 советую смотреть только довольно свежие туторы и читать документацию по Vue Composition API (ссылка: https://vuejs.org/guide/extras/composition-api-faq.html)
 ### БЭМ
-Сайт планируется огромный, поэтому юзая SASS/SCSS предлогаю обзывать классы по БЭМу
+Сайт планируется огромный, поэтому юзая SASS/SCSS предлагаю обзывать классы по БЭМу
 На ютубе есть куча видосов и вообще методология довольно простая
 (ссылка на почитать: https://habr.com/ru/post/203440/)
