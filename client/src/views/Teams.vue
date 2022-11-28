@@ -1,27 +1,40 @@
+<script setup lang="ts">
+  import Filter from '@/components/Filter.vue';
+
+  import { ref } from 'vue';
+
+  const show = ref(true);
+  const showCreate = ref(false);
+  const layout = ref(true);
+</script>
+
 <template>
   <!-- Это вся обертка -->
   <div class="wrapper-team">
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a v-on:click="show = true" :class="[show ? 'active' : '']">Общий список</a>
-      <a v-on:click="show = false" :class="[show ? '' : 'active']">Создать коллектив</a>
+      <a @click="show = true" :class="{active: show}">Общий список</a>
+      <a @click="show = false" :class="{active: show === false}">Создать коллектив</a>
     </div>
 
     <!-- Обертка карточек коллективов -->
     <div v-if="show === true" class="wrapper-team__content">
+
       <!-- Фильтр -->
       <div class="content-filter">
+        <Filter />
       </div>
 
       <!-- Обертка контента с карточками -->
       <div class="content-cards">
+        
         <!-- Инпут с поиском -->
         <div class="cards__search">
           <input placeholder="Начните поиск..." />
           <div class="search-toggle">
-            <img v-on:click="layout = true" :class="[layout === true ? 'active' : '']" src="../assets/icon/grid.png">
-            <img v-on:click="layout = false" :class="[layout === false ? 'active' : '']" src="../assets/icon/list.png">
+            <img @click="layout = true" :class="{active: layout}" src="@/assets/icon/grid.png">
+            <img @click="layout = false" :class="{active: layout === false}" src="@/assets/icon/list.png">
           </div>
         </div>
 
@@ -143,20 +156,6 @@
   </div>
 </template>
 
-<script lang="ts">
-import '../assets/teams.scss'
-
-export default {
-    data() {
-        return {
-            show: true,
-            showCreate: false,
-            layout: true
-        }
-    },
-    methods: {
-
-    }
-}
-
-</script>
+<style lang="scss">
+  @import '@/assets/teams/teams.scss';
+</style>

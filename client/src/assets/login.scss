@@ -5,9 +5,10 @@
     padding: 2rem 4rem 2rem 4rem;  
     border-radius: 20px;
     height: 500px auto;
-    width: 400px;
+    width: 30%;
     flex-direction: column;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+    // box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+    border: var(--main-border-card);
 
     a {
         font-size: 25px;
