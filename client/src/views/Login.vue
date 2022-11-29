@@ -2,15 +2,15 @@
     import { ref } from 'vue';
     const show = ref(true);
 
-    function LoginSubmit() {
+    function OnLoginSubmit() {
         console.log('Login is clicked!');
     }
     
-    function RegistrationSubmit() {
+    function OnRegistrationSubmit() {
         console.log('Registration is clicked!');
     }
 
-    function LoginCampusSubmit() {
+    function OnLoginCampusSubmit() {
         console.log('Campus login is clicked!');
     }
 </script>
@@ -21,14 +21,14 @@
         <a>Система учета студенческих коллективов и мероприятий ИРНИТУ</a>
         <div class="form-login__choice">
             <a @click="show = true" :class="{active: show}">Авторизация</a>
-            <a @click="show = false" :class="{active: show === false}">Регистрация</a>
+            <a @click="show = false" :class="{active: !show}">Регистрация</a>
         </div>
-        <div v-if="show === true" class="form-login__submit-campus">
-            <button @click="LoginCampusSubmit" class="btn-campus" type="submit">Авторизоваться через кампус</button>
+        <div v-if="show" class="form-login__submit-campus">
+            <button @click="OnLoginCampusSubmit" class="btn-campus" type="submit">Авторизоваться через кампус</button>
         </div>
 
         <!-- Форма авторизации -->
-        <form v-if="show === true" @submit.prevent="LoginSubmit">
+        <form v-if="show" @submit.prevent="OnLoginSubmit">
             <div class="form-login__input">
                 <input type="text" placeholder="Логин или почта" required>
             </div>
@@ -41,7 +41,7 @@
             </div>
         </form>
         <!-- Форма регистрации -->
-        <form v-if="show === false" @submit.prevent="RegistrationSubmit">
+        <form v-if="!show" @submit.prevent="OnRegistrationSubmit">
             <div class="form-login__input">
                 <input type="text" placeholder="Логин" required>
             </div>

@@ -6,6 +6,8 @@
   const show = ref(true);
   const showCreate = ref(false);
   const layout = ref(true);
+
+  const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" }, ]
 </script>
 
 <template>
@@ -15,11 +17,11 @@
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <a @click="show = true" :class="{active: show}">Общий список</a>
-      <a @click="show = false" :class="{active: show === false}">Создать коллектив</a>
+      <a @click="show = false" :class="{active: !show}">Создать коллектив</a>
     </div>
 
     <!-- Обертка карточек коллективов -->
-    <div v-if="show === true" class="wrapper-team__content">
+    <div v-if="show" class="wrapper-team__content">
 
       <!-- Фильтр -->
       <div class="content-filter">
@@ -34,7 +36,7 @@
           <input placeholder="Начните поиск..." />
           <div class="search-toggle">
             <img @click="layout = true" :class="{active: layout}" src="@/assets/icon/grid.png">
-            <img @click="layout = false" :class="{active: layout === false}" src="@/assets/icon/list.png">
+            <img @click="layout = false" :class="{active: !layout}" src="@/assets/icon/list.png">
           </div>
         </div>
 
@@ -130,12 +132,12 @@
       </div>
     </div>
 
-    <div v-if="show === false" class="wrapper-team__create">
+    <div v-if="!show" class="wrapper-team__create">
       <p>Прежде чем создать в системе новый коллектив, нужно
         утвердить его приказом!</p>
 
       <!-- Форма с полями для создания -->
-      <form v-if="showCreate === true" class="form-team__create">
+      <form v-if="showCreate" class="form-team__create">
         <div class="create-filds">
           <div class="filds-area">
             <input type="text" placeholder="Название коллектива" required>
@@ -150,7 +152,7 @@
 
         </div>
       </form>
-      <button v-if="showCreate === false" v-on:click="showCreate = true">Создать коллектив</button>
+      <button v-if="!showCreate" v-on:click="showCreate = true">Создать коллектив</button>
 
     </div>
   </div>
