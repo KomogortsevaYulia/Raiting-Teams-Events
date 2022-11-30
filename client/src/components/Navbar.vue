@@ -1,7 +1,11 @@
 <script setup lang="ts">
     import { RouterLink } from 'vue-router'
 
-    const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" }, ]
+    const itemLink = [
+        { name: "Новости", path: "/news" }, 
+        { name: "Коллективы", path: "/teams" }, 
+        { name: "Направления", path: "/directions" }, 
+    ]
 </script>
 
 <template>
