@@ -137,8 +137,6 @@
     }
 
     .wrapper-team__create {
-        padding-bottom: 1rem;
-        
         .form-team__create {
             display: flex;
             flex-direction: row;
@@ -154,7 +152,7 @@
             .create-filds {
                 display: block;
                 padding: 2rem;
-                width: 70%;
+                width: 100%;
 
                 .filds-area {
                     display: flex;
