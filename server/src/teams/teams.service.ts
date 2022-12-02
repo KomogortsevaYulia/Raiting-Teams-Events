@@ -10,7 +10,6 @@ import { Function } from '../users/entities/function.entity';
 import { Team } from './entities/team.entity';
 
 
-
 @Injectable()
 export class TeamsService {
 
@@ -30,7 +29,7 @@ export class TeamsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} team`;
+    return this.teamsRepository.findOneBy({ id: id });
   }
 
   update(id: number, updateTeamDto: UpdateTeamDto) {
@@ -62,6 +61,30 @@ export class TeamsService {
 
   }
 
+
+
+
+  // async  directionsAndUsers() {
+
+  //   const directionsUsers = await this.teamsRepository
+  //   .createQueryBuilder("teams")
+  //   .select("teams.direction")
+  //   .getMany()
+
+  //   return directionsUsers
+  // }
+
+  async teamsFunctions(id: number) {
+    //начинаем с функций пользователя
+    const teamsFunctions = await this.functionsRepository
+    .createQueryBuilder("functions")
+    .innerJoin("functions.team", "team")
+    .addSelect("team.title")
+    .where("functions.team_id = :id", { id: id })
+    .getMany()
+
+    return teamsFunctions
+  }
 
 }
 
