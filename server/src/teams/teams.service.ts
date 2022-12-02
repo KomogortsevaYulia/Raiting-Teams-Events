@@ -46,41 +46,14 @@ export class TeamsService {
   }
 
 
-  //найти коллективы с определенной ролью юзера
-  async teamsWithUsersOfSpecificPosition(title_role: string) {
-    //начинаем с функций пользователя
-    const usersTeams = await this.userFunctionsRepository
-      .createQueryBuilder("user_functions")
-      .select("user_functions.id")
-      //включить функции чтобы найти коллективы
-      .innerJoin("user_functions.function", "function")
-      .addSelect("function.title")
-      //включить коллективы
-      .innerJoinAndSelect("function.team", "team")
-      //включить юзеров
-      .innerJoinAndSelect("user_functions.user", "user")
-      //включить роли для юзеров
-      .innerJoin("user.title_role", "role")
-      .addSelect("role.title")
-      .where("role.title = :title_role", { title_role })
+   //вывести команду
+   async teamWithUsers(id: number): Promise<UserFunction[]> {
 
-
-      .getMany()
-
-    return usersTeams
-  }
-
-  //по ид команды найти всех юзеров
-  async teamsAndUsers(id: number): Promise<UserFunction[]> {
-
-    //find doesn't allow filtering relations ;(
     const users = await this.userFunctionsRepository
 
       .createQueryBuilder("user_functions")
-      .select("user_functions.id")
+      .select(["user_functions.dateStart", "user_functions.dateEnd"])
       .leftJoinAndSelect("user_functions.user", "user")
-      // .leftJoin("user.title_role", "roles")
-      // .addSelect("roles.title")
       .innerJoin("user_functions.function", "function")
       .addSelect('function.title')
       .innerJoin("function.team", "team")
@@ -89,7 +62,6 @@ export class TeamsService {
 
     return users;
   }
-
 
 }
 
