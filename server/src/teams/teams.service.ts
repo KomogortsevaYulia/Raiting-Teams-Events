@@ -29,10 +29,6 @@ export class TeamsService {
     return 'This action adds a new team';
   }
 
-  findAll() {
-    return `This action returns all teams`;
-  }
-
   findOne(id: number) {
     return `This action returns a #${id} team`;
   }
@@ -45,49 +41,25 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
+// get all teams with leadeaders
+  async findAll():Promise<Team[]> {
 
-  //найти коллективы с определенной ролью юзера
-  async teamsWithUsersOfSpecificPosition(title_role: string) {
-    //начинаем с функций пользователя
-    const usersTeams = await this.userFunctionsRepository
-      .createQueryBuilder("user_functions")
-      .select("user_functions.id")
-      //включить функции чтобы найти коллективы
-      .innerJoin("user_functions.function", "function")
-      .addSelect("function.title")
-      //включить коллективы
-      .innerJoinAndSelect("function.team", "team")
-      //включить юзеров
-      .innerJoinAndSelect("user_functions.user", "user")
-      //включить роли для юзеров
-      .innerJoin("user.title_role", "role")
-      .addSelect("role.title")
-      .where("role.title = :title_role", { title_role })
+    const head = "руководитель"
 
+    return this.teamsRepository
+    .createQueryBuilder("teams")
+    .select(["teams.id", "teams.title", "teams.direction", "teams.image"])
+    .innerJoin("teams.functions","functions")
+    .addSelect("functions.title")
+    .where("functions.title = :head", {head:head})
 
-      .getMany()
+    .innerJoin("functions.userFunctions", "user_functions")
+    .addSelect("user_functions.id")
+    .innerJoinAndSelect("user_functions.user", "user")
+    .addSelect("user.title_role")
+   
+    .getMany()
 
-    return usersTeams
-  }
-
-  //по ид команды найти всех юзеров
-  async teamsAndUsers(id: number): Promise<UserFunction[]> {
-
-    //find doesn't allow filtering relations ;(
-    const users = await this.userFunctionsRepository
-
-      .createQueryBuilder("user_functions")
-      .select("user_functions.id")
-      .leftJoinAndSelect("user_functions.user", "user")
-      // .leftJoin("user.title_role", "roles")
-      // .addSelect("roles.title")
-      .innerJoin("user_functions.function", "function")
-      .addSelect('function.title')
-      .innerJoin("function.team", "team")
-      .where("team.id = :id", { id })
-      .getMany()
-
-    return users;
   }
 
 
