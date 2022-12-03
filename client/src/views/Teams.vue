@@ -1,13 +1,24 @@
 <script setup lang="ts">
-  import Filter from '@/components/Filter.vue';
+import Filter from '@/components/Filter.vue';
+import { onBeforeMount, ref } from 'vue';
 
-  import { ref } from 'vue';
+import { useTeamStore } from "../store/team_store"
 
-  const show = ref(true);
-  const showCreate = ref(false);
-  const layout = ref(true);
+const show = ref(true);
+const showCreate = ref(false);
+const layout = ref(true);
 
-  const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" }, ]
+const data = ref()
+
+onBeforeMount(async () => {
+  fetchTeams()
+})
+
+async function fetchTeams() {
+  data.value = await useTeamStore().fetchTeams()
+}
+
+const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
 </script>
 
 <template>
@@ -17,7 +28,7 @@
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <a @click="show = true" :class="{active: show}">Общий список</a>
-      <a @click="show = false" :class="{active: !show}">Создать коллектив</a>
+      <a @click="show = false" :class="{ active: !show }">Создать коллектив</a>
     </div>
 
     <!-- Обертка карточек коллективов -->
@@ -30,27 +41,31 @@
 
       <!-- Обертка контента с карточками -->
       <div class="content-cards">
-        
+
         <!-- Инпут с поиском -->
         <div class="cards__search">
           <input placeholder="Начните поиск..." />
           <div class="search-toggle">
-            <img @click="layout = true" :class="{active: layout}" src="@/assets/icon/grid.png">
-            <img @click="layout = false" :class="{active: !layout}" src="@/assets/icon/list.png">
+            <img @click="layout = true" :class="{ active: layout }" src="@/assets/icon/grid.png">
+            <img @click="layout = false" :class="{ active: !layout }" src="@/assets/icon/list.png">
           </div>
         </div>
-
+<!--  {{ data }}-->
         <!-- Сами карточки -->
         <div :class="[layout === true ? 'wrapper-grid' : 'wrapper-list']">
 
-          <div class="card">
-            <img src="../assets/icon/stairway.jpg">
+
+          <div v-for="team in data" class="card">
+            <img :src="team.image">
             <div class="wrapper-content">
               <div>
-                <a>Клуб "Автостопом по галактике"</a>
-                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
-                  заниматься астрономией и просто любоваться на звездное небо!</p>
-                <p>Руководитель: Иванов Иван Иванович</p>
+                <a>{{ team.title }}</a>
+                <p>Походу нет пока столбца описания, direction {{ team.direction }}</p>
+                <p>Руководители: 
+                    <span v-for="leader in (team.functions[0]).userFunctions">     
+                        {{ leader.user.fullname}}<br>
+                    </span>
+                </p>
               </div>
               <div class="btn">
                 <RouterLink to="/team-1">
@@ -59,75 +74,7 @@
               </div>
             </div>
           </div>
-
-          <div class="card">
-            <img src="../assets/icon/stairway.jpg">
-            <div class="wrapper-content">
-              <div>
-                <a>Клуб "Автостопом по галактике"</a>
-                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
-                  заниматься астрономией и просто любоваться на звездное небо!</p>
-                <p>Руководитель: Иванов Иван Иванович</p>
-              </div>
-              <div class="btn">
-                <RouterLink to="/team-1">
-                  <button>Подробнее</button>
-                </RouterLink>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="../assets/icon/stairway.jpg">
-            <div class="wrapper-content">
-              <div>
-                <a>Клуб "Автостопом по галактике"</a>
-                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
-                  заниматься астрономией и просто любоваться на звездное небо!</p>
-                <p>Руководитель: Иванов Иван Иванович</p>
-              </div>
-              <div class="btn">
-                <RouterLink to="/team-1">
-                  <button>Подробнее</button>
-                </RouterLink>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="../assets/icon/stairway.jpg">
-            <div class="wrapper-content">
-              <div>
-                <a>Клуб "Автостопом по галактике"</a>
-                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
-                  заниматься астрономией и просто любоваться на звездное небо!</p>
-                <p>Руководитель: Иванов Иван Иванович</p>
-              </div>
-              <div class="btn">
-                <RouterLink to="/team-1">
-                  <button>Подробнее</button>
-                </RouterLink>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="../assets/icon/stairway.jpg">
-            <div class="wrapper-content">
-              <div>
-                <a>Клуб "Автостопом по галактике"</a>
-                <p>Мы любители - звездочеты, ищем себе в клуб ребят, которые горят желанием изучать космос, серьезно
-                  заниматься астрономией и просто любоваться на звездное небо!</p>
-                <p>Руководитель: Иванов Иван Иванович</p>
-              </div>
-              <div class="btn">
-                <RouterLink to="/team-1">
-                  <button>Подробнее</button>
-                </RouterLink>
-              </div>
-            </div>
-          </div>
-
+          
         </div>
       </div>
     </div>
@@ -159,5 +106,5 @@
 </template>
 
 <style lang="scss">
-  @import '@/assets/teams/teams.scss';
+@import '@/assets/teams/teams.scss';
 </style>
