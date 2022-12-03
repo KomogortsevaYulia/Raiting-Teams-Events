@@ -36,6 +36,10 @@ export class User {
     @Column()
     phone: string
 
+    @ApiProperty() 
+    @Column()
+    password: string
+
     @Column({ type: "date" })
     birthdate: string
 
