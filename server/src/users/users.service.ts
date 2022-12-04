@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { UserFunction } from './entities/user_function.entity';
 
 @Injectable()
 export class UsersService {
@@ -11,8 +12,11 @@ export class UsersService {
   constructor(
     @InjectRepository(User)  // user //,
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(UserFunction)
+    private readonly userFunctionsRepository: Repository<UserFunction>,
+    @InjectRepository(Function)
+    private readonly functionsRepository: Repository<Function>,
   ) { }
-
   create(createUserDto: CreateUserDto) : Promise<User>{
     const user = new User();
     user.fullname = createUserDto.fullname;
@@ -32,8 +36,17 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return this.usersRepository.findOneBy({ id: id });
+  findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+     return this.usersRepository
+    .createQueryBuilder("users")
+    .innerJoin("users.user_function", "user_function")
+    .addSelect("user_function")
+    .innerJoin("user_function.functions", "functions")
+    .addSelect("functions")
+    .innerJoinAndSelect("functions.team", "teams")
+    .addSelect("teams")
+    .where("users.id = :id", {id})
+    .getOne()
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -43,6 +56,8 @@ export class UsersService {
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
   }
+
+
 }
 
 

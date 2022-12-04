@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { Function } from "./function.entity";
 import { ApiProperty } from "@nestjs/swagger";
@@ -26,4 +26,7 @@ export class UserFunction {
     @Column()
     dateEnd: Date
 
+    @ApiProperty()
+    @OneToMany((type) => Function, (func) =>func.team)
+    functions :Function[]
 }

@@ -30,7 +30,7 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOneWithFunction(+id);
   }
 
   @Patch(':id')
@@ -42,4 +42,14 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
+
+  // @Get('users_func/:id')
+  // @ApiOperation({ summary: "Получение пользователя" })
+  // @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
+  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
+  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  // users_func(@Param('id') id: number) {
+  //   return this.usersService.users_func(id);
+  // }
+
 }
