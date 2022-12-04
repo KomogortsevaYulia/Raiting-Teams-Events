@@ -28,10 +28,6 @@ export class TeamsService {
     return 'This action adds a new team';
   }
 
-  findAll() {
-    return `This action returns all teams`;
-  }
-
   findOne(id: number) {
     return this.teamsRepository.findOneBy({ id: id });
   }
@@ -43,6 +39,28 @@ export class TeamsService {
   remove(id: number) {
     return `This action removes a #${id} team`;
   }
+
+// get all teams with leadeaders
+  async findAll():Promise<Team[]> {
+
+    const head = "руководитель"
+
+    return this.teamsRepository
+    .createQueryBuilder("teams")
+    .select(["teams.id", "teams.title", "teams.direction", "teams.image"])
+    .innerJoin("teams.functions","functions")
+    .addSelect("functions.title")
+    .where("functions.title = :head", {head:head})
+
+    .innerJoin("functions.userFunctions", "user_functions")
+    .addSelect("user_functions.id")
+    .innerJoinAndSelect("user_functions.user", "user")
+    .addSelect("user.title_role")
+   
+    .getMany()
+
+  }
+
 
 
 
@@ -69,3 +87,6 @@ export class TeamsService {
   }
 
 }
+
+
+

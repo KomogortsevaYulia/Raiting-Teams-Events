@@ -36,7 +36,7 @@ export class User {
     @Column()
     phone: string
 
-    @Column({ type: "date" })
+    @Column({type:"date"})
     birthdate: string
 
     @ApiProperty() 
