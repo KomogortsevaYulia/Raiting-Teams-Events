@@ -1,20 +1,53 @@
+<script setup lang="ts">
+    import { onMounted, ref } from 'vue';
+    import { useMainStore } from '@/store/main_store';
+
+    const store = useMainStore();
+    const show = ref(true);
+    const username = ref("");
+    const password = ref("");
+
+    
+    function OnRegistrationSubmit() {
+        console.log('Registration is clicked!');
+    }
+
+    function OnLoginCampusSubmit() {
+        console.log('Campus login is clicked!');
+    }
+
+    onMounted(() => {
+        store.checkLogin();
+    })
+
+    function OnLoginSubmit() {
+            store.login({
+            username: username.value,
+            password: password.value,
+        })
+    }
+
+</script>
+
 <template>
     <div class="form-login">
+
         <a>Система учета студенческих коллективов и мероприятий ИРНИТУ</a>
         <div class="form-login__choice">
-            <a v-on:click="show = true" :class="[show ? 'active' : '']">Авторизация</a>
-            <a v-on:click="show = false" :class="[show ? '' : 'active']">Регистрация</a>
+            <a @click="show = true" :class="{active: show}">Авторизация</a>
+            <a @click="show = false" :class="{active: !show}">Регистрация</a>
         </div>
-        <div v-if="show === true" class="form-login__submit-campus">
-            <button @click="LoginCampusSubmit" class="btn-campus" type="submit">Авторизоваться через кампус</button>
+        <div v-if="show" class="form-login__submit-campus">
+            <button @click="OnLoginCampusSubmit" class="btn-campus" type="submit">Авторизоваться через кампус</button>
         </div>
+
         <!-- Форма авторизации -->
-        <form v-if="show === true" @submit.prevent="LoginSubmit">
+        <form v-if="show" @submit.prevent="OnLoginSubmit">
             <div class="form-login__input">
-                <input type="text" placeholder="Логин или почта" required>
+                <input v-model="username" type="text" placeholder="Логин или почта" required>
             </div>
             <div class="form-login__input">
-                <input type="password" placeholder="Пароль" required>
+                <input v-model="password" type="password" placeholder="Пароль" required>
             </div>
             <div class="form-login__submit">
                 <p>Забыли пароль?</p>
@@ -22,7 +55,7 @@
             </div>
         </form>
         <!-- Форма регистрации -->
-        <form v-if="show === false" @submit.prevent="RegistrationSubmit">
+        <form v-if="!show" @submit.prevent="OnRegistrationSubmit">
             <div class="form-login__input">
                 <input type="text" placeholder="Логин" required>
             </div>
@@ -41,26 +74,7 @@
         </form>
     </div>
 </template>
-<script lang="ts">
-import '../assets/login.scss'
 
-export default {
-    data() {
-        return {
-            show: true
-        }
-    },
-    methods: {
-        LoginSubmit() {
-            console.log('Login is clicked!');
-        },
-        RegistrationSubmit() {
-            console.log('Registration is clicked!');
-        },
-        LoginCampusSubmit() {
-            console.log('Campus login is clicked!');
-        }
-    }
-}
-
-</script>
+<style lang="scss">
+    @import '@/assets/login.scss';
+</style>

@@ -1,5 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import { createPinia } from 'pinia';
+import axios from "axios";
 import router from "./router";
 // import store from "./store";
 
@@ -14,5 +16,6 @@ library.add(faUser)
 const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon)
 // app.use(store);
+app.use(createPinia())
 app.use(router);
 app.mount("#app");

@@ -1,3 +1,7 @@
+<script setup lang="ts">
+  import Navbar from '@/components/Navbar.vue';
+</script>
+
 <template>
   <header>
     <Navbar />
@@ -7,22 +11,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import Navbar from './components/Navbar.vue';
-import './assets/navbar.scss';
-export default {
-  name: "App",
-  components: {
-    Navbar
-  }
-}
-</script>
-
 <style lang="scss">
+
+@import '@/assets/navbar.scss';
+
   .container {
     padding-top: 2rem;
-    padding-inline: 10%;
+    margin-inline: 10%;
     display: flex;
     justify-content: center;
   }
+  
 </style>
