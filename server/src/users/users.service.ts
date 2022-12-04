@@ -36,7 +36,7 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  findOne(id: number) {
+  findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
      return this.usersRepository
     .createQueryBuilder("users")
     .innerJoin("users.user_function", "user_function")
@@ -45,8 +45,8 @@ export class UsersService {
     .addSelect("functions")
     .innerJoinAndSelect("functions.team", "teams")
     .addSelect("teams")
-    .where("user.id = :id", {id})
-    .getMany()
+    .where("users.id = :id", {id})
+    .getOne()
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
