@@ -1,3 +1,7 @@
+<script setup lang="ts">
+    import Filter from '@/components/Filter.vue';
+</script>
+
 <template>
   <div>
       <div className = "mainBanner">
@@ -5,6 +9,9 @@
         Надо что-то написать 
         <button className = "bannerBtn">Нажми меня</button>
         </span>
+      </div>
+      <div class="cards__search">
+            <input placeholder="Начните поиск..." />
       </div>
       <div className = "cardContainer">
         <div class="cardEvent">
@@ -14,6 +21,14 @@
               <img src="../assets/icon/event1.png">
             </div>
             <div class="wrapperContent">
+              <div className = "teg__container">
+                <div className = "teg">
+                  Offline
+                </div>
+                <div className = "teg">
+                  Межвузовский
+                </div>
+              </div>
               <div>
                 <p >
                   Проводится с целью выработки у студентов навыков работы в области конструирования, для развития конструкторских навыков, творческого потенциала в решении сложных нестандартных задач за короткий промежуток времени
