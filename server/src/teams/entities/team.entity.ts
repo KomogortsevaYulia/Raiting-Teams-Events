@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Function } from "../../users/entities/function.entity";
 
 @Entity("teams")
 export class Team {
@@ -22,5 +23,9 @@ export class Team {
     @ApiProperty() 
     @Column()
     creation_date: Date
+
+    @OneToMany((type)=>Function, (func)=>func.team)
+    @JoinColumn([{ name: "func_id" }])
+    functions:Function[]
 
 }
