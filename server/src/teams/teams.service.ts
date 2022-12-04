@@ -90,7 +90,6 @@ export class TeamsService {
     //начинаем с функций пользователя
     const teamsFunctions = await this.functionsRepository
     .createQueryBuilder("functions")
-    .select("functions.title")
     .innerJoin("functions.team", "team")
     .addSelect("team.title")
     .where("functions.team_id = :id", { id: id })
