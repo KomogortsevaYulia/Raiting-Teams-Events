@@ -7,12 +7,6 @@ import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
 
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/entities/user.entity';
-import { UserFunction } from '../users/entities/user_function.entity';
-import { Repository } from 'typeorm';
-import { Function } from '../users/entities/function.entity';
-import { Team } from './entities/team.entity';
 
 
 @Injectable()
