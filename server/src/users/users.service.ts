@@ -37,14 +37,15 @@ export class UsersService {
   }
 
   findOne(id: number) {
-     return this.userFunctionsRepository
+     return this.usersRepository
     .createQueryBuilder("users")
     .innerJoin("users.user_function", "user_function")
-    // .addSelect("user_functions")
-    // .innerJoin("users_functions.functions", "functions")
-    // .addSelect("functions")
-    // .innerJoinAndSelect("functions.teams", "teams")
-    // .addSelect("teams") 
+    .addSelect("user_function")
+    .innerJoin("user_function.functions", "functions")
+    .addSelect("functions")
+    .innerJoinAndSelect("functions.team", "teams")
+    .addSelect("teams")
+    .where("user.id = :id", {id})
     .getMany()
   }
 
