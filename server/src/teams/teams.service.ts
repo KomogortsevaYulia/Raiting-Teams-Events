@@ -10,7 +10,6 @@ import { Function } from '../users/entities/function.entity';
 import { Team } from './entities/team.entity';
 
 
-
 @Injectable()
 export class TeamsService {
 
@@ -34,7 +33,7 @@ export class TeamsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} team`;
+    return this.teamsRepository.findOneBy({ id: id });
   }
 
   update(id: number, updateTeamDto: UpdateTeamDto) {
@@ -46,21 +45,27 @@ export class TeamsService {
   }
 
 
-   //вывести команду
-   async teamWithUsers(id: number): Promise<UserFunction[]> {
 
-    const users = await this.userFunctionsRepository
+  // async  directionsAndUsers() {
 
-      .createQueryBuilder("user_functions")
-      .select(["user_functions.dateStart", "user_functions.dateEnd"])
-      .leftJoinAndSelect("user_functions.user", "user")
-      .innerJoin("user_functions.function", "function")
-      .addSelect('function.title')
-      .innerJoin("function.team", "team")
-      .where("team.id = :id", { id })
-      .getMany()
+  //   const directionsUsers = await this.teamsRepository
+  //   .createQueryBuilder("teams")
+  //   .select("teams.direction")
+  //   .getMany()
 
-    return users;
+  //   return directionsUsers
+  // }
+
+  async teamsFunctions(id: number) {
+    //начинаем с функций пользователя
+    const teamsFunctions = await this.functionsRepository
+    .createQueryBuilder("functions")
+    .innerJoin("functions.team", "team")
+    .addSelect("team.title")
+    .where("functions.team_id = :id", { id: id })
+    .getMany()
+
+    return teamsFunctions
   }
 
 }
