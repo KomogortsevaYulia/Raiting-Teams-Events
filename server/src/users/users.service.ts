@@ -37,7 +37,15 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.usersRepository.findOneBy({ id: id });
+     return this.userFunctionsRepository
+    .createQueryBuilder("users")
+    .innerJoin("users.user_function", "user_function")
+    // .addSelect("user_functions")
+    // .innerJoin("users_functions.functions", "functions")
+    // .addSelect("functions")
+    // .innerJoinAndSelect("functions.teams", "teams")
+    // .addSelect("teams") 
+    .getMany()
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -48,19 +56,7 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async users_func(id:number): Promise<UserFunction[]>{
-    const users_info = await this.userFunctionsRepository
-    .createQueryBuilder("user_functions")
-    .select("user_functions.id")
-    .leftJoinAndSelect("user_functions.user", "user")
-    .innerJoin("user_functions.function", "function")
-    .addSelect('function.title')
-    .innerJoin("function.team", "team")
-    .addSelect('team.title')
-    .where("user.id = :id", { id })
-    .getMany()
-    return users_info;
-  }
+
 }
 
 

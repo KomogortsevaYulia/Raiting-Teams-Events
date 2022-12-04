@@ -43,13 +43,13 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  @Get('users_func/:id')
-  @ApiOperation({ summary: "Получение пользователя" })
-  @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  users_func(@Param('id') id: number) {
-    return this.usersService.users_func(id);
-  }
+  // @Get('users_func/:id')
+  // @ApiOperation({ summary: "Получение пользователя" })
+  // @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
+  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
+  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  // users_func(@Param('id') id: number) {
+  //   return this.usersService.users_func(id);
+  // }
 
 }
