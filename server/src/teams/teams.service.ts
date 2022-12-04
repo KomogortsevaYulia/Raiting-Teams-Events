@@ -59,9 +59,21 @@ export class TeamsService {
    
     .getMany()
 
+
+   //вывести команду
+   async teamWithUsers(id: number): Promise<UserFunction[]> {
+
+    const users = await this.userFunctionsRepository
+
+      .createQueryBuilder("user_functions")
+      .select(["user_functions.dateStart", "user_functions.dateEnd"])
+      .leftJoinAndSelect("user_functions.user", "user")
+      .innerJoin("user_functions.function", "function")
+      .addSelect('function.title')
+      .innerJoin("function.team", "team")
+      .where("team.id = :id", { id })
+      .getMany()
   }
-
-
 
 
   // async  directionsAndUsers() {
@@ -70,7 +82,6 @@ export class TeamsService {
   //   .createQueryBuilder("teams")
   //   .select("teams.direction")
   //   .getMany()
-
   //   return directionsUsers
   // }
 
@@ -85,7 +96,6 @@ export class TeamsService {
 
     return teamsFunctions
   }
-
 }
 
 

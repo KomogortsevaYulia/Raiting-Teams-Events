@@ -32,6 +32,17 @@ export class TeamsController {
     return this.teamsService.remove(+id);
   }
 
+
+ //по ид команды найти всех юзеров
+ @Get(':id')
+ @ApiOperation({ summary: "Получение пользователей по id коллектива" })
+ @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
+ @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
+ @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+ teamsAndUsers(@Param('id') id: number) {
+   return this.teamsService.teamWithUsers(id)
+ }
+
   @Get(':id')
   @ApiOperation({ summary: "Получение коллектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
@@ -58,6 +69,5 @@ export class TeamsController {
   // directionsAndUsers() {
   //   return this.teamsService.directionsAndUsers()
   // }
-
 
 }
