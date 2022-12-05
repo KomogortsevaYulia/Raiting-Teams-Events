@@ -36,7 +36,7 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+  findOneWithFunction(id: number) { // Все робит но нужно добавить условие - если нет коллективов у юзера, то вывести общую инфу
      return this.usersRepository
     .createQueryBuilder("users")
     .innerJoin("users.user_function", "user_function")
