@@ -18,6 +18,10 @@ export class Team {
 
     @ApiProperty() 
     @Column()
+    description: string
+
+    @ApiProperty() 
+    @Column()
     image: string
 
     @ApiProperty() 

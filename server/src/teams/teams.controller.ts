@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus } from '@
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Team } from './entities/team.entity';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
@@ -11,11 +11,6 @@ import { UserFunction } from '../users/entities/user_function.entity';
 @Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
-
-  @Post()
-  create(@Body() createTeamDto: CreateTeamDto) {
-    return this.teamsService.create(createTeamDto);
-  }
 
   @Get()
   findAll() {
@@ -62,6 +57,16 @@ export class TeamsController {
     return this.teamsService.teamsFunctions(id)
   }
 
+  
+  @Post()
+  @ApiOperation({ summary: "Создать новый коллектив (ответственный по направлению)" })
+  @ApiBody({description:"название коллектива, ФИО руководителя, описание проекта",required:true})
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно"})
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  create(@Body() createTeamDto: CreateTeamDto) {
+    return this.teamsService.create(createTeamDto);
+  }
+  
   // @Get('directions')
   // @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
   // @ApiParam({ name: "directions", required: true, description: "Идентификатор " })

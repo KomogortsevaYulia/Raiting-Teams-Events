@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { UserFunction } from 'src/users/entities/user_function.entity';
@@ -23,16 +23,6 @@ export class TeamsService {
     private readonly functionsRepository: Repository<Function>,
   ) { }
 
-    create(createTeamDto: CreateTeamDto): Promise<Team>{
-    const team = new Team();
-    team.title = createTeamDto.title;
-    team.direction = createTeamDto.direction;
-    team.image = createTeamDto.image;
-    team.creation_date = createTeamDto.creation_date;
-    console.log(team)
-    return this.teamsRepository.save(team);
-  }
-
   findOne(id: number) {
     return this.teamsRepository.findOneBy({ id: id });
   }
@@ -45,28 +35,28 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
-// get all teams with leadeaders
-  async findAll():Promise<Team[]> {
+  // get all teams with leadeaders
+  async findAll(): Promise<Team[]> {
 
     const head = "руководитель"
 
     return this.teamsRepository
-    .createQueryBuilder("teams")
-    .select(["teams.id", "teams.title", "teams.direction", "teams.image"])
-    .innerJoin("teams.functions","functions")
-    .addSelect("functions.title")
-    .where("functions.title = :head", {head:head})
+      .createQueryBuilder("teams")
+      .select(["teams.id", "teams.title", "teams.direction", "teams.image"])
+      .innerJoin("teams.functions", "functions")
+      .addSelect("functions.title")
+      .where("functions.title = :head", { head: head })
 
-    .innerJoin("functions.userFunctions", "user_functions")
-    .addSelect("user_functions.id")
-    .innerJoinAndSelect("user_functions.user", "user")
-    .addSelect("user.title_role")
-   
-    .getMany()
+      .innerJoin("functions.userFunctions", "user_functions")
+      .addSelect("user_functions.id")
+      .innerJoinAndSelect("user_functions.user", "user")
+      .addSelect("user.title_role")
+
+      .getMany()
   }
 
-   //вывести команду
-   async teamWithUsers(id: number): Promise<UserFunction[]> {
+  //вывести команду
+  async teamWithUsers(id: number): Promise<UserFunction[]> {
 
     const users = await this.userFunctionsRepository
 
@@ -78,7 +68,7 @@ export class TeamsService {
       .innerJoin("function.team", "team")
       .where("team.id = :id", { id })
       .getMany()
-      return users;
+    return users;
   }
 
 
@@ -94,14 +84,39 @@ export class TeamsService {
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя
     const teamsFunctions = await this.functionsRepository
-    .createQueryBuilder("functions")
-    .innerJoin("functions.team", "team")
-    .addSelect("team.title")
-    .where("functions.team_id = :id", { id: id })
-    .getMany()
+      .createQueryBuilder("functions")
+      .innerJoin("functions.team", "team")
+      .addSelect("team.title")
+      .where("functions.team_id = :id", { id: id })
+      .getMany()
 
     return teamsFunctions
   }
+
+  /* 
+  TODO:
+
+  на фронте:
+  1) поле для изображения не прикрутили, 
+  2) дмаю, надо указывать для какого направления создаем коллектив (НИД, КТД, и т.д, выпадающий список)
+  
+  на бэке: описание проекта столбец нужен (готово)
+  */
+
+  async create(@Body() createTeamDto: CreateTeamDto):Promise<Team> {
+
+    createTeamDto.creation_date = new Date()
+    // const team = new Team();
+    // team.title = createTeamDto.title;
+    // team.direction = createTeamDto.direction;
+    // team.image = createTeamDto.image;
+    // team.creation_date = createTeamDto.creation_date;
+
+    createTeamDto.image = ""
+    console.log(createTeamDto)
+    return await this.teamsRepository.save(createTeamDto);
+  }
+
 }
 
 

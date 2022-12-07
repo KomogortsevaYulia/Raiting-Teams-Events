@@ -1,6 +1,24 @@
+
+import { IsDate,  IsNotEmpty,IsNumber,IsString, Length } from 'class-validator'
+
+
 export class CreateTeamDto {
-    title : string;
-    direction : string;
-    image: string;
-    creation_date: Date;
+
+    @IsNotEmpty({ message: 'Поле пустое' })
+    @Length(1,50,{
+        message: 'Максимальная длина текста 50'
+    })
+    title: string
+
+    @IsNotEmpty()
+    direction: string
+
+    image: string
+
+    @Length(1,1000,{
+        message: 'Максимальная длина текста 1000'
+    })
+    description: string
+
+    creation_date: Date
 }
