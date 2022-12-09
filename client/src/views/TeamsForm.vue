@@ -1,9 +1,8 @@
 
 <script setup lang="ts">import axios from 'axios';
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import _ from 'lodash'
 import 'vue-select/dist/vue-select.css';
-import { computed } from '@vue/reactivity';
 
 // debounce отложеный запуск функции, задержа с какой частотой вызываться
 // values from form
@@ -24,7 +23,6 @@ const foundUsers = ref();
 const users = ref();
 
 const func = _.debounce(() => {
-    // console.log("jiiii")
     getUsers()
 }, 300)
 
@@ -51,9 +49,14 @@ async function getUsers() {
     users.value = r.data
 
     // console.log("userLeader " +  userLeader.value)
-    // console.log("users " +  users.value)
+
+    //все юзеры, которых вытаскиваем из бд должны соответствовать этому шаблону
     let reg = new RegExp(`${userLeader.value}`);
     let arrayData = []
+
+    //ограничивваем число видимых юзеров в списке, так как юзеров может быть оч много
+    let limitVisibleUsers = 5
+    let countUser = 0
 
     // перебор юзеров 
     for (let i = 0; i < (users.value).length; i++) {
@@ -62,17 +65,22 @@ async function getUsers() {
         // console.log( " reg.test(user) "  + reg.test(user.fullname) + "    user"
         // + user.fullname + "    reg  "  + reg)
 
-        //протетисровать соответсвует ли части введенного значения юзер
-        if (reg.test(user.fullname)) {
-            //подучить все имена 
-            arrayData[i] = { name: user.fullname, id: user.id };
+        // так как может быть десятки юзеров, у которых ФИО полностью совпадает нужен уникальный параметр поиска
+        if (reg.test(user.fullname) || (reg.test(user.email)) ) {
+            //получить все имена 
+            arrayData[i] = { name: `${user.fullname} ${user.email}`, id: user.id };
+            countUser++;
+
+            if(countUser >= limitVisibleUsers)
+                break;
+            // console.log((reg.test(user.email)) + " countUser")
         }
 
         // console.log( arrayData[i])
     }
 
     foundUsers.value = arrayData
-    console.log(arrayData)
+    // console.log(arrayData)
 }
 
 //Создать ноыую функцию
@@ -111,6 +119,7 @@ async function createUserFunction(functionId: number) {
 }
 
 
+//создать коллектив
 async function createTeam() {
 
     responseMsg.value = "сохранено";
@@ -146,7 +155,6 @@ async function createTeam() {
 
 <template>
 
-    {{ userLeader }}
     <p>Прежде чем создать в системе новый коллектив, нужно
         утвердить его приказом!</p>
 
