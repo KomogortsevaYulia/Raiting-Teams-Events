@@ -64,7 +64,7 @@ export class UsersService {
   // function
   async createFunction(@Body() createFunctionDto: CreateFunctionDto): Promise<Function> {
 
-    console.log(createFunctionDto)
+    // console.log(createFunctionDto)
     return await this.functionsRepository.save(createFunctionDto);
   }
 
@@ -78,7 +78,7 @@ export class UsersService {
 
     createUserFunctionDto.dateEnd = end;
 
-    console.log( "createUserFunctionDto " + createUserFunctionDto)
+    // console.log( "createUserFunctionDto " + createUserFunctionDto)
     return await this.userFunctionsRepository.save(createUserFunctionDto);
   }
 }

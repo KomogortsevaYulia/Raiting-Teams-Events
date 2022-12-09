@@ -61,7 +61,7 @@ export class UsersController {
 
   @Post('functions')
   createFunction(@Body() createFunctionDto: CreateFunctionDto) {
-    console.log("funct " + createFunctionDto.title)
+    // console.log("funct " + createFunctionDto.title)
     return this.usersService.createFunction(createFunctionDto);
   }
 
