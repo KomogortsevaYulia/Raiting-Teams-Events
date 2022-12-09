@@ -113,8 +113,10 @@ export class TeamsService {
     // team.creation_date = createTeamDto.creation_date;
 
     createTeamDto.image = ""
-    console.log(createTeamDto)
-    return await this.teamsRepository.save(createTeamDto);
+    // console.log(createTeamDto)
+    let team = await this.teamsRepository.save(createTeamDto)
+    // console.log( " ttttmmm " +  team.title)
+    return team;
   }
 
 }
