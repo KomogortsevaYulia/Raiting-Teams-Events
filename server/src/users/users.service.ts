@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateFunctionDto } from './dto/create-functions.dto';
+import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Function } from './entities/function.entity';
 import { User } from './entities/user.entity';
 import { UserFunction } from './entities/user_function.entity';
 
@@ -17,7 +20,7 @@ export class UsersService {
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
   ) { }
-  create(createUserDto: CreateUserDto) : Promise<User>{
+  create(createUserDto: CreateUserDto): Promise<User> {
     const user = new User();
     user.fullname = createUserDto.fullname;
     user.birthdate = createUserDto.birthdate;
@@ -37,16 +40,16 @@ export class UsersService {
   }
 
   findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-     return this.usersRepository
-    .createQueryBuilder("users")
-    .innerJoin("users.user_function", "user_function")
-    .addSelect("user_function")
-    .innerJoin("user_function.functions", "functions")
-    .addSelect("functions")
-    .innerJoinAndSelect("functions.team", "teams")
-    .addSelect("teams")
-    .where("users.id = :id", {id})
-    .getOne()
+    return this.usersRepository
+      .createQueryBuilder("users")
+      .innerJoin("users.user_function", "user_function")
+      .addSelect("user_function")
+      .innerJoin("user_function.functions", "functions")
+      .addSelect("functions")
+      .innerJoinAndSelect("functions.team", "teams")
+      .addSelect("teams")
+      .where("users.id = :id", { id })
+      .getOne()
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -58,6 +61,26 @@ export class UsersService {
   }
 
 
+  // function
+  async createFunction(@Body() createFunctionDto: CreateFunctionDto): Promise<Function> {
+
+    console.log(createFunctionDto)
+    return await this.functionsRepository.save(createFunctionDto);
+  }
+
+  //user functions
+  async createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
+
+    createUserFunctionDto.dateStart = new Date();
+
+    let end = new Date();
+    end.setFullYear(end.getFullYear() + 1)
+
+    createUserFunctionDto.dateEnd = end;
+
+    console.log( "createUserFunctionDto " + createUserFunctionDto)
+    return await this.userFunctionsRepository.save(createUserFunctionDto);
+  }
 }
 
 

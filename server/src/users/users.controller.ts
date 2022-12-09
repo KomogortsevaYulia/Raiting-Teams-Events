@@ -4,11 +4,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
+import { CreateFunctionDto } from './dto/create-functions.dto';
+import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 
 @ApiTags('users')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -52,4 +54,21 @@ export class UsersController {
   //   return this.usersService.users_func(id);
   // }
 
+
+
+  // users/functions
+
+
+  @Post('functions')
+  createFunction(@Body() createFunctionDto: CreateFunctionDto) {
+    console.log("funct " + createFunctionDto.title)
+    return this.usersService.createFunction(createFunctionDto);
+  }
+
+  // users/userFunctions
+
+  @Post('userFunctions')
+  createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto) {
+    return this.usersService.createUserFunction(createUserFunctionDto);
+  }
 }
