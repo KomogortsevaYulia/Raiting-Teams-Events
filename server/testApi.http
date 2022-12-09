@@ -80,5 +80,37 @@ content-type: application/json
     "permissions":[]
 }
 
+###
+
+# functions
+
+//create new
+POST http://localhost:3000/api/users/functions HTTP/1.1
+content-type: application/json
+
+{
+    "title": "shit",
+    "team": "45"
+   
+}
+
+
+
+###
+
+# user functions
+
+//create new
+POST http://localhost:3000/api/users/userFunctions HTTP/1.1
+content-type: application/json
+
+{
+    "user": "3",
+    "function": "21"
+   
+}
+
+
+
 
 
