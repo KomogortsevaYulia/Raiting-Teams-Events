@@ -60,7 +60,7 @@ export class TeamsService {
       .where("teams.type_team = :type", {type: "teams" })
       .leftJoin("teams.functions", "functions")
       .addSelect("functions.title")
-      .where("functions.title = :head", { head: "Руководитель" })
+      .andWhere("functions.title = :head", { head: "Руководитель" })
 
       .leftJoin("functions.userFunctions", "user_functions")
       .addSelect("user_functions.id")
