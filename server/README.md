@@ -22,13 +22,13 @@ backup.sql файл в папке server
 
 3. И там пишем команду
 
-\i 'd:/пусть/к/файлу/бекапу.sql'
+     \i 'd:/пусть/к/файлу/бекапу.sql'
 
-Наклон слешей должен быть вправо
+     Наклон слешей должен быть вправо
 
-Например:
+     Например:
 
-\i 'C:/Users/Yulia/Study/Raiting-Teams-Events/backup.sql'
+     \i 'C:/Users/Yulia/Study/Raiting-Teams-Events/backup.sql'
 
 ## Running the app
 
