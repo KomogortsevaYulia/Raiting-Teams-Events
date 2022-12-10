@@ -27,8 +27,8 @@ export class UsersService {
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
-
-  findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+//Функция возращает юзера по ID и все инфу о коллективе и направлениях где он состоит
+  findOneWithFunction(id: number) { // Все робит но нужно добавить условие - если нет коллективов у юзера, то вывести общую инфу
      return this.usersRepository
     .createQueryBuilder("users")
     .innerJoin("users.user_function", "user_function")

@@ -59,7 +59,7 @@ export class User {
     @ApiProperty()
     @ManyToOne(()=>Role, (role)=> role.title)
     @JoinColumn([{ name: "title_role" }])
-    title_role: string
+    role_id: number
 
 
     @ApiProperty()
