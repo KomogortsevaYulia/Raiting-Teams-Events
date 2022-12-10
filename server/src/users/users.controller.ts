@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { UserRO } from './user.interface';
@@ -49,13 +49,17 @@ export class UsersController {
   }
 
   @UsePipes(new ValidationPipe())
-  @Post('users')
+  @Post()
   async create(@Body('user') userData: CreateUserDto) {
     return this.usersService.create(userData);
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: "Login" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @UsePipes(new ValidationPipe())
-  @Post('users/login')
+  @Post('/login')
   async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
     const _user = await this.usersService.login(loginUserDto);
 

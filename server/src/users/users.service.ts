@@ -19,21 +19,6 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) { }
 
-  // create(createUserDto: CreateUserDto) : Promise<User>{
-  //   const user = new User();
-  //   user.fullname = createUserDto.fullname;
-  //   user.birthdate = createUserDto.birthdate;
-  //   user.studnumber = createUserDto.studnumber;
-  //   user.email = createUserDto.email;
-  //   user.gender = createUserDto.gender;
-  //   user.education_group = createUserDto.education_group;
-  //   user.institute = createUserDto.institute;
-  //   user.type_time_study = createUserDto.type_time_study;
-  //   user.phone = createUserDto.phone;
-  //   user.permissions = createUserDto.permissions;
-  //   return this.usersRepository.save(user);
-  // }
-
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
@@ -79,9 +64,10 @@ export class UsersService {
   async create(dto: CreateUserDto): Promise<UserRO> {
 
     // check uniqueness of username/email
-    const { email, password} = dto;
+    const {username, email, password} = dto;
     const qb = await this.usersRepository
       .createQueryBuilder('user')
+      .where('user.username = :username', { username })
       .orWhere('user.email = :email', { email });
 
     const user = await qb.getOne();
@@ -94,9 +80,10 @@ export class UsersService {
 
     // create new user
     let newUser = new User();
+    newUser.username = username;
     newUser.email = email;
     newUser.password = password;
-
+    // newUser.articles = [];
 
     const errors = await validate(newUser);
     if (errors.length > 0) {
