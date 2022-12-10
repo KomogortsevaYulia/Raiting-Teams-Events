@@ -66,12 +66,12 @@ async function getUsers() {
         // + user.fullname + "    reg  "  + reg)
 
         // так как может быть десятки юзеров, у которых ФИО полностью совпадает нужен уникальный параметр поиска
-        if (reg.test(user.fullname) || (reg.test(user.email)) ) {
+        if (reg.test(user.fullname) || (reg.test(user.email))) {
             //получить все имена 
             arrayData[i] = { name: `${user.fullname} ${user.email}`, id: user.id };
             countUser++;
 
-            if(countUser >= limitVisibleUsers)
+            if (countUser >= limitVisibleUsers)
                 break;
             // console.log((reg.test(user.email)) + " countUser")
         }
@@ -114,9 +114,23 @@ async function createUserFunction(functionId: number) {
             }
         })
 
-        
+
     return newUserFunction
 }
+
+// async function getUserById(id: number) {
+
+//     // console.log("user")
+
+//     let user: any = await axios.get(`api/users/${id}`)
+//         .catch((err) => {
+//             if (err.response) {
+//                 responseMsg.value = err.response.data.message[0]
+//             }
+//         })
+
+//     return user
+// }
 
 
 //создать коллектив
@@ -124,6 +138,18 @@ async function createTeam() {
 
     responseMsg.value = "сохранено";
 
+    let userId = userLeader.value.id
+    if(isNaN(userId)){
+        responseMsg.value = "такого юзера нет " + userId
+        return
+    }
+
+    // let userExist = getUserById(userId)
+
+    // // console.log("userExist " + userExist)
+    // if(userExist == null) return
+
+    
     //create team
     let newTeam: any = await axios.post("api/teams", {
         title: title.value,

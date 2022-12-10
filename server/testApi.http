@@ -1,17 +1,8 @@
-GET http://localhost:3000/api/users/1
 
-
-
-//не помню зачем они нужны
-# GET http://localhost:3000/api/users/functions
-
+###
+# USERS--------------------------------------------------------
 # get all users from specific team
-GET http://localhost:3000/api/teams/with_users/2
-
-###
-
-# find users by specific role
-# GET http://localhost:3000/api/users/role/supervisor
+GET http://localhost:3000/api/users/9
 
 
 
@@ -19,7 +10,7 @@ GET http://localhost:3000/api/teams/with_users/2
 
 
 ###
-# TEAMS
+# TEAMS--------------------------------------------------------
 # get all users from specific team
 GET http://localhost:3000/api/teams/with_users/2
 
@@ -28,20 +19,10 @@ GET http://localhost:3000/api/teams/with_users/2
 GET http://localhost:3000/api/teams/2
 
 ###
-
 # select head user and teams
 GET http://localhost:3000/api/teams
-# find users by specific role
-# GET http://localhost:3000/api/users/role/supervisor
 
 ###
-
-//find teams with cpecific position user
-GET http://localhost:3000/api/teams/user_role/руководитель
-
-###
-
-
 # create new team
 POST http://localhost:3000/api/teams HTTP/1.1
 content-type: application/json
@@ -57,13 +38,8 @@ content-type: application/json
 
 
 
-
-
-
-
-
 ###
-# student
+# student-------------------------------------------------------
 POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
@@ -80,9 +56,12 @@ content-type: application/json
     "permissions":[]
 }
 
-###
 
-# functions
+
+
+
+###
+# functions------------------------------------------------------
 
 //create new
 POST http://localhost:3000/api/users/functions HTTP/1.1
@@ -96,16 +75,19 @@ content-type: application/json
 
 
 
-###
 
-# user functions
+
+
+
+###
+# user functions------------------------------------------------
 
 //create new
 POST http://localhost:3000/api/users/userFunctions HTTP/1.1
 content-type: application/json
 
 {
-    "user": "3",
+    "user": "300",
     "function": "21"
    
 }

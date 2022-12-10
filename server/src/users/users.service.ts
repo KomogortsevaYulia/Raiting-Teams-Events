@@ -1,4 +1,4 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, HttpCode, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateFunctionDto } from './dto/create-functions.dto';
@@ -39,18 +39,36 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-    return this.usersRepository
+  // modernize function user if user not exist
+  @HttpCode(400)
+  async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+    //вот зачем нужен left join в случае, если у юзера нет функций при иннер джоин,
+    //то в запросе выдаст, что юзера не существует, а так он его выдаст, если тот есть  
+    
+    // if(isNaN(id)){
+    //   throw new HttpException("такого юзера не существует " + id, 400)
+    // }
+
+    const userExist = await this.usersRepository
       .createQueryBuilder("users")
-      .innerJoin("users.user_function", "user_function")
-      .addSelect("user_function")
-      .innerJoin("user_function.functions", "functions")
-      .addSelect("functions")
-      .innerJoinAndSelect("functions.team", "teams")
-      .addSelect("teams")
       .where("users.id = :id", { id })
-      .getOne()
+      .leftJoin("users.user_function", "user_function")
+      .addSelect("user_function")
+      .leftJoin("user_function.functions", "functions")
+      .addSelect("functions")
+      .leftJoinAndSelect("functions.team", "teams")
+      .addSelect("teams")
+
+      .getOne();
+
+    // console.log("userExist " + userExist)
+    if (!userExist) {
+      throw new HttpException("такого юзера не существует ", 400)
+    }
+
+    return userExist
   }
+
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
@@ -61,26 +79,37 @@ export class UsersService {
   }
 
 
-  // function
+  // function--------------------------------------------------------------------
   async createFunction(@Body() createFunctionDto: CreateFunctionDto): Promise<Function> {
 
     // console.log(createFunctionDto)
     return await this.functionsRepository.save(createFunctionDto);
   }
 
-  //user functions
+
+  // function--------------------------------------------------------------------
+
+
+
+  //user functions---------------------------------------------------------------
+  @HttpCode(400)
   async createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
+
+    //check if user is exist, if not, then error 400 will
+    // console.log("createUserFunctionDto.user " + createUserFunctionDto.user)
+    this.findOneWithFunction(createUserFunctionDto.user)
 
     createUserFunctionDto.dateStart = new Date();
 
     let end = new Date();
-    end.setFullYear(end.getFullYear() + 1)
+    end.setFullYear(end.getFullYear() + 1) //only on one year set 
 
     createUserFunctionDto.dateEnd = end;
 
     // console.log( "createUserFunctionDto " + createUserFunctionDto)
     return await this.userFunctionsRepository.save(createUserFunctionDto);
   }
+  //user functions---------------------------------------------------------------
 }
 
 
