@@ -35,7 +35,7 @@ export class Team {
     @ApiProperty() 
     @Column({
         type: "enum",
-        enum: ["diraction", "university", "teams"],
+        enum: ["direction", "university", "teams"],
         default: "teams"
     })
     type_team: string
