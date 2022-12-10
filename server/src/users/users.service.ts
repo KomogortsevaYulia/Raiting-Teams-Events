@@ -44,7 +44,7 @@ export class UsersService {
       take: limit,
       where: [
         { fullname: Like(`%${name}%`) },
-        { email: Like(`%${email}%`) },
+        { email: Like(`%${email}%`) }
       ]
     })
 

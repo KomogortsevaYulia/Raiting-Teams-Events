@@ -52,6 +52,7 @@ async function getUsers() {
         params: {
             limit: limitVisibleUsers,
             fullname: userLeader.value,
+            email: userLeader.value
         }
     });
 
@@ -67,7 +68,7 @@ async function getUsers() {
         let user = (users.value)[i]
 
         // так как может быть десятки юзеров, у которых ФИО полностью совпадает нужен уникальный параметр поиска
-        arrayData[i] = { name: user.fullname, email: user.email, id: user.id };
+        arrayData[i] = { name: user.fullname, email: user.email, id: user.id, data: `${user.fullname} ${user.email}` };
     }
     foundUsers.value = arrayData
 
@@ -128,7 +129,7 @@ async function createTeam() {
 
     responseMsg.value = "сохранено";
 
-    // console.log("option " + optionSelect.value)
+    console.log("option " + optionSelect.value)
 
     let userId = 0
     if(!optionSelect.value || isNaN(optionSelect.value.id)) {
@@ -188,7 +189,7 @@ async function createTeam() {
 
                 <!-- не могу без bootstrap, im so sorry -->
                 <label for="">ФИО Руководителя</label>
-                <v-select label="name" @input="onTextChange" :options="foundUsers" v-model="optionSelect"></v-select>
+                <v-select label="data" @input="onTextChange" :options="foundUsers" v-model="optionSelect"></v-select>
 
                 <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
 
