@@ -10,7 +10,7 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({ nullable: true ,default: "123"})
     username: string
 
     @ApiProperty()
@@ -42,7 +42,7 @@ export class User {
     phone: string
 
     @ApiProperty() 
-    @Column()
+    @Column({ nullable: true ,default: "123"})
     password: string
 
     @Column({ type: "date" , nullable: true })

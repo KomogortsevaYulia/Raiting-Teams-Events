@@ -44,4 +44,7 @@ export class Team {
     @Column()
     shortname:string
 
+    @OneToMany((type)=>Function, (func)=>func.team)
+    @JoinColumn([{ name: "func_id" }])
+    functions:Function[]
 }

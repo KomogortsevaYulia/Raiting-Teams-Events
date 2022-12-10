@@ -49,28 +49,27 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
+   // get all teams with leadeaders
+   async findAll(): Promise<Team[]> {
 
-
-
-  // get all teams with leadeaders
-  async findAll(): Promise<Team[]> {
-
-    const head = "руководитель"
+    const head = "Руководитель"
 
     return this.teamsRepository
       .createQueryBuilder("teams")
-      .select(["teams.id", "teams.title", "teams.direction", "teams.image"])
-      .innerJoin("teams.functions", "functions")
+      .select(["teams.id", "teams.title",  "teams.image","teams.description","teams.type_team"])
+      .where("teams.type_team = :type", {type: "teams" })
+      .leftJoin("teams.functions", "functions")
       .addSelect("functions.title")
-      .where("functions.title = :head", { head: head })
+      .where("functions.title = :head", { head: "Руководитель" })
 
-      .innerJoin("functions.userFunctions", "user_functions")
+      .leftJoin("functions.userFunctions", "user_functions")
       .addSelect("user_functions.id")
-      .innerJoinAndSelect("user_functions.user", "user")
+      .leftJoinAndSelect("user_functions.user", "user")
       .addSelect("user.title_role")
+
       .getMany()
   }
-
+  
   //вывести команду
   async teamWithUsers(id: number): Promise<UserFunction[]> {
 

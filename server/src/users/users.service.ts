@@ -27,7 +27,7 @@ export class UsersService {
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
-//Функция возращает юзера по ID и все инфу о коллективе и направлениях где он состоит
+  //Функция возращает юзера по ID и все инфу о коллективе и направлениях где он состоит
   findOneWithFunction(id: number) { // Все робит но нужно добавить условие - если нет коллективов у юзера, то вывести общую инфу
      return this.usersRepository
     .createQueryBuilder("users")
@@ -98,7 +98,6 @@ export class UsersService {
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
-    // newUser.articles = [];
 
     const errors = await validate(newUser);
     if (errors.length > 0) {
@@ -115,8 +114,6 @@ export class UsersService {
   private buildUserRO(user: User) {
     const userRO = {
       id: user.id,
-      // studnumber: user.studnumber,
-      // fullname: user.fullname,
       email: user.email,
       token: this.generateJWT(user),
     };
