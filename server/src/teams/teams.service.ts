@@ -23,12 +23,16 @@ export class TeamsService {
     private readonly functionsRepository: Repository<Function>,
   ) { }
 
-    create(createTeamDto: CreateTeamDto): Promise<Team>{
+  create(createTeamDto: CreateTeamDto): Promise<Team> {
     const team = new Team();
     team.title = createTeamDto.title;
-    team.direction = createTeamDto.direction;
+    team.id_parent = createTeamDto.id_parent;
     team.image = createTeamDto.image;
     team.creation_date = createTeamDto.creation_date;
+    team.tags = createTeamDto.tags;
+    team.description = createTeamDto.description;
+    team.type_team = createTeamDto.type_team;
+    team.shortname = createTeamDto.shortname;
     console.log(team)
     return this.teamsRepository.save(team);
   }
@@ -45,28 +49,30 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
-// get all teams with leadeaders
-  async findAll():Promise<Team[]> {
+
+
+
+  // get all teams with leadeaders
+  async findAll(): Promise<Team[]> {
 
     const head = "руководитель"
 
     return this.teamsRepository
-    .createQueryBuilder("teams")
-    .select(["teams.id", "teams.title", "teams.direction", "teams.image"])
-    .innerJoin("teams.functions","functions")
-    .addSelect("functions.title")
-    .where("functions.title = :head", {head:head})
+      .createQueryBuilder("teams")
+      .select(["teams.id", "teams.title", "teams.direction", "teams.image"])
+      .innerJoin("teams.functions", "functions")
+      .addSelect("functions.title")
+      .where("functions.title = :head", { head: head })
 
-    .innerJoin("functions.userFunctions", "user_functions")
-    .addSelect("user_functions.id")
-    .innerJoinAndSelect("user_functions.user", "user")
-    .addSelect("user.title_role")
-   
-    .getMany()
+      .innerJoin("functions.userFunctions", "user_functions")
+      .addSelect("user_functions.id")
+      .innerJoinAndSelect("user_functions.user", "user")
+      .addSelect("user.title_role")
+      .getMany()
   }
 
-   //вывести команду
-   async teamWithUsers(id: number): Promise<UserFunction[]> {
+  //вывести команду
+  async teamWithUsers(id: number): Promise<UserFunction[]> {
 
     const users = await this.userFunctionsRepository
 
@@ -78,7 +84,7 @@ export class TeamsService {
       .innerJoin("function.team", "team")
       .where("team.id = :id", { id })
       .getMany()
-      return users;
+    return users;
   }
 
 
@@ -94,11 +100,11 @@ export class TeamsService {
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя
     const teamsFunctions = await this.functionsRepository
-    .createQueryBuilder("functions")
-    .innerJoin("functions.team", "team")
-    .addSelect("team.title")
-    .where("functions.team_id = :id", { id: id })
-    .getMany()
+      .createQueryBuilder("functions")
+      .innerJoin("functions.team", "team")
+      .addSelect("team.title")
+      .where("functions.team_id = :id", { id: id })
+      .getMany()
 
     return teamsFunctions
   }

@@ -17,6 +17,8 @@ export class UsersService {
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
   ) { }
+
+  //Вункция создает юзера
   create(createUserDto: CreateUserDto) : Promise<User>{
     const user = new User();
     user.fullname = createUserDto.fullname;
@@ -35,7 +37,7 @@ export class UsersService {
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
-
+//Функция возращает юзера по ID и все инфу о коллективе и направлениях где он состоит
   findOneWithFunction(id: number) { // Все робит но нужно добавить условие - если нет коллективов у юзера, то вывести общую инфу
      return this.usersRepository
     .createQueryBuilder("users")
