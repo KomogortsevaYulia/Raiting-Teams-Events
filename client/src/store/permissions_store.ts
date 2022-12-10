@@ -1,7 +1,7 @@
 import axios from "axios";
-import {computed, ref} from "vue";
+import { computed, ref } from "vue";
 import type { Permission } from "@/types";
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import router from "@/router";
 import { useTeamStore } from '@/store/team_store';
 
@@ -12,12 +12,12 @@ export const useUserPermissionsStore = defineStore("userPermissionsStore", () =>
     const permissions = ref<Array<Permission>>([])
     const is_superuser = ref("")
 
-    function can(permission: Permission){
+    function can(permission: Permission) {
         return permissions.value.includes(permission)
     }
 
     async function checkLogin(onAuthenticated: Function) {
-        
+
         await axios.get("http://localhost:3000/accounts/check-login/").then(r => {
             axios.defaults.headers.common['X-CSRFToken'] = r.data.csrf;
             is_superuser.value = r.data.is_superuser
@@ -34,12 +34,12 @@ export const useUserPermissionsStore = defineStore("userPermissionsStore", () =>
                 username.value = r.data.username
 
                 if (can('can create teams'))
-                teamStore.CreateTeamsTest
+                    teamStore.CreateTeamsTest
 
                 if (onAuthenticated) {
                     onAuthenticated()
                     console.log('sadasd');
-                    
+
                 }
             } else {
                 router.push("/opa").catch(ex => {
@@ -50,16 +50,18 @@ export const useUserPermissionsStore = defineStore("userPermissionsStore", () =>
         })
     }
 
-    async function login({username, password}: { username: string, password: string }) {
+    async function login({ email, password }: { email: string, password: string }) {
         console.log('Login in permission');
-        console.log(username);
+        console.log(email);
         console.log(password);
-        
-        // axios.post("/accounts/login/", {
-        //     username: username,
-        //     password: password,
-        // // @ts-ignore
-        // }).finally(() => checkLogin(onAuthenticated))
+
+        axios.post("/api/users/login", {
+            "user": {
+                email: email,
+                password: password
+            }
+            // @ts-ignore
+        }).finally(() => checkLogin(onAuthenticated))
     }
 
     async function logout() {
@@ -72,7 +74,7 @@ export const useUserPermissionsStore = defineStore("userPermissionsStore", () =>
         // username,
         // is_superuser,
 
-        checkLogin, 
+        checkLogin,
         login,
         logout,
         can

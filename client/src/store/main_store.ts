@@ -11,7 +11,7 @@ export const useMainStore = defineStore("main", () => {
         console.log('aloha');
     }
 
-    async function login(data: { username: string, password: string }) {
+    async function login(data: { email: string, password: string }) {
         userPermissionsStore.login(data);
         console.log('it is login');
     }
