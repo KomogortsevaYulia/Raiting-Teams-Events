@@ -14,6 +14,8 @@ $ npm install --save @nestjs/typeorm typeorm postgres
 ```
 
 #### Так же необходимо иметь PostgreSQL с развернутым бэкапом БД
+backup.sql файл в папке server
+
 Создаем пустую БД с названием raiting_teams_events
 
 Правой кнопкой кликаем на базу и выбираем PSQL Tool
