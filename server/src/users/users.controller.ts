@@ -64,7 +64,6 @@ export class UsersController {
     return this.usersService.create(userData);
   }
 
-  @Get(':id')
   @ApiOperation({ summary: "Login" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })

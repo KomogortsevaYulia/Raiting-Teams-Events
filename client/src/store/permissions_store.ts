@@ -55,7 +55,7 @@ export const useUserPermissionsStore = defineStore("userPermissionsStore", () =>
         console.log(email);
         console.log(password);
 
-        axios.post("/users/login", {
+        axios.post("/api/users/login", {
             "user": {
                 email: email,
                 password: password

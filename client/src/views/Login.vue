@@ -44,7 +44,7 @@
         <!-- Форма авторизации -->
         <form v-if="show" @submit.prevent="OnLoginSubmit">
             <div class="form-login__input">
-                <input v-model="email" type="text" placeholder="Логин или почта" required>
+                <input v-model="email" type="text" placeholder="Почта" required>
             </div>
             <div class="form-login__input">
                 <input v-model="password" type="password" placeholder="Пароль" required>
