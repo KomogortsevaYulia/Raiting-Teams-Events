@@ -5,7 +5,7 @@
 -- Dumped from database version 14.5
 -- Dumped by pg_dump version 14.5
 
--- Started on 2022-12-10 18:59:06
+-- Started on 2022-12-10 19:07:29
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -139,7 +139,7 @@ CREATE SEQUENCE public.events_id_seq
 ALTER TABLE public.events_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3419 (class 0 OID 0)
+-- TOC entry 3420 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -177,7 +177,7 @@ CREATE SEQUENCE public.form_fields_id_seq
 ALTER TABLE public.form_fields_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3420 (class 0 OID 0)
+-- TOC entry 3421 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: form_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -218,7 +218,7 @@ CREATE SEQUENCE public.forms_id_seq
 ALTER TABLE public.forms_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3421 (class 0 OID 0)
+-- TOC entry 3422 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: forms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -259,7 +259,7 @@ CREATE SEQUENCE public.functions_id_seq
 ALTER TABLE public.functions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3422 (class 0 OID 0)
+-- TOC entry 3423 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: functions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -298,7 +298,7 @@ CREATE SEQUENCE public.migrations_id_seq
 ALTER TABLE public.migrations_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3423 (class 0 OID 0)
+-- TOC entry 3424 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -337,7 +337,7 @@ CREATE SEQUENCE public.roles_id_seq
 ALTER TABLE public.roles_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3424 (class 0 OID 0)
+-- TOC entry 3425 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -359,7 +359,7 @@ CREATE TABLE public.teams (
     description character varying NOT NULL,
     shortname character varying NOT NULL,
     id_parent integer,
-    type_team public.teams_type_team_enum
+    type_team public.teams_type_team_enum DEFAULT 'teams'::public.teams_type_team_enum NOT NULL
 );
 
 
@@ -382,7 +382,7 @@ CREATE SEQUENCE public.teams_id_seq
 ALTER TABLE public.teams_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3425 (class 0 OID 0)
+-- TOC entry 3426 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -423,7 +423,7 @@ CREATE SEQUENCE public.user_forms_id_seq
 ALTER TABLE public.user_forms_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3426 (class 0 OID 0)
+-- TOC entry 3427 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: user_forms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -464,7 +464,7 @@ CREATE SEQUENCE public.user_functions_id_seq
 ALTER TABLE public.user_functions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3427 (class 0 OID 0)
+-- TOC entry 3428 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: user_functions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -512,7 +512,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3428 (class 0 OID 0)
+-- TOC entry 3429 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -529,7 +529,7 @@ ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.event
 
 
 --
--- TOC entry 3223 (class 2604 OID 34771)
+-- TOC entry 3224 (class 2604 OID 34771)
 -- Name: form_fields id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -537,7 +537,7 @@ ALTER TABLE ONLY public.form_fields ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3225 (class 2604 OID 34789)
+-- TOC entry 3226 (class 2604 OID 34789)
 -- Name: forms id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -545,7 +545,7 @@ ALTER TABLE ONLY public.forms ALTER COLUMN id SET DEFAULT nextval('public.forms_
 
 
 --
--- TOC entry 3219 (class 2604 OID 34745)
+-- TOC entry 3220 (class 2604 OID 34745)
 -- Name: functions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -577,7 +577,7 @@ ALTER TABLE ONLY public.teams ALTER COLUMN id SET DEFAULT nextval('public.teams_
 
 
 --
--- TOC entry 3224 (class 2604 OID 34780)
+-- TOC entry 3225 (class 2604 OID 34780)
 -- Name: user_forms id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -585,7 +585,7 @@ ALTER TABLE ONLY public.user_forms ALTER COLUMN id SET DEFAULT nextval('public.u
 
 
 --
--- TOC entry 3221 (class 2604 OID 34755)
+-- TOC entry 3222 (class 2604 OID 34755)
 -- Name: user_functions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -593,7 +593,7 @@ ALTER TABLE ONLY public.user_functions ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3222 (class 2604 OID 34762)
+-- TOC entry 3223 (class 2604 OID 34762)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -601,7 +601,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3397 (class 0 OID 34700)
+-- TOC entry 3398 (class 0 OID 34700)
 -- Dependencies: 212
 -- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -616,7 +616,7 @@ COPY public.events (id, type, title, users_id, "dateStart", "dateEnd", descripti
 
 
 --
--- TOC entry 3409 (class 0 OID 34768)
+-- TOC entry 3410 (class 0 OID 34768)
 -- Dependencies: 224
 -- Data for Name: form_fields; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -637,7 +637,7 @@ COPY public.form_fields (id, title) FROM stdin;
 
 
 --
--- TOC entry 3413 (class 0 OID 34786)
+-- TOC entry 3414 (class 0 OID 34786)
 -- Dependencies: 228
 -- Data for Name: forms; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -649,7 +649,7 @@ COPY public.forms (id, date, description, fields_id, team_id) FROM stdin;
 
 
 --
--- TOC entry 3403 (class 0 OID 34742)
+-- TOC entry 3404 (class 0 OID 34742)
 -- Dependencies: 218
 -- Data for Name: functions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -664,18 +664,19 @@ COPY public.functions (id, title, type_function, team_id, "roleIdId") FROM stdin
 
 
 --
--- TOC entry 3395 (class 0 OID 34311)
+-- TOC entry 3396 (class 0 OID 34311)
 -- Dependencies: 210
 -- Data for Name: migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.migrations (id, "timestamp", name) FROM stdin;
 22	1670203838600	auto1670203838600
+23	1670670136270	auto1670670136270
 \.
 
 
 --
--- TOC entry 3399 (class 0 OID 34709)
+-- TOC entry 3400 (class 0 OID 34709)
 -- Dependencies: 214
 -- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -690,33 +691,33 @@ COPY public.roles (id, title, permissions) FROM stdin;
 
 
 --
--- TOC entry 3401 (class 0 OID 34726)
+-- TOC entry 3402 (class 0 OID 34726)
 -- Dependencies: 216
 -- Data for Name: teams; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.teams (id, title, creation_date, image, tags, description, shortname, id_parent, type_team) FROM stdin;
-2	Наука	2010-05-09 00:00:00	/image_scince.jpg	наука\nизучение	Научное направление	Наука	1	direction
-3	Спорт	2010-05-09 00:00:00	/image_sport.jpg	спорт\nсоревнование	Спортивное направление	Спорт	1	direction
-4	Общесвенная деятельность	2010-05-09 00:00:00	/image_social.jpg	танцы\nпесни\nмузыка	Общесвенное направление	Общество	1	direction
 6	Студенческое научное общество «Квантум»	2011-05-09 00:00:00	/image_scince.jpg	изучение\nисследование	Изучение чего-нибудь, написание статьей	Наука	2	teams
 1	ИРНИТУ	2010-05-09 00:00:00	/image.jpg	лучший университет	Иркутский Национальный Исследовательский Технический Институт	ПОЛИТЕХ	\N	university
 5	Культурная массовая деятельность	2010-05-09 00:00:00	/image_culture.jpg	танцы\nпесни\nмузыка	Культурная деятельность	Культура	1	direction
 10	Студенческие отряды	2011-05-09 00:00:00	/image_otryd.jpg	Стройка\nработа\nжесть	Тут помогут найти работу(игра в строителей)	СтудОтряды	4	teams
 11	Добровольцы	2011-05-09 00:00:00	/image_dobro.jpg	Добро\nработа\nжесть\nволонтерство\nбобры	Тут работают за спасибо\\бесплатно (работаем 25/7)	Страдание	4	teams
 12	Интеллектуальный клуб студентов	2011-05-09 00:00:00	/image_iks.jpg	Умники\nумницы\nжесть\niq\nигры	Тут есть "Что? Где? Когда?"(Почему?)	ИКС	4	teams
-14	Учеба	2010-05-09 00:00:00	/image_study.jpg	учеба\nстатьи	учеба	учеба	1	teams
 7	Гиревой спорт	2011-05-09 00:00:00	/image_sport.jpg	тяжелая атлетика\nспорт	Тягаем железо	Гиревой	3	teams
 8	Баскетбол юноши	2011-05-09 00:00:00	/image_sport.jpg	Баскетбол\nспорт	Игра в Баскетбол	Баскетбол	3	teams
 9	Волейбол юноши	2011-05-09 00:00:00	/image_sport.jpg	Волейбол\nспорт	Игра в Волейбол	Волейбол	3	teams
 15	Народный коллектив ансамбль русской песни "Калина"	2011-05-09 00:00:00	/image_kt.jpg	Развлечение\nЖесть	Тут играют на нервах(барабанах)	Калина	5	teams
 16	Танцевально-спортивный клуб «Академик». Народный коллектив Ансамбль бального танца «Академик»	2011-05-09 00:00:00	/image_kt.jpg	Развлечение\nЖесть	Тут танцуют на нервах(могилах)	Академик	5	teams
 17	Народный театр «Предместье»	2011-05-09 00:00:00	/image_kt.jpg	Развлечение\nЖесть	Теаатр	Предместье	5	teams
+2	Научная деятельность	2010-05-09 00:00:00	/image_scince.jpg	наука\nизучение	Научное направление	Наука	1	direction
+4	Общественная деятельность	2010-05-09 00:00:00	/image_social.jpg	танцы\nпесни\nмузыка	Общесвенное направление	Общество	1	direction
+14	Учебная деятельность	2010-05-09 00:00:00	/image_study.jpg	учеба\nстатьи	учеба	учеба	1	teams
+3	Спортивная деятельность	2010-05-09 00:00:00	/image_sport.jpg	спорт\nсоревнование	Спортивное направление	Спорт	1	direction
 \.
 
 
 --
--- TOC entry 3411 (class 0 OID 34777)
+-- TOC entry 3412 (class 0 OID 34777)
 -- Dependencies: 226
 -- Data for Name: user_forms; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -730,7 +731,7 @@ COPY public.user_forms (id, date, value, field_id, user_id) FROM stdin;
 
 
 --
--- TOC entry 3405 (class 0 OID 34752)
+-- TOC entry 3406 (class 0 OID 34752)
 -- Dependencies: 220
 -- Data for Name: user_functions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -745,7 +746,7 @@ COPY public.user_functions (id, "dateStart", "dateEnd", function_id, user_id) FR
 
 
 --
--- TOC entry 3407 (class 0 OID 34759)
+-- TOC entry 3408 (class 0 OID 34759)
 -- Dependencies: 222
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -760,7 +761,7 @@ COPY public.users (id, studnumber, fullname, email, education_group, institute, 
 
 
 --
--- TOC entry 3429 (class 0 OID 0)
+-- TOC entry 3430 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -769,7 +770,7 @@ SELECT pg_catalog.setval('public.events_id_seq', 1, false);
 
 
 --
--- TOC entry 3430 (class 0 OID 0)
+-- TOC entry 3431 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: form_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -778,7 +779,7 @@ SELECT pg_catalog.setval('public.form_fields_id_seq', 11, true);
 
 
 --
--- TOC entry 3431 (class 0 OID 0)
+-- TOC entry 3432 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: forms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -787,7 +788,7 @@ SELECT pg_catalog.setval('public.forms_id_seq', 1, true);
 
 
 --
--- TOC entry 3432 (class 0 OID 0)
+-- TOC entry 3433 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -796,16 +797,16 @@ SELECT pg_catalog.setval('public.functions_id_seq', 1, false);
 
 
 --
--- TOC entry 3433 (class 0 OID 0)
+-- TOC entry 3434 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 22, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 23, true);
 
 
 --
--- TOC entry 3434 (class 0 OID 0)
+-- TOC entry 3435 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -814,7 +815,7 @@ SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 
 
 --
--- TOC entry 3435 (class 0 OID 0)
+-- TOC entry 3436 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: teams_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -823,7 +824,7 @@ SELECT pg_catalog.setval('public.teams_id_seq', 17, true);
 
 
 --
--- TOC entry 3436 (class 0 OID 0)
+-- TOC entry 3437 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: user_forms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -832,7 +833,7 @@ SELECT pg_catalog.setval('public.user_forms_id_seq', 1, true);
 
 
 --
--- TOC entry 3437 (class 0 OID 0)
+-- TOC entry 3438 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: user_functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -841,7 +842,7 @@ SELECT pg_catalog.setval('public.user_functions_id_seq', 1, true);
 
 
 --
--- TOC entry 3438 (class 0 OID 0)
+-- TOC entry 3439 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -850,7 +851,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
--- TOC entry 3237 (class 2606 OID 34757)
+-- TOC entry 3238 (class 2606 OID 34757)
 -- Name: user_functions PK_1b04a9e32d9511b33fe11b6ffda; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -859,7 +860,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3235 (class 2606 OID 34750)
+-- TOC entry 3236 (class 2606 OID 34750)
 -- Name: functions PK_203889d2ae5a98ffc137739301e; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -868,7 +869,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
--- TOC entry 3229 (class 2606 OID 34707)
+-- TOC entry 3230 (class 2606 OID 34707)
 -- Name: events PK_40731c7151fe4be3116e45ddf73; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -877,7 +878,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3243 (class 2606 OID 34784)
+-- TOC entry 3244 (class 2606 OID 34784)
 -- Name: user_forms PK_4e83554892a57d53117dc9a12bf; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -886,7 +887,7 @@ ALTER TABLE ONLY public.user_forms
 
 
 --
--- TOC entry 3233 (class 2606 OID 34734)
+-- TOC entry 3234 (class 2606 OID 34734)
 -- Name: teams PK_7e5523774a38b08a6236d322403; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -895,7 +896,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
--- TOC entry 3227 (class 2606 OID 34318)
+-- TOC entry 3228 (class 2606 OID 34318)
 -- Name: migrations PK_8c82d7f526340ab734260ea46be; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -904,7 +905,7 @@ ALTER TABLE ONLY public.migrations
 
 
 --
--- TOC entry 3239 (class 2606 OID 34766)
+-- TOC entry 3240 (class 2606 OID 34766)
 -- Name: users PK_a3ffb1c0c8416b9fc6f907b7433; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -913,7 +914,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3245 (class 2606 OID 34793)
+-- TOC entry 3246 (class 2606 OID 34793)
 -- Name: forms PK_ba062fd30b06814a60756f233da; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -922,7 +923,7 @@ ALTER TABLE ONLY public.forms
 
 
 --
--- TOC entry 3231 (class 2606 OID 34716)
+-- TOC entry 3232 (class 2606 OID 34716)
 -- Name: roles PK_c1433d71a4838793a49dcad46ab; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -931,7 +932,7 @@ ALTER TABLE ONLY public.roles
 
 
 --
--- TOC entry 3241 (class 2606 OID 34775)
+-- TOC entry 3242 (class 2606 OID 34775)
 -- Name: form_fields PK_dc4b73290f2926c3a7d7c92d1e1; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -940,7 +941,7 @@ ALTER TABLE ONLY public.form_fields
 
 
 --
--- TOC entry 3250 (class 2606 OID 34814)
+-- TOC entry 3251 (class 2606 OID 34814)
 -- Name: user_functions FK_414c47660792aa509c8f55adc7f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -949,7 +950,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3247 (class 2606 OID 34799)
+-- TOC entry 3248 (class 2606 OID 34799)
 -- Name: functions FK_579f1e0cdab39bd43464fb882be; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -958,7 +959,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
--- TOC entry 3251 (class 2606 OID 34819)
+-- TOC entry 3252 (class 2606 OID 34819)
 -- Name: users FK_9c113178e30b117d4ec1db45691; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -967,7 +968,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3254 (class 2606 OID 34834)
+-- TOC entry 3255 (class 2606 OID 34834)
 -- Name: forms FK_b8df7e99e28d225024e56783b8e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -976,7 +977,7 @@ ALTER TABLE ONLY public.forms
 
 
 --
--- TOC entry 3249 (class 2606 OID 34809)
+-- TOC entry 3250 (class 2606 OID 34809)
 -- Name: user_functions FK_bc78d14d218fc2e57e7a6941ab3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -985,7 +986,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3246 (class 2606 OID 34794)
+-- TOC entry 3247 (class 2606 OID 34794)
 -- Name: teams FK_c0b0c479964469ab9fbbed02c8d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -994,7 +995,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
--- TOC entry 3248 (class 2606 OID 34804)
+-- TOC entry 3249 (class 2606 OID 34804)
 -- Name: functions FK_c8b15425a585fcedc6b1f7f734a; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1003,7 +1004,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
--- TOC entry 3253 (class 2606 OID 34829)
+-- TOC entry 3254 (class 2606 OID 34829)
 -- Name: user_forms FK_dc8c58310d9794b123b514516a3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1012,7 +1013,7 @@ ALTER TABLE ONLY public.user_forms
 
 
 --
--- TOC entry 3252 (class 2606 OID 34824)
+-- TOC entry 3253 (class 2606 OID 34824)
 -- Name: user_forms FK_f8a70ba3fd198a242c1f76737aa; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1020,7 +1021,7 @@ ALTER TABLE ONLY public.user_forms
     ADD CONSTRAINT "FK_f8a70ba3fd198a242c1f76737aa" FOREIGN KEY (field_id) REFERENCES public.form_fields(id);
 
 
--- Completed on 2022-12-10 18:59:06
+-- Completed on 2022-12-10 19:07:29
 
 --
 -- PostgreSQL database dump complete
