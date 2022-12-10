@@ -4,7 +4,7 @@
 
     const store = useMainStore();
     const show = ref(true);
-    const username = ref("");
+    const email = ref("");
     const password = ref("");
 
     
@@ -22,7 +22,7 @@
 
     function OnLoginSubmit() {
             store.login({
-            username: username.value,
+            email: email.value,
             password: password.value,
         })
     }
@@ -44,7 +44,7 @@
         <!-- Форма авторизации -->
         <form v-if="show" @submit.prevent="OnLoginSubmit">
             <div class="form-login__input">
-                <input v-model="username" type="text" placeholder="Логин или почта" required>
+                <input v-model="email" type="text" placeholder="Логин или почта" required>
             </div>
             <div class="form-login__input">
                 <input v-model="password" type="password" placeholder="Пароль" required>
