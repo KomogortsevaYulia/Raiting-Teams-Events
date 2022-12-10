@@ -1,8 +1,11 @@
 ## Description
 
+На заметку:
+пароль во всех учетках "123", заходим по email
+![image](https://user-images.githubusercontent.com/74527737/206859237-c0f4e73c-b856-44a4-95d2-5fcf45824bb1.png)
 
 
-## Installation
+## Установка
 
 ```bash
 $ npm install
@@ -10,42 +13,38 @@ $ npm install
 $ npm install --save @nestjs/typeorm typeorm postgres
 ```
 
+#### Так же необходимо иметь PostgreSQL с развернутым бэкапом БД
+Создаем пустую БД с названием raiting_teams_events
+
+Правой кнопкой кликаем на базу и выбираем PSQL Tool
+
+И там пишем команду
+
+\i 'd:/пусть/к/файлу/бекапу.sql'
+
+Наклон слешей должен быть вправо
+
+Например:
+
+\i 'C:/Users/Yulia/Study/Raiting-Teams-Events/backup.sql'
+
 ## Running the app
 
-```bash
-# development
-$ npm run start
 
+
+```bash
 # watch mode
 $ npm run start:dev
 
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+## Создание бэкапа
 
-```bash
-# unit tests
-$ npm run test
+Как сделать из pgAdmin
 
-# e2e tests
-$ npm run test:e2e
+1. Тыкаем на базу backup
+2. Выбираем формат Plain
+3. Выбираем путь к файлу (будем делать sql файл)
+4. Во вкладке options включаем Include DROP DATABASE statement
+5. Запускаем Backup
 
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
