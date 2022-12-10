@@ -1,6 +1,6 @@
 import { Body, HttpCode, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -35,8 +35,22 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findByName(limit: number, name: string, email: string) {
+
+    // console.log("email " + email)
+    // console.log( "    user " + name)
+    //can i make sql injection?
+    return await this.usersRepository.find({
+      take: limit,
+      where: [
+        { fullname: Like(`%${name}%`) },
+        { email: Like(`%${email}%`) },
+      ]
+    })
+
+  }
+  async findAll(limit: number): Promise<User[]> {
+    return await this.usersRepository.find({ take: limit });
   }
 
   // modernize function user if user not exist
@@ -44,7 +58,7 @@ export class UsersService {
   async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
     //вот зачем нужен left join в случае, если у юзера нет функций при иннер джоин,
     //то в запросе выдаст, что юзера не существует, а так он его выдаст, если тот есть  
-    
+
     // if(isNaN(id)){
     //   throw new HttpException("такого юзера не существует " + id, 400)
     // }

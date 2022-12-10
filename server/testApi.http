@@ -2,7 +2,7 @@
 ###
 # USERS--------------------------------------------------------
 # get all users from specific team
-GET http://localhost:3000/api/users/9
+GET http://localhost:3000/api/users?email=str
 
 
 

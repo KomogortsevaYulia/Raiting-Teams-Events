@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -19,11 +19,25 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: "Получение списка пользователей" })
-  //@ApiParam({ name: "noteId", required: true, description: "Note identifier" })
+  @ApiParam({ name: "limit", required: false, description: "ограничить число получаемых записей" })
   @ApiResponse({ status: HttpStatus.OK, description: "Success", type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() params: any) {
+
+    let limit:number = params.limit
+    let fullname:string = params.fullname
+    let email:string = params.email
+
+    // console.log(" email " + params.fullname) 
+    let users
+    if(fullname || email){
+      // console.log("name")
+      users = this.usersService.findByName(limit, fullname, email);
+    }else{
+      // console.log("findAll")
+      users = this.usersService.findAll(limit);
+    }
+    return users
   }
 
   @Get(':id')
@@ -64,12 +78,12 @@ export class UsersController {
     return this.usersService.createFunction(createFunctionDto);
   }
 
-  
+
 
   // function--------------------------------------------------------------------
 
 
-  
+
   //user functions---------------------------------------------------------------
   @Post('userFunctions')
   createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto) {
