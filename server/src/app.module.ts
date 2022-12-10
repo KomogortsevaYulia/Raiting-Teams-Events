@@ -12,9 +12,9 @@ import { FormsModule } from './forms/forms.module';
   imports: [
     //@ts-ignore
     TypeOrmModule.forRoot({
-    ...CONNECTION,
-    synchronize:false,
-    autoLoadEntities:true
+      ...CONNECTION,
+      synchronize: false,
+      autoLoadEntities: true,
     }),
     UsersModule,
     TeamsModule,
@@ -24,4 +24,4 @@ import { FormsModule } from './forms/forms.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

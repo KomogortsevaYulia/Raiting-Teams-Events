@@ -22,11 +22,6 @@ export class TeamsController {
     return this.teamsService.findAll();
   }
 
-  // @Get(':id')
-  // // findOne(@Param('id') id: string) {
-  // //   return this.teamsService.findOne(+id);
-  // // }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTeamDto: UpdateTeamDto) {
     return this.teamsService.update(+id, updateTeamDto);
@@ -36,6 +31,18 @@ export class TeamsController {
   remove(@Param('id') id: string) {
     return this.teamsService.remove(+id);
   }
+
+
+
+ //по ид команды найти всех юзеров
+ @Get(':id/users')
+ @ApiOperation({ summary: "Получение пользователей по id коллектива" })
+ @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
+ @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
+ @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+ teamsAndUsers(@Param('id') id: number) {
+   return this.teamsService.teamWithUsers(id)
+ }
 
   @Get(':id')
   @ApiOperation({ summary: "Получение коллектива" })
@@ -63,6 +70,5 @@ export class TeamsController {
   // directionsAndUsers() {
   //   return this.teamsService.directionsAndUsers()
   // }
-
 
 }
