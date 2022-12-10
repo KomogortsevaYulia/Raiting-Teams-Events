@@ -4,8 +4,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
+import { Function } from './entities/function.entity';
+
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
+import { UserFunction } from './entities/user_function.entity';
 
 @ApiTags('users')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('users')
@@ -72,12 +75,15 @@ export class UsersController {
 
   // function--------------------------------------------------------------------
 
+
   @Post('functions')
+  @ApiOperation({ summary: "Создать функцию для пользователя" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   createFunction(@Body() createFunctionDto: CreateFunctionDto) {
     // console.log("funct " + createFunctionDto.title)
     return this.usersService.createFunction(createFunctionDto);
   }
-
 
 
   // function--------------------------------------------------------------------
@@ -86,6 +92,9 @@ export class UsersController {
 
   //user functions---------------------------------------------------------------
   @Post('userFunctions')
+  @ApiOperation({ summary: "Создать функцию userFunctions" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto) {
     return this.usersService.createUserFunction(createUserFunctionDto);
   }
