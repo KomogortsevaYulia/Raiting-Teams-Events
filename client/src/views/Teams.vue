@@ -60,7 +60,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
             <div class="wrapper-content">
               <div>
                 <a>{{ team.title }}</a>
-                <p>Походу нет пока столбца описания, direction {{ team.direction }}</p>
+                <p>{{ team.description }}</p>
                 <p>Руководители: 
                     <span v-for="leader in (team.functions[0]).userFunctions">     
                         {{ leader.user.fullname}}<br>
