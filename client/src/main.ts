@@ -3,6 +3,7 @@ import App from "./App.vue";
 import { createPinia } from 'pinia';
 import axios from "axios";
 import router from "./router";
+import "bootstrap/dist/css/bootstrap.css"
 // import store from "./store";
 
 import "./assets/style.scss";

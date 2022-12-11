@@ -103,6 +103,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     </div>
   </div>
+  
 </template>
 
 <style lang="scss">
