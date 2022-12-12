@@ -4,8 +4,8 @@
 
 <template>
   <div>
-      <div className = "mainBanner">
-        <span className = "descr"> 
+      <div class = "mainBanner">
+        <span class = "descr"> 
         Надо что-то написать 
         <button class = "bannerBtn">Нажми меня</button>
         </span>
