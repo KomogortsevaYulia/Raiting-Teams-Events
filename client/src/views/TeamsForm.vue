@@ -4,7 +4,6 @@ import { onBeforeMount, ref } from 'vue';
 import _ from 'lodash'
 import 'vue-select/dist/vue-select.css';
 
-// debounce отложеный запуск функции, задержа с какой частотой вызываться
 // values from form
 const title = ref();
 const userLeader = ref();
@@ -15,13 +14,13 @@ const direction = "НИД";
 
 const showCreate = ref(false);
 
-// msgs about errors
+// mсообщение об ошибках
 const responseMsg = ref();
 
-
+// найденные юзеры
 const foundUsers = ref();
-const users = ref();
 
+//получить юзеров
 const func = _.debounce(() => {
     getUsers()
 }, 300)
@@ -35,18 +34,13 @@ async function onTextChange(e: any) {
     func()
 }
 
-// watch(userLeader, () => {
-//     func()
-// })
-
 onBeforeMount(async () => {
     await getUsers()
 })
 
-// получить всех пользователей и выбрать из них нудных
+// получить всех пользователей и выбрать из них нужных
 async function getUsers() {
 
-    // console.log("userLeader " + userLeader.value)
     let limitVisibleUsers = 5
     let r = await axios.get("api/users", {
         params: {
@@ -57,24 +51,20 @@ async function getUsers() {
     });
 
 
-    //получить всех юзеров
-    // let r = await axios.get("api/users")
-    users.value = r.data
+    //получить всех найденных юзеров
+    let users = r.data
 
     let arrayData = []
-    // console.log("users " + users.value)
+    for (let i = 0; i < (users).length; i++) {
+        let user = (users)[i]
 
-    for (let i = 0; i < (users.value).length; i++) {
-        let user = (users.value)[i]
-
-        // так как может быть десятки юзеров, у которых ФИО полностью совпадает нужен уникальный параметр поиска
         arrayData[i] = { name: user.fullname, email: user.email, id: user.id, data: `${user.fullname} ${user.email}` };
     }
     foundUsers.value = arrayData
 
 }
 
-//Создать ноыую функцию
+//Создать новую функцию
 async function createFunction(teamId: number) {
 
     let newFunction: any = await axios.post("api/users/functions", {
@@ -94,7 +84,6 @@ async function createFunction(teamId: number) {
 //создать UserFunction
 async function createUserFunction(functionId: number) {
 
-    //post userFunctions
     let newUserFunction: any = await axios.post(`api/users/userFunctions`, {
         function: functionId,
         user: optionSelect.value.id
@@ -109,9 +98,8 @@ async function createUserFunction(functionId: number) {
     return newUserFunction
 }
 
+//проверить существование юзера
 async function getUserById(id: number) {
-
-    // console.log("user")
 
     let user: any = await axios.get(`api/users/${id}`)
         .catch((err) => {
@@ -129,25 +117,25 @@ async function createTeam() {
 
     responseMsg.value = "сохранено";
 
-    console.log("option " + optionSelect.value)
-
     let userId = 0
-    if(!optionSelect.value || isNaN(optionSelect.value.id)) {
+    //проверить является id числом или нет и выбрана ли опция
+    if (!optionSelect.value || isNaN(optionSelect.value.id)) {
         responseMsg.value = "такого юзера нет " + userId
         return
-    }else{userId = optionSelect.value.id}
+    } else { userId = optionSelect.value.id }
 
+    //проверить есть ли юзер
     let userExist = getUserById(userId)
-
-    // console.log("userExist " + userExist)
-    if(userExist == null) return
+    if (userExist == null) return
 
 
     //create team
     let newTeam: any = await axios.post("api/teams", {
+        leaderId:userId,
         title: title.value,
         description: description.value,
         direction: direction
+       
     })
         .catch((err) => {
             if (err.response) {
@@ -156,20 +144,12 @@ async function createTeam() {
         })
 
     newTeam = newTeam.data
-    // console.log("team " + newTeam.id)
-
-
+    //создать функции 
     let newFunction: any = await createFunction(newTeam.id)
 
     newFunction = newFunction.data
 
-    // console.log(newFunction)
-    //post userFunctions
-
     let newUserFunction: any = await createUserFunction(newFunction.id)
-
-    //console.log(newUserFunction.id)
-
 }
 
 </script>

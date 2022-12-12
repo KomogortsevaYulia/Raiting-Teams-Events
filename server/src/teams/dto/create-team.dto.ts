@@ -21,4 +21,6 @@ export class CreateTeamDto {
     description: string
 
     creation_date: Date
+
+    leaderId
 }

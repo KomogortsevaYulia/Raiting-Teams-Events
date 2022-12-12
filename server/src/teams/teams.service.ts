@@ -93,29 +93,12 @@ export class TeamsService {
     return teamsFunctions
   }
 
-  /* 
-  TODO:
-
-  на фронте:
-  1) поле для изображения не прикрутили, 
-  2) дмаю, надо указывать для какого направления создаем коллектив (НИД, КТД, и т.д, выпадающий список)
-  
-  на бэке: описание проекта столбец нужен (готово)
-  */
-
-  async create(@Body() createTeamDto: CreateTeamDto):Promise<Team> {
+  async create(@Body() createTeamDto: CreateTeamDto, leaderId:number):Promise<Team> {
 
     createTeamDto.creation_date = new Date()
-    // const team = new Team();
-    // team.title = createTeamDto.title;
-    // team.direction = createTeamDto.direction;
-    // team.image = createTeamDto.image;
-    // team.creation_date = createTeamDto.creation_date;
-
     createTeamDto.image = ""
-    // console.log(createTeamDto)
+
     let team = await this.teamsRepository.save(createTeamDto)
-    // console.log( " ttttmmm " +  team.title)
     return team;
   }
 
