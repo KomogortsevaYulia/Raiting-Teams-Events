@@ -20,10 +20,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "typeorm-ts-node-commonjs",
-    "migration:generate": "npm run typeorm migration:generate -- -d src/typeorm.config.ts src/migrations/auto",
+    "migrations:generate": "npm run typeorm migration:generate -- -d src/typeorm.config.ts src/migrations/auto",
     "migrations:run": "npm run typeorm migration:run -- -d src/typeorm.config.ts",
-    "migration:revert": "npm run typeorm migration:revert -- -d src/typeorm.config.ts",
-    "migration:create": "npm run typeorm migration:create ./src/migrations/userInit"
+    "migrations:revert": "npm run typeorm migration:revert -- -d src/typeorm.config.ts",
+    "migrations:create": "npm run typeorm migration:create ./src/migrations/userInit"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -32,8 +32,11 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.3",
     "@nestjs/typeorm": "^9.0.1",
+    "argon2": "^0.30.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "jsonwebtoken": "^8.5.1",
+    "passport-jwt": "^4.0.0",
     "pg": "^8.8.0",
     "postgres": "^3.3.1",
     "reflect-metadata": "^0.1.13",

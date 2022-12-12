@@ -35,26 +35,27 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
-  // get all teams with leadeaders
-  async findAll(): Promise<Team[]> {
-
-    const head = "руководитель"
+   // get all teams with leadeaders
+   async findAll(): Promise<Team[]> {
+    const head = "Руководитель"
 
     return this.teamsRepository
       .createQueryBuilder("teams")
-      .select(["teams.id", "teams.title", "teams.direction", "teams.image"])
-      .innerJoin("teams.functions", "functions")
-      .addSelect("functions.title")
-      .where("functions.title = :head", { head: head })
 
-      .innerJoin("functions.userFunctions", "user_functions")
+      .select(["teams.id", "teams.title",  "teams.image","teams.description","teams.type_team"])
+      .where("teams.type_team = :type", {type: "teams" })
+      .leftJoin("teams.functions", "functions")
+      .addSelect("functions.title")
+      .andWhere("functions.title = :head", { head: "Руководитель" })
+
+      .leftJoin("functions.userFunctions", "user_functions")
       .addSelect("user_functions.id")
-      .innerJoinAndSelect("user_functions.user", "user")
+      .leftJoinAndSelect("user_functions.user", "user")
       .addSelect("user.title_role")
 
       .getMany()
   }
-
+  
   //вывести команду
   async teamWithUsers(id: number): Promise<UserFunction[]> {
 
@@ -96,7 +97,10 @@ export class TeamsService {
   async create(@Body() createTeamDto: CreateTeamDto, leaderId:number):Promise<Team> {
 
     createTeamDto.creation_date = new Date()
-    createTeamDto.image = ""
+    createTeamDto.type_team = "teams"
+    //fields need make null
+    createTeamDto.image = []
+    createTeamDto.tags = []
 
     let team = await this.teamsRepository.save(createTeamDto)
     return team;

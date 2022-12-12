@@ -1,24 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query } from '@nestjs/common';
+
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, UsePipes,Query } from '@nestjs/common';
+
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginUserDto } from './dto/login-user.dto';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
-import { Function } from './entities/function.entity';
+
+import { ValidationPipe } from '../shared/pipes/validation.pipe';
+import { UserRO } from './user.interface';
 
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 import { UserFunction } from './entities/user_function.entity';
+
 
 @ApiTags('users')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.create(createUserDto);
+  // }
 
   @Get()
   @ApiOperation({ summary: "Получение списка пользователей" })
@@ -52,15 +59,16 @@ export class UsersController {
     return this.usersService.findOneWithFunction(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.usersService.update(+id, updateUserDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.usersService.remove(id);
+  // }
+
 
   // @Get('users_func/:id')
   // @ApiOperation({ summary: "Получение пользователя" })
@@ -70,6 +78,34 @@ export class UsersController {
   // users_func(@Param('id') id: number) {
   //   return this.usersService.users_func(id);
   // }
+
+
+  @UsePipes(new ValidationPipe())
+  @Post()
+  @ApiOperation({ summary: "Регистрация пользователя" })
+  @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя"})
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async create(@Body('user') userData: CreateUserDto) {
+    return this.usersService.create(userData);
+  }
+
+  @ApiOperation({ summary: "Login" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  @UsePipes(new ValidationPipe())
+  @Post('/login')
+  async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
+    const _user = await this.usersService.login(loginUserDto);
+
+    const errors = {User: ' not found'};
+    if (!_user) throw new HttpException({errors}, 401);
+
+    const token = await this.usersService.generateJWT(_user);
+    const {email, id,studnumber, fullname} = _user;
+    const user = {email, token, id, studnumber, fullname};
+    return {user}
+  }
 
 
 

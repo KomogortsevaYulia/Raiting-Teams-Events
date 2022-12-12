@@ -40,6 +40,15 @@ const router = createRouter({
         requiresAuth: true
       }
     },
+    {
+      path: "/event",
+      name: "Event",
+      // @ts-ignore
+      component: () => import('@/views/Event.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
   ],
 });
 

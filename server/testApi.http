@@ -28,7 +28,7 @@ POST http://localhost:3000/api/teams HTTP/1.1
 content-type: application/json
 
 {
-    "direction":"eСД",
+    "shortname": "dddd",
     "image": "",
     "description": "Хотим подняться на гору",
     "title":"hddddhh"

@@ -6,11 +6,9 @@ import 'vue-select/dist/vue-select.css';
 
 // values from form
 const title = ref();
+const shortname = ref();
 const userLeader = ref();
 const description = ref();
-
-// непонятно за какое направление бует ответственый ответственен, как определяем?
-const direction = "НИД";
 
 const showCreate = ref(false);
 
@@ -68,7 +66,7 @@ async function getUsers() {
 async function createFunction(teamId: number) {
 
     let newFunction: any = await axios.post("api/users/functions", {
-        title: 'руководитель',
+        title: 'Руководитель',
         team: teamId
     })
         .catch((err) => {
@@ -134,8 +132,7 @@ async function createTeam() {
         leaderId:userId,
         title: title.value,
         description: description.value,
-        direction: direction
-       
+        shortname:shortname.value,
     })
         .catch((err) => {
             if (err.response) {
@@ -166,6 +163,7 @@ async function createTeam() {
 
             <div class="filds-area">
                 <input type="text" placeholder="Название коллектива" v-model="title" required>
+                <input type="text" placeholder="Краткое название" v-model="shortname" required>
 
                 <!-- не могу без bootstrap, im so sorry -->
                 <label for="">ФИО Руководителя</label>

@@ -2,31 +2,36 @@ import { Team } from "../../teams/entities/team.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 import { UserFunction } from "./user_function.entity";
+import { Role } from "./role.entity";
 
 @Entity('functions')
 export class Function {
 
-    @ApiProperty() 
+    @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number
 
-    @ApiProperty() 
+    @ApiProperty()
     @Column()
     title: string
 
-    @ApiProperty() 
+    @ApiProperty()
     @Column({
         type: "enum",
         enum: ["general", "special"],
         default: "special"
     })
-    type: string
+    type_function: string
 
-    @ApiProperty() 
+    @ApiProperty()
     @ManyToOne(() => Team, (team) => team.id)
     @JoinColumn([{ name: "team_id" }])
     team: Team
 
-    @OneToMany((type)=>UserFunction, (uf)=>uf.function)
-    userFunctions:UserFunction[]
+    @ApiProperty()
+    @ManyToOne((type) => Role, (role) => role.id)
+    role_id:number
+
+    @OneToMany((type) => UserFunction, (uf) => uf.function)
+    userFunctions: UserFunction[]
 }
