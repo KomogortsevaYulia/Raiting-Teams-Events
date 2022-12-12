@@ -1,4 +1,5 @@
 
+
 import { IsDate,  IsNotEmpty,IsNumber,IsString, Length } from 'class-validator'
 
 
@@ -21,4 +22,5 @@ export class CreateTeamDto {
     description: string
 
     creation_date: Date
+
 }
