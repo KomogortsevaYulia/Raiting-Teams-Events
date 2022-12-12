@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { UserFunction } from 'src/users/entities/user_function.entity';
@@ -23,20 +23,6 @@ export class TeamsService {
     private readonly functionsRepository: Repository<Function>,
   ) { }
 
-  create(createTeamDto: CreateTeamDto): Promise<Team> {
-    const team = new Team();
-    team.title = createTeamDto.title;
-    team.id_parent = createTeamDto.id_parent;
-    team.image = createTeamDto.image;
-    team.creation_date = createTeamDto.creation_date;
-    team.tags = createTeamDto.tags;
-    team.description = createTeamDto.description;
-    team.type_team = createTeamDto.type_team;
-    team.shortname = createTeamDto.shortname;
-    console.log(team)
-    return this.teamsRepository.save(team);
-  }
-
   findOne(id: number) {
     return this.teamsRepository.findOneBy({ id: id });
   }
@@ -51,11 +37,11 @@ export class TeamsService {
 
    // get all teams with leadeaders
    async findAll(): Promise<Team[]> {
-
     const head = "Руководитель"
 
     return this.teamsRepository
       .createQueryBuilder("teams")
+
       .select(["teams.id", "teams.title",  "teams.image","teams.description","teams.type_team"])
       .where("teams.type_team = :type", {type: "teams" })
       .leftJoin("teams.functions", "functions")
@@ -107,6 +93,33 @@ export class TeamsService {
 
     return teamsFunctions
   }
+
+  /* 
+  TODO:
+
+  на фронте:
+  1) поле для изображения не прикрутили, 
+  2) дмаю, надо указывать для какого направления создаем коллектив (НИД, КТД, и т.д, выпадающий список)
+  
+  на бэке: описание проекта столбец нужен (готово)
+  */
+
+  async create(@Body() createTeamDto: CreateTeamDto):Promise<Team> {
+
+    createTeamDto.creation_date = new Date()
+    // const team = new Team();
+    // team.title = createTeamDto.title;
+    // team.direction = createTeamDto.direction;
+    // team.image = createTeamDto.image;
+    // team.creation_date = createTeamDto.creation_date;
+
+    createTeamDto.image = ""
+    // console.log(createTeamDto)
+    let team = await this.teamsRepository.save(createTeamDto)
+    // console.log( " ttttmmm " +  team.title)
+    return team;
+  }
+
 }
 
 

@@ -1,22 +1,16 @@
-GET http://localhost:3000/api/users/1
 
-
-
-//не помню зачем они нужны
-# GET http://localhost:3000/api/users/functions
-
+###
+# USERS--------------------------------------------------------
 # get all users from specific team
-GET http://localhost:3000/api/teams/with_users/2
+GET http://localhost:3000/api/users?email=str
 
-###
 
-# find users by specific role
-# GET http://localhost:3000/api/users/role/supervisor
+
 
 
 
 ###
-# TEAMS
+# TEAMS--------------------------------------------------------
 # get all users from specific team
 GET http://localhost:3000/api/teams/with_users/2
 
@@ -25,19 +19,80 @@ GET http://localhost:3000/api/teams/with_users/2
 GET http://localhost:3000/api/teams/2
 
 ###
-
 # select head user and teams
 GET http://localhost:3000/api/teams
-# find users by specific role
-# GET http://localhost:3000/api/users/role/supervisor
 
 ###
+# create new team
+POST http://localhost:3000/api/teams HTTP/1.1
+content-type: application/json
 
-//find teams with cpecific position user
-GET http://localhost:3000/api/teams/user_role/руководитель
+{
+    "direction":"eСД",
+    "image": "",
+    "description": "Хотим подняться на гору",
+    "title":"hddddhh"
+}
+
+
+
 
 
 ###
+# student-------------------------------------------------------
+POST http://localhost:3000/api/users HTTP/1.1
+content-type: application/json
+
+{
+    "studnumber": "9",
+    "fullname": "psmsokmgoksmbk",
+    "email": "string",
+    "education_group": "string",  
+    "institute": "string",
+    "gender": "string" ,
+    "phone": "string",
+    "birthdate": "24-07-2001",
+    "type_time_study": "string",
+    "permissions":[]
+}
+
+
+
+
+
+###
+# functions------------------------------------------------------
+
+//create new
+POST http://localhost:3000/api/users/functions HTTP/1.1
+content-type: application/json
+
+{
+    "title": "shit",
+    "team": "45"
+   
+}
+
+
+
+
+
+
+
+###
+# user functions------------------------------------------------
+
+//create new
+POST http://localhost:3000/api/users/userFunctions HTTP/1.1
+content-type: application/json
+
+{
+    "user": "300",
+    "function": "21"
+   
+}
+
+
 
 
 
