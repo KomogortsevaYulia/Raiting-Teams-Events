@@ -38,15 +38,15 @@ export class UsersController {
     return this.usersService.findOneWithFunction(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.usersService.update(+id, updateUserDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.usersService.remove(id);
+  // }
 
 
   // @Get('users_func/:id')
@@ -60,6 +60,10 @@ export class UsersController {
 
   @UsePipes(new ValidationPipe())
   @Post()
+  @ApiOperation({ summary: "Регистрация пользователя" })
+  @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя"})
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async create(@Body('user') userData: CreateUserDto) {
     return this.usersService.create(userData);
   }

@@ -10,6 +10,7 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
+    @ApiProperty()
     @Column({ nullable: true ,default: "123"})
     username: string
 
@@ -45,6 +46,7 @@ export class User {
     @Column({ nullable: true ,default: "123"})
     password: string
 
+    @ApiProperty()
     @Column({ type: "date" , nullable: true })
     birthdate: string
 
