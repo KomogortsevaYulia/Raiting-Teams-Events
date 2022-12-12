@@ -12,7 +12,7 @@ const description = ref();
 
 const showCreate = ref(false);
 
-// mсообщение об ошибках
+// сообщение об ошибках
 const responseMsg = ref();
 
 // найденные юзеры
@@ -166,11 +166,10 @@ async function createTeam() {
                 <input type="text" placeholder="Краткое название" v-model="shortname" required>
 
                 <!-- не могу без bootstrap, im so sorry -->
-                <label for="">ФИО Руководителя</label>
+                <label for="">ФИО Руководителя или email</label>
                 <v-select label="data" @input="onTextChange" :options="foundUsers" v-model="optionSelect"></v-select>
 
                 <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
-
                 <textarea placeholder="Опишите проект" v-model="description" required></textarea>
             </div>
 
