@@ -188,8 +188,6 @@ export class UsersService {
 
   // function--------------------------------------------------------------------
   async createFunction(@Body() createFunctionDto: CreateFunctionDto): Promise<Function> {
-
-    // console.log(createFunctionDto)
     return await this.functionsRepository.save(createFunctionDto);
   }
 
@@ -203,7 +201,6 @@ export class UsersService {
   async createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
 
     //check if user is exist, if not, then error 400 will
-    // console.log("createUserFunctionDto.user " + createUserFunctionDto.user)
     this.findOneWithFunction(createUserFunctionDto.user)
 
     createUserFunctionDto.dateStart = new Date();
@@ -213,7 +210,6 @@ export class UsersService {
 
     createUserFunctionDto.dateEnd = end;
 
-    // console.log( "createUserFunctionDto " + createUserFunctionDto)
     return await this.userFunctionsRepository.save(createUserFunctionDto);
   }
   //user functions---------------------------------------------------------------

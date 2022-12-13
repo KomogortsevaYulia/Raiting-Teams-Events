@@ -7,7 +7,8 @@ export class CreateFunctionDto {
 
     @IsNotEmpty()
     title: string;
-    type: string;
+
+  
 
     @IsNotEmpty({ message: 'Team Поле пустое' })
     @Type(() => Number) 

@@ -117,7 +117,6 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   createFunction(@Body() createFunctionDto: CreateFunctionDto) {
-    // console.log("funct " + createFunctionDto.title)
     return this.usersService.createFunction(createFunctionDto);
   }
 

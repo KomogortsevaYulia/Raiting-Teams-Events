@@ -94,7 +94,7 @@ export class TeamsService {
     return teamsFunctions
   }
 
-  async create(@Body() createTeamDto: CreateTeamDto, leaderId:number):Promise<Team> {
+  async create(@Body() createTeamDto: CreateTeamDto):Promise<Team> {
 
     createTeamDto.creation_date = new Date()
     createTeamDto.type_team = "teams"

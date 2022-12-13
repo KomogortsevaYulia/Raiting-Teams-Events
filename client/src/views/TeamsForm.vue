@@ -115,10 +115,10 @@ async function createTeam() {
 
     responseMsg.value = "сохранено";
 
-    let userId = 0
+    let userId = -1
     //проверить является id числом или нет и выбрана ли опция
     if (!optionSelect.value || isNaN(optionSelect.value.id)) {
-        responseMsg.value = "такого юзера нет " + userId
+        responseMsg.value = "такого пользователя нет " + userId
         return
     } else { userId = optionSelect.value.id }
 
@@ -129,7 +129,6 @@ async function createTeam() {
 
     //create team
     let newTeam: any = await axios.post("api/teams", {
-        leaderId:userId,
         title: title.value,
         description: description.value,
         shortname:shortname.value,
@@ -146,7 +145,7 @@ async function createTeam() {
 
     newFunction = newFunction.data
 
-    let newUserFunction: any = await createUserFunction(newFunction.id)
+    await createUserFunction(newFunction.id)
 }
 
 </script>
@@ -167,7 +166,7 @@ async function createTeam() {
 
                 <!-- не могу без bootstrap, im so sorry -->
                 <label for="">ФИО Руководителя или email</label>
-                <v-select label="data" @input="onTextChange" :options="foundUsers" v-model="optionSelect"></v-select>
+                <v-select class="v-select" label="data" @input="onTextChange" :options="foundUsers" v-model="optionSelect"></v-select>
 
                 <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
                 <textarea placeholder="Опишите проект" v-model="description" required></textarea>
@@ -190,5 +189,7 @@ async function createTeam() {
 </template>
 
 <style>
-
+.v-select{
+    margin: 15px 0px;
+}
 </style>

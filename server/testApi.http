@@ -28,7 +28,8 @@ POST http://localhost:3000/api/teams HTTP/1.1
 content-type: application/json
 
 {
-    "shortname": "dddd",
+    "leaderId":1,
+    "shortname": "dddd2",
     "image": "",
     "description": "Хотим подняться на гору",
     "title":"hddddhh"

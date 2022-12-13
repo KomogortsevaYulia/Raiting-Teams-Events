@@ -66,9 +66,9 @@ export class TeamsController {
   @ApiBody({description:"название коллектива, ФИО руководителя, описание проекта",required:true})
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно"})
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
-  create( leaderId:number, @Body() createTeamDto: CreateTeamDto) {
-    // console.log(leaderId)
-    return this.teamsService.create(createTeamDto, leaderId);
+  create(@Body() createTeamDto: CreateTeamDto) {
+    // console.log(createTeamDto)
+    return this.teamsService.create(createTeamDto);
   }
   
   // @Get('directions')
