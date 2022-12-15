@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
-import { UserFunction } from 'src/users/entities/user_function.entity';
+import { User } from '../users/entities/user.entity';
+import { UserFunction } from '../users/entities/user_function.entity';
 import { Repository } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
+import { UsersService } from 'src/users/users.service';
 
 
 
@@ -21,21 +22,8 @@ export class TeamsService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
+    private readonly usersService: UsersService
   ) { }
-
-  create(createTeamDto: CreateTeamDto): Promise<Team> {
-    const team = new Team();
-    team.title = createTeamDto.title;
-    team.id_parent = createTeamDto.id_parent;
-    team.image = createTeamDto.image;
-    team.creation_date = createTeamDto.creation_date;
-    team.tags = createTeamDto.tags;
-    team.description = createTeamDto.description;
-    team.type_team = createTeamDto.type_team;
-    team.shortname = createTeamDto.shortname;
-    console.log(team)
-    return this.teamsRepository.save(team);
-  }
 
   findOne(id: number) {
     return this.teamsRepository.findOneBy({ id: id });
@@ -49,15 +37,15 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
-   // get all teams with leadeaders
-   async findAll(): Promise<Team[]> {
-
+  // get all teams with leadeaders
+  async findAll(): Promise<Team[]> {
     const head = "Руководитель"
 
     return this.teamsRepository
       .createQueryBuilder("teams")
-      .select(["teams.id", "teams.title",  "teams.image","teams.description","teams.type_team"])
-      .where("teams.type_team = :type", {type: "teams" })
+
+      .select(["teams.id", "teams.title", "teams.image", "teams.description", "teams.type_team"])
+      .where("teams.type_team = :type", { type: "teams" })
       .leftJoin("teams.functions", "functions")
       .addSelect("functions.title")
       .andWhere("functions.title = :head", { head: "Руководитель" })
@@ -69,7 +57,7 @@ export class TeamsService {
 
       .getMany()
   }
-  
+
   //вывести команду
   async teamWithUsers(id: number): Promise<UserFunction[]> {
 
@@ -107,6 +95,43 @@ export class TeamsService {
 
     return teamsFunctions
   }
+
+
+  //создать команду, с учетом, что есь минимум 1 лидер
+  async create(createTeamDto: CreateTeamDto): Promise<Team> {
+
+    let team = await this.teamsRepository.save({
+      ...createTeamDto,
+      image: [],
+      tags: [],
+      type_team: "teams",
+      creation_date: new Date()
+    })
+
+    await this.assignLeader(team, createTeamDto.userID)
+
+    return team;
+  }
+
+
+  //назначить руководителя
+  async assignLeader(team: Team, leaderid: number) {
+
+    //создать руководителя
+    let newFunction = await this.usersService.createFunction({
+      title: 'Руководитель',
+      team: team
+    })
+
+    let newUserFunction = await this.usersService.createUserFunction({
+      function: newFunction.id,
+      user: leaderid
+    })
+
+
+    return newUserFunction
+  }
+
 }
 
 
