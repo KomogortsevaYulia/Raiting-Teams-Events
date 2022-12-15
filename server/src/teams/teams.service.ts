@@ -1,11 +1,12 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
-import { UserFunction } from 'src/users/entities/user_function.entity';
+import { User } from '../users/entities/user.entity';
+import { UserFunction } from '../users/entities/user_function.entity';
 import { Repository } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
+import { UsersService } from 'src/users/users.service';
 
 
 
@@ -21,6 +22,7 @@ export class TeamsService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
+    private readonly usersService: UsersService
   ) { }
 
   findOne(id: number) {
@@ -35,15 +37,15 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
-   // get all teams with leadeaders
-   async findAll(): Promise<Team[]> {
+  // get all teams with leadeaders
+  async findAll(): Promise<Team[]> {
     const head = "Руководитель"
 
     return this.teamsRepository
       .createQueryBuilder("teams")
 
-      .select(["teams.id", "teams.title",  "teams.image","teams.description","teams.type_team"])
-      .where("teams.type_team = :type", {type: "teams" })
+      .select(["teams.id", "teams.title", "teams.image", "teams.description", "teams.type_team"])
+      .where("teams.type_team = :type", { type: "teams" })
       .leftJoin("teams.functions", "functions")
       .addSelect("functions.title")
       .andWhere("functions.title = :head", { head: "Руководитель" })
@@ -55,7 +57,7 @@ export class TeamsService {
 
       .getMany()
   }
-  
+
   //вывести команду
   async teamWithUsers(id: number): Promise<UserFunction[]> {
 
@@ -94,16 +96,40 @@ export class TeamsService {
     return teamsFunctions
   }
 
-  async create(@Body() createTeamDto: CreateTeamDto):Promise<Team> {
 
-    createTeamDto.creation_date = new Date()
-    createTeamDto.type_team = "teams"
-    //fields need make null
-    createTeamDto.image = []
-    createTeamDto.tags = []
+  //создать команду, с учетом, что есь минимум 1 лидер
+  async create(createTeamDto: CreateTeamDto): Promise<Team> {
 
-    let team = await this.teamsRepository.save(createTeamDto)
+    let team = await this.teamsRepository.save({
+      ...createTeamDto,
+      image: [],
+      tags: [],
+      type_team: "teams",
+      creation_date: new Date()
+    })
+
+    await this.assignLeader(team, createTeamDto.userID)
+
     return team;
+  }
+
+
+  //назначить руководителя
+  async assignLeader(team: Team, leaderid: number) {
+
+    //создать руководителя
+    let newFunction = await this.usersService.createFunction({
+      title: 'Руководитель',
+      team: team
+    })
+
+    let newUserFunction = await this.usersService.createUserFunction({
+      function: newFunction.id,
+      user: leaderid
+    })
+
+
+    return newUserFunction
   }
 
 }
