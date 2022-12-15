@@ -62,54 +62,6 @@ async function getUsers() {
 
 }
 
-//Создать новую функцию
-async function createFunction(teamId: number) {
-
-    let newFunction: any = await axios.post("api/users/functions", {
-        title: 'Руководитель',
-        team: teamId
-    })
-        .catch((err) => {
-            if (err.response) {
-                responseMsg.value = err.response.data.message[0]
-            }
-        })
-
-    return newFunction
-}
-
-
-//создать UserFunction
-async function createUserFunction(functionId: number) {
-
-    let newUserFunction: any = await axios.post(`api/users/userFunctions`, {
-        function: functionId,
-        user: optionSelect.value.id
-    })
-        .catch((err) => {
-            if (err.response) {
-                responseMsg.value = err.response.data.message[0]
-            }
-        })
-
-
-    return newUserFunction
-}
-
-//проверить существование юзера
-async function getUserById(id: number) {
-
-    let user: any = await axios.get(`api/users/${id}`)
-        .catch((err) => {
-            if (err.response) {
-                responseMsg.value = err.response.data.message[0]
-            }
-        })
-
-    return user
-}
-
-
 //создать коллектив
 async function createTeam() {
 
@@ -123,15 +75,16 @@ async function createTeam() {
     } else { userId = optionSelect.value.id }
 
     //проверить есть ли юзер
-    let userExist = getUserById(userId)
-    if (userExist == null) return
+    // let userExist = getUserById(userId)
+    // if (userExist == null) return
 
 
     //create team
     let newTeam: any = await axios.post("api/teams", {
         title: title.value,
         description: description.value,
-        shortname:shortname.value,
+        shortname: shortname.value,
+        userID: userId
     })
         .catch((err) => {
             if (err.response) {
@@ -139,13 +92,7 @@ async function createTeam() {
             }
         })
 
-    newTeam = newTeam.data
-    //создать функции 
-    let newFunction: any = await createFunction(newTeam.id)
-
-    newFunction = newFunction.data
-
-    await createUserFunction(newFunction.id)
+    // console.log(newTeam)
 }
 
 </script>
@@ -166,7 +113,8 @@ async function createTeam() {
 
                 <!-- не могу без bootstrap, im so sorry -->
                 <label for="">ФИО Руководителя или email</label>
-                <v-select class="v-select" label="data" @input="onTextChange" :options="foundUsers" v-model="optionSelect"></v-select>
+                <v-select class="v-select" label="data" @input="onTextChange" :options="foundUsers"
+                    v-model="optionSelect"></v-select>
 
                 <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
                 <textarea placeholder="Опишите проект" v-model="description" required></textarea>
@@ -189,7 +137,7 @@ async function createTeam() {
 </template>
 
 <style>
-.v-select{
+.v-select {
     margin: 15px 0px;
 }
 </style>
