@@ -3,7 +3,6 @@ import { IsNumber } from "class-validator";
 
 export class CreateUserFunctionDto {
 
-
     @Type(() => Number) 
     @IsNumber()
     function: number;
@@ -11,7 +10,4 @@ export class CreateUserFunctionDto {
     @Type(() => Number) 
     @IsNumber()
     user: number;
-    
-    dateStart: Date;
-    dateEnd: Date;
 }
