@@ -59,6 +59,7 @@ export class UsersService {
     })
 
   }
+  
   async findAll(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });
   }

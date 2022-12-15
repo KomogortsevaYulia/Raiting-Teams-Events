@@ -3,6 +3,7 @@
 import { onBeforeMount, ref } from 'vue';
 import _ from 'lodash'
 import 'vue-select/dist/vue-select.css';
+import { useUsersStore } from '@/store/users_store'
 
 // values from form
 const title = ref();
@@ -40,25 +41,14 @@ onBeforeMount(async () => {
 async function getUsers() {
 
     let limitVisibleUsers = 5
-    let r = await axios.get("api/users", {
-        params: {
-            limit: limitVisibleUsers,
-            fullname: userLeader.value,
-            email: userLeader.value
-        }
-    });
 
+    let r = await useUsersStore().fetchUsersLimited(limitVisibleUsers,
+        userLeader.value, userLeader.value)
 
     //получить всех найденных юзеров
-    let users = r.data
+    let usersOptions: any = await useUsersStore().getUsersForOptions(r.data)
 
-    let arrayData = []
-    for (let i = 0; i < (users).length; i++) {
-        let user = (users)[i]
-
-        arrayData[i] = { name: user.fullname, email: user.email, id: user.id, data: `${user.fullname} ${user.email}` };
-    }
-    foundUsers.value = arrayData
+    foundUsers.value = usersOptions
 
 }
 
