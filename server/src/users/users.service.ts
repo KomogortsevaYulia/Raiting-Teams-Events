@@ -1,6 +1,6 @@
-import { Body, HttpCode,HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Body, HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like,getRepository, Repository } from 'typeorm';
+import { Like, getRepository, Repository } from 'typeorm';
 
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
@@ -94,9 +94,9 @@ export class UsersService {
     return userExist
 
   }
-  
-  async login({email, password}: LoginUserDto): Promise<User> {
-    const user = await this.usersRepository.findOneBy({email});
+
+  async login({ email, password }: LoginUserDto): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ email });
     if (!user) {
       return null;
     }
@@ -133,7 +133,7 @@ export class UsersService {
   async create(dto: CreateUserDto): Promise<UserRO> {
 
     // check uniqueness of username/email
-    const {username, email, password} = dto;
+    const { username, email, password } = dto;
     const qb = await this.usersRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username })
@@ -142,8 +142,8 @@ export class UsersService {
     const user = await qb.getOne();
 
     if (user) {
-      const errors = {username: 'Username and email must be unique.'};
-      throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
+      const errors = { username: 'Username and email must be unique.' };
+      throw new HttpException({ message: 'Input data validation failed', errors }, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -155,8 +155,8 @@ export class UsersService {
 
     const errors = await validate(newUser);
     if (errors.length > 0) {
-      const _errors = {username: 'Userinput is not valid.'};
-      throw new HttpException({message: 'Input data validation failed', _errors}, HttpStatus.BAD_REQUEST);
+      const _errors = { username: 'Userinput is not valid.' };
+      throw new HttpException({ message: 'Input data validation failed', _errors }, HttpStatus.BAD_REQUEST);
 
     } else {
       const savedUser = await this.usersRepository.save(newUser);
@@ -172,22 +172,22 @@ export class UsersService {
       token: this.generateJWT(user),
     };
 
-    return {user: userRO};
+    return { user: userRO };
   }
 
-  async findById(id: number): Promise<UserRO>{
-    const user = await this.usersRepository.findOneBy({id});
+  async findById(id: number): Promise<UserRO> {
+    const user = await this.usersRepository.findOneBy({ id });
 
     if (!user) {
-      const errors = {User: ' not found'};
-      throw new HttpException({errors}, 401);
+      const errors = { User: ' not found' };
+      throw new HttpException({ errors }, 401);
     }
 
     return this.buildUserRO(user);
   }
 
   // function--------------------------------------------------------------------
-  async createFunction(@Body() createFunctionDto: CreateFunctionDto): Promise<Function> {
+  async createFunction(createFunctionDto: CreateFunctionDto): Promise<Function> {
     return await this.functionsRepository.save(createFunctionDto);
   }
 
@@ -198,19 +198,21 @@ export class UsersService {
 
   //user functions---------------------------------------------------------------
   @HttpCode(400)
-  async createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
+  async createUserFunction(createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
 
     //check if user is exist, if not, then error 400 will
     this.findOneWithFunction(createUserFunctionDto.user)
 
-    createUserFunctionDto.dateStart = new Date();
+    let dateStart = new Date();
 
-    let end = new Date();
-    end.setFullYear(end.getFullYear() + 1) //only on one year set 
+    let dateEnd = new Date();
+    dateEnd.setFullYear(dateEnd.getFullYear() + 1) //only on one year set 
 
-    createUserFunctionDto.dateEnd = end;
-
-    return await this.userFunctionsRepository.save(createUserFunctionDto);
+    return await this.userFunctionsRepository.save({
+      ...createUserFunctionDto,
+      dateStart: dateStart,
+      dateEnd: dateEnd
+    });
   }
   //user functions---------------------------------------------------------------
 
