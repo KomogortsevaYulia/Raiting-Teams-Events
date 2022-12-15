@@ -1,23 +1,66 @@
 <script setup lang="ts">
-    import { ref } from 'vue';
-    const selectedItem = ref(0);
-    const showCreate = ref(false);
 
-    const itemList = [
-        { name: "Научная"}, 
-        { name: "Учебная"}, 
-        { name: "Спортивная"},
-        { name: "Общественная"}, 
-        { name: "Культурно-творческая"} 
-    ]
+import { onBeforeMount, ref } from 'vue';
+import _ from 'lodash'
+import { useUsersStore } from '@/store/users_store';
+import 'vue-select/dist/vue-select.css';
 
-    const selectItem = (i: number) => {
-        selectedItem.value = i
-    }
+const selectedItem = ref(0);
+const showCreate = ref(false);
 
-    itemList.forEach((item, index) => {
-        return (item == itemList[index])
-    })
+const itemList = [
+    { name: "Научная" },
+    { name: "Учебная" },
+    { name: "Спортивная" },
+    { name: "Общественная" },
+    { name: "Культурно-творческая" }
+]
+
+const selectItem = (i: number) => {
+    selectedItem.value = i
+}
+
+itemList.forEach((item, index) => {
+    return (item == itemList[index])
+})
+
+
+const userLeader = ref();
+// найденные юзеры
+const foundUsers = ref();
+
+//получить юзеров
+const func = _.debounce(() => {
+    getUsers()
+}, 300)
+
+const optionSelect = ref()
+
+//отслеживать изменение текста для v-select 
+async function onTextChange(e: any) {
+    userLeader.value = e.target.value
+    optionSelect.value = null
+    func()
+}
+
+onBeforeMount(async () => {
+    await getUsers()
+})
+
+// получить всех пользователей и выбрать из них нужных
+async function getUsers() {
+
+    let limitVisibleUsers = 5
+
+    let r = await useUsersStore().fetchUsersLimited(limitVisibleUsers,
+        userLeader.value, userLeader.value)
+
+    //получить всех найденных юзеров
+    let usersOptions = await useUsersStore().getUsersForOptions(r.data)
+
+    foundUsers.value = usersOptions
+}
+
 </script>
 
 <template>
@@ -25,7 +68,7 @@
         <!-- Навигация -->
         <div class="wrapper-team__navigation">
             <a @click="selectItem(index), showCreate = false" v-for="(item, index) in itemList" :key="index"
-                :class="{active: index == selectedItem}">{{item.name}}</a>
+                :class="{active: index == selectedItem}">{{ item.name }}</a>
         </div>
 
         <div class="wrapper-team__create">
@@ -44,9 +87,10 @@
         <div class="wrapper-team__create">
             <form v-if="showCreate" class="form-team__create">
                 <div class="create-filds">
-                    <div class="filds-area">
-                        <input type="text" placeholder="ФИО руководителя" required>
-                    </div>
+                    <label for="">ФИО Руководителя или email</label>
+                    <v-select class="v-select" label="data" @input="onTextChange" :options="foundUsers"
+                        v-model="optionSelect"></v-select>
+
                     <div class="btn">
                         <button @click="showCreate = false">Сохранить</button>
                     </div>
@@ -57,22 +101,23 @@
 </template>
 
 <style lang="scss">
-    @import '@/assets/teams/teams.scss';
+@import '@/assets/teams/teams.scss';
 
-    .btn {
-        padding-top: 1rem;
-    }
-    .content {
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-        align-items: flex-start;
-    }
+.btn {
+    padding-top: 1rem;
+}
 
-    a {
-        font-size: 16px;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        text-align: center;
-        padding-top: 1rem;
-    }
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+}
+
+a {
+    font-size: 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-align: center;
+    padding-top: 1rem;
+}
 </style>
