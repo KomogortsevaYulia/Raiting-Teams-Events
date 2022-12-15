@@ -74,13 +74,8 @@ async function createTeam() {
         return
     } else { userId = optionSelect.value.id }
 
-    //проверить есть ли юзер
-    // let userExist = getUserById(userId)
-    // if (userExist == null) return
-
-
     //create team
-    let newTeam: any = await axios.post("api/teams", {
+    await axios.post("api/teams", {
         title: title.value,
         description: description.value,
         shortname: shortname.value,
