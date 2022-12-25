@@ -23,7 +23,9 @@ export class UserFunction {
     dateStart: Date
 
     @ApiProperty() 
-    @Column()
+    @Column({
+            nullable: true,
+    })
     dateEnd: Date
 
     @ApiProperty()

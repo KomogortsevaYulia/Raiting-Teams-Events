@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { UserFunction } from 'src/users/entities/user_function.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
@@ -106,6 +106,33 @@ export class TeamsService {
       .getMany()
 
     return teamsFunctions
+  }
+
+
+  async UpdateLeader(){
+    //начинаем с функций пользователя
+    var now = new Date();
+    const userFunctions = await this.userFunctionsRepository
+    .createQueryBuilder()
+    .update(UserFunction)
+    .set({ dateEnd: now })
+    .where({dateEnd: IsNull()})
+    .execute()
+    return userFunctions
+  }
+
+
+  async appointmentOfATeamLeader(id: number){
+    var now = new Date();
+    let newUserFunction = new UserFunction();
+    newUserFunction.dateStart = now;
+    // newUserFunction.dateEnd = 2000-20-20;
+    newUserFunction.user = id;
+    newUserFunction.function = 1;
+    this.UpdateLeader()
+    return await this.userFunctionsRepository
+    
+      .save(newUserFunction)
   }
 }
 

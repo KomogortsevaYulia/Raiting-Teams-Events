@@ -65,6 +65,15 @@ export class TeamsController {
     return this.teamsService.teamsFunctions(id)
   }
 
+  @Post(':id/set-director')
+  @ApiOperation({ summary: "Назначение руководителя коллектива" })
+  @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя"})
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async create(@Param('id') id: number) {
+    return this.teamsService.appointmentOfATeamLeader(id);
+  }
+
   // @Get('directions')
   // @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
   // @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
