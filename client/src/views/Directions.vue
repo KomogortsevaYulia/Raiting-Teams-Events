@@ -3,17 +3,20 @@
 import { onBeforeMount, ref } from 'vue';
 import _ from 'lodash'
 import { useUsersStore } from '@/store/users_store';
+import { useTeamStore } from '@/store/team_store';
 import 'vue-select/dist/vue-select.css';
+import axios from 'axios';
 
 const selectedItem = ref(0);
 const showCreate = ref(false);
 
+//хардкод для таблицы teams->shortname  
 const itemList = [
-    { name: "Научная" },
-    { name: "Учебная" },
-    { name: "Спортивная" },
-    { name: "Общественная" },
-    { name: "Культурно-творческая" }
+    { name: "Научная", direction: "Наука" },
+    { name: "Учебная", direction: "Учеба" },
+    { name: "Спортивная", direction: "Спорт" },
+    { name: "Общественная", direction: "Общество" },
+    { name: "Культурно-творческая", direction: "Культура" }
 ]
 
 const selectItem = (i: number) => {
@@ -28,6 +31,8 @@ itemList.forEach((item, index) => {
 const userLeader = ref();
 // найденные юзеры
 const foundUsers = ref();
+//найти все направления с руководителями
+const directions = ref()
 
 //получить юзеров
 const func = _.debounce(() => {
@@ -45,7 +50,13 @@ async function onTextChange(e: any) {
 
 onBeforeMount(async () => {
     await getUsers()
+    await getDirections()
 })
+
+async function getDirections() {
+    directions.value = await useTeamStore().fetchDirections()
+
+}
 
 // получить всех пользователей и выбрать из них нужных
 async function getUsers() {
@@ -61,6 +72,46 @@ async function getUsers() {
     foundUsers.value = usersOptions
 }
 
+async function updateLeaderDirection() {
+
+    // responseMsg.value = "сохранено";
+
+    let userId = -1
+    //проверить является id числом или нет и выбрана ли опция
+    if (!optionSelect.value || isNaN(optionSelect.value.id)) {
+        // responseMsg.value = "такого пользователя нет " + userId
+        return
+    } else { userId = optionSelect.value.id }
+
+
+    let teamId = -1
+
+    //get team id for selected direction
+    for (let index in (directions.value)) {
+        let direction = directions.value[index]
+        let selectedDirection =  itemList[selectedItem.value].direction
+       
+        if(direction.teams_shortname.toLowerCase() === selectedDirection.toLowerCase()){
+            teamId = direction.teams_id
+            // alert(teamId)
+        }
+    }
+
+
+    // await axios.post("api/functions/update", {
+    //     title: title.value,
+    //     description: description.value,
+    //     shortname: shortname.value,
+    //     userID: userId
+    // })
+    //     .catch((err) => {
+    //         if (err.response) {
+    //             responseMsg.value = err.response.data.message[0]
+    //         }
+    //     })
+}
+
+
 </script>
 
 <template>
@@ -72,31 +123,40 @@ async function getUsers() {
         </div>
 
         <div class="wrapper-team__create">
-            <div v-for="(item, index) in itemList" :key="index">
-                <div class="content" v-if="(index == selectedItem && !showCreate)">
-                    <label>Руководитель направления</label>
-                    <a>Иванов Иван Иванович {{ item.name }}</a>
-                    <div class="btn">
-                        <button v-on:click="(showCreate = true)">Изменить</button>
-                    </div>
+
+            <div class="content" v-if="(!showCreate)">
+                <label>Руководитель направления</label>
+                <!-- get leader of direction -->
+                <div v-for="direction in directions">
+                    <a v-if="(direction.teams_shortname).toString().toLowerCase()
+    === itemList[selectedItem].direction.toLowerCase()">{{ direction.user_fullname }}</a>
+                </div>
+                <div class="btn">
+                    <button v-on:click="(showCreate = true)">Изменить</button>
                 </div>
             </div>
+
+
+
         </div>
+
 
         <!-- Форма с полями для создания -->
         <div class="wrapper-team__create">
-            <form v-if="showCreate" class="form-team__create">
+            <form v-if="showCreate" class="form-team__create" @submit.prevent="updateLeaderDirection()">
                 <div class="create-filds">
                     <label for="">ФИО Руководителя или email</label>
                     <v-select class="v-select" label="data" @input="onTextChange" :options="foundUsers"
                         v-model="optionSelect"></v-select>
 
                     <div class="btn">
-                        <button @click="showCreate = false">Сохранить</button>
+                        <button type="submit">Сохранить</button>
                     </div>
                 </div>
             </form>
         </div>
+
+
     </div>
 </template>
 
