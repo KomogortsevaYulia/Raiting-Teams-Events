@@ -132,6 +132,22 @@ export class TeamsService {
     return newUserFunction
   }
 
+
+  //get directions
+  async findDirections() {
+
+    const directions = await this.teamsRepository
+    .createQueryBuilder("teams")
+    .select(["teams.shortname"])
+    .where("teams.type_team = :type", {type: "direction" })
+    
+    .leftJoin("teams.functions", "functions", )
+    .leftJoin("functions.userFunctions", "user_functions")
+    .leftJoinAndSelect("user_functions.user", "user")
+    .getRawMany()
+
+    return directions
+  }
 }
 
 

@@ -31,6 +31,14 @@ export class TeamsController {
   // }
 
 
+  @Get('directions')
+  @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
+  @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  directionsAndUsers() {
+    return this.teamsService.findDirections()
+  }
 
  //Api для получения коллектива и всех его участников
   @Get(':id/users')
@@ -60,25 +68,6 @@ export class TeamsController {
     return this.teamsService.teamsFunctions(id)
   }
 
-
-  @Post()
-  @ApiOperation({ summary: "Создать новый коллектив (ответственный по направлению)" })
-  @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
-  create(@Body() createTeamDto: CreateTeamDto) {
-    // console.log(createTeamDto)
-    return this.teamsService.create(createTeamDto);
-  }
-
-
-    // @Get('directions')
-    // @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
-    // @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
-    // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
-    // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-    // directionsAndUsers() {
-    //   return this.teamsService.directionsAndUsers()
-    // }
+ 
 
 }

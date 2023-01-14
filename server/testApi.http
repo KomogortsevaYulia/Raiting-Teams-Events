@@ -1,11 +1,4 @@
-
-###
-# USERS--------------------------------------------------------
-# get all users from specific team
-GET http://localhost:3000/api/users?email=str
-
-
-
+GET http://localhost:3000/api/users/1
 
 
 
@@ -94,5 +87,7 @@ content-type: application/json
 
 
 
+//get directions
+GET http://localhost:3000/api/teams/directions
 
 
