@@ -58,7 +58,7 @@ export class UsersService {
     })
 
   }
-  
+
   async findAll(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });
   }
@@ -191,15 +191,17 @@ export class UsersService {
     return await this.functionsRepository.save(createFunctionDto);
   }
 
-  async findFunctionByTeamId(teamId:number) {
+  //найти функуии по ид команды
+  async findFunctionByTeamId(teamId: number) {
     return await this.functionsRepository
-    .createQueryBuilder('functions')
-    .innerJoin('functions.team', 'team')
-    .where('team.id = :id', { teamId })
-    .getMany()
+      .createQueryBuilder('functions')
+      .innerJoin('functions.team', 'team')
+      .where('team.id = :id', { id: teamId })
+      .getMany()
 
   }
 
+  //обновить функцию
   async updateFunction(updateFunctionDto: UpdateFunctionDto) {
     return await this.functionsRepository.update(updateFunctionDto.id, updateFunctionDto);
   }

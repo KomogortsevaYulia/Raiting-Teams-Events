@@ -66,19 +66,28 @@ content-type: application/json
 
 {
     "title": "shit",
-    "team": "45"
+    "team": "7"
    
 }
 
 ###
-GET http://localhost:3000/api/users/functions/team_id HTTP/1.1
+GET http://localhost:3000/api/users/functions/team_id/7 HTTP/1.1
+
+
+###
+
+# update function
+
+PUT http://localhost:3000/api/users/functions HTTP/1.1
 content-type: application/json
 
 {
-   "teamId": 2
-   
+    "id":2,
+    "title": "shit",
+    "team": 7,
+    "type_function": "special"
+    
 }
-
 
 
 
