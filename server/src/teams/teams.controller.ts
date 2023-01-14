@@ -36,6 +36,14 @@ export class TeamsController {
   // }
 
 
+  @Get('directions')
+  @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
+  @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  directionsAndUsers() {
+    return this.teamsService.findDirections()
+  }
 
   //по ид команды найти всех юзеров
   @Get(':id/users')
@@ -65,13 +73,6 @@ export class TeamsController {
     return this.teamsService.teamsFunctions(id)
   }
 
-  // @Get('directions')
-  // @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
-  // @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
-  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
-  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  // directionsAndUsers() {
-  //   return this.teamsService.directionsAndUsers()
-  // }
+ 
 
 }
