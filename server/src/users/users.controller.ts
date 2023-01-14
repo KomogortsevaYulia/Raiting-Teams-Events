@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, UsePipes,Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, UsePipes,Query, Put } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,6 +15,7 @@ import { UserRO } from './user.interface';
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 import { UserFunction } from './entities/user_function.entity';
+import { UpdateFunctionDto } from './dto/update-functions.dto';
 
 
 @ApiTags('users')  // <---- Отдельная секция в Swagger для всех методов контроллера
@@ -118,14 +119,25 @@ export class UsersController {
   }
 
 
-  @Get('functions/team_id')
+  @Get('functions/team_id/:id')
   @ApiOperation({ summary: "найти функцию по ид команды" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findFunctionByTeamId(teamId:number) {
-    console.log(teamId)
-    // return this.usersService.findFunctionByTeamId();
+  findFunctionByTeamId(@Param('id') teamId:number) {
+    // console.log(teamId)
+    return this.usersService.findFunctionByTeamId(teamId);
   }
+
+
+  @Put('functions')
+  @ApiOperation({ summary: "обновить функуию" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  updateFunction(@Body() updateFunctionDto: UpdateFunctionDto) {
+    // console.log(teamId)
+    return this.usersService.updateFunction(updateFunctionDto);
+  }
+
   // function--------------------------------------------------------------------
 
 
