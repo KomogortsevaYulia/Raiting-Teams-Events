@@ -118,6 +118,14 @@ export class UsersController {
   }
 
 
+  @Get('functions/team_id')
+  @ApiOperation({ summary: "найти функцию по ид команды" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findFunctionByTeamId(teamId:number) {
+    console.log(teamId)
+    // return this.usersService.findFunctionByTeamId();
+  }
   // function--------------------------------------------------------------------
 
 
@@ -130,6 +138,9 @@ export class UsersController {
   createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto) {
     return this.usersService.createUserFunction(createUserFunctionDto);
   }
+
+
+
   //user functions---------------------------------------------------------------
 
 }

@@ -15,6 +15,8 @@ import { LoginUserDto } from './dto/login-user.dto';
 import * as argon2 from 'argon2';
 import { validate } from 'class-validator';
 import { UserRO } from './user.interface';
+import { UpdateFunctionDto } from './dto/update-functions.dto';
+import { Team } from '../teams/entities/team.entity';
 const jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -107,7 +109,7 @@ export class UsersService {
   }
 
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
@@ -189,6 +191,18 @@ export class UsersService {
     return await this.functionsRepository.save(createFunctionDto);
   }
 
+  async findFunctionByTeamId(teamId:number) {
+    return await this.functionsRepository
+    .createQueryBuilder('functions')
+    .innerJoin('functions.team', 'team')
+    .where('team.id = :id', { teamId })
+    .getMany()
+
+  }
+
+  async updateFunction(updateFunctionDto: UpdateFunctionDto) {
+    return await this.functionsRepository.update(updateFunctionDto.id, updateFunctionDto);
+  }
 
   // function--------------------------------------------------------------------
 

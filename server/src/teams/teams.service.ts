@@ -138,7 +138,7 @@ export class TeamsService {
 
     const directions = await this.teamsRepository
     .createQueryBuilder("teams")
-    .select(["teams.shortname"])
+    .select(["teams.shortname","teams.id"])
     .where("teams.type_team = :type", {type: "direction" })
     
     .leftJoin("teams.functions", "functions", )
