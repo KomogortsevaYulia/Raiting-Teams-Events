@@ -2,19 +2,6 @@ GET http://localhost:3000/api/users/1
 
 
 
-//не помню зачем они нужны
-# GET http://localhost:3000/api/users/functions
-
-# get all users from specific team
-GET http://localhost:3000/api/teams/with_users/2
-
-###
-
-# find users by specific role
-# GET http://localhost:3000/api/users/role/supervisor
-
-
-
 ###
 # TEAMS
 # get all users from specific team
@@ -39,5 +26,7 @@ GET http://localhost:3000/api/teams/user_role/руководитель
 
 ###
 
+//get directions
+GET http://localhost:3000/api/teams/directions
 
 
