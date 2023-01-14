@@ -38,13 +38,10 @@ export class UsersController {
     let fullname:string = params.fullname
     let email:string = params.email
 
-    // console.log(" email " + params.fullname) 
     let users
     if(fullname || email){
-      // console.log("name")
       users = this.usersService.findByName(limit, fullname, email);
     }else{
-      // console.log("findAll")
       users = this.usersService.findAll(limit);
     }
     return users

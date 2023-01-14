@@ -32,13 +32,13 @@ export class TeamsController {
 
 
 
-  //по ид команды найти всех юзеров
+ //Api для получения коллектива и всех его участников
   @Get(':id/users')
   @ApiOperation({ summary: "Получение участников коллектива по id коллектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  teamsAndUsers(@Param('id') id: number) {
+  teamWithUsers(@Param('id') id: number) {
     return this.teamsService.teamWithUsers(id)
   }
 

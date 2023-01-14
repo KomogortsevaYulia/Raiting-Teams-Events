@@ -47,9 +47,6 @@ export class UsersService {
 
   async findByName(limit: number, name: string, email: string) {
 
-    // console.log("email " + email)
-    // console.log( "    user " + name)
-    //can i make sql injection?
     return await this.usersRepository.find({
       take: limit,
       where: [
