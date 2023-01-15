@@ -153,7 +153,7 @@ export class UsersController {
   }
 
   @Get('userFunctions/function_id/:id')
-  @ApiOperation({ summary: "" })
+  @ApiOperation({ summary: "Получить userFunctions по function_id" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findUserFunctionsByFunctionId(@Param("id") id:number) {

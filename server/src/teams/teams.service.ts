@@ -193,8 +193,6 @@ export class TeamsService {
     }
 
     // console.log(userFunction)
-    //найти userFunction
-
 
   }
 
