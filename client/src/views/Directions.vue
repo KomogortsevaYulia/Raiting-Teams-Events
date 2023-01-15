@@ -10,6 +10,10 @@ import axios from 'axios';
 const selectedItem = ref(0);
 const showCreate = ref(false);
 
+
+// сообщение об ошибках
+const responseMsg = ref();
+
 //хардкод для таблицы teams->shortname  
 const itemList = [
     { name: "Научная", direction: "Наука" },
@@ -74,12 +78,12 @@ async function getUsers() {
 
 async function updateLeaderDirection() {
 
-    // responseMsg.value = "сохранено";
+    responseMsg.value = "сохранено";
 
     let userId = -1
     //проверить является id числом или нет и выбрана ли опция
     if (!optionSelect.value || isNaN(optionSelect.value.id)) {
-        // responseMsg.value = "такого пользователя нет " + userId
+        responseMsg.value = "такого пользователя нет " + userId
         return
     } else { userId = optionSelect.value.id }
 
@@ -91,44 +95,24 @@ async function updateLeaderDirection() {
         let direction = directions.value[index]
         let selectedDirection = itemList[selectedItem.value].direction
 
+        //есди найшли напрваления с которым работаем из данных в БД
         if (direction.teams_shortname.toLowerCase() === selectedDirection.toLowerCase()) {
+            //сохраняем ид комманды
             teamId = direction.teams_id
-            // alert(teamId)
         }
     }
 
 
-    let reassign: any = await axios.post("api/teams/reassignLeader", {
+    //переназначить лидера
+    await axios.post("api/teams/reassignLeader", {
          team: teamId,
          userId:userId
     })
         .catch((err) => {
-            // if (err.response) {
-            //     responseMsg.value = err.response.data.message[0]
-            // }
+            if (err.response) {
+                responseMsg.value = "что то пошло не так, когда переназначали лидера"
+            }
         })
-
-    // let func: any = await axios.get("api/users/functions/team_id", {
-    //     params: { id: teamId }
-    // })
-    //     .catch((err) => {
-    //         // if (err.response) {
-    //         //     responseMsg.value = err.response.data.message[0]
-    //         // }
-    //     })
-
-    // if (func == null) {
-    //     let func: any = await axios.post("api/users/functions", {
-    //         title:"Руководитель",
-    //         team: teamId
-    //     })
-    //         .catch((err) => {
-    //             // if (err.response) {
-    //             //     responseMsg.value = err.response.data.message[0]
-    //             // }
-    //         })
-    // }
-    // alert(func.data)
 }
 
 
@@ -163,6 +147,7 @@ async function updateLeaderDirection() {
 
         <!-- Форма с полями для создания -->
         <div class="wrapper-team__create">
+            {{ responseMsg }}
             <form v-if="showCreate" class="form-team__create" @submit.prevent="updateLeaderDirection()">
                 <div class="create-filds">
                     <label for="">ФИО Руководителя или email</label>
