@@ -66,7 +66,7 @@ export class User {
 
     @ApiProperty()
     @OneToMany((type)=>UserFunction, (user_func)=>user_func.function)
-    user_function:UserFunction[]
+    user_function:UserFunction
 
     @BeforeInsert()
     async hashPassword() {

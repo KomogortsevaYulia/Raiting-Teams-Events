@@ -32,6 +32,20 @@ content-type: application/json
 GET http://localhost:3000/api/teams/directions
 
 
+###
+#reassignLeader
+POST http://localhost:3000/api/teams/reassignLeader HTTP/1.1
+content-type: application/json
+
+{
+    "team":4,
+    "userId":5
+
+}
+
+
+
+
 
 
 
@@ -106,5 +120,8 @@ content-type: application/json
    
 }
 
+###
+//findUserFunctionsByFunctionId
+GET http://localhost:3000/api/users/userFunctions/function_id/33 HTTP/1.1
 
 

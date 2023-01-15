@@ -28,5 +28,5 @@ export class UserFunction {
 
     @ApiProperty()
     @OneToMany((type) => Function, (func) =>func.team)
-    functions :Function[]
+    functions :Function
 }

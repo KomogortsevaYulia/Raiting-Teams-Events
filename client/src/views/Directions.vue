@@ -98,9 +98,9 @@ async function updateLeaderDirection() {
     }
 
 
-    let func: any = await axios.post("api/users/functions", {
+    let reassign: any = await axios.post("api/teams/reassignLeader", {
          team: teamId,
-         title:"Руководитель" 
+         userId:userId
     })
         .catch((err) => {
             // if (err.response) {
@@ -128,7 +128,7 @@ async function updateLeaderDirection() {
     //             // }
     //         })
     // }
-    alert(func.data)
+    // alert(func.data)
 }
 
 

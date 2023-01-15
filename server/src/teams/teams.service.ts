@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
+import { Function } from '../users/entities/function.entity';
 import { Repository } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
 import { UsersService } from 'src/users/users.service';
+import { ReassignLeaderTeamDto } from './dto/reassign-leader-team';
 
 
 
@@ -25,8 +27,8 @@ export class TeamsService {
     private readonly usersService: UsersService
   ) { }
 
-  findOne(id: number) {
-    return this.teamsRepository.findOneBy({ id: id });
+  async findOne(id: number): Promise<Team> {
+    return await this.teamsRepository.findOneBy({ id: id });
   }
 
   update(id: number, updateTeamDto: UpdateTeamDto) {
@@ -133,18 +135,83 @@ export class TeamsService {
   }
 
 
+  //переназначить руководителя
+  async reassignLeader(reassignLeaderTeamDto: ReassignLeaderTeamDto) {
+
+    let team = await this.findOne(reassignLeaderTeamDto.team)
+
+    if ((team.type_team == "direction")) {
+      this.reassignLeaderOfDirection(team, reassignLeaderTeamDto.userId)
+    } else { }
+
+  }
+
+
+  //переназначить лидера напрваления
+  async reassignLeaderOfDirection(team: Team, userId: number) {
+
+    //найти функцию по ид команды
+    let findFunctions = await this.usersService.findFunctionByTeamId(team.id)
+
+    let func: Function = null
+
+    //если функция найдена, то первую забираем 
+    if (findFunctions[0] != null) {
+      func = findFunctions[0]
+    } else {
+      //если функция не найдена, создать новую
+      //создать руководителя
+      func = await this.usersService.createFunction({
+        title: 'Руководитель',
+        team: team
+      })
+    }
+
+    console.log("func " + func.id)
+
+    //найти UserFunctions по id функции
+    let findUserFunctions = await this.usersService.findUserFunctionsByFunctionId(func.id)
+    let userFunction: UserFunction = null
+
+    console.log(func.id)
+    if (findUserFunctions[0] != null) {//если найдена UserFunctions, то
+      userFunction = findUserFunctions[0]
+      userFunction.user = userId
+
+      let updatedUserFunction = await this.usersService.updateUserFunction(userFunction)
+
+    console.log("finded")
+
+    } else {
+      //если функция не найдена, создать новую
+      //создать функцию пользователя
+      userFunction = await this.usersService.createUserFunction({
+        user: userId,
+        function: func.id
+      })
+    }
+
+    console.log(userFunction)
+    //найти userFunction
+
+
+  }
+
+
+
+
   //get directions
   async findDirections() {
 
     const directions = await this.teamsRepository
-    .createQueryBuilder("teams")
-    .select(["teams.shortname","teams.id"])
-    .where("teams.type_team = :type", {type: "direction" })
-    
-    .leftJoin("teams.functions", "functions", )
-    .leftJoin("functions.userFunctions", "user_functions")
-    .leftJoinAndSelect("user_functions.user", "user")
-    .getRawMany()
+      .createQueryBuilder("teams")
+      .select(["teams.shortname", "teams.id"])
+      .where("teams.type_team = :type", { type: "direction" })
+
+      .leftJoin("teams.functions", "functions",)
+      .leftJoin("functions.userFunctions", "user_functions")
+      .leftJoinAndSelect("user_functions.user", "user")
+      .getRawMany()
 
     return directions
   }
