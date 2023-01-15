@@ -25,6 +25,7 @@ const itemList = [
 
 const selectItem = (i: number) => {
     selectedItem.value = i
+    responseMsg.value = ""
 }
 
 itemList.forEach((item, index) => {
@@ -39,7 +40,7 @@ const foundUsers = ref();
 const directions = ref()
 
 //получить юзеров
-const func = _.debounce(() => {
+const getUsersTimer = _.debounce(() => {
     getUsers()
 }, 300)
 
@@ -49,7 +50,7 @@ const optionSelect = ref()
 async function onTextChange(e: any) {
     userLeader.value = e.target.value
     optionSelect.value = null
-    func()
+    getUsersTimer()
 }
 
 onBeforeMount(async () => {
@@ -57,6 +58,7 @@ onBeforeMount(async () => {
     await getDirections()
 })
 
+//получить команды-направления
 async function getDirections() {
     directions.value = await useTeamStore().fetchDirections()
 
@@ -76,6 +78,7 @@ async function getUsers() {
     foundUsers.value = usersOptions
 }
 
+//обновить лидера по направлению
 async function updateLeaderDirection() {
 
     responseMsg.value = "сохранено";
@@ -105,14 +108,17 @@ async function updateLeaderDirection() {
 
     //переназначить лидера
     await axios.post("api/teams/reassignLeader", {
-         team: teamId,
-         userId:userId
+        team: teamId,
+        userId: userId
     })
         .catch((err) => {
             if (err.response) {
                 responseMsg.value = "что то пошло не так, когда переназначали лидера"
             }
         })
+
+    //обновить список направлений
+    await getDirections()
 }
 
 
@@ -133,7 +139,7 @@ async function updateLeaderDirection() {
                 <!-- get leader of direction -->
                 <div v-for="direction in directions">
                     <a v-if="(direction.teams_shortname).toString().toLowerCase()
-    === itemList[selectedItem].direction.toLowerCase()">{{ direction.user_fullname }}</a>
+                    === itemList[selectedItem].direction.toLowerCase()">{{ direction.user_fullname }}</a>
                 </div>
                 <div class="btn">
                     <button v-on:click="(showCreate = true)">Изменить</button>
@@ -146,9 +152,10 @@ async function updateLeaderDirection() {
 
 
         <!-- Форма с полями для создания -->
-        <div class="wrapper-team__create">
+        <div class="wrapper-team__create" v-if="showCreate">
             {{ responseMsg }}
-            <form v-if="showCreate" class="form-team__create" @submit.prevent="updateLeaderDirection()">
+            <form class="form-team__create" @submit.prevent="updateLeaderDirection()">
+
                 <div class="create-filds">
                     <label for="">ФИО Руководителя или email</label>
                     <v-select class="v-select" label="data" @input="onTextChange" :options="foundUsers"
