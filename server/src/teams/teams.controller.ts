@@ -46,11 +46,11 @@ export class TeamsController {
   @ApiOperation({ summary: "Переназначить лидера или, если нету, то назначить нового" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  reassignLeader(@Body() reassignLeaderTeamDto:ReassignLeaderTeamDto) {
+  reassignLeader(@Body() reassignLeaderTeamDto: ReassignLeaderTeamDto) {
     return this.teamsService.reassignLeader(reassignLeaderTeamDto)
   }
 
- //Api для получения коллектива и всех его участников
+  //Api для получения коллектива и всех его участников
   @Get(':id/users')
   @ApiOperation({ summary: "Получение участников коллектива по id коллектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
@@ -74,10 +74,10 @@ export class TeamsController {
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  teamsFunctions(@Body()reassignLeaderTeamDto:ReassignLeaderTeamDto) {
-    return this.teamsService.reassignLeader(reassignLeaderTeamDto)
+  teamsFunctions(@Param('id') id: number) {
+    return this.teamsService.teamsFunctions(id)
   }
 
- 
+
 
 }
