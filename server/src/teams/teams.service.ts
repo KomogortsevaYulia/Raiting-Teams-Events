@@ -167,20 +167,21 @@ export class TeamsService {
       })
     }
 
-    console.log("func " + func.id)
+    // console.log("func " + func.id)
 
     //найти UserFunctions по id функции
     let findUserFunctions = await this.usersService.findUserFunctionsByFunctionId(func.id)
     let userFunction: UserFunction = null
 
-    console.log(func.id)
+    let updatedUserFunction = null
+    // console.log(func.id)
     if (findUserFunctions[0] != null) {//если найдена UserFunctions, то
       userFunction = findUserFunctions[0]
       userFunction.user = userId
 
-      let updatedUserFunction = await this.usersService.updateUserFunction(userFunction)
+      updatedUserFunction = await this.usersService.updateUserFunction(userFunction)
 
-    console.log("finded")
+    // console.log("finded")
 
     } else {
       //если функция не найдена, создать новую
@@ -191,7 +192,7 @@ export class TeamsService {
       })
     }
 
-    console.log(userFunction)
+    // console.log(userFunction)
     //найти userFunction
 
 

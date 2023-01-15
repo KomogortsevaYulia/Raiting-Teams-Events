@@ -38,8 +38,8 @@ POST http://localhost:3000/api/teams/reassignLeader HTTP/1.1
 content-type: application/json
 
 {
-    "team":4,
-    "userId":5
+    "team":3,
+    "userId":2
 
 }
 

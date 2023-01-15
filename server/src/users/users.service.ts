@@ -188,7 +188,7 @@ export class UsersService {
 
 
 
-  
+
 
 
 
@@ -243,24 +243,22 @@ export class UsersService {
   }
 
 
-   //найти функуии usera по ид команды
-   async findUserFunctionsByFunctionId(functionId: number) {
-   
+  //найти функуии usera по ид команды
+  async findUserFunctionsByFunctionId(functionId: number) {
+
     let func = await this.userFunctionsRepository
       .createQueryBuilder('user_function')
       .select("user_function.id")
-      .leftJoinAndSelect('user_function.functions', 'functions')
-      // .where('functions.id = :id', { id: functionId })
+      .leftJoinAndSelect('user_function.function', 'function')
+      .where('function.id = :id', { id: functionId })
       .getMany()
 
-    // let func =  await this.userFunctionsRepository.find({relations:{function:true}})
-      // console.log("inner  " + func[0].user + "   func id " + functionId)
-      return func
+    return func
   }
 
   //обновить функцию пользователя
-  async updateUserFunction(userFunction:UserFunction) {
-    return await this.userFunctionsRepository.update({id:userFunction.id}, userFunction)
+  async updateUserFunction(userFunction: UserFunction) {
+    return await this.userFunctionsRepository.update({ id: userFunction.id }, userFunction)
   }
 
   //user functions---------------------------------------------------------------
