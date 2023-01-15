@@ -89,26 +89,46 @@ async function updateLeaderDirection() {
     //get team id for selected direction
     for (let index in (directions.value)) {
         let direction = directions.value[index]
-        let selectedDirection =  itemList[selectedItem.value].direction
-       
-        if(direction.teams_shortname.toLowerCase() === selectedDirection.toLowerCase()){
+        let selectedDirection = itemList[selectedItem.value].direction
+
+        if (direction.teams_shortname.toLowerCase() === selectedDirection.toLowerCase()) {
             teamId = direction.teams_id
             // alert(teamId)
         }
     }
 
 
-    // await axios.post("api/functions/update", {
-    //     title: title.value,
-    //     description: description.value,
-    //     shortname: shortname.value,
-    //     userID: userId
+    let func: any = await axios.post("api/users/functions", {
+         team: teamId,
+         title:"Руководитель" 
+    })
+        .catch((err) => {
+            // if (err.response) {
+            //     responseMsg.value = err.response.data.message[0]
+            // }
+        })
+
+    // let func: any = await axios.get("api/users/functions/team_id", {
+    //     params: { id: teamId }
     // })
     //     .catch((err) => {
-    //         if (err.response) {
-    //             responseMsg.value = err.response.data.message[0]
-    //         }
+    //         // if (err.response) {
+    //         //     responseMsg.value = err.response.data.message[0]
+    //         // }
     //     })
+
+    // if (func == null) {
+    //     let func: any = await axios.post("api/users/functions", {
+    //         title:"Руководитель",
+    //         team: teamId
+    //     })
+    //         .catch((err) => {
+    //             // if (err.response) {
+    //             //     responseMsg.value = err.response.data.message[0]
+    //             // }
+    //         })
+    // }
+    alert(func.data)
 }
 
 

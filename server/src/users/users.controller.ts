@@ -107,6 +107,13 @@ export class UsersController {
 
 
 
+
+
+
+
+
+  
+
   // function--------------------------------------------------------------------
 
 
@@ -119,19 +126,19 @@ export class UsersController {
   }
 
 
-  @Get('functions/team_id/:id')
+  @Get('functions/team_id')
   @ApiOperation({ summary: "найти функцию по ид команды" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findFunctionByTeamId(@Param('id') teamId:number) {
+  findFunctionByTeamId(@Query() params: any) {
     // console.log(teamId)
-    return this.usersService.findFunctionByTeamId(teamId);
+    return this.usersService.findFunctionByTeamId(params.id);
   }
 
 
   @Put('functions')
   @ApiOperation({ summary: "обновить функуию" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   updateFunction(@Body() updateFunctionDto: UpdateFunctionDto) {
     // console.log(teamId)
@@ -139,6 +146,12 @@ export class UsersController {
   }
 
   // function--------------------------------------------------------------------
+
+
+
+
+
+
 
 
 

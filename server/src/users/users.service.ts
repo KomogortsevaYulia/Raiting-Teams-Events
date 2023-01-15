@@ -186,6 +186,13 @@ export class UsersService {
     return this.buildUserRO(user);
   }
 
+
+
+  
+
+
+
+
   // function--------------------------------------------------------------------
   async createFunction(createFunctionDto: CreateFunctionDto): Promise<Function> {
     return await this.functionsRepository.save(createFunctionDto);
@@ -207,6 +214,12 @@ export class UsersService {
   }
 
   // function--------------------------------------------------------------------
+
+
+
+
+
+
 
 
 
