@@ -1,9 +1,8 @@
-GET http://localhost:3000/api/users/1
 
 
 
 ###
-# TEAMS--------------------------------------------------------
+# TEAMS*************************************************
 # get all users from specific team
 GET http://localhost:3000/api/teams/with_users/2
 
@@ -38,7 +37,7 @@ POST http://localhost:3000/api/teams/reassignLeader HTTP/1.1
 content-type: application/json
 
 {
-    "team":3,
+    "team":14,
     "userId":2
 
 }
@@ -50,7 +49,7 @@ content-type: application/json
 
 
 ###
-# student-------------------------------------------------------
+# USERS**************************************************
 POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
@@ -71,8 +70,13 @@ content-type: application/json
 
 
 
+
+
+
+
+
 ###
-# functions------------------------------------------------------
+# FUNCTIONS******************************************
 
 //create new
 POST http://localhost:3000/api/users/functions HTTP/1.1
@@ -107,8 +111,11 @@ content-type: application/json
 
 
 
+
+
+
 ###
-# user functions------------------------------------------------
+# USER FUNCTIONS******************************************
 
 //create new
 POST http://localhost:3000/api/users/userFunctions HTTP/1.1

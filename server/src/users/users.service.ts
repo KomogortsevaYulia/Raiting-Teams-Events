@@ -248,7 +248,6 @@ export class UsersService {
 
     let func = await this.userFunctionsRepository
       .createQueryBuilder('user_function')
-      .select("user_function.id")
       .leftJoinAndSelect('user_function.function', 'function')
       .where('function.id = :id', { id: functionId })
       .getMany()

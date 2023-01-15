@@ -45,12 +45,12 @@ export class TeamsController {
   @Post('reassignLeader')
   @ApiOperation({ summary: "Переназначить лидера или, если нету, то назначить нового" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiBody({description:"team:id команды, userId: id юзера"})
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   reassignLeader(@Body() reassignLeaderTeamDto: ReassignLeaderTeamDto) {
     return this.teamsService.reassignLeader(reassignLeaderTeamDto)
   }
 
-  //Api для получения коллектива и всех его участников
   @Get(':id/users')
   @ApiOperation({ summary: "Получение участников коллектива по id коллектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })

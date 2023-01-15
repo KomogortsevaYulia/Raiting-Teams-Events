@@ -140,14 +140,17 @@ export class TeamsService {
 
     let team = await this.findOne(reassignLeaderTeamDto.team)
 
+    let userFunction = null
+    //если это у нас руководитель по направлению, то
     if ((team.type_team == "direction")) {
-      this.reassignLeaderOfDirection(team, reassignLeaderTeamDto.userId)
+      userFunction =  this.reassignLeaderOfDirection(team, reassignLeaderTeamDto.userId)
     } else { }
 
+    return userFunction
   }
 
 
-  //переназначить лидера напрваления
+  //переназначить лидера направления
   async reassignLeaderOfDirection(team: Team, userId: number) {
 
     //найти функцию по ид команды
@@ -167,7 +170,6 @@ export class TeamsService {
       })
     }
 
-    // console.log("func " + func.id)
 
     //найти UserFunctions по id функции
     let findUserFunctions = await this.usersService.findUserFunctionsByFunctionId(func.id)
@@ -192,7 +194,7 @@ export class TeamsService {
       })
     }
 
-    // console.log(userFunction)
+    return userFunction
 
   }
 
