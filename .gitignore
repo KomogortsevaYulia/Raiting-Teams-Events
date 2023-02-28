@@ -3,3 +3,4 @@
 node_modules/
 backup.sql
 client/.env.sample
+server/.env.sample

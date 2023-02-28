@@ -5,48 +5,69 @@ const router = createRouter({
   
   routes: [
     {
+      // Авторизация
       path: "/",
       name: "Login",
       // @ts-ignore
       component: () => import('@/views/Login.vue'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Авторизация'
       }
     },
     {
+      // Страница с мероприятиями (кто её news назвал??)
       path: "/news",
       name: "News",
       // @ts-ignore
       component: () => import('@/views/News.vue'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Мероприятия'
       }
     },
     {
+      // Коллективы
       path: "/teams",
       name: "Teams",
       // @ts-ignore
       component: () => import('@/views/Teams.vue'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Коллективы'
       }
     },
     {
+      // !Ответственный за направления
       path: "/directions",
       name: "Directions",
       // @ts-ignore
       component: () => import('@/views/Directions.vue'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Направления'
       }
     },
     {
+      // Конкретная страница мероприятия
       path: "/event",
       name: "Event",
       // @ts-ignore
       component: () => import('@/views/Event.vue'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Измените название когда руки дойдут, чтоб автоматически делалось'
+      }
+    },
+    {
+      // Страница с личным кабинетом
+      path: "/account",
+      name: "Account",
+      // @ts-ignore
+      component: () => import('@/views/Account.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'Личный кабинет'
       }
     },
   ],

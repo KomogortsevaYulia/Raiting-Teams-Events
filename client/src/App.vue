@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/Navbar.vue';
 </script>
 
 <template>
@@ -11,15 +11,11 @@
   </div>
 </template>
 
-<style lang="scss">
-
-@import '@/assets/navbar.scss';
-
-  .container {
-    padding-top: 2rem;
-    margin-inline: 10%;
-    display: flex;
-    justify-content: center;
-  }
-  
+<style lang="scss" scoped>
+.container {
+  padding-top: 2rem;
+  margin-inline: 10%;
+  display: flex;
+  justify-content: center;
+}
 </style>
