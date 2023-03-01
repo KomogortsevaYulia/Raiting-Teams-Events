@@ -8,7 +8,6 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
-import { UserRO } from './user.interface';
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 import { UserFunction } from './entities/user_function.entity';
