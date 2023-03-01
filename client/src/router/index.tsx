@@ -1,12 +1,13 @@
+import { usePermissionsStore } from "@/store/permissions_store";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  
+
   routes: [
     {
       // Авторизация
-      path: "/",
+      path: "/login",
       name: "Login",
       // @ts-ignore
       component: () => import('@/views/Login.vue'),
@@ -45,7 +46,8 @@ const router = createRouter({
       component: () => import('@/views/Directions.vue'),
       meta: {
         requiresAuth: true,
-        title: 'Направления'
+        title: 'Направления',
+        permission: 'can view directions'
       }
     },
     {
@@ -70,7 +72,33 @@ const router = createRouter({
         title: 'Личный кабинет'
       }
     },
+    {
+      // Страница с отчетами
+      path: "/reports",
+      name: "Reports",
+      // @ts-ignore
+      component: () => import('@/views/Reports.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'Отчеты',
+        permission: 'can view reports'
+      }
+    },
   ],
 });
+
+// Редирект на логин, если роут защищен 
+router.beforeEach((to) => {
+  const useStore = usePermissionsStore();
+  // @ts-ignore
+  if (to.meta.permission && !useStore.can(to.meta.permission)) {
+    return {
+      path: '/login',
+      query: { next: to.fullPath }
+    }
+  }
+
+  return true;
+})
 
 export default router;

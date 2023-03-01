@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useMainStore } from '@/store/main_store';
+import { usePermissionsStore } from '@/store/permissions_store';
+import { useRoute, useRouter } from 'vue-router';
 
-const store = useMainStore();
+const permissionsStore = usePermissionsStore();
+const router = useRouter();
+const route = useRoute();
+
 const show = ref(true);
 const username = ref("");
 const password = ref("");
@@ -16,15 +20,20 @@ function OnLoginCampusSubmit() {
     console.log('Campus login is clicked!');
 }
 
-onMounted(() => {
-    store.checkLogin();
-})
+// onMounted(() => {
+//     store.checkLogin();
+// })
 
-function OnLoginSubmit() {
-    store.login({
+async function OnLoginSubmit() {
+    let isLogged = await permissionsStore.login({
         username: username.value,
         password: password.value,
     })
+
+    if (isLogged) {
+        // @ts-ignore
+        router.push(route.query.next);
+    }
 }
 
 </script>

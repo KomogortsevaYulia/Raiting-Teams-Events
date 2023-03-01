@@ -13,6 +13,7 @@
         { name: "Мероприятия", path: "/news"}, 
         { name: "Коллективы", path: "/teams" }, 
         // { name: "Направления", path: "/directions"  }, 
+        // { name: "Отчеты", path: "/reports"  }, 
     ]
 
 </script>
@@ -31,15 +32,18 @@
             <nav v-for="item in itemLink" class="link-item">
                 <RouterLink class="link" active-class="active" :to="item.path">{{item.name}}</RouterLink>
             </nav>
-            <nav class="link-item">
-                <RouterLink v-if="can('can change directions')" class="link" active-class="active" :to="'/directions'">Направления</RouterLink>
+            <nav v-if="can('can view directions')" class="link-item">
+                <RouterLink class="link" active-class="active" :to="'/directions'">Направления</RouterLink>
+            </nav>
+            <nav v-if="can('can view reports')" class="link-item">
+                <RouterLink class="link" active-class="active" :to="'/reports'">Отчеты</RouterLink>
             </nav>
         </div>
 
         <!-- Кнопка вход + Личный кабинет-->
         <nav class="navbar__item-login">
-            <RouterLink v-if="accountStatus" to="/">Войти</RouterLink>
-            <RouterLink v-if="accountStatus" to="/account">Личный кабинет</RouterLink>
+            <RouterLink v-if="accountStatus" to="/login">Войти</RouterLink>
+            <!-- <RouterLink v-if="accountStatus" to="/account">Личный кабинет</RouterLink> -->
         </nav>
 
     </div>

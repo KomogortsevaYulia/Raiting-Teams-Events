@@ -1,4 +1,5 @@
 export type Permission =
     | 'can create teams'
-    | 'can change directions'
+    | 'can view directions'
+    | 'can view reports'
     ;

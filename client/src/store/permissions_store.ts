@@ -41,18 +41,19 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     }
 
     async function login({ username, password }: { username: string, password: string }) {
-        console.log('Login in permission');
-        console.log(username);
-        console.log(password);
-        permissions.value = ['can create teams', 'can change directions']
+        permissions.value = ['can create teams', 'can view reports']
 
-        axios.post("/api/users/login", {
+        let response = await axios.post("/api/users/login", {
             "user": {
                 email: username,
                 password: password
             }
             // @ts-ignore
-        }).finally(() => checkLogin(onAuthenticated))
+        })
+        // .finally(() => checkLogin())
+
+        // return response.data.succes; // Типа статус авторизован/нет?
+        return true;
     }
 
     async function logout() {
