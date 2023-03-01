@@ -14,7 +14,6 @@ import { SECRET } from '../config';
 import { LoginUserDto } from './dto/login-user.dto';
 import * as argon2 from 'argon2';
 import { validate } from 'class-validator';
-import { UserRO } from './user.interface';
 const jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -100,12 +99,38 @@ export class UsersService {
     if (!user) {
       return null;
     }
+    
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find();
+  }
 
-    if (await argon2.verify(user.password, password)) {
-      return user;
+
+  //Функция возращает юзера по ID и все инфу о коллективе и направлениях где он состоит
+  async findOneWithFunction(id: number): Promise<User> { // Все робит но нужно добавить условие - если нет коллективов у юзера, то вывести общую инфу
+    return this.usersRepository
+      .createQueryBuilder("users")
+      .innerJoin("users.user_function", "user_function")
+      .addSelect("user_function")
+      .innerJoin("user_function.functions", "functions")
+      .addSelect("functions")
+      .innerJoinAndSelect("functions.team", "teams")
+      .addSelect("teams")
+      .where("users.id = :id", { id })
+      .getOne()
+  }
+
+  async login(email: string, pass: string): Promise<User> {
+    const user = await this.findOne(email);
+    if (user && await argon2.verify(user.password, pass)) {
+      const { password, ...result } = user;
+      return result;
+    } else {
+      return null;
     }
+  }
 
-    return null;
+  async findOne(email: string): Promise<any> {
+    return this.usersRepository.findOneBy({ email: email });
   }
 
 
@@ -117,21 +142,7 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  public generateJWT(user) {
-    let today = new Date();
-    let exp = new Date(today);
-    exp.setDate(today.getDate() + 60);
-
-    return jwt.sign({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      exp: exp.getTime() / 1000,
-    }, SECRET);
-  };
-
-  async create(dto: CreateUserDto): Promise<UserRO> {
-
+  async create(dto: CreateUserDto): Promise<User> {
     // check uniqueness of username/email
     const { username, email, password } = dto;
     const qb = await this.usersRepository
@@ -160,30 +171,19 @@ export class UsersService {
 
     } else {
       const savedUser = await this.usersRepository.save(newUser);
-      return this.buildUserRO(savedUser);
+      return savedUser;
     }
 
   }
 
-  private buildUserRO(user: User) {
-    const userRO = {
-      id: user.id,
-      email: user.email,
-      token: this.generateJWT(user),
-    };
-
-    return { user: userRO };
-  }
-
-  async findById(id: number): Promise<UserRO> {
+  async findById(id: number): Promise<User> {
     const user = await this.usersRepository.findOneBy({ id });
 
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, 401);
     }
-
-    return this.buildUserRO(user);
+    return user;
   }
 
   // function--------------------------------------------------------------------

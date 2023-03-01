@@ -18,7 +18,7 @@ export const useUserPermissionsStore = defineStore("userPermissionsStore", () =>
 
     async function checkLogin(onAuthenticated: Function) {
 
-        await axios.get("http://localhost:3000/accounts/check-login/").then(r => {
+        await axios.get("/api/users/getInfoUser").then(r => {
             axios.defaults.headers.common['X-CSRFToken'] = r.data.csrf;
             is_superuser.value = r.data.is_superuser
             if (r.data.authenticated) {
