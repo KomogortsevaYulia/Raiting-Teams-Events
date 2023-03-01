@@ -94,31 +94,6 @@ export class UsersService {
 
   }
 
-  async login({ email, password }: LoginUserDto): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ email });
-    if (!user) {
-      return null;
-    }
-    
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
-  }
-
-
-  //Функция возращает юзера по ID и все инфу о коллективе и направлениях где он состоит
-  async findOneWithFunction(id: number): Promise<User> { // Все робит но нужно добавить условие - если нет коллективов у юзера, то вывести общую инфу
-    return this.usersRepository
-      .createQueryBuilder("users")
-      .innerJoin("users.user_function", "user_function")
-      .addSelect("user_function")
-      .innerJoin("user_function.functions", "functions")
-      .addSelect("functions")
-      .innerJoinAndSelect("functions.team", "teams")
-      .addSelect("teams")
-      .where("users.id = :id", { id })
-      .getOne()
-  }
-
   async login(email: string, pass: string): Promise<User> {
     const user = await this.findOne(email);
     if (user && await argon2.verify(user.password, pass)) {
