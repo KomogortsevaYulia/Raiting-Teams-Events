@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import Filter from '@/components/Filter.vue';
 import { onBeforeMount, ref } from 'vue';
+import TeamsForm from './TeamsForm.vue'
 
 import { useTeamStore } from "../store/team_store"
 
 const show = ref(true);
-const showCreate = ref(false);
 const layout = ref(true);
+
 
 const data = ref()
 
 onBeforeMount(async () => {
+  // вытащить коллективы из бд и отобразить их
   fetchTeams()
 })
 
+
+// вытащить коллективы из бд 
 async function fetchTeams() {
   data.value = await useTeamStore().fetchTeams()
 }
@@ -80,28 +84,9 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     </div>
 
     <div v-if="!show" class="wrapper-team__create">
-      <p>Прежде чем создать в системе новый коллектив, нужно
-        утвердить его приказом!</p>
-
-      <!-- Форма с полями для создания -->
-      <form v-if="showCreate" class="form-team__create">
-        <div class="create-filds">
-          <div class="filds-area">
-            <input type="text" placeholder="Название коллектива" required>
-            <input type="text" placeholder="ФИО руководителя" required>
-            <textarea placeholder="Опишите проект" required />
-          </div>
-          <div class="fuck-off-btn">
-            <button v-on:click="showCreate = false">Создать коллектив</button>
-          </div>
-        </div>
-        <div class="create-wrapper-img">
-
-        </div>
-      </form>
-      <button v-if="!showCreate" v-on:click="showCreate = true">Создать коллектив</button>
-
+     <TeamsForm/>
     </div>
+
   </div>
 </template>
 
