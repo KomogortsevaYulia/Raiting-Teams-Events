@@ -3,6 +3,10 @@ import Filter from '@/components/Filter.vue';
 import { onBeforeMount, ref } from 'vue';
 
 import { useTeamStore } from "../store/team_store"
+import { usePermissionsStore } from '@/store/permissions_store';
+
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
 
 const show = ref(true);
 const showCreate = ref(false);
@@ -28,7 +32,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <a @click="show = true" :class="{active: show}">Общий список</a>
-      <a @click="show = false" :class="{ active: !show }">Создать коллектив</a>
+      <a v-if="can('can create teams')" @click="show = false" :class="{ active: !show }">Создать коллектив</a>
     </div>
 
     <!-- Обертка карточек коллективов -->

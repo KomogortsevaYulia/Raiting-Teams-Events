@@ -5,59 +5,50 @@ import { defineStore } from "pinia";
 import router from "@/router";
 import { useTeamStore } from '@/store/team_store';
 
-export const useUserPermissionsStore = defineStore("userPermissionsStore", () => {
+export const usePermissionsStore = defineStore("permissionsStore", () => {
     const teamStore = useTeamStore();
 
     const username = ref("")
     const permissions = ref<Array<Permission>>([])
+    // const permissions = ref("")
     const is_superuser = ref("")
 
+    // Не знаю что это штука делает
     function can(permission: Permission) {
+        console.log('now let see here');
+        console.log(permissions.value.includes(permission));
         return permissions.value.includes(permission)
     }
 
-    async function checkLogin(onAuthenticated: Function) {
-
-        await axios.get("http://localhost:3000/accounts/check-login/").then(r => {
+    // Функция ...
+    async function checkLogin() {
+        // permissions.value = ['can create events']
+        await axios.get("api/check-login").then(r => {
             axios.defaults.headers.common['X-CSRFToken'] = r.data.csrf;
             is_superuser.value = r.data.is_superuser
+            // permissions.value = 'can create teams'
             if (r.data.authenticated) {
-                let nextUrl = "dashboard";
-                if (typeof router.options.history.state.current == 'string' && router.options.history.state.current != '/' && router.options.history.state.current != '/#/') {
-                    nextUrl = router.options.history.state.current
-                }
-                router.push(nextUrl).catch(ex => {
-                    if (ex.name !== "NavigationDuplicated")
-                        throw ex
-                })
-                permissions.value = r.data.permissions
+                // permissions.value = r.data.permissions
+                // permissions.value = ['can create teams']
                 username.value = r.data.username
 
-                if (can('can create teams'))
-                    teamStore.CreateTeamsTest
-
-                if (onAuthenticated) {
-                    onAuthenticated()
-                    console.log('sadasd');
-
-                }
-            } else {
-                router.push("/opa").catch(ex => {
-                    if (ex.name !== "NavigationDuplicated")
-                        throw ex
-                })
+                // Закоментировал пока чтобы, ну чтобы :)
+                // if (can('can create teams')) {
+                //     teamStore.CreateTeamsTest
+                // }
             }
         })
     }
 
-    async function login({ email, password }: { email: string, password: string }) {
+    async function login({ username, password }: { username: string, password: string }) {
         console.log('Login in permission');
-        console.log(email);
+        console.log(username);
         console.log(password);
+        permissions.value = ['can create teams', 'can change directions']
 
         axios.post("/api/users/login", {
             "user": {
-                email: email,
+                email: username,
                 password: password
             }
             // @ts-ignore
@@ -70,9 +61,9 @@ export const useUserPermissionsStore = defineStore("userPermissionsStore", () =>
     }
 
     return {
-        // permissions,
-        // username,
-        // is_superuser,
+        permissions,
+        username,
+        is_superuser,
 
         checkLogin,
         login,

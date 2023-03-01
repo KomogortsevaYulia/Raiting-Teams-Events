@@ -1,15 +1,18 @@
 <script setup lang="ts">
     import { RouterLink } from 'vue-router'
     import { ref } from 'vue';
+    import { usePermissionsStore } from '@/store/permissions_store';
+    const permissions_store = usePermissionsStore();
+    const can = permissions_store.can;
 
     const accountStatus = ref(true);
 
     
     // Элементы навигации
     const itemLink = [
-        { name: "Мероприятия", path: "/news" }, 
+        { name: "Мероприятия", path: "/news"}, 
         { name: "Коллективы", path: "/teams" }, 
-        { name: "Направления", path: "/directions" }, 
+        // { name: "Направления", path: "/directions"  }, 
     ]
 
 </script>
@@ -27,6 +30,9 @@
         <div class="navbar__item-link">
             <nav v-for="item in itemLink" class="link-item">
                 <RouterLink class="link" active-class="active" :to="item.path">{{item.name}}</RouterLink>
+            </nav>
+            <nav class="link-item">
+                <RouterLink v-if="can('can change directions')" class="link" active-class="active" :to="'/directions'">Направления</RouterLink>
             </nav>
         </div>
 
