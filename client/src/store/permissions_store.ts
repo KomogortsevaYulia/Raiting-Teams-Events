@@ -10,38 +10,39 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     const username = ref("")
     const permissions = ref<Array<Permission>>([])
-    // const permissions = ref("")
     const is_superuser = ref("")
 
-    // Не знаю что это штука делает
+    // Возвращает те пермишены которые есть в types?
     function can(permission: Permission) {
         console.log('now let see here');
         console.log(permissions.value.includes(permission));
         return permissions.value.includes(permission)
     }
 
-    // Функция ...
+    // 
     async function checkLogin() {
-        // permissions.value = ['can create events']
-        await axios.get("api/check-login").then(r => {
-            axios.defaults.headers.common['X-CSRFToken'] = r.data.csrf;
-            is_superuser.value = r.data.is_superuser
-            // permissions.value = 'can create teams'
+        permissions.value = ['can create teams', 'can view directions', 'can view reports']
+
+        let response = await axios.get("api/check-login").then(r => {
+            // is_superuser.value = r.data.is_superuser
+
             if (r.data.authenticated) {
-                // permissions.value = r.data.permissions
-                // permissions.value = ['can create teams']
+                permissions.value = r.data.permissions
                 username.value = r.data.username
 
-                // Закоментировал пока чтобы, ну чтобы :)
+                // Как это работает?
                 // if (can('can create teams')) {
                 //     teamStore.CreateTeamsTest
                 // }
+            } else {
+                permissions.value = []
+                username.value = ''
             }
         })
     }
 
     async function login({ username, password }: { username: string, password: string }) {
-        permissions.value = ['can create teams', 'can view reports']
+        permissions.value = ['can create teams', 'can view directions', 'can view reports']
 
         let response = await axios.post("/api/users/login", {
             "user": {
@@ -49,8 +50,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
                 password: password
             }
             // @ts-ignore
-        })
-        // .finally(() => checkLogin())
+        }) //.finally(() => checkLogin())
 
         // return response.data.succes; // Типа статус авторизован/нет?
         return true;
@@ -58,7 +58,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     async function logout() {
         // @ts-ignore
-        axios.post("/accounts/logout/").finally(() => checkLogin(null))
+        axios.post("/accounts/logout/").finally(() => checkLogin())
     }
 
     return {

@@ -12,7 +12,7 @@ const router = createRouter({
       // @ts-ignore
       component: () => import('@/views/Login.vue'),
       meta: {
-        requiresAuth: true,
+        // requiresAuth: true,
         title: 'Авторизация'
       }
     },
@@ -23,7 +23,7 @@ const router = createRouter({
       // @ts-ignore
       component: () => import('@/views/News.vue'),
       meta: {
-        requiresAuth: true,
+        // requiresAuth: true,
         title: 'Мероприятия'
       }
     },
@@ -34,10 +34,23 @@ const router = createRouter({
       // @ts-ignore
       component: () => import('@/views/Teams.vue'),
       meta: {
-        requiresAuth: true,
+        // requiresAuth: true,
         title: 'Коллективы'
       }
     },
+
+    {
+      // Какой то конкретный коллектив
+      path: "/team-page",
+      name: "team",
+      // @ts-ignore
+      component: () => import('@/views/team.vue'),
+      meta: {
+        // requiresAuth: true,
+        title: 'Коллективы'
+      }
+    },
+
     {
       // !Ответственный за направления
       path: "/directions",
@@ -45,7 +58,7 @@ const router = createRouter({
       // @ts-ignore
       component: () => import('@/views/Directions.vue'),
       meta: {
-        requiresAuth: true,
+        // requiresAuth: true,
         title: 'Направления',
         permission: 'can view directions'
       }
@@ -57,7 +70,7 @@ const router = createRouter({
       // @ts-ignore
       component: () => import('@/views/Event.vue'),
       meta: {
-        requiresAuth: true,
+        // requiresAuth: true,
         title: 'Измените название когда руки дойдут, чтоб автоматически делалось'
       }
     },
@@ -68,7 +81,7 @@ const router = createRouter({
       // @ts-ignore
       component: () => import('@/views/Account.vue'),
       meta: {
-        requiresAuth: true,
+        // requiresAuth: true,
         title: 'Личный кабинет'
       }
     },
@@ -79,7 +92,7 @@ const router = createRouter({
       // @ts-ignore
       component: () => import('@/views/Reports.vue'),
       meta: {
-        requiresAuth: true,
+        // requiresAuth: true,
         title: 'Отчеты',
         permission: 'can view reports'
       }

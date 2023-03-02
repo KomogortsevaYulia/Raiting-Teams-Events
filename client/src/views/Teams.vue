@@ -72,7 +72,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                 </p>
               </div>
               <div class="btn">
-                <RouterLink to="/team-1">
+                <RouterLink to="/team-page">
                   <button>Подробнее</button>
                 </RouterLink>
               </div>
