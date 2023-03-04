@@ -1,4 +1,4 @@
-#Сервер
+# Сервер
 
 На заметку:
 пароль во всех учетках "123", заходим по username
@@ -70,9 +70,7 @@ npm run build
 Для сервера
 ```bash
 npm install
-
 npm run build
-
 pm2 restart api-Raiting-Teams-Events
 
 ```
