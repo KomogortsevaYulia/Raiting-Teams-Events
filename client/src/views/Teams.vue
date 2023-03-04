@@ -4,20 +4,24 @@
 import Filter from '@/components/Filter.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import { onBeforeMount, ref } from 'vue';
+import TeamsForm from './TeamsForm.vue'
 
 import { useTeamStore } from "../store/team_store"
 
 
 const show = ref(true);
-const showCreate = ref(false);
 const layout = ref(true);
+
 
 const data = ref()
 
 onBeforeMount(async () => {
+  // вытащить коллективы из бд и отобразить их
   fetchTeams()
 })
 
+
+// вытащить коллективы из бд 
 async function fetchTeams() {
   data.value = await useTeamStore().fetchTeams()
 }
