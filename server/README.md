@@ -1,8 +1,8 @@
 ## Description
 
 На заметку:
-пароль во всех учетках "123", заходим по email
-![image](https://user-images.githubusercontent.com/74527737/206859237-c0f4e73c-b856-44a4-95d2-5fcf45824bb1.png)
+пароль во всех учетках "123", заходим по username
+![image](https://user-images.githubusercontent.com/74527737/222896661-048ae0a0-723c-40ee-886a-be53151b1b9c.png)
 
 
 ## Установка
