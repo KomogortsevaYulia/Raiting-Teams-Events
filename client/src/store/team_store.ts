@@ -10,10 +10,9 @@ export const useTeamStore = defineStore("teams", () => {
         
     }
 
-    //вывести все коллективвы с руководителсями
+    // Вывести все коллективвы с руководителсями
    async function fetchTeams():Promise<any> {
-        
-        const res =await axios.get('/api/teams')
+        const res = await axios.get('/api/teams')
         const data = res.data
 
         return data
