@@ -21,12 +21,12 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     // 
     async function checkLogin() {
+                            //рук. направления    рук. ИРНИТУ           тут три вида отчетов надо
         permissions.value = ['can create teams', 'can view directions', 'can view reports']
 
-        let response = await axios.get("api/check-login").then(r => {
+        let response = await axios.get("api/users/check-login").then(r => {
             // is_superuser.value = r.data.is_superuser
-
-            if (r.data.authenticated) {
+            if (r.data) {
                 permissions.value = r.data.permissions
                 username.value = r.data.username
 
@@ -46,12 +46,12 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
         let response = await axios.post("/api/users/login", {
             "user": {
-                email: username,
+                username: username,
                 password: password
             }
             // @ts-ignore
-        }) //.finally(() => checkLogin())
-
+        }) .finally(() => checkLogin())
+        
         // return response.data.succes; // Типа статус авторизован/нет?
         return true;
     }

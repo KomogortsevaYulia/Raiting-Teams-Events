@@ -1,12 +1,27 @@
-import { Team } from "../entities/team.entity";
+import {IsNotEmpty, IsNumber, Length } from 'class-validator'
+import { Team } from '../entities/team.entity'
+import { Function } from '../../users/entities/function.entity'
+
 
 export class CreateTeamDto {
-    title : string;
-    id_parent:Team[]
-    image: string[];
-    creation_date: Date;
-    tags: string[];
-    description: string;
-    type_team: string;
-    shortname:string;
+
+    @IsNotEmpty({ message: 'Поле пустое' })
+    @Length(1,100,{
+        message: 'Название, максимальная длина текста 50'
+    })
+    title: string
+    @Length(1,1000,{
+        message: 'Описание, максимальная длина текста 1000'
+    })
+    description: string
+
+    @IsNotEmpty({ message: 'Поле пустое' })
+    @Length(1,50,{
+        message: 'Краткое название, максимальная длина текста 50'
+    })
+    shortname:string
+
+    @IsNumber()
+    userID:number
+    // functions:Function[]
 }
