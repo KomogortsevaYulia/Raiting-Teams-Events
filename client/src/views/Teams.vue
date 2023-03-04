@@ -1,8 +1,12 @@
 <script setup lang="ts">
+
+
 import Filter from '@/components/Filter.vue';
+import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import { onBeforeMount, ref } from 'vue';
 
 import { useTeamStore } from "../store/team_store"
+
 
 const show = ref(true);
 const showCreate = ref(false);
@@ -19,6 +23,8 @@ async function fetchTeams() {
 }
 
 const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
+
+
 </script>
 
 <template>
@@ -30,7 +36,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
       <a @click="show = true" :class="{active: show}">Общий список</a>
       <a @click="show = false" :class="{ active: !show }">Создать коллектив</a>
     </div>
-
+    <ModalCreateTeam/>
     <!-- Обертка карточек коллективов -->
     <div v-if="show" class="wrapper-team__content">
 
@@ -103,6 +109,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     </div>
   </div>
+
 </template>
 
 <style lang="scss">
