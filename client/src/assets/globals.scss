@@ -16,7 +16,7 @@ label {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-button {
+button, .button-custom {
     cursor: pointer;
     appearance: none;
     padding: 1rem 3rem; 
@@ -63,4 +63,12 @@ textarea {
         box-shadow: 0 0 0 0.35rem rgba(187, 217, 255, 0.25);
         outline: 0;
     }
+}
+
+.button-custom{
+    border-radius: 30px;
+}
+
+h3{
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }

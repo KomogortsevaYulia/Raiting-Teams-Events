@@ -57,7 +57,7 @@
     overflow-x: auto;
     display: flex;
     border-radius: 20px;
-    padding: 30px 20px;
+    padding: 20px 20px 30px 20px;
     flex-direction: column;
   }
 

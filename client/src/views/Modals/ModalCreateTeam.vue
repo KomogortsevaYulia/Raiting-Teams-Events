@@ -24,11 +24,12 @@ export default {
 </script>
 
 <template>
-  <div>
-    <button type="button" class="btn" @click="showModal">
+  
+    <button class="btn button-custom" type="button"  @click="showModal">
       Создать коллектив
     </button>
 
+    <div>
     <modal v-show="isModalVisible" @close="closeModal">
       <template v-slot:header>
         <h3>Создать коллектив</h3>
@@ -43,7 +44,7 @@ export default {
               утвердить его приказом!</p>
 
             <!-- Форма с полями для создания -->
-            <form  class="form-team__create">
+            <form  class="form-team__create"  @submit.prevent="null">
               <div class="create-filds">
                 <div class="filds-area">
                   <input type="text" placeholder="Название коллектива" required>
@@ -51,7 +52,7 @@ export default {
                   <textarea placeholder="Опишите проект" required />
                 </div>
                 <div class="fuck-off-btn">
-                  <button >Создать коллектив</button>
+                  <button type="submit">Создать коллектив</button>
                 </div>
               </div>
               <div class="create-wrapper-img">

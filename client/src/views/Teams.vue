@@ -34,9 +34,10 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <a @click="show = true" :class="{active: show}">Общий список</a>
-      <a @click="show = false" :class="{ active: !show }">Создать коллектив</a>
+      <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
+      <ModalCreateTeam/>
     </div>
-    <ModalCreateTeam/>
+   
     <!-- Обертка карточек коллективов -->
     <div v-if="show" class="wrapper-team__content">
 
@@ -85,29 +86,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
       </div>
     </div>
 
-    <div v-if="!show" class="wrapper-team__create">
-      <p>Прежде чем создать в системе новый коллектив, нужно
-        утвердить его приказом!</p>
-
-      <!-- Форма с полями для создания -->
-      <form v-if="showCreate" class="form-team__create">
-        <div class="create-filds">
-          <div class="filds-area">
-            <input type="text" placeholder="Название коллектива" required>
-            <input type="text" placeholder="ФИО руководителя" required>
-            <textarea placeholder="Опишите проект" required />
-          </div>
-          <div class="fuck-off-btn">
-            <button v-on:click="showCreate = false">Создать коллектив</button>
-          </div>
-        </div>
-        <div class="create-wrapper-img">
-
-        </div>
-      </form>
-      <button v-if="!showCreate" v-on:click="showCreate = true">Создать коллектив</button>
-
-    </div>
   </div>
 
 </template>
