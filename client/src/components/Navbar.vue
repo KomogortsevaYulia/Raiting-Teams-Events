@@ -5,6 +5,7 @@
         { name: "Мероприятия", path: "/news" }, 
         { name: "Коллективы", path: "/teams" }, 
         { name: "Направления", path: "/directions" }, 
+        { name: "Статистика", path: "/statistic" }
     ]
 </script>
 

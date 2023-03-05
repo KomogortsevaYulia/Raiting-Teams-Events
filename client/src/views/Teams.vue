@@ -4,7 +4,6 @@
 import Filter from '@/components/Filter.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import { onBeforeMount, ref } from 'vue';
-import TeamsForm from './TeamsForm.vue'
 
 import { useTeamStore } from "../store/team_store"
 

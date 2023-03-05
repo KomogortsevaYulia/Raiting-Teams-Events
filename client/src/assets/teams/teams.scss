@@ -158,6 +158,10 @@
                     display: flex;
                     flex-direction: column;
 
+                    .v-select{
+                        margin-bottom: 1rem;
+                    }
+
                     textarea {
                         min-height: 20%;
                         min-width: 70%;

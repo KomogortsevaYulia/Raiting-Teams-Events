@@ -3,7 +3,6 @@
 import modal from '@/components/Modal.vue';
 import { onBeforeMount, ref } from 'vue';
 import _ from 'lodash'
-import 'vue-select/dist/vue-select.css';
 import { useTeamStore } from '@/store/team_store';
 import { useUserStore } from '@/store/user_store';
 
@@ -146,4 +145,5 @@ async function createTeam() {
 
 <style lang="scss">
 @import '@/assets/teams/teams.scss';
+@import 'vue-select/dist/vue-select.css';
 </style>
