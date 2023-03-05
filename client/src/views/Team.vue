@@ -76,8 +76,8 @@ const newsList = [
     <div>
       <div class="wrapper-team__top-panel">
         <div class="text-area">
-          <label>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id urna non erat finibus facilisis. Praesent nec convallis augue. </label>
-          <button>Learn more</button>
+          <label>Студенческое научное общество «Квантум» состоит из энтузиастов-изобретателей, будущих ученых, кандидатов и докторов наук. Специалисты и бакалавры, инженеры и техники реализуют свой потенциал и обмениваются накопленным опытом в различных сферах профессиональной деятельности. </label>
+          <button>Подать заявку</button>
         </div>
       </div>
     </div>
@@ -91,7 +91,8 @@ const newsList = [
     <div v-if="show" class="wrapper-team__content">
       <div class="middle-panel">
         <div class="column-left">
-          <div class="main-text">
+          <div class="main-text">  
+            <h2 class="title">О НАС</h2>    
             <label>Задачи и цели:
               поиск и развитие перспективных студентов, желающих реализовать свой потенциал в научной и профессиональной деятельности.
               развитие междисциплинарных проектов и освоение участниками новых профессиональных компетенций.
