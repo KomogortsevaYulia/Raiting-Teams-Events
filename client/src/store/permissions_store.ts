@@ -46,7 +46,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     async function logout() {
         // @ts-ignore
-        axios.post("/api/logout") 
+        await axios.post("/api/users/logout")
         permissions.value = []
         username.value = ''
         isLogged.value = false // ну так делать нельзя это дичь вроде бы
