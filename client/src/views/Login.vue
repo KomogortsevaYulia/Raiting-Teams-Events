@@ -20,16 +20,11 @@ function OnLoginCampusSubmit() {
     console.log('Campus login is clicked!');
 }
 
-// onMounted(() => {
-//     store.checkLogin();
-// })
-
 async function OnLoginSubmit() {
     let isLogged = await permissionsStore.login({
         username: username.value,
         password: password.value,
     })
-
     if (isLogged) {
         // @ts-ignore
         router.push(route.query.next);
