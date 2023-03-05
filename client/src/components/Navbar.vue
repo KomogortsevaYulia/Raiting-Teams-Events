@@ -2,6 +2,7 @@
     import { RouterLink } from 'vue-router'
 
     const itemLink = [
+        { name: "Анкета(Создание)", path: "/applicationForm" }, 
         { name: "Мероприятия", path: "/news" }, 
         { name: "Коллективы", path: "/teams" }, 
         { name: "Направления", path: "/directions" }, 
