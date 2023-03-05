@@ -32,6 +32,15 @@ const router = createRouter({
       }
     },
     {
+      path: "/team",
+      name: "Team",
+      // @ts-ignore
+      component: () => import('@/views/Team.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: "/directions",
       name: "Directions",
       // @ts-ignore
