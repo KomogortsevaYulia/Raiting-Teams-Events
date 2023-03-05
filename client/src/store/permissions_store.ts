@@ -2,11 +2,8 @@ import axios from "axios";
 import { computed, ref } from "vue";
 import type { Permission } from "@/types";
 import { defineStore } from "pinia";
-import { useTeamStore } from '@/store/team_store';
 
 export const usePermissionsStore = defineStore("permissionsStore", () => {
-    const teamStore = useTeamStore();
-
     const username = ref("")
     const permissions = ref<Array<Permission>>([])
     const isLogged = ref(false);
@@ -24,7 +21,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
             isLogged.value = true;
 
         } else {
-            permissions.value = [response.data.permissions]
+            permissions.value = []
             username.value = ''
         }
     }
@@ -49,8 +46,11 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     async function logout() {
         // @ts-ignore
-        axios.post("/api/logout") //finally(() => checkLogin())
-        // isLogged.value = false ну так делать нельзя это дичь вроде бы
+        axios.post("/api/logout") 
+        permissions.value = []
+        username.value = ''
+        isLogged.value = false // ну так делать нельзя это дичь вроде бы
+        await checkLogin()
     }
 
     return {

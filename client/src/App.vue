@@ -4,9 +4,9 @@ import { onBeforeMount } from 'vue';
 import { usePermissionsStore } from './store/permissions_store';
 const permissionStore = usePermissionsStore();
 
-// onBeforeMount(() => {
-//   permissionStore.checkLogin();
-// })
+onBeforeMount(() => {
+  permissionStore.checkLogin();
+})
 
 </script>
 
