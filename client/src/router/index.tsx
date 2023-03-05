@@ -8,93 +8,72 @@ const router = createRouter({
     {
       // Авторизация
       path: "/login",
-      name: "Login",
       // @ts-ignore
       component: () => import('@/views/Login.vue'),
-      meta: {
-        // requiresAuth: true,
-        title: 'Авторизация'
-      }
+      meta: {}
     },
     {
       // Страница с мероприятиями (кто её news назвал??)
       path: "/news",
-      name: "News",
       // @ts-ignore
       component: () => import('@/views/News.vue'),
-      meta: {
-        // requiresAuth: true,
-        title: 'Мероприятия'
-      }
+      meta: {}
     },
     {
       // Коллективы
       path: "/teams",
-      name: "Teams",
       // @ts-ignore
       component: () => import('@/views/Teams.vue'),
-      meta: {
-        // requiresAuth: true,
-        title: 'Коллективы'
-      }
+      meta: {}
     },
 
     {
       // Какой то конкретный коллектив
       path: "/team-page",
-      name: "team",
       // @ts-ignore
       component: () => import('@/views/team.vue'),
-      meta: {
-        // requiresAuth: true,
-        title: 'Коллективы'
-      }
+      meta: {}
     },
 
     {
       // !Ответственный за направления
       path: "/directions",
-      name: "Directions",
       // @ts-ignore
       component: () => import('@/views/Directions.vue'),
       meta: {
-        // requiresAuth: true,
-        title: 'Направления',
         permission: 'can view directions'
       }
     },
     {
       // Конкретная страница мероприятия
       path: "/event",
-      name: "Event",
       // @ts-ignore
       component: () => import('@/views/Event.vue'),
-      meta: {
-        // requiresAuth: true,
-        title: 'Измените название когда руки дойдут, чтоб автоматически делалось'
-      }
+      meta: {}
     },
     {
       // Страница с личным кабинетом
       path: "/account",
-      name: "Account",
       // @ts-ignore
       component: () => import('@/views/Account.vue'),
+      meta: {}
+    },
+    {
+      // Отвественный ИРНИТУ
+      path: "/reports-university",
+      // @ts-ignore
+      component: () => import('@/views/reportsView/University_reports.vue'),
       meta: {
-        // requiresAuth: true,
-        title: 'Личный кабинет'
+        permission: 'can view reports directions'
       }
     },
     {
-      // Страница с отчетами
-      path: "/reports",
-      name: "Reports",
+      // Отвественный НАПРАВЛЕНИЯ
+      path: "/reports-directions",
       // @ts-ignore
-      component: () => import('@/views/Reports.vue'),
+      component: () => import('@/views/reportsView/Directions_reports.vue'),
       meta: {
-        // requiresAuth: true,
-        title: 'Отчеты',
-        permission: 'can view reports'
+        permission: 'can view reports teams'
       }
     },
   ],

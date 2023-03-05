@@ -1,20 +1,23 @@
 <script setup lang="ts">
-    import { RouterLink } from 'vue-router'
-    import { ref } from 'vue';
-    import { usePermissionsStore } from '@/store/permissions_store';
-    const permissions_store = usePermissionsStore();
-    const can = permissions_store.can;
+import { RouterLink } from 'vue-router'
+import { ref } from 'vue';
+import { usePermissionsStore } from '@/store/permissions_store';
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
 
-    const accountStatus = ref(true);
+const accountStatus = ref(permissions_store.isLogged);
+console.log(accountStatus.value);
 
-    
-    // Элементы навигации
-    const itemLink = [
-        { name: "Мероприятия", path: "/news"}, 
-        { name: "Коллективы", path: "/teams" }, 
-        // { name: "Направления", path: "/directions"  }, 
-        // { name: "Отчеты", path: "/reports"  }, 
-    ]
+async function OnExitSubmit() {
+    let isLogged = await permissions_store.logout()
+}
+
+
+// Элементы навигации
+const itemLink = [
+    { name: "Мероприятия", path: "/news" },
+    { name: "Коллективы", path: "/teams" },
+]
 
 </script>
 
@@ -30,20 +33,32 @@
         <!-- Здесь перебираем элементы из массива менюшек -->
         <div class="navbar__item-link">
             <nav v-for="item in itemLink" class="link-item">
-                <RouterLink class="link" active-class="active" :to="item.path">{{item.name}}</RouterLink>
+                <RouterLink class="link" active-class="active" :to="item.path">{{ item.name }}</RouterLink>
             </nav>
+
+
             <nav v-if="can('can view directions')" class="link-item">
                 <RouterLink class="link" active-class="active" :to="'/directions'">Направления</RouterLink>
             </nav>
-            <nav v-if="can('can view reports')" class="link-item">
-                <RouterLink class="link" active-class="active" :to="'/reports'">Отчеты</RouterLink>
+
+
+            <!-- Руководитель за ИРНИТУ -->
+            <nav v-if="can('can view reports directions')" class="link-item">
+                <RouterLink class="link" active-class="active" :to="'/reports-university'">Отчеты ИРНИТУ</RouterLink>
+            </nav>
+
+            <!-- Руководитель за НАПРАВЛЕНИЯ -->
+            <nav v-if="can('can view reports teams')" class="link-item">
+                <RouterLink class="link" active-class="active" :to="'/reports-directions'">Отчеты НАПРАВЛЕНИЯ</RouterLink>
             </nav>
         </div>
 
         <!-- Кнопка вход + Личный кабинет-->
         <nav class="navbar__item-login">
-            <RouterLink v-if="accountStatus" to="/login">Войти</RouterLink>
-            <!-- <RouterLink v-if="accountStatus" to="/account">Личный кабинет</RouterLink> -->
+            {{ permissions_store.username }}
+            <RouterLink v-if="!permissions_store.isLogged" to="/login">Войти</RouterLink>
+            <RouterLink v-if="permissions_store.isLogged" to="/account">Личный кабинет</RouterLink>
+            <button v-if="permissions_store.isLogged" @click.prevent="OnExitSubmit">Выход</button>
         </nav>
 
     </div>
