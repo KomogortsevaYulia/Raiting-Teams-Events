@@ -7,7 +7,7 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
   name: 'BarChart',
-  props: ['labels', 'data'],
+  props: ['labels', 'data', 'title', 'labelName'],
   components: { Bar },
   data() {
     return {
@@ -15,7 +15,7 @@ export default {
         labels: this.$props.labels,
         datasets: [{
           data: this.$props.data,
-          label:"Кол-во заявок на вступление",
+          label:this.$props.labelName,
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',
@@ -30,7 +30,7 @@ export default {
         maintainAspectRatio: true,
         plugins: {
           title: {
-            text: "Статистика заявок на вступление в коллективы",
+            text: this.$props.title,
             display: true,
             font: {
               size: 15,
