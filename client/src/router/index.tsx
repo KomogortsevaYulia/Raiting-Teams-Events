@@ -49,10 +49,10 @@ const router = createRouter({
         requiresAuth: true
       }
     },{
-      path: "/applicationForm",
-      name: "Application Form",
+      path: "/questionnaire",
+      name: "Questionnaire",
       // @ts-ignore
-      component: () => import('@/views/ApplicationForm.vue'),
+      component: () => import('@/views/Questionnaire.vue'),
       meta: {
         requiresAuth: true
       }
