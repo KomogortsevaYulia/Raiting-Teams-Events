@@ -1,22 +1,9 @@
 <script setup lang="ts">
 
-import modal from '@/components/Modal.vue';
 import { onBeforeMount, ref } from 'vue';
 import _ from 'lodash'
 import { useTeamStore } from '@/store/team_store';
 import { useUserStore } from '@/store/user_store';
-
-
-const isModalVisible = ref(false)
-
-
-function showModal() {
-  isModalVisible.value = true;
-}
-
-function closeModal() {
-  isModalVisible.value = false;
-}
 
 
 // values from form
@@ -89,58 +76,63 @@ async function createTeam() {
 </script>
 
 <template>
-  <button class="btn button-custom" type="button" @click="showModal">
+  <!-- Button trigger modal -->
+  <button type="button" class="button-custom" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Создать коллектив
   </button>
 
-  <modal v-show="isModalVisible" @close="closeModal">
-    <template v-slot:header>
-      <h3>Создать коллектив</h3>
-    </template>
-    <template v-slot:body>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Создать коллектив</h1>
+          <button type="button" class=" button-custom btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Это вся обертка -->
+          <div class="wrapper-team">
 
-      <!-- Это вся обертка -->
-      <div class="wrapper-team">
+            <div class="wrapper-team__create">
+              <p>Прежде чем создать в системе новый коллектив, нужно
+                утвердить его приказом!</p>
 
-        <div class="wrapper-team__create">
-          <p>Прежде чем создать в системе новый коллектив, нужно
-            утвердить его приказом!</p>
+              {{ responseMsg }}
+              <!-- Форма с полями для создания -->
+              <form class="form-team__create" @submit.prevent="createTeam()">
+                <div class="create-filds">
 
-          {{ responseMsg }}
-          <!-- Форма с полями для создания -->
-          <form class="form-team__create" @submit.prevent="createTeam()">
-            <div class="create-filds">
+                  <div class="filds-area">
+                    <input type="text" placeholder="Название коллектива" v-model="title" required>
+                    <input type="text" placeholder="Краткое название" v-model="shortname" required>
 
-              <div class="filds-area">
-                <input type="text" placeholder="Название коллектива" v-model="title" required>
-                <input type="text" placeholder="Краткое название" v-model="shortname" required>
+                    <v-select placeholder="ФИО Руководителя или email" class="v-select" label="data" @input="onTextChange"
+                      :options="foundUsers" v-model="optionSelect"></v-select>
 
-                <v-select placeholder="ФИО Руководителя или email" class="v-select" label="data" @input="onTextChange" :options="foundUsers"
-                  v-model="optionSelect"></v-select>
+                    <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
+                    <textarea placeholder="Опишите проект" v-model="description" required></textarea>
+                  </div>
 
-                <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
-                <textarea placeholder="Опишите проект" v-model="description" required></textarea>
-              </div>
+                  <div class="fuck-off-btn">
+                    <!--  v-on:click="showCreate = false" -->
+                    <button type="submit">Создать коллектив</button>
+                  </div>
 
-              <div class="fuck-off-btn">
-                <!--  v-on:click="showCreate = false" -->
-                <button type="submit">Создать коллектив</button>
-              </div>
+                </div>
+                <div class="create-wrapper-img">
+
+                </div>
+
+
+              </form>
 
             </div>
-            <div class="create-wrapper-img">
-
-            </div>
-
-
-          </form>
+          </div>
 
         </div>
       </div>
-
-
-    </template>
-  </modal>
+    </div>
+  </div>
 </template>
 
 <style lang="scss">

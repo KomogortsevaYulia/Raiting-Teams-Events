@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-
 import Filter from '@/components/Filter.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import { onBeforeMount, ref } from 'vue';
@@ -36,11 +35,11 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{active: show}">Общий список</a>
+      <a @click="show = true" :class="{ active: show }">Общий список</a>
       <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
-      <ModalCreateTeam/>
+      <ModalCreateTeam />
     </div>
-   
+
     <!-- Обертка карточек коллективов -->
     <div v-if="show" class="wrapper-team__content">
 
@@ -60,7 +59,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
             <img @click="layout = false" :class="{ active: !layout }" src="@/assets/icon/list.png">
           </div>
         </div>
-<!--  {{ data }}-->
+        <!--  {{ data }}-->
         <!-- Сами карточки -->
         <div :class="[layout === true ? 'wrapper-grid' : 'wrapper-list']">
 
@@ -71,10 +70,10 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
               <div>
                 <a>{{ team.title }}</a>
                 <p>{{ team.description }}</p>
-                <p>Руководители: 
-                    <span v-for="leader in (team.functions[0]).userFunctions">     
-                        {{ leader.user.fullname}}<br>
-                    </span>
+                <p>Руководители:
+                  <span v-for="leader in (team.functions[0]).userFunctions">
+                    {{ leader.user.fullname }}<br>
+                  </span>
                 </p>
               </div>
               <div class="btn">
@@ -84,13 +83,12 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
     </div>
 
   </div>
-
 </template>
 
 <style lang="scss">

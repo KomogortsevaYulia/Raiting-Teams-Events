@@ -17,8 +17,10 @@ const show = ref(true);
 </script>
 
 <template>
+
+  
   <!-- Это вся обертка -->
-  <div class="wrapper-team">
+  <div class="wrapper-team container">
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
@@ -27,36 +29,38 @@ const show = ref(true);
       <ModalCreateTeam />
     </div>
 
-    <!-- Обертка карточек коллективов -->
-    <div v-if="show" class="wrapper-chart__content">
+    <div v-if="show">
 
-      <div class="date">
-        <div class="date-num"><a href=""> 1н</a></div>
-        <div class="date-num"><a href=""> 6м</a></div>
-        <div class="date-num"><a href=""> 1г</a></div>
-        
-
+      <div class="w-100 justify-content-center d-flex">
+        <div class="date">
+          <div class="date-num"><a href=""> 1н</a></div>
+          <div class="date-num"><a href=""> 6м</a></div>
+          <div class="date-num"><a href=""> 1г</a></div>
+          <div class="date-num"><a href=""> <font-awesome-icon icon="calendar-days" /></a></div>
+          
+        </div>
       </div>
 
       <div class="block-content">
-        <h3>Коллективы</h3>
-        <div class="chart-container">
-          <div class="block">
+        <h4>Коллективы</h4>
+        <div class="row justify-content-center">
+          <div class="col">
             <BarChart class="chart" :labels="labelsTeams" :data="dataTeams"
               title="Статистика заявок на вступление в коллективы" label-name="Кол-во заявок на вступление" />
           </div>
         </div>
       </div>
 
-      <div class="block-content">
-      <h3>Мероприятия</h3>
-      <div class="chart-container">
-        <div class="block">
-          <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-            title="Статистика дат проведения мероприятий" label-name="число мероприятий" />
-        </div>
 
-          <div class="block">
+      <div class="block-content">
+        <h4>Мероприятия</h4>
+        <div class="row justify-content-center">
+          <div class="col-lg-6 col-md-auto ">
+            <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
+              title="Статистика дат проведения мероприятий" label-name="число мероприятий" />
+          </div>
+
+          <div class="col-lg-6  col-md-auto">
             <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
               title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" />
           </div>
@@ -65,24 +69,11 @@ const show = ref(true);
       </div>
 
     </div>
-
-    <!-- <div class="row">
-                  <div class="column">
-                    Column 1 content
-                  </div>
-                  <div class="column">
-                    Column 2 content
-                  </div>
-                </div> -->
   </div>
 </template>
 
 <style lang="scss">
 @import '@/assets/teams/teams.scss';
-
-.block {
-  width: 100%;
-}
 
 .chart {
   margin: 15px;
@@ -98,23 +89,14 @@ const show = ref(true);
   width: 100%;
 }
 
-
-
-.chart-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-}
-
-.wrapper-chart__content {
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-}
+// .wrapper-chart__content {
+//   display: flex;
+//   flex-direction: column;
+//   width: 80%;
+//   justify-content: center;
+//   align-items: center;
+//   margin: auto;
+// }
 
 
 .date {
@@ -129,10 +111,11 @@ const show = ref(true);
 
   .date-num {
     display: inline;
-    padding: 5px;
+    padding: 5px 10px;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 50px;
-    padding: 10px;
+    padding: 
+    px;
     margin: 5px;
 
     a {
