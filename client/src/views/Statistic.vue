@@ -28,51 +28,103 @@ const show = ref(true);
     </div>
   </div>
 
+  <!-- time -->
   <div class="row">
-    <div v-if="show" class="col">
-
-      <div class="w-100 justify-content-center d-flex">
-        <div class="date">
-          <div class="date-num"><a href=""> 1н</a></div>
-          <div class="date-num"><a href=""> 6м</a></div>
-          <div class="date-num"><a href=""> 1г</a></div>
-          <div class="date-num"><a href=""> <font-awesome-icon icon="calendar-days" /></a></div>
-
-        </div>
-      </div>
-
-      <div class="block-content">
-        <h4>Коллективы</h4>
-        <div class="row justify-content-center">
-          <div class="col">
-            <BarChart class="chart" :labels="labelsTeams" :data="dataTeams"
-              title="Статистика заявок на вступление в коллективы" label-name="Кол-во заявок на вступление" />
-          </div>
-        </div>
-      </div>
-
-
-      <div class="block-content">
-        <h4>Мероприятия</h4>
-        <div class="row justify-content-center">
-          <div class="col-lg-6 col-md-auto ">
-            <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-              title="Статистика дат проведения мероприятий" label-name="число мероприятий" />
-          </div>
-
-          <div class="col-lg-6  col-md-auto">
-            <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-              title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" />
-          </div>
-        </div>
+    <div class="w-100 justify-content-center d-flex">
+      <div class="date">
+        <div class="date-num"><a href=""> 1н</a></div>
+        <div class="date-num"><a href=""> 6м</a></div>
+        <div class="date-num"><a href=""> 1г</a></div>
+        <div class="date-num"><a href=""> <font-awesome-icon icon="calendar-days" /></a></div>
 
       </div>
     </div>
+
+    <!-- statistic -->
+    <div v-if="show" class="col">
+
+      <div class="chart-container">
+        <div class="block-content">
+          <h4>Коллективы</h4>
+          <div class="row justify-content-center">
+            <div class="col">
+              <BarChart class="chart" :labels="labelsTeams" :data="dataTeams"
+                title="Статистика заявок на вступление в коллективы" label-name="Кол-во заявок на вступление" />
+            </div>
+          </div>
+        </div>
+
+
+        <div class="block-content">
+          <h4>Мероприятия</h4>
+          <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-auto ">
+              <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
+                title="Статистика дат проведения мероприятий" label-name="число мероприятий" />
+            </div>
+
+            <div class="col-lg-6  col-md-auto">
+              <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
+                title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <!-- otschet -->
+    <div v-if="!show" class="col">
+
+      <div class="mt-4">
+        <select class="form-select" aria-label="Default select example">
+          <option selected>Все</option>
+          <option value="1">КТД</option>
+          <option value="2">УД</option>
+          <option value="3">СД</option>
+          <option value="4">НИД</option>
+          <option value="5">ОД</option>
+        </select>
+      </div>
+
+
+      <div class="block-content p">
+        <div class="download m-3" v-for="i in 5">
+          <div class="row align-items-center">
+            <div class="col">Описание</div>
+            <div class="col-auto"><button class="">скачать</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <style lang="scss">
 @import '@/assets/nav-second.scss';
+
+// otchet
+.form-select {
+  width: fit-content;
+}
+
+.download {
+  border: var(--main-border-card);
+  padding: 15px 30px;
+  border-radius: 20px;
+}
+
+
+// statistic
+
+.chart-container{
+  width: 80%; 
+  margin: auto;
+}
 
 .chart {
   margin: 15px;
@@ -85,18 +137,7 @@ const show = ref(true);
   border-radius: 20px;
   padding: 40px;
   margin: 30px auto 30px auto;
-  width: 80%;
 }
-
-// .wrapper-chart__content {
-//   display: flex;
-//   flex-direction: column;
-//   width: 80%;
-//   justify-content: center;
-//   align-items: center;
-//   margin: auto;
-// }
-
 
 .date {
 
