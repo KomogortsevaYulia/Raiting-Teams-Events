@@ -17,19 +17,19 @@ const show = ref(true);
 </script>
 
 <template>
+  <!-- Навигация -->
 
-  
-  <!-- Это вся обертка -->
-  <div class="wrapper-team container">
-
-    <!-- Навигация -->
-    <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{ active: show }">Статистика</a>
-      <a @click="show = false" :class="{ active: !show }">Отчетность</a>
-      <ModalCreateTeam />
+  <div class="row">
+    <div class="col">
+      <div class="wrapper-second__navigation">
+        <a @click="show = true" :class="{ active: show }">Статистика</a>
+        <a @click="show = false" :class="{ active: !show }">Отчетность</a>
+      </div>
     </div>
+  </div>
 
-    <div v-if="show">
+  <div class="row">
+    <div v-if="show" class="col">
 
       <div class="w-100 justify-content-center d-flex">
         <div class="date">
@@ -37,7 +37,7 @@ const show = ref(true);
           <div class="date-num"><a href=""> 6м</a></div>
           <div class="date-num"><a href=""> 1г</a></div>
           <div class="date-num"><a href=""> <font-awesome-icon icon="calendar-days" /></a></div>
-          
+
         </div>
       </div>
 
@@ -67,13 +67,12 @@ const show = ref(true);
         </div>
 
       </div>
-
     </div>
   </div>
 </template>
 
 <style lang="scss">
-@import '@/assets/teams/teams.scss';
+@import '@/assets/nav-second.scss';
 
 .chart {
   margin: 15px;
@@ -84,9 +83,9 @@ const show = ref(true);
 .block-content {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border-radius: 20px;
-  padding: 30px;
-  margin-bottom: 30px;
-  width: 100%;
+  padding: 40px;
+  margin: 30px auto 30px auto;
+  width: 80%;
 }
 
 // .wrapper-chart__content {
@@ -107,15 +106,14 @@ const show = ref(true);
   width: fit-content;
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
 
   .date-num {
     display: inline;
     padding: 5px 10px;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 50px;
-    padding: 
-    px;
+    padding:
+      px;
     margin: 5px;
 
     a {

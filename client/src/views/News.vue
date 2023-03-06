@@ -189,4 +189,12 @@
           margin: 0 0.6rem 0 0;
       }
   }
+
+  .container {
+    padding-top: 2rem;
+    margin-inline: 10%;
+    display: flex;
+    justify-content: center;
+  }
+  
 </style>
