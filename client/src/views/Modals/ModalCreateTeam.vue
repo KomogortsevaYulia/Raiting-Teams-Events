@@ -82,8 +82,9 @@ async function createTeam() {
   </button>
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+  <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Создать коллектив</h1>
@@ -97,7 +98,10 @@ async function createTeam() {
               <p>Прежде чем создать в системе новый коллектив, нужно
                 утвердить его приказом!</p>
 
-              {{ responseMsg }}
+              <div v-if="responseMsg" class="alert alert-primary" role="alert">
+                {{ responseMsg }}
+              </div>
+             
               <!-- Форма с полями для создания -->
               <form class="form-team__create" @submit.prevent="createTeam()">
                 <div class="create-filds">

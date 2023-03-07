@@ -2,6 +2,12 @@
 import { ref } from 'vue';
 import BarChart from '@/components/Charts/Bar.vue';
 import PieChart from '@/components/Charts/Pie.vue';
+import { DatePicker } from 'v-calendar';
+
+const date = ref(1)
+
+function changeDate(start: Date = new Date(), end: Date = new Date()) {
+}
 
 const labelsTeams = ['НИД', 'КТД', 'СД', 'ОД', 'УД']
 const dataTeams = [2, 5, 8, 8, 9]
@@ -32,11 +38,16 @@ const show = ref(true);
   <div class="row">
     <div class="w-100 justify-content-center d-flex">
       <div class="date">
-        <div class="date-num"><a href=""> 1н</a></div>
-        <div class="date-num"><a href=""> 6м</a></div>
-        <div class="date-num"><a href=""> 1г</a></div>
-        <div class="date-num"><a href=""> <font-awesome-icon icon="calendar-days" /></a></div>
-
+        <button class="button-custom" @click="changeDate()">1н</button>
+        <button class="button-custom" @click="changeDate()"> 6м</button>
+        <button class="button-custom" @click="changeDate()">1г</button>
+        <div class="my-dropdown" style="float:center;">
+          <button class="dropbtn button-custom"><font-awesome-icon icon="calendar-days" /></button>
+          <div class="dropdown-content">
+            <DatePicker v-model="date" is-range />
+          </div>
+        </div>
+        <!-- <button @click="changeDate()"> <font-awesome-icon icon="calendar-days" /></button> -->
       </div>
     </div>
 
@@ -106,8 +117,45 @@ const show = ref(true);
 
 <style lang="scss">
 @import '@/assets/nav-second.scss';
+@import 'v-calendar/dist/style.css';
 
-// otchet
+// dropdown for calendar----------------------------------------------------------------------
+.dropbtn {
+  // background-color: #04AA6D;
+  // color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.my-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0px;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 20px;
+}
+
+
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.my-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+// otchet--------------------------------------------------------------------------------
 .form-select {
   width: fit-content;
 }
@@ -119,10 +167,10 @@ const show = ref(true);
 }
 
 
-// statistic
+// statistic-----------------------------------------------------------------------------
 
-.chart-container{
-  width: 80%; 
+.chart-container {
+  width: 80%;
   margin: auto;
 }
 
@@ -148,24 +196,33 @@ const show = ref(true);
   display: flex;
   justify-content: center;
 
-  .date-num {
-    display: inline;
-    padding: 5px 10px;
+  // .date-num {
+  //   display: inline;
+  //   padding: 5px 10px;
+  //   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  //   border-radius: 50px;
+  //   margin: 5px;
+
+  //   a {
+  //     text-decoration: none;
+  //   }
+
+  //   &:hover {
+  //     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  //   }
+  // }
+
+  button {
+    background: none;
+    padding: 0.5rem 0.8rem;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 50px;
-    padding:
-      px;
     margin: 5px;
-
-    a {
-      text-decoration: none;
-    }
 
     &:hover {
       box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     }
   }
-
 
 
 }
@@ -181,8 +238,7 @@ const show = ref(true);
 //   margin-bottom: 20px;
 //   border: 1px solid;
 //   /* adjust margin and padding as needed */
-// }
-</style>
+// }</style>
 
 
 
