@@ -1,6 +1,5 @@
 
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, UsePipes,Query } from '@nestjs/common';
-
+import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus,Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -8,13 +7,11 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
-
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
-import { UserRO } from './user.interface';
-
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 import { UserFunction } from './entities/user_function.entity';
+import { LocalAuthGuard } from './local-auth.guard';
 
 
 @ApiTags('users')  // <---- Отдельная секция в Swagger для всех методов контроллера
@@ -22,17 +19,12 @@ import { UserFunction } from './entities/user_function.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  // @Post()
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
-
   @Get()
   @ApiOperation({ summary: "Получение списка пользователей" })
   @ApiParam({ name: "limit", required: false, description: "ограничить число получаемых записей" })
   @ApiResponse({ status: HttpStatus.OK, description: "Success", type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAll(@Query() params: any) {
+  async findAll(@Query() params: any) {
 
     let limit:number = params.limit
     let fullname:string = params.fullname
@@ -50,44 +42,42 @@ export class UsersController {
     return users
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: "Получение пользователя" })
-  @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOneWithFunction(+id);
-  }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(id);
-  // }
-
-
-  // @Get('users_func/:id')
+  // @Get(':id')
   // @ApiOperation({ summary: "Получение пользователя" })
   // @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
   // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
   // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  // users_func(@Param('id') id: number) {
-  //   return this.usersService.users_func(id);
+  // async findOne(@Param('id') id: string) {
+  //   //пытается выполниться, при вызове метода checkLogin????
+  //   return this.usersService.findOneWithFunction(+id);
   // }
 
+  @UseGuards(LocalAuthGuard)
+  @Get('/check-login')
+  async checkLogin(@Request() req): Promise<any> {
+    const user = await this.usersService.findById(req.session.user_id)
+    let { password, ...res } = user;
+    return res;
+  }
 
-  @UsePipes(new ValidationPipe())
-  @Post()
   @ApiOperation({ summary: "Регистрация пользователя" })
-  @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя"})
+  @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async create(@Body('user') userData: CreateUserDto) {
-    return this.usersService.create(userData);
+  @UsePipes(new ValidationPipe())
+  @Post()
+  async create(@Request() req, @Body('user') userData: CreateUserDto) {
+
+    const user = await this.usersService.create(userData)
+    if (user) {
+      req.session.user_id = user.id;
+      req.session.logged = true;
+      return user;
+    }
+    else {
+      throw new UnauthorizedException();
+    }
+
   }
 
   @ApiOperation({ summary: "Login" })
@@ -95,16 +85,26 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @UsePipes(new ValidationPipe())
   @Post('/login')
-  async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
-    const _user = await this.usersService.login(loginUserDto);
+  async login(@Request() req) {
+    const pass = req.body.user.password
+    const username = req.body.user.username
+    const user = await this.usersService.login(username, pass)
+    if (user) {
+      req.session.user_id = user.id;
+      req.session.logged = true;
+      return user;
+    }
+    else {
+      throw new UnauthorizedException();
+    }
+  }
 
-    const errors = {User: ' not found'};
-    if (!_user) throw new HttpException({errors}, 401);
-
-    const token = await this.usersService.generateJWT(_user);
-    const {email, id,studnumber, fullname} = _user;
-    const user = {email, token, id, studnumber, fullname};
-    return {user}
+  @HttpCode(200)
+  @UseGuards(LocalAuthGuard)
+  @Post('/logout')
+  async logout(@Request() req) {
+    req.session.logged = false;
+    return;
   }
 
 
