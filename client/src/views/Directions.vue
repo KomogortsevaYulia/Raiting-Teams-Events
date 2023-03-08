@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { ref } from 'vue';
+
     const selectedItem = ref(0);
     const showCreate = ref(false);
 
@@ -56,23 +57,52 @@
     </div>
 </template>
 
-<style lang="scss">
-    @import '@/assets/teams/teams.scss';
+<style lang="scss" scoped>
+@import '../assets/globals.scss';
 
-    .btn {
-        padding-top: 1rem;
-    }
-    .content {
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-        align-items: flex-start;
-    }
+.btn {
+    padding-top: 1rem;
+}
 
-    a {
-        font-size: 16px;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        text-align: center;
-        padding-top: 1rem;
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+}
+
+.wrapper-team {
+    display: block;
+    width: 100%;
+    justify-content: center;
+
+    .wrapper-team__navigation {
+        padding-bottom: 2rem;
+        width: 100%;
+
+        a {
+            cursor: pointer;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 14px;
+            transition: 0.3s;
+            color: #348498;
+            margin-inline: 1rem;
+            padding-bottom: 5px;
+
+            &:hover {
+                color: var(--main-color);
+            }
+        }
+
+        // Первому элементу ставим отступ = 0, чтобы не выпирал
+        a:first-child {
+            margin-left: 0;
+        }
+
+        .active {
+            color: var(--main-color);
+            border-bottom: var(--main-border-bottom);
+        }
     }
+}
 </style>
