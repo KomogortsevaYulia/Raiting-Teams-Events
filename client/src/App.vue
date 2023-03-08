@@ -20,7 +20,4 @@ onBeforeMount(() => {
 </template>
 
 <style lang="scss">
-
-@import '@/assets/navbar.scss';
-
 </style>
