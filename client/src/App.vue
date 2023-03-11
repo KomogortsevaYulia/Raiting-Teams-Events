@@ -14,10 +14,13 @@ onBeforeMount(() => {
   <header>
     <Navbar />
   </header>
-  <div class="container">
+  <div class="container mt-4">
     <RouterView />
   </div>
 </template>
 
 <style lang="scss">
+.container {
+  margin-inline: 0;
+}
 </style>

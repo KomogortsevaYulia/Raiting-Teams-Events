@@ -74,7 +74,7 @@
 <script lang="ts">
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .mainBanner{
       display: flex;
       width: 65rem;

@@ -15,7 +15,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     async function checkLogin() {
         let response = await axios.get("api/users/check-login")
-        if (isLogged.value === true) {
+        if (isLogged) {
             isLogged.value = true;
             console.log('opapappa');
             permissions.value = response.data.permissions
@@ -24,7 +24,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
         } else {
             console.log('zadwzad');
-            isLogged.value = false;
+            // isLogged = false;
             permissions.value = []
             username.value = ''
             fullname.value = ''
