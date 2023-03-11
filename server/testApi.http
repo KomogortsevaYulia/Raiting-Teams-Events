@@ -1,6 +1,8 @@
 
 ###
 # USERS--------------------------------------------------------
+###
+# USERS--------------------------------------------------------
 # get all users from specific team
 GET http://localhost:3000/api/users?email=str
 
@@ -10,6 +12,7 @@ GET http://localhost:3000/api/users?email=str
 
 
 ###
+# TEAMS--------------------------------------------------------
 # TEAMS--------------------------------------------------------
 # get all users from specific team
 GET http://localhost:3000/api/teams/with_users/2
@@ -33,6 +36,7 @@ content-type: application/json
     "description": "Хотим подняться на гору",
     "title":"hddddhh"
 }
+
 
 
 
@@ -92,6 +96,15 @@ content-type: application/json
    
 }
 
+###
+# login
+POST http://localhost:3000/api/users/login HTTP/1.1
+content-type: application/json
+
+{
+    "password":123,
+    "email": "admin@mail.ru",
+}
 
 
 

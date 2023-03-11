@@ -13,12 +13,11 @@ async function OnExitSubmit() {
 }
 
 
-// Элементы навигации
-const itemLink = [
-    { name: "Мероприятия", path: "/news" },
-    { name: "Коллективы", path: "/teams" },
-]
-
+    const itemLink = [
+        { name: "Мероприятия", path: "/news" }, 
+        { name: "Коллективы", path: "/teams" }, 
+        { name: "Статистика", path: "/statistic" }
+    ]
 </script>
 
 <template>

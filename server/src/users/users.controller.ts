@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus,Query, UsePipes, UnauthorizedException, UseGuards, Session } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus,Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -99,11 +99,12 @@ export class UsersController {
     }
   }
 
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('/logout')
   async logout(@Request() req) {
     req.session.logged = false;
-    return true;
+    return;
   }
 
 

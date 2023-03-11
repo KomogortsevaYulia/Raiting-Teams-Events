@@ -45,7 +45,15 @@ const router = createRouter({
       }
     },
     {
-      // Конкретная страница мероприятия
+      path: "/statistic",
+      name: "Statistic",
+      // @ts-ignore
+      component: () => import('@/views/Statistic.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: "/event",
       // @ts-ignore
       component: () => import('@/views/Event.vue'),

@@ -1,13 +1,15 @@
 <script setup lang="ts">
+
 import Filter from '@/components/Filter.vue';
+import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import { onBeforeMount, ref } from 'vue';
-import TeamsForm from './TeamsForm.vue'
 
 import { useTeamStore } from "../store/team_store"
 import { usePermissionsStore } from '@/store/permissions_store';
 
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
+
 
 const show = ref(true);
 const layout = ref(true);
@@ -27,6 +29,8 @@ async function fetchTeams() {
 }
 
 const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
+
+
 </script>
 
 <template>
@@ -35,8 +39,9 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{active: show}">Общий список</a>
-      <a v-if="can('can create teams')" @click="show = false" :class="{ active: !show }">Создать коллектив</a>
+      <a @click="show = true" :class="{ active: show }">Общий список</a>
+      <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
+      <ModalCreateTeam />
     </div>
 
     <!-- Обертка карточек коллективов -->
@@ -85,10 +90,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         </div>
       </div>
-    </div>
-
-    <div v-if="!show" class="wrapper-team__create">
-     <TeamsForm/>
     </div>
 
   </div>
@@ -244,50 +245,5 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     }
   }
 
-  .wrapper-team__create {
-    .form-team__create {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      border-radius: 15px;
-      border: var(--main-border-card);
-
-      .fuck-off-btn {
-        display: flex;
-        justify-content: end;
-      }
-
-      .create-filds {
-        display: block;
-        padding: 2rem;
-        width: 100%;
-
-        .filds-area {
-          display: flex;
-          flex-direction: column;
-
-          textarea {
-            min-height: 20%;
-            min-width: 70%;
-            max-width: max-content;
-            margin-bottom: 1rem;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-          }
-
-          input {
-            margin-bottom: 1rem;
-          }
-        }
-      }
-
-      .create-wrapper-img {
-        width: 30%;
-        border-radius: 0 1rem 1rem 0;
-        background-color: #D9D9D9;
-        background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");
-        background-size: cover;
-      }
-    }
-  }
 }
 </style>
