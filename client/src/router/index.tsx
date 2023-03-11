@@ -56,7 +56,9 @@ const router = createRouter({
       path: "/account",
       // @ts-ignore
       component: () => import('@/views/Account.vue'),
-      meta: {}
+      meta: {
+        // isLoged: true
+      }
     },
     {
       // Отвественный ИРНИТУ
@@ -83,12 +85,26 @@ const router = createRouter({
 router.beforeEach((to) => {
   const useStore = usePermissionsStore();
   // @ts-ignore
+  console.log(to.meta.permission);
+  console.log(useStore.can(to.meta.permission));
+  console.log(useStore.isLogged);
+  console.log();
+  // @ts-ignore
   if (to.meta.permission && !useStore.can(to.meta.permission)) {
     return {
       path: '/login',
       query: { next: to.fullPath }
     }
   }
+
+  // if (to.meta.isLoged && !useStore.isLogged) {
+  //   console.log('omg see here!');
+  //   console.log(useStore.isLogged);
+  //   return {
+  //     path: '/login',
+  //     query: { next: to.fullPath }
+  //   }
+  // }
 
   return true;
 })

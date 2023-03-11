@@ -35,7 +35,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{active: show}">Общий список</a>
+      <a @click="show = true" :class="{ active: show }">Общий список</a>
       <a v-if="can('can create teams')" @click="show = false" :class="{ active: !show }">Создать коллектив</a>
     </div>
 
@@ -71,7 +71,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                 <p>{{ team.description }}</p>
                 <p>Руководители:
                   <span v-for="leader in (team.functions[0]).userFunctions">
-                    {{ leader.user.fullname}}<br>
+                    {{ leader.user.fullname }}<br>
                   </span>
                 </p>
               </div>
@@ -88,7 +88,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     </div>
 
     <div v-if="!show" class="wrapper-team__create">
-     <TeamsForm/>
+      <TeamsForm />
     </div>
 
   </div>
@@ -110,6 +110,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
       cursor: pointer;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       font-size: 14px;
+      text-decoration: none;
       transition: 0.3s;
       color: #348498;
       margin-inline: 1rem;

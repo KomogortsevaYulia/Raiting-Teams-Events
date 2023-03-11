@@ -5,8 +5,9 @@ import { defineStore } from "pinia";
 
 export const usePermissionsStore = defineStore("permissionsStore", () => {
     const username = ref("")
+    const fullname = ref("")
     const permissions = ref<Array<Permission>>([])
-    const isLogged = ref(false);
+    const isLogged = ref(false)
 
     function can(permission: Permission) {
         return permissions.value.includes(permission)
@@ -14,15 +15,19 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     async function checkLogin() {
         let response = await axios.get("api/users/check-login")
-
-        if (isLogged) {
+        if (isLogged.value === true) {
+            isLogged.value = true;
+            console.log('opapappa');
             permissions.value = response.data.permissions
             username.value = response.data.username
-            isLogged.value = true;
+            fullname.value = response.data.fullname
 
         } else {
+            console.log('zadwzad');
+            isLogged.value = false;
             permissions.value = []
             username.value = ''
+            fullname.value = ''
         }
     }
 
@@ -32,7 +37,6 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
                 username: username,
                 password: password
             }
-            // @ts-ignore
         })
 
         if (response) {
@@ -48,14 +52,15 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
         // @ts-ignore
         await axios.post("/api/users/logout")
         permissions.value = []
-        username.value = ''
-        isLogged.value = false // ну так делать нельзя это дичь вроде бы
+        fullname.value = ''
+        isLogged.value = false
         await checkLogin()
     }
 
     return {
         permissions,
         username,
+        fullname,
         isLogged,
 
         checkLogin,

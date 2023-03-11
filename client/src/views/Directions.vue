@@ -1,24 +1,24 @@
 <script setup lang="ts">
-    import { ref } from 'vue';
+import { ref } from 'vue';
 
-    const selectedItem = ref(0);
-    const showCreate = ref(false);
+const selectedItem = ref(0);
+const showCreate = ref(false);
 
-    const itemList = [
-        { name: "Научная"}, 
-        { name: "Учебная"}, 
-        { name: "Спортивная"},
-        { name: "Общественная"}, 
-        { name: "Культурно-творческая"} 
-    ]
+const itemList = [
+    { name: "Научная" },
+    { name: "Учебная" },
+    { name: "Спортивная" },
+    { name: "Общественная" },
+    { name: "Культурно-творческая" }
+]
 
-    const selectItem = (i: number) => {
-        selectedItem.value = i
-    }
+const selectItem = (i: number) => {
+    selectedItem.value = i
+}
 
-    itemList.forEach((item, index) => {
-        return (item == itemList[index])
-    })
+itemList.forEach((item, index) => {
+    return (item == itemList[index])
+})
 </script>
 
 <template>
@@ -26,7 +26,7 @@
         <!-- Навигация -->
         <div class="wrapper-team__navigation">
             <a @click="selectItem(index), showCreate = false" v-for="(item, index) in itemList" :key="index"
-                :class="{active: index == selectedItem}">{{item.name}}</a>
+                :class="{ active: index == selectedItem }">{{ item.name }}</a>
         </div>
 
         <div class="wrapper-team__create">
@@ -85,6 +85,7 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             font-size: 14px;
             transition: 0.3s;
+            text-decoration: none;
             color: #348498;
             margin-inline: 1rem;
             padding-bottom: 5px;

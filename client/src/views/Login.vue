@@ -80,7 +80,7 @@ async function OnLoginSubmit() {
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .form-login {
     display: flex;
     padding: 2rem 4rem 2rem 4rem;
@@ -102,6 +102,7 @@ async function OnLoginSubmit() {
         display: flex;
         justify-content: center;
         padding-bottom: 1rem;
+        text-decoration: none;
 
         a {
             cursor: pointer;

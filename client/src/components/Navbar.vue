@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { ref } from 'vue';
+import User_Profile from '@/components/User_profile.vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
 
 const accountStatus = ref(permissions_store.isLogged);
-console.log(accountStatus.value);
 
-async function OnExitSubmit() {
-    let isLogged = await permissions_store.logout()
+function OnExitSubmit() {
+    permissions_store.logout()
 }
 
 
@@ -55,21 +55,23 @@ const itemLink = [
 
         <!-- Кнопка вход + Личный кабинет-->
         <nav class="navbar__item-login">
-            {{ permissions_store.username }}
+            <!-- {{ permissions_store.username }} -->
+            <User_Profile v-if="permissions_store.isLogged" />
             <RouterLink v-if="!permissions_store.isLogged" to="/login">Войти</RouterLink>
-            <RouterLink v-if="permissions_store.isLogged" to="/account">Личный кабинет</RouterLink>
-            <button v-if="permissions_store.isLogged" @click.prevent="OnExitSubmit">Выход</button>
+            <!-- <RouterLink v-if="permissions_store.isLogged" to="/account">Личный кабинет</RouterLink> -->
+            <!-- <button v-if="permissions_store.isLogged" @click.prevent="OnExitSubmit">Выход</button> -->
         </nav>
 
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/assets/globals.scss';
 
 // Блок
 .navbar {
     display: flex;
+    position: relative;
     justify-content: space-between;
     align-items: center;
     padding-inline: 10%;
@@ -109,11 +111,9 @@ const itemLink = [
     }
 
     // Элемент кнопки "Вход"
-    .navbar__item-login a {
-        text-decoration: none;
-
-        &:hover {
-            color: var(--main-color);
+    .navbar__item-login {
+        a {
+            text-decoration: none;
         }
     }
 }
