@@ -19,11 +19,5 @@ onBeforeMount(() => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-.container {
-  display: flex;
-  justify-content: center;
-  padding-top: 2rem;
-  margin-inline: 10%;
-}
+<style lang="scss">
 </style>
