@@ -62,20 +62,17 @@ const itemLink = [
 
         <!-- Кнопка вход + Личный кабинет-->
         <div class="navbar__item-login">
-            <!-- {{ permissions_store.username }} -->
             <User_Profile v-if="permissions_store.isLogged" />
             <RouterLink v-if="!permissions_store.isLogged" to="/login">
-                <p>Войти</p>
+                <button class="login-button">Войти</button>
             </RouterLink>
-            <!-- <RouterLink v-if="permissions_store.isLogged" to="/account">Личный кабинет</RouterLink> -->
-            <!-- <button v-if="permissions_store.isLogged" @click.prevent="OnExitSubmit">Выход</button> -->
         </div>
 
     </div>
 </template>
 
 <style lang="scss" scoped>
-// @import '@/assets/globals.scss';
+@import '@/assets/globals.scss';
 
 // Блок
 .navbar-wrapper {
@@ -97,13 +94,13 @@ const itemLink = [
         display: flex;
 
         .link-item {
-            cursor: pointer;
-            height: max-content;
             padding: 1rem;
 
             p {
+                cursor: pointer;
+                height: 2rem;
                 color: #348498;
-                transition: 0.3s;
+                transition: 0.3s ease;
                 font-size: 14px;
                 font-weight: 600;
                 margin: 0;
@@ -115,17 +112,37 @@ const itemLink = [
             }
         }
 
-        .active p {
-            color: var(--main-color);
-            padding-bottom: 5px;
-            border-bottom: var(--main-border-bottom);
+        .active {
+            p {
+                color: var(--main-color);
+                border-bottom: var(--main-border-bottom);
+            }
         }
     }
 
     // Элемент кнопки "Вход"
     .navbar__item-login {
-        p {
-            text-decoration: none;
+        .login-button {
+            padding: 0.5rem 2rem 0.5rem 2rem;
+            border-radius: 10px;
+            background-color: var(--main-color);
+            color: #fff;
+
+            &:hover {
+                background: var(--main-color-hover);
+                transition: 0.3s;
+            }
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px #ff746f;
+            }
+
+            &:active {
+                transition: 0.3s;
+                background-color: #fd524c;
+            }
         }
     }
-}</style>
+}
+</style>

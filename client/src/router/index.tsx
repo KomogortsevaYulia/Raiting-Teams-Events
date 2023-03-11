@@ -92,11 +92,7 @@ const router = createRouter({
 // Редирект на логин, если роут защищен 
 router.beforeEach((to) => {
   const useStore = usePermissionsStore();
-  // @ts-ignore
-  console.log(to.meta.permission);
-  console.log(useStore.can(to.meta.permission));
-  console.log(useStore.isLogged);
-  console.log();
+
   // @ts-ignore
   if (to.meta.permission && !useStore.can(to.meta.permission)) {
     return {

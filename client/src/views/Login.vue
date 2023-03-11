@@ -140,9 +140,11 @@ async function OnLoginSubmit() {
     .form-login__submit {
         display: flex;
         justify-content: end;
+        align-items: center;
 
         p {
             cursor: pointer;
+            margin: 0;
             padding-right: 1rem;
             font-size: 14px;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;

@@ -2,8 +2,11 @@ import axios from "axios";
 import { computed, ref } from "vue";
 import type { Permission } from "@/types";
 import { defineStore } from "pinia";
+import { useRoute, useRouter } from "vue-router";
 
 export const usePermissionsStore = defineStore("permissionsStore", () => {
+    const router = useRouter();
+
     const username = ref("")
     const fullname = ref("")
     const permissions = ref<Array<Permission>>([])
@@ -15,16 +18,20 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     async function checkLogin() {
         let response = await axios.get("api/users/check-login")
+
         if (isLogged) {
             isLogged.value = true;
-            console.log('opapappa');
             permissions.value = response.data.permissions
             username.value = response.data.username
             fullname.value = response.data.fullname
 
+            let nextUrl = "/news";
+            if (typeof router.options.history.state.current == 'string' && router.options.history.state.current != '/' && router.options.history.state.current != '/#/') {
+                nextUrl = router.options.history.state.current
+            }
+            router.push(nextUrl)
+
         } else {
-            console.log('zadwzad');
-            // isLogged = false;
             permissions.value = []
             username.value = ''
             fullname.value = ''
@@ -43,6 +50,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
             isLogged.value = true;
         } else isLogged.value = false;
 
+        router.push('/news')
         await checkLogin();
 
         return isLogged;
@@ -51,9 +59,12 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     async function logout() {
         // @ts-ignore
         await axios.post("/api/users/logout")
+
         permissions.value = []
         fullname.value = ''
         isLogged.value = false
+
+        router.push('/news')
         await checkLogin()
     }
 
