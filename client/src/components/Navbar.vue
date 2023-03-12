@@ -9,7 +9,7 @@
 </script>
 
 <template>
-    <div class="navbar">
+    <div class="navbar" >
 
         <nav class="navbar__item">
             <RouterLink to="/">
