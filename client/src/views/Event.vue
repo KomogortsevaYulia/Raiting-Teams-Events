@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        Абалдетьs
+        Абалдеть
     </div>
 </template>
 
