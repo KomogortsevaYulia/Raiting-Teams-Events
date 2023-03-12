@@ -10,53 +10,54 @@
       <button class="remove-btn" @click="removeInput(index)">Удалить</button>
     </div>
     <button class="add-btn" @click="addInput">Добавить вопрос</button>
-    <button class="save-btn" v-if="inputs.length" @click="saveInputs">Сохранить</button>
-    <div class="modal" v-if="modalOpen">
-    <div class="modal-content">
-      <h2>Вопросы анкеты:</h2>
-      <ul>
-        <li v-for="(input, index) in inputs" :key="index">
-          {{ input.value }} ({{ input.required ? 'Обязательно' : 'Необязательно' }})
-          <ul><input type="text" class="input"/></ul>
-        </li>
-      </ul>
-      <button class="close-btn" @click="modalOpen = false">Закрыть</button>
-    </div>
+    <button class="save-btn" v-if="inputs.length" @click="openModal">Сохранить</button>
+    <modal-create-questionnaire
+      v-if="modalOpen"
+      :inputs="inputs"
+      @close="closeModal"
+    ></modal-create-questionnaire>
   </div>
-</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+  import { defineComponent, ref } from "vue";
+  import ModalCreateQuestionnaire from "./ModalCreateQuestionnaire.vue";
 
-export default defineComponent({
-  name: "Form",
-  setup() {
-const inputs = ref([{ value: "", required: false }]);
-const modalOpen = ref(false);
+  export default defineComponent({
+    name: "Form",
+    components: {
+      ModalCreateQuestionnaire,
+    },
+    setup() {
+      const inputs = ref([{ value: "", required: false }]);
+      const modalOpen = ref(false);
 
-const addInput = () => {
-  inputs.value.push({ value: "", required: false });
-};
+      const addInput = () => {
+        inputs.value.push({ value: "", required: false });
+      };
 
-const removeInput = (index: number) => {
-  inputs.value.splice(index, 1);
-};
+      const removeInput = (index: number) => {
+        inputs.value.splice(index, 1);
+      };
 
-const saveInputs = () => {
-  modalOpen.value = true;
-};
+      const openModal = () => {
+        modalOpen.value = true;
+      };
 
-return {
-  inputs,
-  modalOpen,
-  addInput,
-  removeInput,
-  saveInputs,
-};
-},
+      const closeModal = () => {
+        modalOpen.value = false;
+      };
 
-});
+      return {
+        inputs,
+        modalOpen,
+        addInput,
+        removeInput,
+        openModal,
+        closeModal,
+      };
+    },
+  });
 </script>
 
 <style lang="scss">

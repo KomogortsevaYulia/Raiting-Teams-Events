@@ -1,19 +1,27 @@
 <template>
-    <div class="modal">
-      <div class="modal-content">
-        <h2>Вопросы анкеты:</h2>
-        <ul>
-          <li v-for="(input, index) in inputs" :key="index">
-            {{ input.value }} ({{ input.required ? 'Обязательно' : 'Необязательно' }})
-            <ul><input type="text" class="input"/></ul>
+  <div class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Вопросы анкеты</h2>
+      <form class="modal-form" @submit.prevent>
+        <ul class="modal-list">
+          <li v-for="(input, index) in inputs" :key="index" class="modal-item">
+            <label :for="'input-' + index" class="modal-label">
+              {{ input.value }} <span v-if="input.required" class="modal-required">*</span>
+            </label>
+            <input :id="'input-' + index" type="text" class="modal-input" required="input.required"/>
           </li>
         </ul>
-        <button class="close-btn" @click="$emit('close')">Закрыть</button>
-      </div>
+        <div class="modal-actions">
+          <button class="modal-submit" type="submit">Отправить</button>
+          <button class="modal-close" @click="$emit('close')">Закрыть</button>
+        </div>
+      </form>
     </div>
-  </template>
+  </div>
+</template>
 
-  <script>
+
+<script>
     export default {
       name: "ModalCreateQuestionnaire",
       props: {
@@ -23,9 +31,9 @@
         },
       },
     };
-  </script>
+</script>
   
-  <style lang="scss">
+<style lang="scss">
   .modal {
     position: fixed;
     top: 0;
@@ -66,5 +74,4 @@
       outline: 0;
     }
   }
-  
-  </style>
+</style>
