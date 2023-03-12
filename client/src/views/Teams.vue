@@ -41,19 +41,19 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <div class="wrapper-team__navigation">
       <a @click="show = true" :class="{ active: show }">Общий список</a>
       <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
-      <ModalCreateTeam />
+    <ModalCreateTeam />
+  </div>
+
+  <!-- Обертка карточек коллективов -->
+  <div v-if="show" class="wrapper-team__content">
+
+    <!-- Фильтр -->
+    <div class="content-filter">
+      <Filter />
     </div>
 
-    <!-- Обертка карточек коллективов -->
-    <div v-if="show" class="wrapper-team__content">
-
-      <!-- Фильтр -->
-      <div class="content-filter">
-        <Filter />
-      </div>
-
-      <!-- Обертка контента с карточками -->
-      <div class="content-cards">
+    <!-- Обертка контента с карточками -->
+    <div class="content-cards">
 
         <!-- Инпут с поиском -->
         <div class="cards__search">
@@ -69,30 +69,27 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           </div>
         </div>
         <!--  {{ data }}-->
+
+
         <!-- Сами карточки -->
         <div :class="[layout === true ? 'wrapper-grid' : 'wrapper-list']">
-
-
           <div v-for="team in data" class="card">
             <img :src="team.image">
-            <div class="wrapper-content">
-              <div>
-                <a>{{ team.title }}</a>
-                <p>{{ team.description }}</p>
-                <p>Руководители:
-                  <span v-for="leader in (team.functions[0]).userFunctions">
-                    {{ leader.user.fullname }}<br>
-                  </span>
-                </p>
-              </div>
-              <div class="btn">
-                <RouterLink to="/team-page">
-                  <button>Подробнее</button>
-                </RouterLink>
-              </div>
-            </div>
+            <!-- <div class="wrapper-content">
+                  <a>{{ team.title }}</a>
+                  <p>{{ team.description }}</p>
+                  <p>Руководители:
+                    <span v-for="leader in (team.functions[0]).userFunctions">
+                      {{ leader.user.fullname }}<br>
+                    </span>
+                  </p>
+                  <div class="btn">
+                    <RouterLink to="/team-page">
+                      <button>Подробнее</button>
+                    </RouterLink>
+                  </div>
+                </div> -->
           </div>
-
         </div>
       </div>
     </div>
@@ -101,7 +98,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 </template>
 
 <style lang="scss" scoped>
-@import '../assets/globals.scss';
+// @import '../assets/globals.scss';
 
 .wrapper-team {
   display: block;
@@ -198,7 +195,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         justify-content: center;
         border: var(--main-border-card);
         margin: 0 1rem 1rem 0;
-        padding: 1rem;
+        // padding: 1rem;
         border-radius: 15px;
 
         a {
@@ -209,10 +206,9 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         }
 
         img {
-          height: 150px;
-          width: 150px;
-          padding: 1rem;
-          border-radius: 10rem;
+          border-radius: 15px 15px 0 0;
+          width: 100%;
+          // padding: 1rem;
         }
       }
 
@@ -222,15 +218,11 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .card {
           display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          width: 35%;
+          width: 250px;
 
           .wrapper-content {
             display: flex;
             flex-direction: column;
-            justify-content: center;
 
             .btn {
               display: flex;
