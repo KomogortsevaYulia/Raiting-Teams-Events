@@ -22,7 +22,7 @@ itemList.forEach((item, index) => {
 </script>
 
 <template>
-    <div class="wrapper-team">
+    <div class="wrapper-team wrapper-content">
         <!-- Навигация -->
         <div class="wrapper-team__navigation">
             <a @click="selectItem(index), showCreate = false" v-for="(item, index) in itemList" :key="index"

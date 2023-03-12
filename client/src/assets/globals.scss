@@ -6,6 +6,14 @@
     --main-navigation-color: #348498;
 }
 
+// Обёртка на формы
+.wrapper-content {
+    padding: 1rem;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 5px 2px rgba(221, 221, 221, 1);
+}
+
 .link {
     text-decoration: none;
     color: black;

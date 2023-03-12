@@ -21,7 +21,7 @@ const itemLink = [
 </script>
 
 <template>
-    <div class="navbar-wrapper container d-flex">
+    <div class="navbar-wrapper container">
         <!-- Иконка политеха -->
         <nav class="navbar__item-logo">
             <RouterLink to="/">
@@ -77,6 +77,7 @@ const itemLink = [
 // Блок
 .navbar-wrapper {
     display: flex;
+    padding: 1rem;
     position: relative;
     align-items: center;
 

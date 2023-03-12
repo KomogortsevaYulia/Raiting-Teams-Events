@@ -11,7 +11,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <header>
+  <header class="mw-100">
     <Navbar />
   </header>
   <div class="container mt-4">
@@ -20,6 +20,11 @@ onBeforeMount(() => {
 </template>
 
 <style lang="scss">
+header {
+  background-color: #fff;
+  box-shadow: 0 6px 4px -4px rgba(0, 0, 0, .2);
+}
+
 .container {
   margin-inline: 0;
 }

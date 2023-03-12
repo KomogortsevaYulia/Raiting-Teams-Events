@@ -89,6 +89,7 @@ async function OnLoginSubmit() {
     width: 40%;
     flex-direction: column;
     margin: auto;
+    background-color: #fff;
     // box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
     border: var(--main-border-card);
 

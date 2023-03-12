@@ -62,6 +62,7 @@ function OnExitSubmit() {
 
     .dropDownMenuButton {
         cursor: pointer;
+        border-radius: 25px;
         transition: all 0.2s ease;
         padding: 0.35rem;
 
