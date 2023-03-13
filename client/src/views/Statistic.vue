@@ -24,7 +24,6 @@ const show = ref(true);
 
 <template>
   <!-- Навигация -->
-
   <div class="row">
     <div class="col">
       <div class="wrapper-second__navigation">
@@ -51,10 +50,11 @@ const show = ref(true);
       </div>
     </div>
 
-    <!-- statistic -->
-    <div v-if="show" class="col">
+    <div class="chart-container">
+      <!-- statistic -->
+      <div v-if="show" class="col">
 
-      <div class="chart-container">
+
         <div class="block-content">
           <h4>Коллективы</h4>
           <div class="row justify-content-center">
@@ -81,37 +81,38 @@ const show = ref(true);
           </div>
 
         </div>
+
+
+
       </div>
 
 
-    </div>
+      <!-- otschet -->
+      <div v-if="!show" class="col">
+
+        <div class="mt-4">
+          <select class="form-select" aria-label="Default select example">
+            <option selected>Все</option>
+            <option value="1">КТД</option>
+            <option value="2">УД</option>
+            <option value="3">СД</option>
+            <option value="4">НИД</option>
+            <option value="5">ОД</option>
+          </select>
+        </div>
 
 
-    <!-- otschet -->
-    <div v-if="!show" class="col">
-
-      <div class="mt-4">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Все</option>
-          <option value="1">КТД</option>
-          <option value="2">УД</option>
-          <option value="3">СД</option>
-          <option value="4">НИД</option>
-          <option value="5">ОД</option>
-        </select>
-      </div>
-
-
-      <div class="block-content p">
-        <div class="download m-3" v-for="i in 5">
-          <div class="row align-items-center">
-            <div class="col">Описание</div>
-            <div class="col-auto"><button class="">скачать</button></div>
+        <div class="block-content">
+          <div class="download m-3" v-for="i in 5">
+            <div class="row align-items-center">
+              <div class="col">Описание</div>
+              <div class="col-auto"><button class="">скачать</button></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
 </template>
 
@@ -238,7 +239,8 @@ const show = ref(true);
 //   margin-bottom: 20px;
 //   border: 1px solid;
 //   /* adjust margin and padding as needed */
-// }</style>
+// }
+</style>
 
 
 

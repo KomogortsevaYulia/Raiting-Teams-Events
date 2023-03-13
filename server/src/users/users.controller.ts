@@ -42,7 +42,7 @@ export class UsersController {
     return users
   }
 
-  // @Get(':id')
+  // @Get('id/:id')
   // @ApiOperation({ summary: "Получение пользователя" })
   // @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
   // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })

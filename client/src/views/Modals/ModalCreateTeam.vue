@@ -162,6 +162,10 @@ async function createTeam() {
           display: flex;
           flex-direction: column;
 
+          .v-select{
+            padding-bottom: 1rem;
+          }
+
           textarea {
             min-height: 20%;
             min-width: 70%;

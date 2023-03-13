@@ -190,11 +190,5 @@
       }
   }
 
-  .container {
-    padding-top: 2rem;
-    margin-inline: 10%;
-    display: flex;
-    justify-content: center;
-  }
-  
+
 </style>
