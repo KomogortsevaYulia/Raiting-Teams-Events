@@ -17,7 +17,7 @@
 
   .container {
     padding-top: 2rem;
-    margin-inline: 10%;
+    margin-inline: 20%;
     display: flex;
     justify-content: center;
   }

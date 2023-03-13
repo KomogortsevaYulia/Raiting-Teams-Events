@@ -33,4 +33,5 @@
 
 <style>
 @import '@/assets/navbar.scss';
+
 </style>
