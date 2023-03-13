@@ -8,8 +8,8 @@
 <template>
 
     <div class="col">
-    <div class = "imgEvent row  mb-5"  >
-            <img src="../assets/icon/stairway.jpg" class="rounded mx-auto d-block" >
+    <div class = "imgEvent full-width  mb-5"  >
+            <img src="../assets/icon/stairway.jpg" class="rounded w-100 d-block"  style="object-fit: cover;">
     </div>
     <div class="eventInfo row">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" />
@@ -90,6 +90,14 @@
 
 @import '@/assets/globals.scss';
 
+.full-width {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
 
 
 .email{
@@ -105,7 +113,7 @@
     
     color: #004D61;
     margin-bottom: 1em;
-    background-color: #D9D9D9;
+
    
 }
 .address{
@@ -184,12 +192,15 @@
   }
 
  .imgEvent{
-    margin-block-start: 0em;
-    width: 103%;
+
+    // margin-inline-start: -7.8em ;
+    margin-inline-end: 0em ;
+   
 
     
     img {
-      height: 10em;
+     
+      height: 20em;
     }
  }
   .map{
