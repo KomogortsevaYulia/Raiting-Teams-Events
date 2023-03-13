@@ -28,22 +28,6 @@ export class UsersService {
     private readonly functionsRepository: Repository<Function>,
   ) { }
 
-  // create(createUserDto: CreateUserDto): Promise<User> {
-  //   const user = new User();
-  //   user.fullname = createUserDto.fullname;
-  //   user.birthdate = createUserDto.birthdate;
-  //   user.studnumber = createUserDto.studnumber;
-  //   user.email = createUserDto.email;
-  //   user.gender = createUserDto.gender;
-  //   user.education_group = createUserDto.education_group;
-  //   user.institute = createUserDto.institute;
-  //   user.type_time_study = createUserDto.type_time_study;
-  //   user.phone = createUserDto.phone;
-  //   user.permissions = createUserDto.permissions;
-  //   return this.usersRepository.save(user);
-  // }
-
-
   async findByName(limit: number, name: string, email: string) {
 
     // console.log("email " + email)
@@ -64,38 +48,40 @@ export class UsersService {
 
 
   // modernize function user if user not exist
-  @HttpCode(400)
-  async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-    //вот зачем нужен left join в случае, если у юзера нет функций при иннер джоин,
-    //то в запросе выдаст, что юзера не существует, а так он его выдаст, если тот есть  
+  // @HttpCode(400)
+  // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+  //   //вот зачем нужен left join в случае, если у юзера нет функций при иннер джоин,
+  //   //то в запросе выдаст, что юзера не существует, а так он его выдаст, если тот есть  
 
-    // if(isNaN(id)){
-    //   throw new HttpException("такого юзера не существует " + id, 400)
-    // }
+  //   // if(isNaN(id)){
+  //   //   throw new HttpException("такого юзера не существует " + id, 400)
+  //   // }
 
-    const userExist = await this.usersRepository
+  //   const userExist = await this.usersRepository
+  //     .createQueryBuilder("users")
+  //     .where("users.id = :id", { id })
+  //     .leftJoin("users.user_function", "user_function")
+  //     .addSelect("user_function")
+  //     .leftJoin("user_function.functions", "functions")
+  //     .addSelect("functions")
+  //     .leftJoinAndSelect("functions.team", "teams")
+  //     .addSelect("teams")
+  //     .getOne();
+
+  //   // console.log("userExist " + userExist)
+  //   if (!userExist) {
+  //     throw new HttpException("такого юзера не существует ", 400)
+  //   }
+
+  //   return userExist
+
+  // }
+
+  async login(username: string, pass: string): Promise<any> {
+    const user = await this.usersRepository
       .createQueryBuilder("users")
-      .where("users.id = :id", { id })
-      .leftJoin("users.user_function", "user_function")
-      .addSelect("user_function")
-      .leftJoin("user_function.functions", "functions")
-      .addSelect("functions")
-      .leftJoinAndSelect("functions.team", "teams")
-      .addSelect("teams")
-
+      .where("users.username = :username", { username })
       .getOne();
-
-    // console.log("userExist " + userExist)
-    if (!userExist) {
-      throw new HttpException("такого юзера не существует ", 400)
-    }
-
-    return userExist
-
-  }
-
-  async login(email: string, pass: string): Promise<User> {
-    const user = await this.findOne(email);
     if (user && await argon2.verify(user.password, pass)) {
       const { password, ...result } = user;
       return result;
@@ -152,10 +138,13 @@ export class UsersService {
   }
 
   async findById(id: number): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ id });
-
+     const user = await this.usersRepository.
+      createQueryBuilder("users")
+      .where("users.id = :id", { id })
+      .getOne();
+      
     if (!user) {
-      const errors = { User: ' not found' };
+      const errors = { User: 'Not found' };
       throw new HttpException({ errors }, 401);
     }
     return user;
@@ -176,7 +165,7 @@ export class UsersService {
   async createUserFunction(createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
 
     //check if user is exist, if not, then error 400 will
-    this.findOneWithFunction(createUserFunctionDto.user)
+    //this.findOneWithFunction(createUserFunctionDto.user)
 
     let dateStart = new Date();
 

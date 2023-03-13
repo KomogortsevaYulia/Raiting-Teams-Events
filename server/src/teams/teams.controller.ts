@@ -18,6 +18,7 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAll() {
     return this.teamsService.findAll();
+    
   }
 
   // @Patch(':id')

@@ -5,7 +5,11 @@
 -- Dumped from database version 14.5
 -- Dumped by pg_dump version 14.5
 
+<<<<<<< HEAD
 -- Started on 2023-03-12 18:55:10
+=======
+-- Started on 2023-03-04 19:32:40
+>>>>>>> 6cfe73a1f51b0506833f51233370ecc139e39def
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -671,6 +675,7 @@ COPY public.functions (id, title, type_function, team_id, "roleIdId") FROM stdin
 33	Руководитель	general	14	2
 34	Руководитель	general	15	2
 35	Руководитель	general	16	2
+<<<<<<< HEAD
 40	Участник	general	6	5
 42	Участник	general	9	5
 41	Участник	general	8	5
@@ -681,6 +686,10 @@ COPY public.functions (id, title, type_function, team_id, "roleIdId") FROM stdin
 46	Участник	general	15	5
 48	Участник	general	16	5
 49	Участник	general	17	5
+=======
+36	Руководитель	special	23	\N
+37	Руководитель	special	24	\N
+>>>>>>> 6cfe73a1f51b0506833f51233370ecc139e39def
 \.
 
 
@@ -735,6 +744,8 @@ COPY public.teams (id, title, creation_date, image, tags, description, shortname
 15	Народный коллектив ансамбль русской песни "Калина"	2011-05-09 00:00:00	https://sun9-69.userapi.com/impg/AAdVNw4EE_p0LYJx6xv39CaBHgt4Q2CKRrzL3w/RCnz5ikjjOI.jpg?size=1280x853&quality=96&sign=01f3a0ea30ee07a20c52fe19e5eaf85f&type=album	Развлечение\nЖесть	Тут играют на барабанах	Калина	5	teams
 16	Танцевально-спортивный клуб «Академик». Народный коллектив Ансамбль бального танца «Академик»	2011-05-09 00:00:00	https://sun9-28.userapi.com/impg/_bkYuxPNFqGqlYD9KHykzrfRbCvVwdllh_qzWw/EU6SEeABpaU.jpg?size=2146x1874&quality=95&sign=c621426bcb42e6f722d659e4e4445ae6&type=album	Развлечение\nЖесть	Тут танцуют 	Академик	5	teams
 17	Народный театр «Предместье»	2011-05-09 00:00:00	https://sun9-81.userapi.com/impg/iEgk-ZtH1gUbWLlppxyjLKLhVb7HglMALoaxhA/5dH70LKaJM4.jpg?size=1280x853&quality=96&sign=3d15cb1ae1f4e258fac91dcdbf2e9e7e&type=album	Развлечение\nЖесть	Театр	Предместье	5	teams
+23	777	2023-03-04 19:30:01.454			888	77	\N	teams
+24	777	2023-03-04 19:30:20.012			888999	77	\N	teams
 \.
 
 
@@ -785,12 +796,20 @@ COPY public.user_functions (id, "dateStart", "dateEnd", function_id, user_id) FR
 --
 
 COPY public.users (id, studnumber, fullname, email, education_group, institute, gender, phone, birthdate, type_time_study, permissions, title_role, username, password) FROM stdin;
+<<<<<<< HEAD
 1	2354354	Олег Олегов Олегович	admin@mail.ru	ИСТб-20-4	ИИИТиАД	муж.	+79505553535	2002-01-01	Очно	can all	1	admin	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
 2	3546735	Игорь Игорев Игоревич	bossTeam@gmail.com	ИСТб-20-1	ИИИТиАД	муж.	+79501112323	2002-02-02	Очно	can all	2	bossTeam	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
 3	5678644	Любовь Любововна Олеговна	bossDirections@yandex.ru	ИСТб-20-3	ИИИТиАД	жен.	+79506663311	2002-03-03	Заочно	can all	3	bossDirections	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
 4	9534531	Ольга Ольговна Олеговна	bossUniversity@yandex.ru	ИСТб-20-2	ИИИТиАД	жен.	+79507984512	2002-04-04	Заочно	can all	4	bossUniversity	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
 5	6543176	Ярополк Ярорлков Ярополкович	participant@yandex.ru	ИСТб-20-5	ИИИТиАД	муж.	+79502251917	2002-05-05	Очно-Заочно	can all	5	participant	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
 6	6543176	Конышев Тиур Рустамович	abcd@mail.ru	ИСТб-20-4	ИИИТиАД	муж.	+79502251917	2002-05-05	Очно-Заочно	can all	5	participant	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
+=======
+1	2354354	Олег Олегов Олегович	admin@mail.ru	ИСТб-20-4	ИИИТиАД	муж.	+79505553535	2002-01-01	Очно	can view directions,can view reports directions,can create teams,can view reports teams,can view reports team	1	admin	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
+2	3546735	Игорь Игорев Игоревич	bossTeam@mail.ru	ИСТб-20-1	ИИИТиАД	муж.	+79501112323	2002-02-02	Очно	can view reports team	2	bossTeam	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
+3	5678644	Любовь Любововна Олеговна	bossDirections@mail.ru	ИСТб-20-3	ИИИТиАД	жен.	+79506663311	2002-03-03	Заочно	can create teams, can view reports teams	3	bossDirections	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
+4	9534531	Ольга Ольговна Олеговна	bossUniversity@mail.ru	ИСТб-20-2	ИИИТиАД	жен.	+79507984512	2002-04-04	Заочно	can view directions,can view reports directions,can create teams,can view reports teams	4	bossUniversity	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
+5	6543176	Ярополк Ярорлков Ярополкович	participant@mail.ru	ИСТб-20-5	ИИИТиАД	муж.	+79502251917	2002-05-05	Очно-Заочно	\N	5	participant	$argon2id$v=19$m=65536,t=3,p=4$J+hXXXB6GGL9EMVWFk6rDg$TW9nWuJK/SNUe6iyz8rG3EvstFdRf0Vw4OzxOIFWZaA
+>>>>>>> 6cfe73a1f51b0506833f51233370ecc139e39def
 \.
 
 
@@ -827,7 +846,11 @@ SELECT pg_catalog.setval('public.forms_id_seq', 1, true);
 -- Name: functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
+<<<<<<< HEAD
 SELECT pg_catalog.setval('public.functions_id_seq', 40, true);
+=======
+SELECT pg_catalog.setval('public.functions_id_seq', 37, true);
+>>>>>>> 6cfe73a1f51b0506833f51233370ecc139e39def
 
 
 --
@@ -854,7 +877,7 @@ SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 -- Name: teams_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.teams_id_seq', 22, true);
+SELECT pg_catalog.setval('public.teams_id_seq', 24, true);
 
 
 --
@@ -872,7 +895,7 @@ SELECT pg_catalog.setval('public.user_forms_id_seq', 1, true);
 -- Name: user_functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_functions_id_seq', 1, true);
+SELECT pg_catalog.setval('public.user_functions_id_seq', 3, true);
 
 
 --
@@ -1055,7 +1078,11 @@ ALTER TABLE ONLY public.user_forms
     ADD CONSTRAINT "FK_f8a70ba3fd198a242c1f76737aa" FOREIGN KEY (field_id) REFERENCES public.form_fields(id);
 
 
+<<<<<<< HEAD
 -- Completed on 2023-03-12 18:55:10
+=======
+-- Completed on 2023-03-04 19:32:41
+>>>>>>> 6cfe73a1f51b0506833f51233370ecc139e39def
 
 --
 -- PostgreSQL database dump complete
