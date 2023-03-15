@@ -23,12 +23,14 @@
     "http-cache-semantics": "^4.1.1",
     "json5": "^2.2.2",
     "pinia": "^2.0.32",
+    "vue": "^3.2.47",
     "v-calendar": "^3.0.0-alpha.8",
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.1.6",
     "vue-select": "^4.0.0-beta.6"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.191",
     "@types/node": "^16.18.13",
     "@types/vue-select": "^3.16.2",
     "@vitejs/plugin-vue": "^3.2.0",

@@ -86,6 +86,15 @@ const router = createRouter({
         permission: 'can view reports teams'
       }
     },
+    {
+      path: "/my",
+      name: "Personal",
+      // @ts-ignore
+      component: () => import('@/views/Personal.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
   ],
 });
 
