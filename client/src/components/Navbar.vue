@@ -71,11 +71,6 @@ const itemLink = [
     </div>
 </template>
 
-<<<<<<< HEAD
-<style>
-@import '@/assets/navbar.scss';
-
-=======
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
 
@@ -151,5 +146,4 @@ const itemLink = [
         }
     }
 }
->>>>>>> 6cfe73a1f51b0506833f51233370ecc139e39def
 </style>

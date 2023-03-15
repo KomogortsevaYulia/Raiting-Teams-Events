@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import { createApp } from "vue"
-import App from './App.vue'
-=======
 import { createApp } from "vue";
->>>>>>> 6cfe73a1f51b0506833f51233370ecc139e39def
 import { createPinia } from 'pinia';
 import App from "./App.vue";
 import router from "./router";
@@ -21,14 +16,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faUser, faCalendarDays, faClose } from '@fortawesome/free-solid-svg-icons'
 //компонент для выбора юзера из выпадающего списка
 import vSelect from 'vue-select'
-<<<<<<< HEAD
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-library.add(faUser)
-=======
 
 library.add(faUser, faCalendarDays, faClose)
->>>>>>> 6cfe73a1f51b0506833f51233370ecc139e39def
 
 const app = createApp(App);
 app.component('v-select', vSelect)
