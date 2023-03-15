@@ -1,31 +1,35 @@
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
-    import { useMainStore } from '@/store/main_store';
+import { onMounted, ref } from 'vue';
+import { usePermissionsStore } from '@/store/permissions_store';
+import { useRoute, useRouter } from 'vue-router';
 
-    const store = useMainStore();
-    const show = ref(true);
-    const email = ref("");
-    const password = ref("");
+const permissionsStore = usePermissionsStore();
+const router = useRouter();
+const route = useRoute();
 
-    
-    function OnRegistrationSubmit() {
-        console.log('Registration is clicked!');
-    }
+const show = ref(true);
+const username = ref("");
+const password = ref("");
 
-    function OnLoginCampusSubmit() {
-        console.log('Campus login is clicked!');
-    }
 
-    onMounted(() => {
-        store.checkLogin();
+function OnRegistrationSubmit() {
+    console.log('Registration is clicked!');
+}
+
+function OnLoginCampusSubmit() {
+    console.log('Campus login is clicked!');
+}
+
+async function OnLoginSubmit() {
+    let isLogged = await permissionsStore.login({
+        username: username.value,
+        password: password.value,
     })
-
-    function OnLoginSubmit() {
-            store.login({
-            email: email.value,
-            password: password.value,
-        })
+    if (isLogged) {
+        // @ts-ignore
+        router.push(route.query.next);
     }
+}
 
 </script>
 
@@ -34,8 +38,8 @@
 
         <a>Система учета студенческих коллективов и мероприятий ИРНИТУ</a>
         <div class="form-login__choice">
-            <a @click="show = true" :class="{active: show}">Авторизация</a>
-            <a @click="show = false" :class="{active: !show}">Регистрация</a>
+            <a @click="show = true" :class="{ active: show }">Авторизация</a>
+            <a @click="show = false" :class="{ active: !show }">Регистрация</a>
         </div>
         <div v-if="show" class="form-login__submit-campus">
             <button @click="OnLoginCampusSubmit" class="btn-campus" type="submit">Авторизоваться через кампус</button>
@@ -44,7 +48,7 @@
         <!-- Форма авторизации -->
         <form v-if="show" @submit.prevent="OnLoginSubmit">
             <div class="form-login__input">
-                <input v-model="email" type="text" placeholder="Почта" required>
+                <input v-model="username" type="text" placeholder="Почта" required>
             </div>
             <div class="form-login__input">
                 <input v-model="password" type="password" placeholder="Пароль" required>
@@ -54,6 +58,7 @@
                 <button type="submit">Войти</button>
             </div>
         </form>
+
         <!-- Форма регистрации -->
         <form v-if="!show" @submit.prevent="OnRegistrationSubmit">
             <div class="form-login__input">
@@ -75,14 +80,16 @@
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .form-login {
     display: flex;
-    padding: 2rem 4rem 2rem 4rem;  
+    padding: 2rem 4rem 2rem 4rem;
     border-radius: 20px;
     height: 500px auto;
-    width: 30%;
+    width: 40%;
     flex-direction: column;
+    margin: auto;
+    background-color: #fff;
     // box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
     border: var(--main-border-card);
 
@@ -97,6 +104,7 @@
         display: flex;
         justify-content: center;
         padding-bottom: 1rem;
+        text-decoration: none;
 
         a {
             cursor: pointer;
@@ -133,9 +141,11 @@
     .form-login__submit {
         display: flex;
         justify-content: end;
+        align-items: center;
 
         p {
             cursor: pointer;
+            margin: 0;
             padding-right: 1rem;
             font-size: 14px;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;

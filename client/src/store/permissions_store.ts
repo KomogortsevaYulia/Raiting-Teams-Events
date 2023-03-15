@@ -2,77 +2,77 @@ import axios from "axios";
 import { computed, ref } from "vue";
 import type { Permission } from "@/types";
 import { defineStore } from "pinia";
-import router from "@/router";
-import { useTeamStore } from '@/store/team_store';
+import { useRoute, useRouter } from "vue-router";
 
-export const useUserPermissionsStore = defineStore("userPermissionsStore", () => {
-    const teamStore = useTeamStore();
+export const usePermissionsStore = defineStore("permissionsStore", () => {
+    const router = useRouter();
 
     const username = ref("")
+    const fullname = ref("")
     const permissions = ref<Array<Permission>>([])
-    const is_superuser = ref("")
+    const isLogged = ref(false)
 
     function can(permission: Permission) {
         return permissions.value.includes(permission)
     }
 
-    async function checkLogin(onAuthenticated: Function) {
+    async function checkLogin() {
+        let response = await axios.get("api/users/check-login")
 
-        await axios.get("/api/users/getInfoUser").then(r => {
-            axios.defaults.headers.common['X-CSRFToken'] = r.data.csrf;
-            is_superuser.value = r.data.is_superuser
-            if (r.data.authenticated) {
-                let nextUrl = "dashboard";
-                if (typeof router.options.history.state.current == 'string' && router.options.history.state.current != '/' && router.options.history.state.current != '/#/') {
-                    nextUrl = router.options.history.state.current
-                }
-                router.push(nextUrl).catch(ex => {
-                    if (ex.name !== "NavigationDuplicated")
-                        throw ex
-                })
-                permissions.value = r.data.permissions
-                username.value = r.data.username
+        if (isLogged) {
+            isLogged.value = true;
+            permissions.value = response.data.permissions
+            username.value = response.data.username
+            fullname.value = response.data.fullname
 
-                if (can('can create teams'))
-                    teamStore.CreateTeamsTest
-
-                if (onAuthenticated) {
-                    onAuthenticated()
-                    console.log('sadasd');
-
-                }
-            } else {
-                router.push("/opa").catch(ex => {
-                    if (ex.name !== "NavigationDuplicated")
-                        throw ex
-                })
+            let nextUrl = "/news";
+            if (typeof router.options.history.state.current == 'string' && router.options.history.state.current != '/' && router.options.history.state.current != '/#/') {
+                nextUrl = router.options.history.state.current
             }
-        })
+            router.push(nextUrl)
+
+        } else {
+            permissions.value = []
+            username.value = ''
+            fullname.value = ''
+        }
     }
 
-    async function login({ email, password }: { email: string, password: string }) {
-        console.log('Login in permission');
-        console.log(email);
-        console.log(password);
-
-        axios.post("/api/users/login", {
+    async function login({ username, password }: { username: string, password: string }) {
+        let response = await axios.post("/api/users/login", {
             "user": {
-                email: email,
+                username: username,
                 password: password
             }
-            // @ts-ignore
-        }).finally(() => checkLogin(onAuthenticated))
+        })
+
+        if (response) {
+            isLogged.value = true;
+        } else isLogged.value = false;
+
+        router.push('/news')
+        await checkLogin();
+
+        return isLogged;
     }
 
     async function logout() {
         // @ts-ignore
-        axios.post("/accounts/logout/").finally(() => checkLogin(null))
+        await axios.post("/api/users/logout")
+
+        permissions.value = []
+        fullname.value = ''
+        isLogged.value = false
+
+        router.push('/news')
+        await checkLogin()
     }
 
     return {
-        // permissions,
-        // username,
-        // is_superuser,
+        permissions,
+        username,
+        fullname,
+        isLogged,
 
         checkLogin,
         login,

@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus,Query, UsePipes, UnauthorizedException, UseGuards, Session } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus,Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -24,7 +24,7 @@ export class UsersController {
   @ApiParam({ name: "limit", required: false, description: "ограничить число получаемых записей" })
   @ApiResponse({ status: HttpStatus.OK, description: "Success", type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAll(@Query() params: any) {
+  async findAll(@Query() params: any) {
 
     let limit:number = params.limit
     let fullname:string = params.fullname
@@ -42,23 +42,22 @@ export class UsersController {
     return users
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: "Получение пользователя" })
-  @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOneWithFunction(+id);
-  }
+  // @Get(':id')
+  // @ApiOperation({ summary: "Получение пользователя" })
+  // @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
+  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
+  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  // async findOne(@Param('id') id: string) {
+  //   //пытается выполниться, при вызове метода checkLogin????
+  //   return this.usersService.findOneWithFunction(+id);
+  // }
 
   @UseGuards(LocalAuthGuard)
-  @Get('/getInfoUser')
-  async getInfoUser(@Request() req): Promise<any> {
-    console.log(req.session)
+  @Get('/check-login')
+  async checkLogin(@Request() req): Promise<any> {
     const user = await this.usersService.findById(req.session.user_id)
-    const { password, ...result } = user;
-
-    return result;
+    let { password, ...res } = user;
+    return res;
   }
 
   @ApiOperation({ summary: "Регистрация пользователя" })
@@ -78,6 +77,7 @@ export class UsersController {
     else {
       throw new UnauthorizedException();
     }
+
   }
 
   @ApiOperation({ summary: "Login" })
@@ -87,8 +87,8 @@ export class UsersController {
   @Post('/login')
   async login(@Request() req) {
     const pass = req.body.user.password
-    const email = req.body.user.email
-    const user = await this.usersService.login(email, pass)
+    const username = req.body.user.username
+    const user = await this.usersService.login(username, pass)
     if (user) {
       req.session.user_id = user.id;
       req.session.logged = true;
@@ -99,11 +99,12 @@ export class UsersController {
     }
   }
 
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('/logout')
   async logout(@Request() req) {
     req.session.logged = false;
-    return true;
+    return;
   }
 
 
