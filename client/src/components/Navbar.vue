@@ -13,12 +13,12 @@ function OnExitSubmit() {
 }
 
 
-    const itemLink = [
-        { name: "Анкета(Создание)", path: "/questionnaire" }, 
-        { name: "Мероприятия", path: "/news" }, 
-        { name: "Коллективы", path: "/teams" }, 
-        { name: "Направления", path: "/directions" }, 
-    ]
+const itemLink = [
+    { name: "Анкета(Создание)", path: "/questionnaire" },
+    { name: "Мероприятия", path: "/news" },
+    { name: "Коллективы", path: "/teams" },
+    { name: "Статистика", path: "/statistic" },
+]
 </script>
 
 <template>
