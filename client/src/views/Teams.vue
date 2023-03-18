@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import Filter from '@/components/Filter.vue';
-import { onBeforeMount, ref } from 'vue';
-import TeamsForm from './TeamsForm.vue'
 
-import { useTeamStore } from "../store/team_store"
+import Filter from '@/components/Filter.vue';
+import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
+import Switch_toggle from '@/components/Switch_toggle.vue';
+import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
+import { useTeamStore } from "../store/team_store"
 
 const permissions_store = usePermissionsStore();
+const teamStore = useTeamStore();
+
 const can = permissions_store.can;
 
 const show = ref(true);
-const layout = ref(true);
-
-
 const data = ref()
 
 onBeforeMount(async () => {
@@ -23,10 +23,12 @@ onBeforeMount(async () => {
 
 // вытащить коллективы из бд 
 async function fetchTeams() {
-  data.value = await useTeamStore().fetchTeams()
+  data.value = await teamStore.fetchTeams()
 }
 
 const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
+
+
 </script>
 
 <template>
@@ -35,67 +37,71 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{active: show}">Общий список</a>
-      <a v-if="can('can create teams')" @click="show = false" :class="{ active: !show }">Создать коллектив</a>
+      <a @click="show = true" :class="{ active: show }">Общий список</a>
+      <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
+      <ModalCreateTeam />
     </div>
 
     <!-- Обертка карточек коллективов -->
     <div v-if="show" class="wrapper-team__content">
 
       <!-- Фильтр -->
-      <div class="content-filter">
-        <Filter />
-      </div>
-
-      <!-- Обертка контента с карточками -->
-      <div class="content-cards">
-
-        <!-- Инпут с поиском -->
-        <div class="cards__search">
-          <input placeholder="Начните поиск..." />
-          <div class="search-toggle">
-            <img @click="layout = true" :class="{ active: layout }" src="@/assets/icon/grid.png">
-            <img @click="layout = false" :class="{ active: !layout }" src="@/assets/icon/list.png">
-          </div>
-        </div>
-        <!--  {{ data }}-->
-        <!-- Сами карточки -->
-        <div :class="[layout === true ? 'wrapper-grid' : 'wrapper-list']">
-
-
-          <div v-for="team in data" class="card">
-            <img :src="team.image">
-            <div class="wrapper-content">
-              <div>
-                <a>{{ team.title }}</a>
-                <p>{{ team.description }}</p>
-                <p>Руководители:
-                  <span v-for="leader in (team.functions[0]).userFunctions">
-                    {{ leader.user.fullname}}<br>
-                  </span>
-                </p>
-              </div>
-              <div class="btn">
-                <RouterLink to="/team-page">
-                  <button>Подробнее</button>
-                </RouterLink>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
+    <div class="content-filter">
+      <Filter />
     </div>
 
-    <div v-if="!show" class="wrapper-team__create">
-     <TeamsForm/>
+    <!-- Обертка контента с карточками -->
+    <div class="content-cards">
+
+      <!-- Инпут с поиском -->
+      <div class="cards__search">
+        <input placeholder="Начните поиск..." />
+        <div class="search-toggle">
+          <Switch_toggle />
+        </div>
+        </div>
+        <!--  {{ data }}-->
+
+
+        <!-- Сами карточки -->
+        <div :class="[teamStore.layout === true ? 'wrapper-grid' : 'wrapper-list']">
+          <div v-for="team in data" class="cardEvent">
+            <div class="imgEvent">
+              <div></div>
+              <p>{{ team.title }}</p>
+              <img :src="team.image">
+            </div>
+            <div class="wrapperContent">
+              <div>
+                <p>{{ team.description }}</p>
+                <!-- <p class="date">06.04.2021</p> -->
+              </div>
+            </div>
+            <!-- <img class="imgTeams" width="250" height="145" :src="team.image"> -->
+            <!-- <div class="wrapper-content">
+                                                <a>{{ team.title }}</a>
+                                                <p>{{ team.description }}</p>
+                                                <p>Руководители:
+                                                  <span v-for="leader in (team.functions[0]).userFunctions">
+                                                    {{ leader.user.fullname }}<br>
+                                                  </span>
+                                                </p>
+                                                <div class="btn">
+                                                  <RouterLink to="/team-page">
+                                                    <button>Подробнее</button>
+                                                  </RouterLink>
+                                                </div>
+                                              </div> -->
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
 </template>
 
 <style lang="scss" scoped>
-@import '../assets/globals.scss';
+// @import '../assets/globals.scss';
 
 .wrapper-team {
   display: block;
@@ -110,6 +116,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
       cursor: pointer;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       font-size: 14px;
+      text-decoration: none;
       transition: 0.3s;
       color: #348498;
       margin-inline: 1rem;
@@ -153,59 +160,36 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         input {
           margin: 0;
+          // height: 40px;
           width: 80%;
         }
 
         .search-toggle {
           display: flex;
           padding-left: 1rem;
-          align-items: center;
-          justify-content: center;
+          // align-items: center;
+          // justify-content: center;
 
-          img {
-            cursor: pointer;
-            padding-right: 1rem;
-            transition: 0.3s;
-            height: 28px;
-            width: 28px;
-            opacity: 0.5;
+          // img {
+          //   cursor: pointer;
+          //   padding-right: 1rem;
+          //   transition: 0.3s;
+          //   height: 28px;
+          //   width: 28px;
+          //   opacity: 0.5;
 
-            &:hover {
-              opacity: 1;
-            }
+          //   &:hover {
+          //     opacity: 1;
+          //   }
 
-            &:active {
-              opacity: 0.5;
-            }
-          }
+          //   &:active {
+          //     opacity: 0.5;
+          //   }
+          // }
 
-          .active {
-            opacity: 1;
-          }
-        }
-      }
-
-      .card {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: var(--main-border-card);
-        margin: 0 1rem 1rem 0;
-        padding: 1rem;
-        border-radius: 15px;
-
-        a {
-          cursor: pointer;
-          text-align: center;
-          font-size: 25px;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-
-        img {
-          height: 150px;
-          width: 150px;
-          padding: 1rem;
-          border-radius: 10rem;
+          // .active {
+          //   opacity: 1;
+          // }
         }
       }
 
@@ -213,81 +197,121 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         display: flex;
         flex-wrap: wrap;
 
-        .card {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          width: 35%;
+        .cardEvent {
+          box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+          width: 250px;
+          height: 350px;
+          margin: 0 1rem 1rem 0;
+          flex-wrap: wrap;
+          overflow: hidden;
+          border-radius: 5px;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          transition: all .5s;
+        }
 
-          .wrapper-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .cardEvent:hover {
+          cursor: pointer;
+          box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+        }
 
-            .btn {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-            }
+        .imgEvent {
+          position: relative;
+          height: 13rem;
+          overflow: hidden;
+
+          p {
+            font-weight: 100;
+            font-size: 1.4rem;
+            margin: 4rem 0 0 1rem;
+            color: #fff;
+            position: absolute;
+          }
+
+          div {
+            width: 100%;
+            height: 13rem;
+            background-color: rgba(0, 0, 0, 0.295);
+            position: absolute;
+          }
+
+          img {
+            width: 100%;
+          }
+
+        }
+
+        .wrapperContent {
+          padding: 1rem;
+
+          .date {
+            text-align: end;
+            font-size: 1.6rem;
+            font-weight: 100;
           }
         }
+
       }
 
       .wrapper-list {
-        padding-bottom: 1rem;
-
-        .card {
-          width: 80%;
-        }
-      }
-    }
-  }
-
-  .wrapper-team__create {
-    .form-team__create {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      border-radius: 15px;
-      border: var(--main-border-card);
-
-      .fuck-off-btn {
         display: flex;
-        justify-content: end;
-      }
+        flex-wrap: wrap;
 
-      .create-filds {
-        display: block;
-        padding: 2rem;
-        width: 100%;
+        .cardEvent {
+          box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+          width: 830px;
+          height: 350px;
+          margin: 0 1rem 1rem 0;
+          flex-wrap: wrap;
+          overflow: hidden;
+          border-radius: 5px;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          transition: all .5s;
+        }
 
-        .filds-area {
-          display: flex;
-          flex-direction: column;
+        .cardEvent:hover {
+          cursor: pointer;
+          box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+        }
 
-          textarea {
-            min-height: 20%;
-            min-width: 70%;
-            max-width: max-content;
-            margin-bottom: 1rem;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        .imgEvent {
+          position: relative;
+          height: 13rem;
+          overflow: hidden;
+
+          p {
+            font-weight: 100;
+            font-size: 1.4rem;
+            margin: 4rem 0 0 1rem;
+            color: #fff;
+            position: absolute;
           }
 
-          input {
-            margin-bottom: 1rem;
+          div {
+            width: 100%;
+            height: 13rem;
+            background-color: rgba(0, 0, 0, 0.295);
+            position: absolute;
+          }
+
+          img {
+            width: 100%;
+          }
+
+        }
+
+        .wrapperContent {
+          padding: 1rem;
+
+          .date {
+            text-align: end;
+            font-size: 1.6rem;
+            font-weight: 100;
           }
         }
-      }
 
-      .create-wrapper-img {
-        width: 30%;
-        border-radius: 0 1rem 1rem 0;
-        background-color: #D9D9D9;
-        background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");
-        background-size: cover;
       }
     }
   }
+
 }
 </style>

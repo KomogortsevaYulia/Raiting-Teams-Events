@@ -11,19 +11,21 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <header>
+  <header class="mw-100">
     <Navbar />
   </header>
-  <div class="container">
+  <div class="container mt-4">
     <RouterView />
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
+header {
+  background-color: #fff;
+  box-shadow: 0 6px 4px -4px rgba(0, 0, 0, .2);
+}
+
 .container {
-  padding-top: 2rem;
-  margin-inline: 10%;
-  display: flex;
-  justify-content: center;
+  margin-inline: 0;
 }
 </style>
