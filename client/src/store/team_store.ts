@@ -4,10 +4,10 @@ import { computed, ref } from "vue";
 import axios from "axios";
 
 export const useTeamStore = defineStore("teams", () => {
+    const layout = ref(true)
 
     function CreateTeamsTest() {
         console.log('Это сработало!');
-
     }
 
     // Вывести все коллективвы с руководителсями
@@ -46,11 +46,18 @@ export const useTeamStore = defineStore("teams", () => {
         return responseMsg
     }
 
+    // Переключение Switch_toggle в стр. Коллективы и Мероприятия
+    function setLayout(res: any) {
+        this.layout = res;
+    }
 
     return {
         CreateTeamsTest,
         fetchCreateTeams,
         fetchTeams,
-        createTeam
+        createTeam,
+        setLayout,
+
+        layout,
     }
 });
