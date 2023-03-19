@@ -10,10 +10,33 @@ import Filter from '@/components/Filter.vue';
         <button class="bannerBtn">Нажми меня</button>
       </span>
     </div>
-    <div class="cards__search">
-      <input placeholder="Начните поиск..." />
+    <div class="events__container">
+      <!-- Боковое меню начало -->
+      <div class="checkbox__nav">
+        <div class="checkbox__block" v-for="menu_item in menu_items" :key="menu_item.id">
+          <div class="checkbox__title">{{ menu_item.title }}</div>
+          <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id">
+            <input type="checkbox" class="checkbox">
+            <span class="fake"></span>
+            <span class="span__title">{{ menu_type.title }}</span>
+          </label>
+        </div>
+      </div>
+      <!-- Правая часть контейнера -->
+      <div class="cards__container">
+        <!-- Поисковые строки -->
+        <div class="cards__search">
+          <input class="title__search" placeholder="Начните поиск..." />
+          <input class="date__search" placeholder="Выберите дату" type="date"/>
+          <div class="cards__wrap"></div>
+        </div>
+        <div class="cards">
+          <div class="card"></div>
+          <div class="card"></div>
+        </div>
+      </div>
     </div>
-    <div class="cardContainer">
+    <!-- <div class="cardContainer">
       <div class="cardEvent">
         <div class="imgEvent">
           <div></div>
@@ -70,20 +93,134 @@ import Filter from '@/components/Filter.vue';
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script lang="ts">
+export default{
+  data(){
+    return{
+      menu_items: [
+        {id: 1, title: 'Формат проведения', menu_types:[
+          {id: 1, title:'Online'},
+          {id: 2, title:'Offline'},
+        ]},
+        {id: 2, title: 'Уровень', menu_types:[
+          {id: 1, title:'Внутривузовский'},
+          {id: 2, title:'Межвузовский'},
+          {id: 3, title:'Региональный'},
+          {id: 4, title:'Всероссийский'},
+        ]},
+        {id: 3, title: 'Институт', menu_types:[
+          {id: 1, title:'Институт авиамашиностроения'},
+          {id: 2, title:'Межвузовский'},
+          {id: 3, title:'Региональный'},
+          {id: 4, title:'Всероссийский'},
+        ]}
+      ]
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+
+.events__container{
+  display: flex;
+  padding-top: 1rem;
+  .checkbox__block{
+    margin-bottom: 1rem;
+  }
+  .checkbox__nav{
+    background-color: #fff;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+    width: 20rem;
+    padding: 2rem;
+    border-radius: 5px;
+    .checkbox__title{
+      color: #373737;
+      margin-bottom: 0.5rem;
+    }
+    .checkbox__container{
+      color: #A1A1A1;
+      padding: 0.2rem 0.5rem;
+      display: flex;
+      .checkbox{
+        display: none;
+        &:checked + .fake::before{
+          opacity: 1;
+        }
+
+      }
+      .span__title{
+        font-size: 1rem;
+        margin-left: 1rem;
+        hyphens: manual;
+        width: 50%;
+      }
+      .fake{
+        display: inline-block;
+        position: relative;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 0.3rem;
+        background-color: #CDEEF0;
+        &:hover{
+          cursor: pointer;
+        }
+
+      }
+      .fake::before{
+        content: "";
+        position: absolute; 
+        display: block;
+        width: 1.5rem;
+        height: 1.5rem;
+        background-color: #5BD1D7;
+        background-image: url(@/assets/icon/checked.svg);
+        border-radius: 0.3rem;
+        transform: (-50%, -50%);
+        opacity: 0;
+        transition: .2s;
+      }
+      
+    }
+  }
+  .cards__container{
+    margin-left: 2rem;
+    width: 100%;
+    .cards__search {
+      display: flex;
+      justify-content: space-between;
+    .title__search{
+      width: 70%;
+    }
+    }
+    .cards__wrap{
+      background-color: #fff;
+      width: 10%;
+    }
+    .cards{
+      padding-top: 2rem;
+      .card{
+        width: 100%;
+        background-color: #fff;
+        height: 12rem;
+        margin-bottom: 1rem;
+        border: none;
+        box-shadow: 0px 5px 10px 0px rgba(114, 114, 114, 0.1);
+
+      }
+    }
+  }
+
+}
 .mainBanner {
   display: flex;
-  width: 65rem;
+  width: 100%;
   overflow: hidden;
   height: 15rem;
-  border-radius: 2rem;
   background-image: url("../assets/icon/banner.png");
   position: relative;
 }
@@ -174,13 +311,6 @@ import Filter from '@/components/Filter.vue';
   margin-bottom: 2rem;
   display: flex;
   // justify-content: space-between;
-}
-
-.cards__search {
-  input {
-    margin-top: 2rem;
-    width: 70%;
-  }
 }
 
 .teg__container {
