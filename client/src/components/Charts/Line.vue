@@ -1,17 +1,14 @@
-
-<!-- не использоуется -->
-
 <script lang="ts">
-import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { Line } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale } from 'chart.js'
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale)
 
 
 export default {
-  name: 'BarChart',
+  name: 'LineChart',
   props: ['labels', 'data', 'title', 'labelName'],
-  components: { Bar },
+  components: { Line },
   data() {
     return {
       chartData: {
@@ -20,13 +17,13 @@ export default {
           data: this.$props.data,
           label:this.$props.labelName,
           backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(255, 107, 0, 0.2)',
-            'rgba(20, 200, 86, 0.2)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(255, 107, 0, 1)',
+            'rgba(20, 200, 86, 1)',
           ]
-        }],
+      }]
       },
       chartOptions: {
         responsive: true,
@@ -50,7 +47,7 @@ export default {
 </script>
 
 <template>
-  <Bar class="chartBorder" id="my-chart-id" :options="chartOptions" :data="chartData" />
+  <Line class="chartBorder" id="my-chart-id" :options="chartOptions" :data="chartData" />
 </template>
 
 <style>

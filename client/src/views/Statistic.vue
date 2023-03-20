@@ -2,15 +2,22 @@
 import { ref } from 'vue';
 import BarChart from '@/components/Charts/Bar.vue';
 import PieChart from '@/components/Charts/Pie.vue';
+import LineChart from '@/components/Charts/Line.vue';
 import { DatePicker } from 'v-calendar';
+
 
 const date = ref(1)
 
 function changeDate(start: Date = new Date(), end: Date = new Date()) {
 }
 
-const labelsTeams = ['НИД', 'КТД', 'СД', 'ОД', 'УД']
-const dataTeams = [2, 5, 8, 8, 9]
+// const labelsTeams = ['НИД', 'КТД', 'СД', 'ОД', 'УД']
+// const dataTeams = [2, 5, 8, 8, 9]
+
+const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом','Волейбол', 
+'Бокс',  'Футбол и мини-футбол',
+]
+const dataTopTeams = [2, 5, 8, 8, 9]
 
 const labelsDatesOfEvents = ['Осень', 'Зима', 'Лето', 'Весна']
 const dataDatesOfEvents = [2, 5, 8, 8]
@@ -59,8 +66,8 @@ const show = ref(true);
           <h4>Коллективы</h4>
           <div class="row justify-content-center">
             <div class="col">
-              <BarChart class="chart" :labels="labelsTeams" :data="dataTeams"
-                title="Статистика заявок на вступление в коллективы" label-name="Кол-во заявок на вступление" />
+              <LineChart class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
+                title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" />
             </div>
           </div>
         </div>
@@ -78,8 +85,10 @@ const show = ref(true);
               <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
                 title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" />
             </div>
+            
           </div>
 
+          
         </div>
 
 
