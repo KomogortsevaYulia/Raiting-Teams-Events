@@ -1,24 +1,81 @@
 <template>
-    <div class="test">
-        <div class="icon"> AAAdasdadadaasasaadaasdadasdadadasdadsdaadsadadasdadsadadsaddasda</div>
-        <div class="text">AAAdasdadada</div>
+  <div class="avatar">
+    <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="me-2 mt-2 "/>
+    <img class="icon" width="150" height="150" src="@/assets/icon/avatar.png" alt="icon"/>
+    <p class="FIO">Олег Олегов Олегович</p>
+    <p class="text"> Институт информационных технологий и анализа данных</p>
+    <p>2 курс</p>
+    <p>ИСТБ-20-1</p>
+    <div class="tags">
+      <div class="tag">
+        Волейбол
+      </div>
+      <div class="tag">
+        Спортивные танцы
+      </div>
+      <div class="tag">
+        Спорт
+      </div>
     </div>
+  </div>
+  <div>
+    <VCalendar :rows="2" />
+  </div>
+
 </template>
 <style lang="scss">
-.conteiner{
-    justify-content: left;
+.container {
+  display: flex;
 }
+.vc-blue {
+  --vc-accent-50: #f0f9ff;
+  --vc-accent-100: #e0f2fe;
+  --vc-accent-200: #bae6fd;
+  --vc-accent-300: #7dd3fc;
+  --vc-accent-400: #38bdf8;
+  --vc-accent-500: #0ea5e9;
+  --vc-accent-600: #0284c7;
+  --vc-accent-700: #0369a1;
+  --vc-accent-800: #075985;
+  --vc-accent-900: #0c4a6e;
+}
+.avatar {
+  margin-right: 2em;
+  width: 30%;
+  height: max-content;
+  text-align: center;
+  background-color: rgb(236, 228, 228);
 
-.test {
-    justify-content: right;
+}
+.tag{
+  background-color: #5BD1D7;
+  border-radius: 15px;
+}
+.tags{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 10px;
+  grid-row-gap: 1em;
+  margin-left: 2em;
+  margin-right: 2em;
+  margin-bottom: 2em;
+}
+.FIO {
+  font-size: 1.4rem;
+}
+.text{
+  margin-right: 5em;
+  margin-left: 5em;
+  text-align: center;
 }
 
 .icon {
-    justify-content: right;
-    background-color: rgb(255, 255, 130);
+  margin: 2em 1em 2em 5em;
+  border-radius: 1000px; /* Радиус скругления */
 }
 
-.text {
-    justify-content: right;
-    background-color: aliceblue;
+.information {
+  width: 800px;
+  height: 700px;
+  background-color: rgb(236, 228, 228);
 }</style>
