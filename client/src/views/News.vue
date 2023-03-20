@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import Filter from '@/components/Filter.vue';
-</script>
-
 <template>
   <div>
     <div class="mainBanner">
@@ -15,11 +11,16 @@ import Filter from '@/components/Filter.vue';
       <div class="checkbox__nav">
         <div class="checkbox__block" v-for="menu_item in menu_items" :key="menu_item.id">
           <div class="checkbox__title">{{ menu_item.title }}</div>
-          <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id">
+          <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id" :class="{ 'hidden': menu_item.hidden && menu_type.id > 4}">
             <input type="checkbox" class="checkbox">
             <span class="fake"></span>
             <span class="span__title">{{ menu_type.title }}</span>
-          </label>
+          </label>    
+          <div class="btn__open" v-if="menu_item.menu_types.length > 4" @click="menu_item.hidden = !menu_item.hidden">
+            <div class="btn__text" v-if="hiddenCheckboxStatus">Развернуть</div>
+            <div v-else class="btn__text">Свернуть</div>
+            <div class="btn__img" :class="{'closed': hiddenCheckboxStatus}"></div>
+          </div>
         </div>
       </div>
       <!-- Правая часть контейнера -->
@@ -28,7 +29,7 @@ import Filter from '@/components/Filter.vue';
         <div class="cards__search">
           <input class="title__search" placeholder="Начните поиск..." />
           <input class="date__search" placeholder="Выберите дату" type="date"/>
-          <div class="cards__wrap"></div>
+          <Switch_toggle />
         </div>
         <div class="cards">
           <div class="card"></div>
@@ -36,69 +37,16 @@ import Filter from '@/components/Filter.vue';
         </div>
       </div>
     </div>
-    <!-- <div class="cardContainer">
-      <div class="cardEvent">
-        <div class="imgEvent">
-          <div></div>
-          <p>Региональный чемпионат WorldSkills “Инженерный дизайн CAD”</p>
-          <img src="../assets/icon/event1.png">
-        </div>
-        <div class="wrapperContent">
-          <div class="teg__container">
-            <div class="teg">
-              Offline
-            </div>
-            <div class="teg">
-              Межвузовский
-            </div>
-          </div>
-          <div>
-            <p>
-              Проводится с целью выработки у студентов навыков работы в области конструирования, для развития
-              конструкторских навыков, творческого потенциала в решении сложных нестандартных задач за короткий промежуток
-              времени
-            </p>
-            <p class="date">01.04.2021</p>
-          </div>
-        </div>
-      </div>
-      <div class="cardEvent" onclick="location.href='/event';">
-        <div class="imgEvent">
-          <div></div>
-          <p>Викторина “Роль и место прокуратуры России в Российской Федерации”</p>
-          <img src="../assets/icon/event3.png">
-        </div>
-        <div class="wrapperContent">
-          <div>
-            <p>
-              Викторина для школьников “Роль и место прокуратуры России в Российской Федерации”
-            </p>
-            <p class="date">05.04.2021</p>
-          </div>
-        </div>
-      </div>
-      <div class="cardEvent">
-        <div class="imgEvent">
-          <div></div>
-          <p>Конкурс “Защити свою профессию” по профилю “Электрические станции”</p>
-          <img src="../assets/icon/event2.png">
-        </div>
-        <div class="wrapperContent">
-          <div>
-            <p>
-              В конкурсе принимают участие студенты 4 курса профиля “Электрические станции”. Цель конкурса: выявить лучших
-              студентов по уровню освоения профессиональных компетенций и способностей к творческому мышлению
-            </p>
-            <p class="date">06.04.2021</p>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script lang="ts">
+import Switch_toggle from '@/components/Switch_toggle.vue';
+
 export default{
+  components:{
+    Switch_toggle
+  },
   data(){
     return{
       menu_items: [
@@ -112,14 +60,32 @@ export default{
           {id: 3, title:'Региональный'},
           {id: 4, title:'Всероссийский'},
         ]},
-        {id: 3, title: 'Институт', menu_types:[
-          {id: 1, title:'Институт авиамашиностроения'},
-          {id: 2, title:'Межвузовский'},
-          {id: 3, title:'Региональный'},
-          {id: 4, title:'Всероссийский'},
+        {id: 3, title: 'Институт', hidden: true, menu_types:[
+          {id: 1, title:'Авиамашиностроения и транспорта'},
+          {id: 2, title:'Архитектуры, строительства и дизайна'},
+          {id: 3, title:'Высоких технологий'},
+          {id: 4, title:'Информационных технологий и анализа даных'},
+          {id: 5, title:'Квантовой физики'},
+          {id: 6, title:'Лингвистики и межкультурной коммуникации'},
+          {id: 7, title:'Недропользования'},
+          {id: 8, title:'Экономики, управления и права'},
+          {id: 9, title:'Энергетики'},
+          {id: 10, title:'БРИКС'},
+        ]},
+        {id: 4, title: 'Курс', hidden: true, menu_types:[
+          {id: 1, title:'1 курс'},
+          {id: 2, title:'2 курс'},
+          {id: 3, title:'3 курс'},
+          {id: 4, title:'4 курс'},
+          {id: 5, title:'5 курс'},
+          {id: 6, title:'Магистратура'},
         ]}
-      ]
+      ],
+      hiddenCheckboxStatus: true
     }
+  },
+  methods:{
+  
   }
 }
 </script>
@@ -137,27 +103,54 @@ export default{
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
     width: 20rem;
     padding: 2rem;
+    max-height: 100rem;
     border-radius: 5px;
+    margin-bottom: 4rem;
+    .btn__open{
+      display: flex;
+      color: #348498;
+      padding-left: 0.5rem;
+      &:hover{
+        cursor: pointer;
+      }
+      .btn__img{
+        background-image: url(@/assets/icon/closed.svg);
+        margin-top: 0.1rem;
+        height: 1rem;
+        width: 2rem;
+        &.closed{
+          background-image: url(@/assets/icon/open.svg);
+        }
+      }
+    }
     .checkbox__title{
       color: #373737;
       margin-bottom: 0.5rem;
     }
     .checkbox__container{
-      color: #A1A1A1;
       padding: 0.2rem 0.5rem;
       display: flex;
+      &.hidden{
+        display: none;
+      }
+      &:hover{
+        cursor: pointer;
+      }
       .checkbox{
         display: none;
         &:checked + .fake::before{
           opacity: 1;
         }
-
       }
       .span__title{
+        color: #A1A1A1;
         font-size: 1rem;
         margin-left: 1rem;
         hyphens: manual;
         width: 50%;
+      }
+      .span__title-dark{
+        color: #373737;
       }
       .fake{
         display: inline-block;
@@ -168,6 +161,7 @@ export default{
         background-color: #CDEEF0;
         &:hover{
           cursor: pointer;
+          background-color: #b9e6e9;
         }
 
       }
