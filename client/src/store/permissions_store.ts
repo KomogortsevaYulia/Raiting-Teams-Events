@@ -2,11 +2,15 @@ import axios from "axios";
 import { computed, ref } from "vue";
 import type { Permission } from "@/types";
 import { defineStore } from "pinia";
+import { useRoute, useRouter } from "vue-router";
 
 export const usePermissionsStore = defineStore("permissionsStore", () => {
+    const router = useRouter();
+
     const username = ref("")
+    const fullname = ref("")
     const permissions = ref<Array<Permission>>([])
-    const isLogged = ref(false);
+    const isLogged = ref(false)
 
     function can(permission: Permission) {
         return permissions.value.includes(permission)
@@ -16,13 +20,21 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
         let response = await axios.get("api/users/check-login")
 
         if (isLogged) {
+            isLogged.value = true;
             permissions.value = response.data.permissions
             username.value = response.data.username
-            isLogged.value = true;
+            fullname.value = response.data.fullname
+
+            let nextUrl = "/news";
+            if (typeof router.options.history.state.current == 'string' && router.options.history.state.current != '/' && router.options.history.state.current != '/#/') {
+                nextUrl = router.options.history.state.current
+            }
+            router.push(nextUrl)
 
         } else {
             permissions.value = []
             username.value = ''
+            fullname.value = ''
         }
     }
 
@@ -32,13 +44,13 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
                 username: username,
                 password: password
             }
-            // @ts-ignore
         })
 
         if (response) {
             isLogged.value = true;
         } else isLogged.value = false;
 
+        router.push('/news')
         await checkLogin();
 
         return isLogged;
@@ -47,15 +59,19 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     async function logout() {
         // @ts-ignore
         await axios.post("/api/users/logout")
+
         permissions.value = []
-        username.value = ''
-        isLogged.value = false // ну так делать нельзя это дичь вроде бы
+        fullname.value = ''
+        isLogged.value = false
+
+        router.push('/news')
         await checkLogin()
     }
 
     return {
         permissions,
         username,
+        fullname,
         isLogged,
 
         checkLogin,
