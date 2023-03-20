@@ -6,9 +6,15 @@ import { DatePicker } from 'v-calendar';
 
 
 const date = ref(1)
+
 const selectedLevel = ref(0)
 const selectedType = ref(0)
 const selectedEvOrTeam = ref(0)
+
+// statitstic graphics
+const statisticDateEvent = ref(true)
+const statisticTeamsAndEvent = ref(true)
+const defaultStatistic = ref(true)
 
 function changeDate(start: Date = new Date(), end: Date = new Date()) {
 }
@@ -27,9 +33,33 @@ const dataEventsTwoType = [2, 5]
 
 
 const show = ref(true);
+
+
+
+
+
+
+function seeGraphics(typeGraphics: any) {
+  // alert(statisticDateEvent.value)
+  switch (typeGraphics.id) {
+    case 0:
+      statisticDateEvent.value = statisticDateEvent.value ? false : true;
+      break;
+    case 1:
+      statisticTeamsAndEvent.value = statisticTeamsAndEvent.value ? false : true;
+      break;
+    case 2:
+      defaultStatistic.value = defaultStatistic.value ? false : true;
+      break;
+  }
+}
 </script>
 
+
+
 <template>
+
+ 
   <!-- menu -->
   <div class=" block-content">
 
@@ -158,6 +188,7 @@ const show = ref(true);
       </div>
 
     </div>
+    <!-- menu -->
 
 
     <!-- Graphics -->
@@ -170,43 +201,39 @@ const show = ref(true);
     <div class="row">
 
       <div class="col-auto d-flex" v-for="g in typeGraphics">
-        <div class="checkbox__block">
+        <div class="checkbox__block" @click="seeGraphics(g)">
           <label class="checkbox__container">
             <input type="checkbox" class="checkbox">
             <span class="fake"></span>
-            <span class="span__title">{{ g }}</span>
+            <span class="span__title">{{ g.data }}</span>
           </label>
+        </div>
+      </div>
+    </div>
+
+    <!--Общие показатели  -->
+    <div v-if="defaultStatistic" class="row mt-4">
+
+      <div class="col" v-for="i in 4">
+        <div :class="['colored-block-' + i]" class="my-2">
+          <div class="row">info</div>
+          <div class="row">info</div>
         </div>
       </div>
 
     </div>
-
-
   </div>
-
-
-
 
 
   <div class="chart-container">
     <!-- statistic -->
     <div v-if="show" class="col">
 
+      <!-- Мероприятия -->
+      <div v-if="statisticDateEvent" class="block-content">
 
-      <div class="block-content">
-        <h4>Коллективы</h4>
-        <div class="row justify-content-center">
-          <div class="col">
-            <LineChart class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-              title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" />
-          </div>
-        </div>
-      </div>
-
-
-      <div class="block-content">
-        <h4>Мероприятия</h4>
-        <div class="row justify-content-center">
+        <div class="row d-flex justify-content-center text-center">
+          <h4>Мероприятия</h4>
           <div class="col-lg-6 col-md-auto ">
             <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
               title="Статистика дат проведения мероприятий" label-name="число мероприятий" />
@@ -218,42 +245,27 @@ const show = ref(true);
           </div>
 
         </div>
-
-
       </div>
 
 
+      <!-- Коллективы -->
+      <div v-if="statisticTeamsAndEvent" class="block-content">
 
-    </div>
-
-
-    <!-- otschet -->
-    <div v-if="!show" class="col">
-
-      <div class="mt-4">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Все</option>
-          <option value="1">КТД</option>
-          <option value="2">УД</option>
-          <option value="3">СД</option>
-          <option value="4">НИД</option>
-          <option value="5">ОД</option>
-        </select>
-      </div>
-
-
-      <div class="block-content">
-        <div class="download m-3" v-for="i in 5">
-          <div class="row align-items-center">
-            <div class="col">Описание</div>
-            <div class="col-auto"><button class="">скачать</button></div>
+        <div class="row d-flex justify-content-center text-center">
+          <h4>Коллективы</h4>
+          <div class="col">
+            <LineChart class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
+              title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" />
           </div>
         </div>
       </div>
+
     </div>
 
   </div>
 </template>
+
+
 
 <style lang="scss">
 @import '@/assets/nav-second.scss';
@@ -312,6 +324,10 @@ const show = ref(true);
 .chart-container {
   width: 100%;
   margin: auto;
+
+  .block-content {
+    padding: 80px;
+  }
 }
 
 .chart {
@@ -320,7 +336,7 @@ const show = ref(true);
   width: 100%;
 }
 
-// блоки с содержимым
+// блоки с содержимым-------------------------------------------------------------------
 .block-content {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border-radius: 5px;
@@ -368,23 +384,7 @@ const show = ref(true);
 
 }
 
-// .row {
-//   display: flex;
-//   flex-wrap: wrap;
-//   justify-content: space-between;
-// }
-
-// .column {
-//   flex-basis: calc(50% - 10px);
-//   margin-bottom: 20px;
-//   border: 1px solid;
-//   /* adjust margin and padding as needed */
-// }
-
-
-
-
-// чекбоксы
+// чекбоксы--------------------------------------------------------------------------------
 
 .checkbox__container {
   color: #A1A1A1;
@@ -410,10 +410,12 @@ const show = ref(true);
   .fake {
     display: inline-block;
     position: relative;
+    background-image: url(@/assets/icon/checked.svg);
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 0.3rem;
-    background-color: #CDEEF0;
+
+    background-color: #5BD1D7;
 
     &:hover {
       cursor: pointer;
@@ -427,8 +429,8 @@ const show = ref(true);
     display: block;
     width: 1.5rem;
     height: 1.5rem;
-    background-color: #5BD1D7;
-    background-image: url(@/assets/icon/checked.svg);
+    background-color: #CDEEF0;
+
     border-radius: 0.3rem;
     transform: (-50%, -50%);
     opacity: 0;
@@ -438,8 +440,44 @@ const show = ref(true);
 
 
 
-// accordeon
+// accordeon--------------------------------------------------------------------------------
+
+
+// colored-block
+
+.colored-block-1,
+.colored-block-2,
+.colored-block-3,
+.colored-block-4 {
+
+  border-radius: 10px;
+  padding: 20px 80px;
+  min-width: fit-content;
+  min-height: 100px;
+}
+
+.colored-block-1 {
+  background: #CEEAB2;
+  background: linear-gradient(120deg, #CEEAB2 0%, #ABECEC 100%);
+}
+
+.colored-block-2 {
+  background: #FFADAD;
+  background: linear-gradient(120deg, #FFADAD 0%, #E7C756 100%);
+}
+
+.colored-block-3 {
+  background: #A9ADFF;
+  background: linear-gradient(120deg, #A9ADFF 0%, #5BDFDF 100%);
+}
+
+.colored-block-4 {
+  background: #E5ADFF;
+  background: linear-gradient(120deg, #E5ADFF 0%, #718CED 100%);
+}
 </style>
+
+
 
 
 <!-- data -->
@@ -449,9 +487,9 @@ export default {
   data() {
     return {
       directions: ['ВСЕ', 'НИД', 'КТД', 'СД', 'ОД', 'УД'],
-      typeGraphics: ['Статистика дат проведения мероприятий',
-        'Статистика коллективов с количество мероприятий',
-        'Общие показатели'],
+      typeGraphics: [{ id: 0, data: 'Статистика дат проведения мероприятий' },
+      { id: 1, data: 'Статистика коллективов с количество мероприятий' },
+      { id: 2, data: 'Общие показатели' }],
       dates: [{ id: 0, date: '1н' }, { id: 1, date: '1м' }, { id: 2, date: '1г' }],
 
       levels: [{ id: 0, data: "Все уровни" }, { id: 1, data: 'вузовский' },
