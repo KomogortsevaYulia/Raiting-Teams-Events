@@ -64,7 +64,9 @@ const router = createRouter({
       path: "/account",
       // @ts-ignore
       component: () => import('@/views/Account.vue'),
-      meta: {}
+      meta: {
+        // isLoged: true
+      }
     },
     {
       // Отвественный ИРНИТУ
@@ -84,12 +86,30 @@ const router = createRouter({
         permission: 'can view reports teams'
       }
     },
+    {
+      path: "/my",
+      name: "Personal",
+      // @ts-ignore
+      component: () => import('@/views/Personal.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },{
+      path: "/questionnaire",
+      name: "Questionnaire",
+      // @ts-ignore
+      component: () => import('@/views/Questionnaire.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    }
   ],
 });
 
 // Редирект на логин, если роут защищен 
 router.beforeEach((to) => {
   const useStore = usePermissionsStore();
+
   // @ts-ignore
   if (to.meta.permission && !useStore.can(to.meta.permission)) {
     return {
@@ -97,6 +117,15 @@ router.beforeEach((to) => {
       query: { next: to.fullPath }
     }
   }
+
+  // if (to.meta.isLoged && !useStore.isLogged) {
+  //   console.log('omg see here!');
+  //   console.log(useStore.isLogged);
+  //   return {
+  //     path: '/login',
+  //     query: { next: to.fullPath }
+  //   }
+  // }
 
   return true;
 })

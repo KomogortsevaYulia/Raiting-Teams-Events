@@ -80,15 +80,16 @@ async function OnLoginSubmit() {
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .form-login {
     display: flex;
     padding: 2rem 4rem 2rem 4rem;
     border-radius: 20px;
     height: 500px auto;
-    width: 30%;
+    width: 40%;
     flex-direction: column;
     margin: auto;
+    background-color: #fff;
     // box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
     border: var(--main-border-card);
 
@@ -103,6 +104,7 @@ async function OnLoginSubmit() {
         display: flex;
         justify-content: center;
         padding-bottom: 1rem;
+        text-decoration: none;
 
         a {
             cursor: pointer;
@@ -139,9 +141,11 @@ async function OnLoginSubmit() {
     .form-login__submit {
         display: flex;
         justify-content: end;
+        align-items: center;
 
         p {
             cursor: pointer;
+            margin: 0;
             padding-right: 1rem;
             font-size: 14px;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
