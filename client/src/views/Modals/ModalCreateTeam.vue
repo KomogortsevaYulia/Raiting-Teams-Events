@@ -77,7 +77,7 @@ async function createTeam() {
 
 <template>
   <!-- Button trigger modal -->
-  <button type="button" class="button-custom" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button type="button" class="btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Создать коллектив
   </button>
 
@@ -88,7 +88,7 @@ async function createTeam() {
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Создать коллектив</h1>
-          <button type="button" class=" button-custom btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class=" btn-secondary btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <!-- Это вся обертка -->

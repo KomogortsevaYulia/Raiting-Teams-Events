@@ -4,6 +4,9 @@
     --main-color-hover: #fc745c;
     --main-border-card: 1px solid #d9d9d9;
     --main-navigation-color: #348498;
+
+    // --second-color-hover: #9DD9D2;
+    --second-color: #5BD1D7;
 }
 
 // Обёртка на формы
@@ -76,13 +79,28 @@ textarea {
     }
 }
 
-.button-custom {
-    border-radius: 20px;
-
+// вторичная кнопка
+.btn-secondary {
+    border-radius: 10px;
+    
     &:hover {
         background: var(--main-color);
     }
 
+}
+
+// главная кнопка - побуждает к действию (выделяется)
+.btn-primary{
+    border-radius: 10px;
+    width: auto;
+    padding: 10px 30px !important;
+    background: var(--main-color);
+    color: #fff;
+
+    &:hover {
+        background: var(--main-color-hover);
+        color: #fff;
+    }
 }
 
 h3 {

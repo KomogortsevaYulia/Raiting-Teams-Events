@@ -51,7 +51,7 @@ export default {
 <style>
 .chartBorder {
   border: var(--main-border-card);
-  border-radius: 20px;
+  border-radius: 5px;
   padding: 20px;
   width: 100%;
 
