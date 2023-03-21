@@ -4,13 +4,13 @@ import { ApiProperty } from "@nestjs/swagger";
 
 @Entity('events')
 export class Event {
-   
+
     @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number
-   
+
     @ApiProperty()
-    @Column()
+    @Column({ nullable: true })
     type: string
 
     @ApiProperty()
@@ -18,8 +18,12 @@ export class Event {
     title: string
 
     @ApiProperty()
-    @Column("simple-array")
-    users_id: number[]
+    @Column()
+    dateStartRegistration: Date
+
+    @ApiProperty()
+    @Column()
+    dateEndRegistration: Date
 
     @ApiProperty()
     @Column()
@@ -34,19 +38,43 @@ export class Event {
     description: string
 
     @ApiProperty()
-    @Column()
-    image: string
+    @Column("simple-array")
+    images: string[]
 
     @ApiProperty()
     @Column()
-    size: string
+    location: string
 
     @ApiProperty()
-    @Column()
-    repeat: boolean
+    @Column({
+        type: "enum",
+        enum: ["Вузовский", "Городской", "Региональный"],
+        default: "Вузовский",
+        nullable: true
+    })
+    level: string
+
 
     @ApiProperty()
     @Column("simple-array")
     tags: string[]
+
+    @ApiProperty()
+    @Column({
+        type: "enum",
+        enum: ["Очное", "Онлайн", "Смешанное", "Выездное", "Заочный"],
+        default: "Очное",
+        nullable: true
+    })
+    format: string
+
+    @ApiProperty()
+    @Column({
+        type: "enum",
+        enum: ["Культурно-массовая","Общественная", "Научная", "Спортивная", "Учебная"],
+        default: "Очное",
+        nullable: true
+    })
+    direction: string
 }
 
