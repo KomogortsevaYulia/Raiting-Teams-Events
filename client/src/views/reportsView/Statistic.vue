@@ -7,19 +7,23 @@ import { DatePicker } from 'v-calendar';
 
 const date = ref(1)
 
-const selectedLevel = ref(0)
-const selectedType = ref(0)
-const selectedEvOrTeam = ref(0)
+const currDirection = ref(0)    //все направления
 
-// statitstic graphics
-const statisticDateEvent = ref(true)
-const statisticTeamsAndEvent = ref(true)
-const defaultStatistic = ref(true)
+const selectedLevel = ref(0)    //уровень
+const selectedType = ref(0)     //тип мероприятия
+const selectedEvOrTeam = ref(0) //меропприятие или коллектив
+
+//statitstic graphics
+const statisticDateEvent = ref(true)      //Статистика дат проведения мероприятий
+const statisticTeamsAndEvent = ref(true)  //Статистика коллективов с количество мероприятий
+const defaultStatistic = ref(true)        //Общие показатели
+
 
 function changeDate(start: Date = new Date(), end: Date = new Date()) {
 }
 
 
+// данные для вывода в графики
 const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом', 'Волейбол',
   'Бокс', 'Футбол и мини-футбол',
 ]
@@ -36,30 +40,33 @@ const show = ref(true);
 
 
 
-
-
-
+// проверить какие графики показать, а какие убрать
 function seeGraphics(typeGraphics: any) {
+
   // alert(statisticDateEvent.value)
   switch (typeGraphics.id) {
     case 0:
-      statisticDateEvent.value = statisticDateEvent.value ? false : true;
+      statisticDateEvent.value = !statisticDateEvent.value
       break;
     case 1:
-      statisticTeamsAndEvent.value = statisticTeamsAndEvent.value ? false : true;
+      statisticTeamsAndEvent.value = !statisticTeamsAndEvent.value
       break;
     case 2:
-      defaultStatistic.value = defaultStatistic.value ? false : true;
+      defaultStatistic.value = !defaultStatistic.value
       break;
   }
+}
+
+
+
+function changeDirection(direction: any) {
+  currDirection.value = direction.id
 }
 </script>
 
 
 
 <template>
-
- 
   <!-- menu -->
   <div class=" block-content">
 
@@ -87,13 +94,21 @@ function seeGraphics(typeGraphics: any) {
 
     <!-- time -->
 
+
+
+
     <!-- выбрать направление -->
-    <div class="row my-4 d-flex justify-content-md-center">
+    <div class="row my-4 d-flex justify-content-md-center directions">
+
       <div v-for="direc in directions" class="col-auto d-flex my-1">
-        <a href="#">{{ direc }}</a>
+        <a href="#" @click="changeDirection(direc)" :class="{ active: currDirection == direc.id }">{{ direc.data }}</a>
       </div>
+
     </div>
     <!-- выбрать направление -->
+
+
+
 
     <!-- dropdowns select property for event or team -->
     <div class="row">
@@ -201,7 +216,7 @@ function seeGraphics(typeGraphics: any) {
     <div class="row">
 
       <div class="col-auto d-flex" v-for="g in typeGraphics">
-        <div class="checkbox__block" @click="seeGraphics(g)">
+        <div class="checkbox__block" @change="seeGraphics(g)">
           <label class="checkbox__container">
             <input type="checkbox" class="checkbox">
             <span class="fake"></span>
@@ -268,7 +283,6 @@ function seeGraphics(typeGraphics: any) {
 
 
 <style lang="scss">
-@import '@/assets/nav-second.scss';
 @import 'v-calendar/dist/style.css';
 
 // dropdown for calendar----------------------------------------------------------------------
@@ -312,12 +326,6 @@ function seeGraphics(typeGraphics: any) {
   width: fit-content;
 }
 
-.download {
-  border: var(--main-border-card);
-  padding: 15px 30px;
-  border-radius: 20px;
-}
-
 
 // statistic-----------------------------------------------------------------------------
 
@@ -344,16 +352,26 @@ function seeGraphics(typeGraphics: any) {
   margin: 30px auto 30px auto;
   background: white;
 
-  a {
-    padding: 5px 30px;
-    border: 0.5px solid var(--second-color);
-    border-radius: 20px;
+  .directions {
+    a {
+      padding: 5px 30px;
+      border: 0.5px solid var(--second-color);
+      border-radius: 20px;
 
-    &:hover {
+      &:hover {
+        color: white;
+        background: var(--second-color);
+        opacity: 0.5;
+      }
+
+    }
+
+    .active {
+      background-color: var(--second-color);
       color: white;
-      background: var(--second-color);
     }
   }
+
 
   hr {
     height: 1.5px;
@@ -475,6 +493,46 @@ function seeGraphics(typeGraphics: any) {
   background: #E5ADFF;
   background: linear-gradient(120deg, #E5ADFF 0%, #718CED 100%);
 }
+
+
+
+
+// global
+
+.form-select,
+.accordion-header {
+  border: 1px solid var(--second-color);
+  border-radius: 0.25rem;
+  line-height: 1.5;
+
+
+  &:focus {
+    box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
+    outline: 0;
+    border: 0;
+  }
+
+
+  option {
+    &:hover {
+      background-color: #ff502f;
+      color: #5BD1D7;
+    }
+  }
+
+  .accordion-button {
+
+
+    &:focus,
+    &:hover {
+      color: black;
+      background: white;
+      box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
+      outline: 0;
+      border: 0;
+    }
+  }
+}
 </style>
 
 
@@ -486,12 +544,19 @@ export default {
 
   data() {
     return {
-      directions: ['ВСЕ', 'НИД', 'КТД', 'СД', 'ОД', 'УД'],
+      // direction
+      directions: [{ id: 0, data: 'ВСЕ' }, { id: 1, data: 'НИД' }, { id: 2, data: 'КТД' },
+      { id: 3, data: 'СД' }, { id: 4, data: 'ОД' }, { id: 5, data: 'УД' }],
+
+      // grdphics
       typeGraphics: [{ id: 0, data: 'Статистика дат проведения мероприятий' },
       { id: 1, data: 'Статистика коллективов с количество мероприятий' },
       { id: 2, data: 'Общие показатели' }],
+
+      // dates
       dates: [{ id: 0, date: '1н' }, { id: 1, date: '1м' }, { id: 2, date: '1г' }],
 
+      // dropdowns
       levels: [{ id: 0, data: "Все уровни" }, { id: 1, data: 'вузовский' },
       { id: 2, data: 'городской' }, { id: 3, data: 'региональный' }],
       types: [{ id: 0, data: 'Все типы' }, { id: 1, data: 'внутренние' }, { id: 2, data: 'внешние' }],
