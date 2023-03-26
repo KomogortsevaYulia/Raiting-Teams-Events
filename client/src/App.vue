@@ -1,25 +1,31 @@
 <script setup lang="ts">
-  import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/Navbar.vue';
+import { onBeforeMount } from 'vue';
+import { usePermissionsStore } from './store/permissions_store';
+const permissionStore = usePermissionsStore();
+
+onBeforeMount(() => {
+  permissionStore.checkLogin();
+})
+
 </script>
 
 <template>
-  <header>
+  <header class="mw-100">
     <Navbar />
   </header>
-  <div class="container">
+  <div class="container mt-4">
     <RouterView />
   </div>
 </template>
 
 <style lang="scss">
+header {
+  background-color: #fff;
+  box-shadow: 0 6px 4px -4px rgba(0, 0, 0, .2);
+}
 
-@import '@/assets/navbar.scss';
-
-  .container {
-    padding-top: 2rem;
-    margin-inline: 10%;
-    display: flex;
-    justify-content: center;
-  }
-  
+.container {
+  margin-inline: 0;
+}
 </style>

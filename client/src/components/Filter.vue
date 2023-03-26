@@ -8,6 +8,4 @@
     </div>
 </template>
 
-<style lang="scss">
-    @import '@/assets/teams/filter.scss';
-</style>
+<style lang="scss" scoped></style>

@@ -1,19 +1,18 @@
-import {defineStore} from 'pinia'
-import {ref} from "vue";
+import { defineStore } from 'pinia';
+import { ref } from "vue";
 import axios from "axios";
-import { useUserPermissionsStore } from '@/store/permissions_store';
+import { usePermissionsStore } from '@/store/permissions_store';
 
-export const useMainStore = defineStore("main", () => {
-    const userPermissionsStore = useUserPermissionsStore();
-    
+export const useMainStore = defineStore("mainStore", () => {
+    // Хранилище с 
+    const permissionsStore = usePermissionsStore();
+
     async function checkLogin() {
-        userPermissionsStore.checkLogin()
-        console.log('aloha');
+        permissionsStore.checkLogin()
     }
 
-    async function login(data: { email: string, password: string }) {
-        userPermissionsStore.login(data);
-        console.log('it is login');
+    async function login(data: { username: string, password: string }) {
+        permissionsStore.login(data);
     }
 
     return {
