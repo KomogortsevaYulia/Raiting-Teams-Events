@@ -7,6 +7,7 @@ import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 import { useTeamStore } from "../store/team_store"
 
+
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 

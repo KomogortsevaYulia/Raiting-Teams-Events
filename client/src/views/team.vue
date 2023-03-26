@@ -5,7 +5,10 @@ import TeamsForm from './TeamsForm.vue'
 
 import { useTeamStore } from "../store/team_store"
 
-const show = ref(true);
+const showAboutTeam = ref(true);
+const showNews = ref(false);
+const showSchedule = ref(false);
+
 const layout = ref(true);
 
 const currentPage = ref(1);
@@ -76,7 +79,7 @@ const newsList = [
     <div>
       <div class="wrapper-team__top-panel">
         <div class="text-area">
-          <label>Студенческое научное общество «Квантум» состоит из энтузиастов-изобретателей, будущих ученых, кандидатов и докторов наук. Специалисты и бакалавры, инженеры и техники реализуют свой потенциал и обмениваются накопленным опытом в различных сферах профессиональной деятельности. </label>
+          <H2>Студенческое научное общество «Квантум»  </H2>
           <button>Подать заявку</button>
         </div>
       </div>
@@ -84,24 +87,21 @@ const newsList = [
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{ active: show }">О коллективе</a>
-      <a @click="show = false" :class="{ active: !show }">Расписание занятий</a>
+      <a @click="showAboutTeam = true; showNews = false; showSchedule = false" :class="{ active: showAboutTeam }">О коллективе</a>
+      <a @click="showNews = true; showAboutTeam = false; showSchedule = false" :class="{ active: showNews }">Новости</a>
+      <a @click="showSchedule = true; showAboutTeam = false; showNews = false" :class="{ active: showSchedule }">Расписание</a>
     </div>
 
-    <div v-if="show" class="wrapper-team__content">
+    <div v-if="showAboutTeam" class="wrapper-team__content">
       <div class="middle-panel">
         <div class="column-left">
           <div class="main-text">  
-            <h2 class="title">О НАС</h2>    
-            <label>Задачи и цели:
-              поиск и развитие перспективных студентов, желающих реализовать свой потенциал в научной и профессиональной деятельности.
-              развитие междисциплинарных проектов и освоение участниками новых профессиональных компетенций.
-              создание и развитие условий, которые обеспечат возможность для каждого студента реализовать свое право на развитие личности, на участие в научных исследованиях и научно-техническом творчестве;
-              обеспечение единства образовательного, научного и инновационного процессов с формированием и развитием способностей, улучшением профессиональной подготовки студентов, совершенствованием форм привлечения молодежи к научным исследованиям, научно-технической, изобретательской и рационализаторской деятельности.
-              создание благоприятных условий для развития и функционирования различных форм научного творчества молодежи, базирующихся на отечественном и зарубежном опыте, результатах научных и научно-технических разработок;
-              содействие всестороннему развитию личности студента, формированию его объективной самооценки, приобретению навыков работы в коллективах, приобщению к организаторской и инновационной деятельности;
-              развитие способности использовать научные знания и быстро адаптировать при изменении ситуации, готовности к повышению квалификации и переподготовке;
-              предоставление студентам возможности испробовать свои силы в решении актуальных задач по различным направлениям науки и техники, опубликовать значимые результаты исследований. </label>
+            <div class="wrapper-team__section-name">
+              <label class="active">О нас</label>
+            </div> 
+            <label>Студенческое научное общество «Квантум» состоит из энтузиастов-изобретателей, будущих ученых, кандидатов и докторов наук. Специалисты и бакалавры, 
+              инженеры и техники реализуют свой потенциал и обмениваются накопленным опытом в различных сферах профессиональной деятельности.
+            </label>
           </div>
         </div>
         <div class="column-right">
@@ -127,26 +127,47 @@ const newsList = [
       </div>
       <div>
         <div class="wrapper-team__section-name">
-          <label class="active">Новости</label>
-        </div>
-        <div class="news-panel">
-          <div class="news-card" v-for="news in newsList" :key="news.id">
-            <div class="image-container">
-              <img :src="news.imageUrl">
-            </div>
-            <div class="text-container">
-              <h2 class="title">{{ news.title }}</h2>
-              <label class="description">{{ news.description }}</label>
-            </div>
+          <label class="active">Контактные данные</label>
+        </div> 
+      </div>
+    </div>
+
+    <div v-if="showNews" class="wrapper-team__content">
+      <div class="wrapper-team__section-name">
+        <label class="active">Новости</label>
+      </div>
+      <div class="news-panel">
+        <div class="news-card" v-for="news in newsList" :key="news.id">
+          <div class="image-container">
+            <img :src="news.imageUrl">
+          </div>
+          <div class="text-container">
+            <h2 class="title">{{ news.title }}</h2>
+            <label class="description">{{ news.description }}</label>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="!show" class="wrapper-team__create">
+    <div v-if="showSchedule" class="wrapper-team__content">
+      <div class="wrapper-team__section-name">
+        <label class="active">Расписание</label>
+        <div class="middle-panel">
+        <div class="column-left">
+          <div class="main-text">  
+              <label class="active">Я пока не знаю, как сделать календарь</label>
+          </div>
+        </div>
+        <div class="column-right">
+          <label class="active">Актуальное расписание</label>
+          <label>Тут вы всегда можете узнать о наших тренировка и будущих мероприятиях.
+            </label>
+        </div>
+      </div>
+      </div>
     </div>
-    
-    </div>
+   
+  </div>
 </template>
 
 <style lang="scss">
