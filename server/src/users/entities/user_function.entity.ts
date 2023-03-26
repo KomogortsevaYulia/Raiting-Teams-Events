@@ -23,10 +23,6 @@ export class UserFunction {
     dateStart: Date
 
     @ApiProperty() 
-    @Column()
+    @Column({ nullable: true })
     dateEnd: Date
-
-    @ApiProperty()
-    @OneToMany((type) => Function, (func) =>func.team)
-    functions :Function[]
 }
