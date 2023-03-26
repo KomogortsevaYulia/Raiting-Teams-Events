@@ -60,6 +60,12 @@ const router = createRouter({
       meta: {}
     },
     {
+      path: "/event-create",
+      // @ts-ignore
+      component: () => import('@/views/EventCreate.vue'),
+      meta: {}
+    },
+    {
       // Страница с личным кабинетом
       path: "/account",
       // @ts-ignore
