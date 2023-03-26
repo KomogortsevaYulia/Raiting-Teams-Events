@@ -31,7 +31,7 @@ const router = createRouter({
       // Какой то конкретный коллектив
       path: "/team-page",
       // @ts-ignore
-      component: () => import('@/views/team.vue'),
+      component: () => import('@/views/Team.vue'),
       meta: {}
     },
 
