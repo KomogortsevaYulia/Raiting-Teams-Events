@@ -82,7 +82,7 @@ textarea {
 
 
 // вторичная кнопка
-.btn-secondary {
+.btn-custom-secondary {
     border-radius: 10px;
     
     &:hover {
@@ -92,7 +92,7 @@ textarea {
 }
 
 // главная кнопка - побуждает к действию (выделяется)
-.btn-primary{
+.btn-custom-primary{
     border-radius: 10px;
     width: auto;
     padding: 10px 30px !important;

@@ -1,20 +1,21 @@
-<script lang="ts">
+<script setup lang="ts">
 import { Pie } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement )
 
-export default {
-  name: 'PieChart',
-  props: ['labels', 'data', 'title', 'labelName'],
-  components: { Pie },
-  data() {
-    return {
-      chartData: {
-        labels: this.$props.labels,
+const props = defineProps<{
+    labels: any,
+    data:any,
+    labelName: string,
+    title:string
+}>()
+
+const  chartData= {
+        labels: props.labels,
         datasets: [{
-          data: this.$props.data,
-          label:this.$props.labelName,
+          data: props.data,
+          label:props.labelName,
           backgroundColor: [
             '#FFC3C3',
             '#CBD4FF',
@@ -22,13 +23,14 @@ export default {
             '#DAFFCD',
           ]
         }],
-      },
-      chartOptions: {
+      }
+
+const chartOptions={
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
           title: {
-            text: this.$props.title,
+            text: props.title,
             display: true,
             font: {
               size: 15,
@@ -38,10 +40,6 @@ export default {
 
         }
       }
-    }
-  },
-
-}
 </script>
 
 <template>

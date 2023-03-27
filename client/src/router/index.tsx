@@ -48,7 +48,7 @@ const router = createRouter({
       path: "/statistic",
       name: "Statistic",
       // @ts-ignore
-      component: () => import('@/views/reportsView/Statistic.vue'),
+      component: () => import('@/views/Report/Statistic.vue'),
       meta: {
         requiresAuth: true
       }

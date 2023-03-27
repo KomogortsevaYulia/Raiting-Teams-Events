@@ -3,11 +3,36 @@ import { ref } from 'vue';
 import PieChart from '@/components/Charts/Pie.vue';
 import LineChart from '@/components/Charts/Line.vue';
 import { DatePicker } from 'v-calendar';
+import DownloadReport  from './DowloadReport.vue';
+
+// константные значения
+
+// direction
+const directions= [{ id: 0, data: 'ВСЕ' }, { id: 1, data: 'НИД' }, { id: 2, data: 'КТД' },
+      { id: 3, data: 'СД' }, { id: 4, data: 'ОД' }, { id: 5, data: 'УД' }]
+
+// grdphics
+const typeGraphics= [{ id: 0, data: 'Статистика дат проведения мероприятий' },
+      { id: 1, data: 'Статистика коллективов с количество мероприятий' },
+      { id: 2, data: 'Общие показатели' }]
+
+// dates
+const dates= [{ id: 0, date: '1н' }, { id: 1, date: '1м' }, { id: 2, date: '1г' }]
 
 
-const date = ref(1)
+// dropdowns
+const   levels= [{ id: 0, data: "Все уровни" }, { id: 1, data: 'вузовский' },
+      { id: 2, data: 'городской' }, { id: 3, data: 'региональный' }]
 
-const currDirection = ref(0)    //все направления
+const types= [{ id: 0, data: 'Все типы' }, { id: 1, data: 'внутренние' }, { id: 2, data: 'внешние' }]
+
+const  eventOrTeams= [{ id: 0, data: 'Мероприятия' }, { id: 1, data: 'Коллективы' }]
+
+
+
+const date = ref(1)             //дата
+
+const selectedDirection = ref(0)    //все направления
 
 const selectedLevel = ref(0)    //уровень
 const selectedType = ref(0)     //тип мероприятия
@@ -60,7 +85,7 @@ function seeGraphics(typeGraphics: any) {
 
 
 function changeDirection(direction: any) {
-  currDirection.value = direction.id
+  selectedDirection.value = direction.id
 }
 </script>
 
@@ -79,10 +104,10 @@ function changeDirection(direction: any) {
     <div class="row">
       <div class="w-100 justify-content-center d-flex">
         <div class="date">
-          <button class=" btn-secondary" v-for="dt in dates" @click="changeDate()">{{ dt.date }}</button>
+          <button class=" btn-custom-secondary" v-for="dt in dates" @click="changeDate()">{{ dt.date }}</button>
 
           <div class="my-dropdown" style="float:center;">
-            <button class="dropbtn btn-secondary"><font-awesome-icon icon="calendar-days" /></button>
+            <button class="dropbtn btn-custom-secondary"><font-awesome-icon icon="calendar-days" /></button>
             <div class="dropdown-content">
               <DatePicker v-model="date" is-range />
             </div>
@@ -101,7 +126,7 @@ function changeDirection(direction: any) {
     <div class="row my-4 d-flex justify-content-md-center directions">
 
       <div v-for="direc in directions" class="col-auto d-flex my-1">
-        <a href="#" @click="changeDirection(direc)" :class="{ active: currDirection == direc.id }">{{ direc.data }}</a>
+        <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{ direc.data }}</a>
       </div>
 
     </div>
@@ -116,7 +141,7 @@ function changeDirection(direction: any) {
       <div class="col-auto  d-flex my-1">
         <!-- events_or_teams -->
         <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-          <option v-for="et in events_or_teams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+          <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
         </select>
       </div>
       <div class="col-auto  d-flex my-1">
@@ -139,72 +164,11 @@ function changeDirection(direction: any) {
       </div>
 
     </div>
-    <!-- select property for event or team -->
-
-
+  
     <!--Отчетность  -->
-    <div class="my-4">
-      <p>Отчетность</p>
-      <hr>
-    </div>
-
-    <div class="accordion" id="accordionExample">
-      <div class="accordion-item">
-
-        <h2 class="accordion-header" id="headingOne">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-            aria-expanded="true" aria-controls="collapseOne">
-            Итоговая отчетность
-          </button>
-        </h2>
-
-        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-          data-bs-parent="#accordionExample">
-          <div class="accordion-body m-4">
-            <div class="row">
-              <div class="col"> направление: </div>
-              <div class="col">НИД</div>
-            </div>
-
-            <div class="row my-3">
-              <div class="col"> вид: </div>
-              <div class="col"> {{ events_or_teams[selectedEvOrTeam].data }}</div>
-            </div>
-
-            <div class="row  my-3">
-              <div class="col"> колективы:</div>
-              <div class="col"> все коллективы</div>
-            </div>
-
-            <div class="row  my-3">
-              <div class="col"> уровень: </div>
-              <div class="col">{{ levels[selectedLevel].data }}</div>
-            </div>
-
-            <div class="row  my-3">
-              <div class="col"> тип мероприятия: </div>
-              <div class="col"> {{ types[selectedType].data }}</div>
-            </div>
-
-            <div class="row  my-3">
-              <div class="col"> дата:</div>
-              <div class="col"> 01.01.2023 - 01.02.2023</div>
-            </div>
-
-            <div class="row mt-4 mx-3 d-flex  justify-content-end">
-              <button type="button" class="btn-primary">
-                Скачать
-              </button>
-            </div>
-
-
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <!-- menu -->
-
+    <DownloadReport :date="0" :event-or-team="eventOrTeams[selectedEvOrTeam]"
+    :direction="directions[selectedDirection]" teams="все" :level="levels[selectedLevel]" :type-event="types[selectedType]"/>
+  
 
     <!-- Graphics -->
     <div class="my-4">
@@ -534,38 +498,6 @@ function changeDirection(direction: any) {
   }
 }
 </style>
-
-
-
-
-<!-- data -->
-<script lang="ts">
-export default {
-
-  data() {
-    return {
-      // direction
-      directions: [{ id: 0, data: 'ВСЕ' }, { id: 1, data: 'НИД' }, { id: 2, data: 'КТД' },
-      { id: 3, data: 'СД' }, { id: 4, data: 'ОД' }, { id: 5, data: 'УД' }],
-
-      // grdphics
-      typeGraphics: [{ id: 0, data: 'Статистика дат проведения мероприятий' },
-      { id: 1, data: 'Статистика коллективов с количество мероприятий' },
-      { id: 2, data: 'Общие показатели' }],
-
-      // dates
-      dates: [{ id: 0, date: '1н' }, { id: 1, date: '1м' }, { id: 2, date: '1г' }],
-
-      // dropdowns
-      levels: [{ id: 0, data: "Все уровни" }, { id: 1, data: 'вузовский' },
-      { id: 2, data: 'городской' }, { id: 3, data: 'региональный' }],
-      types: [{ id: 0, data: 'Все типы' }, { id: 1, data: 'внутренние' }, { id: 2, data: 'внешние' }],
-      events_or_teams: [{ id: 0, data: 'Мероприятия' }, { id: 1, data: 'Коллективы' }],
-
-    }
-  }
-}
-</script>
 
 
 

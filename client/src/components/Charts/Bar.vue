@@ -1,24 +1,24 @@
 
 <!-- не использоуется -->
 
-<script lang="ts">
+<script setup lang="ts">
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
+const props = defineProps<{
+    labels: any,
+    data:any,
+    labelName: string,
+    title:string
+}>()
 
-export default {
-  name: 'BarChart',
-  props: ['labels', 'data', 'title', 'labelName'],
-  components: { Bar },
-  data() {
-    return {
-      chartData: {
-        labels: this.$props.labels,
+const chartData = {
+        labels: props.labels,
         datasets: [{
-          data: this.$props.data,
-          label:this.$props.labelName,
+          data: props.data,
+          label:props.labelName,
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',
@@ -27,13 +27,14 @@ export default {
             'rgba(20, 200, 86, 0.2)',
           ]
         }],
-      },
-      chartOptions: {
+      }
+
+const  chartOptions = {
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
           title: {
-            text: this.$props.title,
+            text: props.title,
             display: true,
             font: {
               size: 15,
@@ -43,10 +44,6 @@ export default {
 
         }
       }
-    }
-  },
-
-}
 </script>
 
 <template>
