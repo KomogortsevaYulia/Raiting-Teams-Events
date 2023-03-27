@@ -1,32 +1,32 @@
 <script setup lang="ts" >
 import { ref } from 'vue';
-import PieChart from '@/components/Charts/Pie.vue';
-import LineChart from '@/components/Charts/Line.vue';
 import { DatePicker } from 'v-calendar';
-import DownloadReport  from './DowloadReport.vue';
+import DownloadReport from './DowloadReport.vue';
+import EPie from '@/components/Charts/EPie.vue';
+import EBar from '@/components/Charts/EBar.vue';
 
 // константные значения
 
 // direction
-const directions= [{ id: 0, data: 'ВСЕ' }, { id: 1, data: 'НИД' }, { id: 2, data: 'КТД' },
-      { id: 3, data: 'СД' }, { id: 4, data: 'ОД' }, { id: 5, data: 'УД' }]
+const directions = [{ id: 0, data: 'ВСЕ' }, { id: 1, data: 'НИД' }, { id: 2, data: 'КТД' },
+{ id: 3, data: 'СД' }, { id: 4, data: 'ОД' }, { id: 5, data: 'УД' }]
 
 // grdphics
-const typeGraphics= [{ id: 0, data: 'Статистика дат проведения мероприятий' },
-      { id: 1, data: 'Статистика коллективов с количество мероприятий' },
-      { id: 2, data: 'Общие показатели' }]
+const typeGraphics = [{ id: 0, data: 'Статистика дат проведения мероприятий' },
+{ id: 1, data: 'Статистика коллективов с количество мероприятий' },
+{ id: 2, data: 'Общие показатели' }]
 
 // dates
-const dates= [{ id: 0, date: '1н' }, { id: 1, date: '1м' }, { id: 2, date: '1г' }]
+const dates = [{ id: 0, date: '1н' }, { id: 1, date: '1м' }, { id: 2, date: '1г' }]
 
 
 // dropdowns
-const   levels= [{ id: 0, data: "Все уровни" }, { id: 1, data: 'вузовский' },
-      { id: 2, data: 'городской' }, { id: 3, data: 'региональный' }]
+const levels = [{ id: 0, data: "Все уровни" }, { id: 1, data: 'вузовский' },
+{ id: 2, data: 'городской' }, { id: 3, data: 'региональный' }]
 
-const types= [{ id: 0, data: 'Все типы' }, { id: 1, data: 'внутренние' }, { id: 2, data: 'внешние' }]
+const types = [{ id: 0, data: 'Все типы' }, { id: 1, data: 'внутренние' }, { id: 2, data: 'внешние' }]
 
-const  eventOrTeams= [{ id: 0, data: 'Мероприятия' }, { id: 1, data: 'Коллективы' }]
+const eventOrTeams = [{ id: 0, data: 'Мероприятия' }, { id: 1, data: 'Коллективы' }]
 
 
 
@@ -48,17 +48,26 @@ function changeDate(start: Date = new Date(), end: Date = new Date()) {
 }
 
 
+const datessOfEvents = [
+  { value: 10, name: 'Осень' },
+  { value: 75, name: 'Зима' },
+  { value: 50, name: 'Лето' },
+  { value: 4, name: 'Весна' },
+]
 // данные для вывода в графики
 const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом', 'Волейбол',
   'Бокс', 'Футбол и мини-футбол',
 ]
 const dataTopTeams = [2, 5, 8, 8, 9]
 
-const labelsDatesOfEvents = ['Осень', 'Зима', 'Лето', 'Весна']
-const dataDatesOfEvents = [2, 5, 8, 8]
+// const labelsDatesOfEvents = ['Осень', 'Зима', 'Лето', 'Весна']
+// const dataDatesOfEvents = [2, 5, 8, 8]
 
-const labelsEventsTwoType = ['Внешние', 'Внутренние']
-const dataEventsTwoType = [2, 5]
+
+// const labelsEventsTwoType = ['Внешние', 'Внутренние']
+const dataEventsTwoType = [
+  { value: 10, name: 'Внешние' },
+  { value: 75, name: 'Внутренние' },]
 
 
 const show = ref(true);
@@ -126,8 +135,9 @@ function changeDirection(direction: any) {
     <div class="row my-4 d-flex justify-content-md-center directions">
 
       <div v-for="direc in directions" class="col-auto d-flex my-1">
-        <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{ direc.data }}</a>
-      </div>
+        <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{ direc.data
+        }}</a>
+    </div>
 
     </div>
     <!-- выбрать направление -->
@@ -146,7 +156,7 @@ function changeDirection(direction: any) {
       </div>
       <div class="col-auto  d-flex my-1">
         <select class="form-select" aria-label="Default select example">
-          <option selected>Все коллективы</option>
+        <option selected>Все коллективы</option>
 
         </select>
       </div>
@@ -164,11 +174,11 @@ function changeDirection(direction: any) {
       </div>
 
     </div>
-  
+
     <!--Отчетность  -->
-    <DownloadReport :date="0" :event-or-team="eventOrTeams[selectedEvOrTeam]"
-    :direction="directions[selectedDirection]" teams="все" :level="levels[selectedLevel]" :type-event="types[selectedType]"/>
-  
+    <DownloadReport :date="0" :event-or-team="eventOrTeams[selectedEvOrTeam]" :direction="directions[selectedDirection]"
+      teams="все" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
+
 
     <!-- Graphics -->
     <div class="my-4">
@@ -205,6 +215,9 @@ function changeDirection(direction: any) {
 
 
   <div class="chart-container">
+
+
+
     <!-- statistic -->
     <div v-if="show" class="col">
 
@@ -213,14 +226,21 @@ function changeDirection(direction: any) {
 
         <div class="row d-flex justify-content-center text-center">
           <h4>Мероприятия</h4>
-          <div class="col-lg-6 col-md-auto ">
-            <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-              title="Статистика дат проведения мероприятий" label-name="число мероприятий" />
-          </div>
+          <div class="row mt-4 g-5">
+            <div class="col-lg-6 col-md-12 chartBorder">
+              <h6>Статистика дат проведения мероприятий</h6>
+              <EPie :data="datessOfEvents" />
+              <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
+                            title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+            </div>
 
-          <div class="col-lg-6  col-md-auto">
-            <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-              title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" />
+            <div class="col-lg-6 col-md-12 chartBorder">
+              <h6>Количество внутренних/внешних мероприятий</h6>
+
+              <EPie :data="dataEventsTwoType" />
+              <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
+                            title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+            </div>
           </div>
 
         </div>
@@ -232,9 +252,14 @@ function changeDirection(direction: any) {
 
         <div class="row d-flex justify-content-center text-center">
           <h4>Коллективы</h4>
-          <div class="col">
-            <LineChart class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-              title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" />
+          <div class="row mt-4 chartBorder">
+            <h6>Топ коллективов с наибольшим числом мероприятий</h6>
+
+            <div class="col">
+              <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
+              <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
+                            title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+            </div>
           </div>
         </div>
       </div>
@@ -496,6 +521,15 @@ function changeDirection(direction: any) {
       border: 0;
     }
   }
+}
+
+
+
+.chartBorder {
+  border: var(--main-border-card);
+  border-radius: 5px;
+  padding: 20px;
+
 }
 </style>
 
