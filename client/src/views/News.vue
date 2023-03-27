@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import Filter from '@/components/Filter.vue';
-</script>
-
 <template>
   <div>
     <div class="mainBanner">
@@ -15,11 +11,16 @@ import Filter from '@/components/Filter.vue';
       <div class="checkbox__nav">
         <div class="checkbox__block" v-for="menu_item in menu_items" :key="menu_item.id">
           <div class="checkbox__title">{{ menu_item.title }}</div>
-          <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id">
+          <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id" :class="{ 'hidden': menu_item.hidden && menu_type.id > 4}">
             <input type="checkbox" class="checkbox">
             <span class="fake"></span>
             <span class="span__title">{{ menu_type.title }}</span>
-          </label>
+          </label>    
+          <div class="btn__open" v-if="menu_item.menu_types.length > 4" @click="menu_item.hidden = !menu_item.hidden">
+            <div class="btn__text" v-if="hiddenCheckboxStatus">Развернуть</div>
+            <div v-else class="btn__text">Свернуть</div>
+            <div class="btn__img" :class="{'closed': hiddenCheckboxStatus}"></div>
+          </div>
         </div>
       </div>
       <!-- Правая часть контейнера -->
@@ -28,77 +29,38 @@ import Filter from '@/components/Filter.vue';
         <div class="cards__search">
           <input class="title__search" placeholder="Начните поиск..." />
           <input class="date__search" placeholder="Выберите дату" type="date"/>
-          <div class="cards__wrap"></div>
+          <Switch_toggle />
         </div>
         <div class="cards">
-          <div class="card"></div>
-          <div class="card"></div>
+          <div class="card">
+            <div class="card__banner"></div>
+            <div class="card__content">
+              <div class="card__event-name">Название мероприятия</div>
+              <div class="teg__container">
+                <div class="teg">Тег 1</div>
+                <div class="teg">Тег 2</div>
+              </div>
+              <div class="card__text">
+                Описание мероприятия
+              </div>
+              <div class="btn__container">
+                <button class="card__btn">Подать заявку</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <!-- <div class="cardContainer">
-      <div class="cardEvent">
-        <div class="imgEvent">
-          <div></div>
-          <p>Региональный чемпионат WorldSkills “Инженерный дизайн CAD”</p>
-          <img src="../assets/icon/event1.png">
-        </div>
-        <div class="wrapperContent">
-          <div class="teg__container">
-            <div class="teg">
-              Offline
-            </div>
-            <div class="teg">
-              Межвузовский
-            </div>
-          </div>
-          <div>
-            <p>
-              Проводится с целью выработки у студентов навыков работы в области конструирования, для развития
-              конструкторских навыков, творческого потенциала в решении сложных нестандартных задач за короткий промежуток
-              времени
-            </p>
-            <p class="date">01.04.2021</p>
-          </div>
-        </div>
-      </div>
-      <div class="cardEvent" onclick="location.href='/event';">
-        <div class="imgEvent">
-          <div></div>
-          <p>Викторина “Роль и место прокуратуры России в Российской Федерации”</p>
-          <img src="../assets/icon/event3.png">
-        </div>
-        <div class="wrapperContent">
-          <div>
-            <p>
-              Викторина для школьников “Роль и место прокуратуры России в Российской Федерации”
-            </p>
-            <p class="date">05.04.2021</p>
-          </div>
-        </div>
-      </div>
-      <div class="cardEvent">
-        <div class="imgEvent">
-          <div></div>
-          <p>Конкурс “Защити свою профессию” по профилю “Электрические станции”</p>
-          <img src="../assets/icon/event2.png">
-        </div>
-        <div class="wrapperContent">
-          <div>
-            <p>
-              В конкурсе принимают участие студенты 4 курса профиля “Электрические станции”. Цель конкурса: выявить лучших
-              студентов по уровню освоения профессиональных компетенций и способностей к творческому мышлению
-            </p>
-            <p class="date">06.04.2021</p>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script lang="ts">
+import Switch_toggle from '@/components/Switch_toggle.vue';
+
 export default{
+  components:{
+    Switch_toggle
+  },
   data(){
     return{
       menu_items: [
@@ -112,14 +74,32 @@ export default{
           {id: 3, title:'Региональный'},
           {id: 4, title:'Всероссийский'},
         ]},
-        {id: 3, title: 'Институт', menu_types:[
-          {id: 1, title:'Институт авиамашиностроения'},
-          {id: 2, title:'Межвузовский'},
-          {id: 3, title:'Региональный'},
-          {id: 4, title:'Всероссийский'},
+        {id: 3, title: 'Институт', hidden: true, menu_types:[
+          {id: 1, title:'Авиамашиностроения и транспорта'},
+          {id: 2, title:'Архитектуры, строительства и дизайна'},
+          {id: 3, title:'Высоких технологий'},
+          {id: 4, title:'Информационных технологий и анализа даных'},
+          {id: 5, title:'Квантовой физики'},
+          {id: 6, title:'Лингвистики и межкультурной коммуникации'},
+          {id: 7, title:'Недропользования'},
+          {id: 8, title:'Экономики, управления и права'},
+          {id: 9, title:'Энергетики'},
+          {id: 10, title:'БРИКС'},
+        ]},
+        {id: 4, title: 'Курс', hidden: true, menu_types:[
+          {id: 1, title:'1 курс'},
+          {id: 2, title:'2 курс'},
+          {id: 3, title:'3 курс'},
+          {id: 4, title:'4 курс'},
+          {id: 5, title:'5 курс'},
+          {id: 6, title:'Магистратура'},
         ]}
-      ]
+      ],
+      hiddenCheckboxStatus: true
     }
+  },
+  methods:{
+  
   }
 }
 </script>
@@ -137,27 +117,54 @@ export default{
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
     width: 20rem;
     padding: 2rem;
+    max-height: 100rem;
     border-radius: 5px;
+    margin-bottom: 4rem;
+    .btn__open{
+      display: flex;
+      color: #348498;
+      padding-left: 0.5rem;
+      &:hover{
+        cursor: pointer;
+      }
+      .btn__img{
+        background-image: url(@/assets/icon/closed.svg);
+        margin-top: 0.1rem;
+        height: 1rem;
+        width: 2rem;
+        &.closed{
+          background-image: url(@/assets/icon/open.svg);
+        }
+      }
+    }
     .checkbox__title{
       color: #373737;
       margin-bottom: 0.5rem;
     }
     .checkbox__container{
-      color: #A1A1A1;
       padding: 0.2rem 0.5rem;
       display: flex;
+      &.hidden{
+        display: none;
+      }
+      &:hover{
+        cursor: pointer;
+      }
       .checkbox{
         display: none;
         &:checked + .fake::before{
           opacity: 1;
         }
-
       }
       .span__title{
+        color: #A1A1A1;
         font-size: 1rem;
         margin-left: 1rem;
         hyphens: manual;
         width: 50%;
+      }
+      .span__title-dark{
+        color: #373737;
       }
       .fake{
         display: inline-block;
@@ -168,6 +175,7 @@ export default{
         background-color: #CDEEF0;
         &:hover{
           cursor: pointer;
+          background-color: #b9e6e9;
         }
 
       }
@@ -206,11 +214,51 @@ export default{
       .card{
         width: 100%;
         background-color: #fff;
-        height: 12rem;
+        height: 15rem;
         margin-bottom: 1rem;
         border: none;
         box-shadow: 0px 5px 10px 0px rgba(114, 114, 114, 0.1);
+        display: flex;
+        flex-direction: row;
 
+        .card__banner{
+          height: 100%;
+          width: 12rem;
+          border-radius: 5px 0 0 5px;
+          background-color: #a3a3a3;
+        }
+        .card__content{
+          padding: 1rem 2rem;
+          width: 100%;
+          .card__event-name{
+            color: #373737;
+            font-size: 1.2rem;
+          }
+          .teg__container{
+            display: flex;
+            margin-top: 0.5rem;
+            .teg{
+              margin-right: 1rem;
+              background-color: #B7EAED;
+              padding: 0.2rem 1rem;
+              color: #348498;
+              border-radius: 5px;
+            }
+          }
+          .card__text{
+            color: #373737;
+          }
+          .btn__container{
+            display: flex;
+            justify-content: right;
+            margin-top: 3rem;
+            .card__btn{
+            background-color: #FF502F;
+            color: #fff;
+            padding: 0.8rem 2rem;
+          }
+          }
+        }
       }
     }
   }
@@ -253,82 +301,4 @@ export default{
   opacity: 1;
 }
 
-.cardEvent {
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  height: auto 350px;
-  margin: 0 1rem 1rem 0;
-  flex-wrap: wrap;
-  overflow: hidden;
-  border-radius: 5px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  transition: all .5s;
-}
-
-.cardEvent:hover {
-  cursor: pointer;
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
-}
-
-.imgEvent {
-  position: relative;
-  height: 13rem;
-  overflow: hidden;
-
-  p {
-    font-weight: 100;
-    font-size: 1.4rem;
-    margin: 4rem 0 0 1rem;
-    color: #fff;
-    position: absolute;
-  }
-
-  div {
-    width: 100%;
-    height: 13rem;
-    background-color: rgba(0, 0, 0, 0.7);
-    position: absolute;
-  }
-
-  img {
-    width: 100%;
-  }
-
-}
-
-.wrapperContent {
-  padding: 1rem;
-
-  .date {
-    text-align: end;
-    font-size: 1.6rem;
-    font-weight: 100;
-  }
-}
-
-.cardContainer {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  display: flex;
-  // justify-content: space-between;
-}
-
-.teg__container {
-  justify-content: space-between;
-
-  .teg {
-    display: inline-block;
-    background-color: #9DD9D2;
-    padding: 0.6rem;
-    border-radius: 1rem;
-    margin: 0 0.6rem 0 0;
-  }
-}
-
-.container {
-  padding-top: 2rem;
-  margin-inline: 10%;
-  display: flex;
-  justify-content: center;
-}
 </style>

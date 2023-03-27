@@ -14,6 +14,7 @@ import { SECRET } from '../config';
 import { LoginUserDto } from './dto/login-user.dto';
 import * as argon2 from 'argon2';
 import { validate } from 'class-validator';
+import { Team } from 'src/teams/entities/team.entity';
 const jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -26,6 +27,8 @@ export class UsersService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
+    @InjectRepository(Team)
+    private readonly teamsRepository: Repository<Team>,
   ) { }
 
   async findByName(limit: number, name: string, email: string) {
@@ -42,12 +45,82 @@ export class UsersService {
     })
 
   }
-  async findAll(limit: number): Promise<User[]> {
+
+  async findAllWithLimit(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });
   }
 
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.createQueryBuilder("users").getMany();
+  }
 
-  //modernize function user if user not exist
+  async generateFunctions(): Promise<Function[]> {
+    // let functions = await this.functionsRepository
+    //   .createQueryBuilder("functions")
+    //   .where("functions.title = :type_team", { type_team: "Участник" })
+    //   .getMany()
+
+    let id_user = this.generateArray(5, 45)
+    id_user.forEach(async user => {
+      await this.userFunctionsRepository
+        .createQueryBuilder()
+        .insert()
+        .into(UserFunction)
+        .values([
+          {
+            dateStart: new Date(), function:43,
+            user: user
+          }
+        ])
+        .execute()
+
+    })
+    return await this.functionsRepository.createQueryBuilder("functions").getMany();
+  }
+
+  //генерация челов
+  async generate(): Promise<User[]> {
+
+    let fullname = ["Самсонов Кирилл Львович", "Васильева Ева Матвеевна", "Сахарова Елизавета Михайловна", "Иванов Роман Павлович", "Киселев Ярослав Александрович", "Семенова Алиса Андреевна", "Позднякова Вероника Алиевна", "Иванова Николь Марковна", "Ермаков Никита Артёмович", "Савельев Валерий Иванович", "Кузнецов Дмитрий Владиславович", "Филиппов Даниил Богданович", "Соколов Макар Миронович", "Баранова Варвара Владиславовна", "Соболев Никита Львович", "Голованова Вера Павловна", "Гончаров Фёдор Витальевич", "Иванов Степан Максимович", "Новикова София Тимофеевна", "Агафонова Алиса Денисовна", "Цветков Марсель Степанович", "Гордеева Кира Кирилловна", "Румянцев Даниил Константинович", "Пономарева Мария Марковна", "Смирнова Виктория Петровна", "Пономарев Александр Артёмович", "Киселев Владимир Андреевич", "Устинова Александра Артёмовна", "Иванова Анна Никитична", "Самсонов Дмитрий Платонович"]
+    let users = await this.usersRepository
+      .createQueryBuilder("users")
+      .where("id IN (:...ids)", { ids: this.generateArray(24, 34) })
+      .getMany()
+
+    let institutes = ["Институт авиамашиностроения и транспорта", "Институт архитектуры, строительства и дизайна",
+      "Институт недропользования", "Институт высоких технологий", "Институт информационных технологий и анализа данных"]
+
+    let group = ["ТХб-19-2", "ИСТб-19-2", "ДСб-20-1", "БТПб-20-1", "ЛМБм-21-1", "УПКм-22-1"]
+    let type_time_study = ["Очно", "Очно-заочно", "Заочно"]
+    users.forEach(async user => {
+      await this.usersRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({
+          institute: institutes[this.getRandomInt(institutes.length, 0)],
+          education_group: group[this.getRandomInt(group.length, 0)],
+          fullname: fullname.shift(),
+          type_time_study: type_time_study[this.getRandomInt(2, 0)],
+          studnumber: this.getRandomInt(1000000, 9999999)
+        })
+        .where("id = :id", { id: user.id })
+        .execute();
+      delete fullname[0];
+    })
+
+    return await this.usersRepository.createQueryBuilder("users").getMany();
+  }
+
+  generateArray(size, start) {
+    return Array.from({ length: size }, (_, index) => index + start);
+  }
+
+  getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+  }
+  // modernize function user if user not exist
   // @HttpCode(400)
   // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
     
@@ -136,11 +209,11 @@ export class UsersService {
   }
 
   async findById(id: number): Promise<User> {
-     const user = await this.usersRepository.
+    const user = await this.usersRepository.
       createQueryBuilder("users")
       .where("users.id = :id", { id })
       .getOne();
-      
+
     if (!user) {
       const errors = { User: 'Not found' };
       throw new HttpException({ errors }, 401);
