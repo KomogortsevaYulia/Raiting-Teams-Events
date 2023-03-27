@@ -16,10 +16,11 @@ export class EventsService {
     return 'This action adds a new event';
   }
 
-  findAll(): Promise<Event[]> {
+  findAllExternal(): Promise<Event[]> {
     return this.eventsRepository
       .createQueryBuilder("events")
       .orderBy("events.dateStart")
+      .where("events.type = :type", { type: "Внешнее" })
       .getMany()
   }
 
