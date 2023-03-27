@@ -31,7 +31,7 @@ const router = createRouter({
       // Какой то конкретный коллектив
       path: "/team-page",
       // @ts-ignore
-      component: () => import('@/views/Team.vue'),
+      component: () => import('@/views/major_Team.vue'),
       meta: {}
     },
 
@@ -39,7 +39,7 @@ const router = createRouter({
       path: "/team",
       name: "Team",
       // @ts-ignore
-      component: () => import('@/views/Team.vue'),
+      component: () => import('@/views/major_Team.vue'),
       meta: {
         requiresAuth: true
       }
