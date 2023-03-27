@@ -18,21 +18,57 @@
       </div>
     </div>
   </div>
-  <div>
-    <VCalendar />
+  <div class="information">
+    <VCalendar expanded />
   </div>
 
 </template>
+<script setup>
+import { ref } from 'vue';
+
+const selectedColor = ref('blue');
+const attrs = ref([
+  {
+    key: 'test',
+    highlight: true,
+    dates: { start: new Date(2019, 3, 15), end: new Date(2019, 3, 19) },
+  }
+]);
+</script>
 <style lang="scss">
 .container {
   display: flex;
+}
+.vc-day-content{
+  position: absolute;
+  top: 0;
+  right: 0;
+
+}
+.vc-day{
+  height: 70px;
+}
+.vc-weekday{
+  background-color: #cbecee;
+}
+.information {
+  width: 800px;
+  height: 700px;
+  background-color: rgb(236, 228, 228);
+}
+.vc-day-box-center-center{
+  border: 1px groove;
 }
 .vc-arrow{
   width: 35px;
   height: 30px;
   color: #fd524c;
 }
+.vc-header .vc-title{
+  color: #fd524c;
+}
 button{
+  background: none;
   padding: 0em;
 }
 .avatar {
@@ -69,9 +105,5 @@ button{
   margin: 2em 1em 2em 5em;
   border-radius: 1000px; /* Радиус скругления */
 }
-
-.information {
-  width: 800px;
-  height: 700px;
-  background-color: rgb(236, 228, 228);
-}</style>
+//
+</style>
