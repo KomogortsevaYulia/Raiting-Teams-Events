@@ -149,6 +149,7 @@ const newsList = [
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import '@/assets/globals.scss';
 @import '@/assets/teams/team.scss';
 </style>
