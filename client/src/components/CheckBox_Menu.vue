@@ -117,6 +117,7 @@ const props = defineProps({
       height: 3rem;
       width: 100%;
       padding: 0.5rem;
+      margin-top: 1rem;
     }
     .refuse__btn{
       border: 1px solid #FF502F;

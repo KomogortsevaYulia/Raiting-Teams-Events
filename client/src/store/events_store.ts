@@ -1,6 +1,14 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
 export const useEventStore = defineStore("events", () => {
+
+  async function fetchEvents():Promise<any> {
+    const res = await axios.get('api/events/external')
+    const data = res.data
+
+    return data
+  }
     const menu_items = [
         {id: 1, title: 'Формат проведения', menu_types:[
           {id: 1, title:'Online'},
@@ -35,6 +43,7 @@ export const useEventStore = defineStore("events", () => {
       ]
 
     return{
-        menu_items
+        menu_items,
+        fetchEvents
     }
 })

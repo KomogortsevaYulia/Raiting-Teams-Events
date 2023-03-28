@@ -18,7 +18,7 @@
           <Switch_toggle />
         </div>
         <div class="cards">
-          <div class="card">
+          <div class="card" v-for="event in data" :key="event.id">
             <div class="card__banner"></div>
             <div class="card__content">
               <div class="card__event-name">Название мероприятия</div>
@@ -44,9 +44,20 @@
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import { useEventStore } from "@/store/events_store";
+import { onBeforeMount, ref } from 'vue';
 
 const eventStore = useEventStore();
 const menu_items = eventStore.menu_items;
+const data = ref()
+
+
+onBeforeMount(async () => {
+  fetchEvents()
+})
+async function fetchEvents() {
+  data.value = await eventStore.fetchEvents()
+}
+
 </script>
 
 <style lang="scss" scoped>
