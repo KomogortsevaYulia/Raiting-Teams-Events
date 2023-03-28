@@ -7,22 +7,8 @@
       </span>
     </div>
     <div class="events__container">
-      <!-- Боковое меню начало -->
-      <div class="checkbox__nav">
-        <div class="checkbox__block" v-for="menu_item in menu_items" :key="menu_item.id">
-          <div class="checkbox__title">{{ menu_item.title }}</div>
-          <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id" :class="{ 'hidden': menu_item.hidden && menu_type.id > 4}">
-            <input type="checkbox" class="checkbox">
-            <span class="fake"></span>
-            <span class="span__title">{{ menu_type.title }}</span>
-          </label>    
-          <div class="btn__open" v-if="menu_item.menu_types.length > 4" @click="menu_item.hidden = !menu_item.hidden">
-            <div class="btn__text" v-if="menu_item.hidden">Развернуть</div>
-            <div v-else class="btn__text">Свернуть</div>
-            <div class="btn__img" :class="{'closed': menu_item.hidden}"></div>
-          </div>
-        </div>
-      </div>
+      <!-- Боковое меню -->
+      <CheckBox_Menu :menu_items = "menu_items"/>
       <!-- Правая часть контейнера -->
       <div class="cards__container">
         <!-- Поисковые строки -->
@@ -56,6 +42,7 @@
 
 <script setup lang="ts">
 import Switch_toggle from '@/components/Switch_toggle.vue';
+import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import { useEventStore } from "@/store/events_store";
 
 const eventStore = useEventStore();
@@ -66,92 +53,6 @@ const menu_items = eventStore.menu_items;
 .events__container{
   display: flex;
   padding-top: 1rem;
-  .checkbox__block{
-    margin-bottom: 1rem;
-  }
-  .checkbox__nav{
-    background-color: #fff;
-    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-    width: 20rem;
-    padding: 2rem;
-    max-height: 100rem;
-    border-radius: 5px;
-    margin-bottom: 4rem;
-    .btn__open{
-      display: flex;
-      color: #348498;
-      padding-left: 0.5rem;
-      &:hover{
-        cursor: pointer;
-      }
-      .btn__img{
-        background-image: url(@/assets/icon/closed.svg);
-        margin-top: 0.1rem;
-        height: 1rem;
-        width: 2rem;
-        &.closed{
-          background-image: url(@/assets/icon/open.svg);
-        }
-      }
-    }
-    .checkbox__title{
-      color: #373737;
-      margin-bottom: 0.5rem;
-    }
-    .checkbox__container{
-      padding: 0.2rem 0.5rem;
-      display: flex;
-      &.hidden{
-        display: none;
-      }
-      &:hover{
-        cursor: pointer;
-      }
-      .checkbox{
-        display: none;
-        &:checked + .fake::before{
-          opacity: 1;
-        }
-      }
-      .span__title{
-        color: #A1A1A1;
-        font-size: 1rem;
-        margin-left: 1rem;
-        hyphens: manual;
-        width: 50%;
-      }
-      .span__title-dark{
-        color: #373737;
-      }
-      .fake{
-        display: inline-block;
-        position: relative;
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: 0.3rem;
-        background-color: #CDEEF0;
-        &:hover{
-          cursor: pointer;
-          background-color: #b9e6e9;
-        }
-
-      }
-      .fake::before{
-        content: "";
-        position: absolute; 
-        display: block;
-        width: 1.5rem;
-        height: 1.5rem;
-        background-color: #5BD1D7;
-        background-image: url(@/assets/icon/checked.svg);
-        border-radius: 0.3rem;
-        transform: (-50%, -50%);
-        opacity: 0;
-        transition: .2s;
-      }
-      
-    }
-  }
   .cards__container{
     margin-left: 2rem;
     width: 100%;
