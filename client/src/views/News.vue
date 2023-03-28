@@ -21,14 +21,12 @@
           <div class="card" v-for="event in data" :key="event.id">
             <div class="card__banner"></div>
             <div class="card__content">
-              <div class="card__event-name">Название мероприятия</div>
+              <div class="card__event-name">{{ event.title }}</div>
               <div class="teg__container">
                 <div class="teg">Тег 1</div>
                 <div class="teg">Тег 2</div>
               </div>
-              <div class="card__text">
-                Описание мероприятия
-              </div>
+              <div class="card__text">{{ event.description.slice(0,150)}}</div>
               <div class="btn__container">
                 <button class="card__btn">Подать заявку</button>
               </div>
@@ -97,7 +95,7 @@ async function fetchEvents() {
           background-color: #a3a3a3;
         }
         .card__content{
-          padding: 1rem 2rem;
+          padding: 2rem;
           width: 100%;
           .card__event-name{
             color: #373737;
@@ -120,7 +118,7 @@ async function fetchEvents() {
           .btn__container{
             display: flex;
             justify-content: right;
-            margin-top: 3rem;
+            margin-top: 1rem;
             .card__btn{
             background-color: #FF502F;
             color: #fff;
