@@ -13,7 +13,9 @@
             <div class="btn__img" :class="{'closed': menu_item.hidden}"></div>
           </div>
         </div>
-      </div>
+        <button class="apply__btn">Применить</button>
+        <button class="refuse__btn">Сбросить</button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -108,6 +110,22 @@ const props = defineProps({
         transition: .2s;
       }
       
+    }
+    .apply__btn{
+      background-color: #FF502F;
+      color: #fff;
+      height: 3rem;
+      width: 100%;
+      padding: 0.5rem;
+    }
+    .refuse__btn{
+      border: 1px solid #FF502F;
+      color: #FF502F;
+      background: #fff;
+      height: 3rem;
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
     }
   }
 </style>
