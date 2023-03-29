@@ -9,6 +9,7 @@ import { useTeamStore } from "../store/team_store";
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 
 
+
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 
