@@ -160,7 +160,8 @@ const newsList = [
 </template>
 
 <style lang="scss">
-@import '../globals.scss';
+@import '@/assets/globals.scss';
+
 .wrapper-team {
   display: block;
   width: 100%;

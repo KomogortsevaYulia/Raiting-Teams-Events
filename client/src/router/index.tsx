@@ -26,20 +26,11 @@ const router = createRouter({
       component: () => import('@/views/Teams.vue'),
       meta: {}
     },
-
-    {
-      // Какой то конкретный коллектив
-      path: "/team-page",
-      // @ts-ignore
-      component: () => import('@/views/major_Team.vue'),
-      meta: {}
-    },
-
     {
       path: "/team",
       name: "Team",
       // @ts-ignore
-      component: () => import('@/views/major_Team.vue'),
+      component: () => import('@/views/Team.vue'),
       meta: {
         requiresAuth: true
       }
