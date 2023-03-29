@@ -73,8 +73,8 @@ const newsList = [
   <!-- Это вся обертка -->
   <div class="wrapper-team">
     <!-- Обертка карточек коллективов -->
-    <div>
-      <div class="wrapper-team__top-panel">
+    <div class="full-width">
+      <div class="full-width wrapper-team__top-panel">
         <div class="text-area">
           <label>Студенческое научное общество «Квантум» состоит из энтузиастов-изобретателей, будущих ученых, кандидатов
             и докторов наук. Специалисты и бакалавры, инженеры и техники реализуют свой потенциал и обмениваются
@@ -90,7 +90,7 @@ const newsList = [
       <a @click="show = false" :class="{ active: !show }">Расписание занятий</a>
     </div>
 
-    <div v-if="show" class="wrapper-team__content">
+    <div v-if="show" class="wrapper-team__content wrapper-content">
       <div class="middle-panel">
         <div class="column-left">
           <div class="main-text">
@@ -159,13 +159,25 @@ const newsList = [
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/assets/globals.scss';
 
 .wrapper-team {
   display: block;
   width: 100%;
   justify-content: center;
+
+  // Это для баннера, что бы он был на фулл экран
+  .full-width {
+    position: relative;
+    margin-top: -1.5em;
+    width: 100vw; 
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
 
   .wrapper-team__top-panel {
     background-image: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 10%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%), url('@/assets/icon/event1.png');
