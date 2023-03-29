@@ -5,13 +5,16 @@ import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
-import { useTeamStore } from "../store/team_store"
+import { useTeamStore } from "../store/team_store";
+import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
+
 
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 
 const can = permissions_store.can;
+const menu_items = teamStore.menu_items;
 
 const show = ref(true);
 const data = ref()
@@ -47,9 +50,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <div v-if="show" class="wrapper-team__content">
 
       <!-- Фильтр -->
-    <div class="content-filter">
-      <Filter />
-    </div>
+      <CheckBox_Menu :menu_items = "menu_items"/>
 
     <!-- Обертка контента с карточками -->
     <div class="content-cards">

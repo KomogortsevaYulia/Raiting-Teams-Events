@@ -63,8 +63,6 @@ export class User {
     @JoinColumn([{ name: "title_role" }])
     role_id: number
 
-
-    @ApiProperty()
     @OneToMany((type)=>UserFunction, (user_func)=>user_func.function)
     user_function:UserFunction[]
 

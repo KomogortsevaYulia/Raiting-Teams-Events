@@ -51,6 +51,13 @@ export const useTeamStore = defineStore("teams", () => {
         this.layout = res;
     }
 
+    const menu_items = [
+        {id: 1, title: 'Влад', hidden: true, menu_types:[
+          {id: 1, title:'Придумай'},
+          {id: 2, title:'Теги'},
+        ]},
+      ]
+
     return {
         CreateTeamsTest,
         fetchCreateTeams,
@@ -59,5 +66,6 @@ export const useTeamStore = defineStore("teams", () => {
         setLayout,
 
         layout,
+        menu_items
     }
 });

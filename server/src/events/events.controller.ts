@@ -3,6 +3,7 @@ import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import {  ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Event } from './entities/event.entity';
 
 @ApiTags('events')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('events')
@@ -14,12 +15,12 @@ export class EventsController {
   //   return this.eventsService.create(createEventDto);
   // }
 
-  @Get()
-  @ApiOperation({ summary: "Получение списка мероприятий" })
+  @Get('/external')
+  @ApiOperation({ summary: "Получение списка внешних мероприятий" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAll() {
-    return this.eventsService.findAll();
+    return this.eventsService.findAllExternal();
   }
 
   // @Get(':id')
