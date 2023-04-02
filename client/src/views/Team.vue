@@ -13,8 +13,6 @@ const currentPage = ref(1);
 const data = ref()
 const team = ref()
 
-
-
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
 
@@ -22,12 +20,8 @@ onBeforeMount(async () => {
 })
 
 async function fetchTeam() {
-    team.value = await TeamStore.fetchTeams();
-   
-}
-// вытащить коллективы из бд 
-async function fetchTeams() {
-  data.value = await useTeamStore().fetchTeams()
+  
+  team.value = await TeamStore.fetchTeam();
 }
 
 function setCurrentPage(page: number) {
@@ -96,7 +90,7 @@ const newsList = [
     <div class="wrapper-team__navigation">
       <a @click="show = true" :class="{ active: show }">О коллективе</a>
       <a @click="show = false" :class="{ active: !show }">Список участников</a>
-     
+
     </div>
 
     <div v-if="show" class="wrapper-team__content wrapper-content">
@@ -163,30 +157,31 @@ const newsList = [
     </div>
 
     <div v-if="!show" class="wrapper-team__create">
-      <div v-for="item in team"> 
-           
+      <div v-for="item in team">
+
         <div class="wrapper">
 
-        <div class="one">
-            <img src='../assets/events/icon/banner.png' style=" width: 89px;height: 89px;background: #D9D9D9;border-radius: 25px;">
-        </div> 
-                <div class="container" style="margin-left: 10px;">
-                            <a>{{ item.user.fullname }}</a>
-                            Группа обучения: <a>{{ item.user.education_group }}</a>
-                            Должность: <a>{{ item.function.title }}</a>
-                        <div class="con-1" style ="margin-left: 1200px;"> 
-                            <button class="btn btn-primary" style="height: 30px; width: 30px;">Статус</button>
-                        </div> 
-                        <div class="con-3" style ="margin-left: 1200px;">  
-                            <button class="btn btn-primary" style="height: 30px; width: 30px;">Редактировать</button> 
-                        </div>
-                        
-                          
-                      
-                    </div>
-                </div>
+          <div class="one">
+            <img src='../assets/events/icon/banner.png'
+              style=" width: 89px;height: 89px;background: #D9D9D9;border-radius: 25px;">
+          </div>
+          <div class="container" style="margin-left: 10px;">
+            <a>{{ item.user.fullname }}</a>
+            Группа обучения: <a>{{ item.user.education_group }}</a>
+            Должность: <a>{{ item.function.title }}</a>
+            <div class="con-1" style="margin-left: 1200px;">
+              <button class="btn btn-primary" style="height: 30px; width: 30px;">Статус</button>
             </div>
-      
+            <div class="con-3" style="margin-left: 1200px;">
+              <button class="btn btn-primary" style="height: 30px; width: 30px;">Редактировать</button>
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -194,13 +189,15 @@ const newsList = [
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
+
 .wrapper {
-    display: flex;
-    height: 89px;
-    margin: 1rem;
-    background: #d1cdcd;
-    border-radius: 10px;
+  display: flex;
+  height: 89px;
+  margin: 1rem;
+  background: #d1cdcd;
+  border-radius: 10px;
 }
+
 .wrapper-team {
   display: block;
   width: 100%;
@@ -210,7 +207,7 @@ const newsList = [
   .full-width {
     position: relative;
     margin-top: -1.5em;
-    width: 100vw; 
+    width: 100vw;
     position: relative;
     left: 50%;
     right: 50%;
@@ -543,5 +540,4 @@ const newsList = [
       }
     }
   }
-}
-</style>
+}</style>

@@ -11,7 +11,7 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
     // Вывести все коллективвы с руководителсями
-   async function fetchTeams():Promise<any> {
+    async function fetchTeams(): Promise<any> {
         const res = await axios.get('/api/teams')
         const data = res.data
 
@@ -23,17 +23,13 @@ export const useTeamStore = defineStore("teams", () => {
             .then((respose: any) => {
                 // Умные действия
             })
-    } 
+    }
     async function fetchTeam(): Promise<any> {
-        const id=6;
-        const res = await axios.get('/api/teams/' + id+ '/users')
+        const id = 6;
+        const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
-        //const content = await data.json();
-        console.log(res.data)
-
-
-
-        return res.data
+        console.log(data)
+        return data
     }
 
 
@@ -64,11 +60,13 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
     const menu_items = [
-        {id: 1, title: 'Влад', hidden: true, menu_types:[
-          {id: 1, title:'Придумай'},
-          {id: 2, title:'Теги'},
-        ]},
-      ]
+        {
+            id: 1, title: 'Влад', hidden: true, menu_types: [
+                { id: 1, title: 'Придумай' },
+                { id: 2, title: 'Теги' },
+            ]
+        },
+    ]
 
     return {
         CreateTeamsTest,
