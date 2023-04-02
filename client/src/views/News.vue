@@ -1,3 +1,36 @@
+<script setup lang="ts">
+import { onBeforeMount, ref } from 'vue';
+import { usePermissionsStore } from '@/store/permissions_store';
+import { useEventStore } from "../store/event_store"
+
+
+const permissions_store = usePermissionsStore();
+const eventStore = useEventStore();
+const can = permissions_store.can;
+
+const show = ref(true);
+const dataCards = ref()
+const tags = ref()
+
+
+onBeforeMount(async () => {
+  // вытащить ивенты из бд и отобразить их
+  fetchEvents()
+})
+
+async function fetchEvents() {
+  dataCards.value = await eventStore.fetchEvents()
+  tags.value = dataCards.value[0].tags
+  for (dataCards.value.tags in dataCards.value){
+    tags.value = dataCards.value.tags
+  }
+  
+  console.log("dataCards.value")
+  console.log(dataCards.value)
+
+}
+</script>
+
 <template>
   <div>
     <div class="mainBanner">
@@ -31,17 +64,17 @@
           <input class="date__search" placeholder="Выберите дату" type="date"/>
           <Switch_toggle />
         </div>
-        <div class="cards">
+        <div v-for="event in dataCards" class="cards"> 
           <div class="card">
             <div class="card__banner"></div>
             <div class="card__content">
-              <div class="card__event-name">Название мероприятия</div>
-              <div class="teg__container">
-                <div class="teg">Тег 1</div>
-                <div class="teg">Тег 2</div>
+              <div class="card__event-name">{{ event.title }}</div>
+              <div v-for="tag in event.tags" class="teg__container">
+                <div class="teg"> {{ tag }}</div>
+                <!-- <div class="teg">Тег 2</div> -->
               </div>
               <div class="card__text">
-                Описание мероприятия
+                {{ event.description }}
               </div>
               <div class="btn__container">
                 <button class="card__btn">Подать заявку</button>
@@ -56,6 +89,7 @@
 
 <script lang="ts">
 import Switch_toggle from '@/components/Switch_toggle.vue';
+
 
 export default{
   components:{
