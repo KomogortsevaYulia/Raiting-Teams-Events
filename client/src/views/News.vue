@@ -20,11 +20,6 @@ onBeforeMount(async () => {
 
 async function fetchEvents() {
   dataCards.value = await eventStore.fetchEvents()
-  tags.value = dataCards.value[0].tags
-  for (dataCards.value.tags in dataCards.value){
-    tags.value = dataCards.value.tags
-  }
-  
   console.log("dataCards.value")
   console.log(dataCards.value)
 
@@ -70,8 +65,7 @@ async function fetchEvents() {
             <div class="card__content">
               <div class="card__event-name">{{ event.title }}</div>
               <div v-for="tag in event.tags" class="teg__container">
-                <div class="teg"> {{ tag }}</div>
-                <!-- <div class="teg">Тег 2</div> -->
+                <div v-for="tags in tag.split('\n')" class="teg"> {{ tags }}</div>
               </div>
               <div class="card__text">
                 {{ event.description }}
@@ -89,6 +83,7 @@ async function fetchEvents() {
 
 <script lang="ts">
 import Switch_toggle from '@/components/Switch_toggle.vue';
+import { split } from 'lodash';
 
 
 export default{
