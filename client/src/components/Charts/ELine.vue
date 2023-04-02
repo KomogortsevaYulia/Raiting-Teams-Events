@@ -4,8 +4,10 @@
 <script setup lang="ts">
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
-import { BarChart } from "echarts/charts";
+import { LineChart } from "echarts/charts";
 import {
+
+
   GridComponent,
   TooltipComponent,
   LegendComponent,
@@ -14,23 +16,27 @@ import {
 import VChart from "vue-echarts";
 
 use([
+
   CanvasRenderer,
-  BarChart,
+  LineChart,
   GridComponent,
   TitleComponent,
   TooltipComponent,
   LegendComponent,
 ]);
 
-
 const props = defineProps<{
   labels: string[],
   data: number[],
 }>()
 
-const options = {
+
+
+
+const option = {
   xAxis: {
     type: 'category',
+    boundaryGap: false,
     data: props.labels
   },
   yAxis: {
@@ -38,24 +44,11 @@ const options = {
   },
   series: [
     {
-      data:props.data,
-      type: 'bar',
-      showBackground: true,
-      backgroundStyle: {
-        color: 'rgba(180, 180, 180, 0.2)'
-      }
+      data: props.data,
+      type: 'line',
+      areaStyle: {}
     }
-  ],
-  tooltip : {
-   	trigger: 'axis',
-    axisPointer: {
-        type: 'cross',// Indicator type
-        label: {
-        	// Horizontal section indicator block color
-            backgroundColor: '#6a7985'
-        }
-    }
-}
+  ]
 };
 
 
@@ -63,7 +56,7 @@ const options = {
 
 <template>
   <div class="charts-wrapper">
-  <v-chart class="chart " :option="options" />
+  <v-chart class="chart " :option="option" />
   </div>
 </template>
 

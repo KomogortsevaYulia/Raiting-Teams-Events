@@ -4,6 +4,7 @@ import { DatePicker } from 'v-calendar';
 import DownloadReport from './DowloadReport.vue';
 import EPie from '@/components/Charts/EPie.vue';
 import EBar from '@/components/Charts/EBar.vue';
+import EBar2 from '@/components/Charts/ELine.vue';
 
 // константные значения
 
@@ -226,7 +227,7 @@ function changeDirection(direction: any) {
 
         <div class="row d-flex justify-content-center text-center">
           <h4>Мероприятия</h4>
-          <div class="row mt-4 g-5">
+          <div class="row mt-4 ">
             <div class="col-lg-6 col-md-12 chartBorder">
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
