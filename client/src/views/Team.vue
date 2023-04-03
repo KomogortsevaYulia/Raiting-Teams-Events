@@ -57,6 +57,26 @@ async function fetchCurrentTeams() {
     })
 }
 
+////////////////////////////////////////////
+const selectedItem = ref(0);
+const showCreate = ref(false);
+
+const itemList = [
+  { name: "Главная" },
+  { name: "Расписание занятий" },
+  { name: "Участники" },
+  { name: "Заявки" }
+]
+
+const selectItem = (i: number) => {
+  selectedItem.value = i
+}
+
+itemList.forEach((item, index) => {
+  return (item == itemList[index])
+})
+////////////////////////////////////////////
+
 const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
 
 const newsList = [
@@ -85,22 +105,27 @@ const newsList = [
 <template>
   <!-- Это вся обертка -->
   <div class="wrapper-team">
+
     <!-- Обертка карточек коллективов -->
     <div class="full-width">
-      <div class="full-width wrapper-team__top-panel">
-        <div class="text-area">
-          <label>{{data.title}}</label>
+      <div class="wrapper-team__top-panel">
+        <div class="text-area container">
+          <p>{{ data.title }}</p>
+          <button>Подать заявку</button>
         </div>
       </div>
     </div>
 
-    <!-- Навигация -->
-    <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{ active: show }">О коллективе</a>
-      <a @click="show = false" :class="{ active: !show }">Расписание занятий</a>
-    </div>
+    <div v-if="show" class="wrapper-team__content wrapper-content mt-4">
 
-    <div v-if="show" class="wrapper-team__content wrapper-content">
+      <!-- Навигация -->
+      <div class="wrapper-team__navigation">
+        <a @click="selectItem(index), showCreate = false" v-for="(item, index) in itemList" :key="index"
+          :class="{ active: index == selectedItem }">{{ item.name }}</a>
+        <!-- <a @click="show = true" :class="{ active: show }">О коллективе</a> -->
+        <!-- <a @click="show = false" :class="{ active: !show }">Расписание занятий</a> -->
+      </div>
+
       <div class="middle-panel">
         <div class="column-left">
           <div class="main-text">
@@ -200,25 +225,25 @@ const newsList = [
     align-items: center;
 
     .text-area {
-      text-align: center;
-      color: rgb(8, 7, 7);
-      padding: 20px;
-      width: 40%;
+      // color: #FFF;
+      // text-align: center;
+      // color: rgb(8, 7, 7);
+      // padding: 20px;
+      // width: 40%;
+      // border: 2px solid red;
 
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+      // border-radius: 10px;
+      // display: flex;
+      // flex-direction: column;
+      // align-items: center;
 
-    .text-area>* {
-      margin: 7px;
-    }
-
-    button {
-      width: fit-content;
-      background-color: #ff502f;
-      color: #FFFFFF;
+      p {
+        font-size: 36px;
+        font-weight: 600;
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        margin-bottom: 2rem;
+      }
     }
   }
 
@@ -271,6 +296,7 @@ const newsList = [
   }
 
   .wrapper-team__content {
+    // border: 2px solid red;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -357,18 +383,6 @@ const newsList = [
           justify-content: center;
           align-items: center;
           width: 35%;
-
-          .wrapper-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-
-            .btn {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-            }
-          }
         }
       }
 
