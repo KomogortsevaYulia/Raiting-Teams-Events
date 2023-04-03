@@ -72,7 +72,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           <div v-for="team in data" class="cardEvent">
             <router-link :to="'/team/' + team.id">
               <div class="imgEvent">
-                <!-- <div @click="valueID = team.id, onSubmit()" class="imgEvent"> -->
                 <div></div>
                 <p>{{ team.title }}</p>
                 <img :src="team.image">

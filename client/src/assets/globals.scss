@@ -30,25 +30,25 @@ label {
 }
 
 button {
-    cursor: pointer;
-    appearance: none;
-    padding: 1rem 3rem;
+    padding: 0.5rem 2rem 0.5rem 2rem;
     border: 0;
-    border-radius: 0.5rem;
-    font-size: 16px;
+    border-radius: 10px;
+    background-color: var(--main-color);
+    color: #fff;
 
     &:hover {
-        background: #ebf3ff;
+        background: var(--main-color-hover);
         transition: 0.3s;
     }
 
     &:focus {
         outline: none;
-        box-shadow: 0 0 0 4px #f2f6fd;
+        box-shadow: 0 0 0 2px #ff746f;
     }
 
     &:active {
-        background-color: #d1e6ff;
+        transition: 0.3s;
+        background-color: #fd524c;
     }
 }
 
