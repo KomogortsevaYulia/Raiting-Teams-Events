@@ -24,6 +24,16 @@ export class EventsService {
       .getMany()
   }
 
+
+  // findAllEvents(): Promise<Event[]> {
+
+  //   return this.eventsRepository
+  //   .createQueryBuilder("events")
+  //   .orderBy("events.dateStart")
+  //   .where("events.type = :type", { type: "Внешнее" })
+  //   .getMany()
+  // }
+
   findOne(id: number) {
     return `This action returns a #${id} event`;
   }

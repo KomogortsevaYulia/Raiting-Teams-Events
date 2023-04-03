@@ -28,7 +28,7 @@ export class TeamsController {
   @ApiParam({ name: "id_parent", required: false, description: "указать его родителя (если коллектив, то направление)" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAllTeamsOfDirection(@Query(){type_team="teams", id_parent = -1}: any) {
+  findAllTeamsOfDirection(@Query(){type_team="teams", id_parent = -1}) {
     return this.teamsService.findAllTeamsOfDirection(type_team, id_parent);
   }
 

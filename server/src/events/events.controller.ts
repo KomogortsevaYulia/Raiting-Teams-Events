@@ -23,6 +23,15 @@ export class EventsController {
     return this.eventsService.findAllExternal();
   }
 
+  // @Get()
+  // @ApiOperation({ summary: "Получение списка мероприятий с учетом различных параметров" })
+  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  // findAllEvents(@Query(){type_team="teams", id_parent = -1}: any) {
+  //   return this.eventsService.findAllEvents();
+  // }
+
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.eventsService.findOne(+id);
