@@ -23,7 +23,7 @@
     "http-cache-semantics": "^4.1.1",
     "json5": "^2.2.2",
     "pinia": "^2.0.32",
-    "v-calendar": "^3.0.0-alpha.8",
+    "v-calendar": "^3.0.3",
     "vue": "^3.2.47",
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.1.6",
