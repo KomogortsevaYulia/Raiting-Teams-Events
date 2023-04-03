@@ -54,7 +54,7 @@ const router = createRouter({
       }
     },
     {
-      path: "/event",
+      path: "/event/:id?",
       // @ts-ignore
       component: () => import('@/views/Event.vue'),
       meta: {}

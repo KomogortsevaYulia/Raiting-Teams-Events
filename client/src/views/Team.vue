@@ -77,7 +77,7 @@ itemList.forEach((item, index) => {
 })
 ////////////////////////////////////////////
 
-const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
+const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "/teams" },]
 
 const newsList = [
   {
@@ -122,32 +122,29 @@ const newsList = [
       <div class="wrapper-team__navigation">
         <a @click="selectItem(index), showCreate = false" v-for="(item, index) in itemList" :key="index"
           :class="{ active: index == selectedItem }">{{ item.name }}</a>
-        <!-- <a @click="show = true" :class="{ active: show }">О коллективе</a> -->
-        <!-- <a @click="show = false" :class="{ active: !show }">Расписание занятий</a> -->
       </div>
+      <div class="navigation-tags">
+        <div v-for="(item, index) in itemLink" :key="index" class="teg">
+          {{ item.name }}
+        </div>
+      </div>
+      <hr>
 
       <div class="middle-panel">
         <div class="column-left">
-          <div class="main-text">
-            <h2 class="title">О НАС</h2>
-            <label>Задачи и цели:
-              поиск и развитие перспективных студентов, желающих реализовать свой потенциал в научной и профессиональной
-              деятельности.
-              развитие междисциплинарных проектов и освоение участниками новых профессиональных компетенций.
-              создание и развитие условий, которые обеспечат возможность для каждого студента реализовать свое право на
-              развитие личности, на участие в научных исследованиях и научно-техническом творчестве;
-              обеспечение единства образовательного, научного и инновационного процессов с формированием и развитием
-              способностей, улучшением профессиональной подготовки студентов, совершенствованием форм привлечения молодежи
-              к научным исследованиям, научно-технической, изобретательской и рационализаторской деятельности.
-              создание благоприятных условий для развития и функционирования различных форм научного творчества молодежи,
-              базирующихся на отечественном и зарубежном опыте, результатах научных и научно-технических разработок;
-              содействие всестороннему развитию личности студента, формированию его объективной самооценки, приобретению
-              навыков работы в коллективах, приобщению к организаторской и инновационной деятельности;
-              развитие способности использовать научные знания и быстро адаптировать при изменении ситуации, готовности к
-              повышению квалификации и переподготовке;
-              предоставление студентам возможности испробовать свои силы в решении актуальных задач по различным
-              направлениям науки и техники, опубликовать значимые результаты исследований. </label>
-          </div>
+          <h2>О коллективе</h2>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates soluta
+          in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
+          voluptatibus exercitationem est similique?
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates soluta
+          in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
+          voluptatibus exercitationem est similique?
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates soluta
+          in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
+          voluptatibus exercitationem est similique?
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates soluta
+          in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
+          voluptatibus exercitationem est similique?
         </div>
         <div class="column-right">
           <div class="image-container">
@@ -248,30 +245,41 @@ const newsList = [
   }
 
   .wrapper-team__navigation {
-    padding-bottom: 4rem;
-    padding-top: 2rem;
-    width: 100%;
-    transition: 0.3s;
-
     a {
       cursor: pointer;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       font-size: 14px;
-      padding: 0 0.75rem 0.75rem 0.75rem;
+      transition: 0.3s;
+      color: #348498;
+      margin-inline: 1rem;
+      padding-bottom: 0.75rem;
 
       &:hover {
         color: var(--main-color);
       }
+    }
 
-      &:active {
-        transition: all 0.4s;
-        color: var(--main-color-hover);
-        border-bottom-color: var(--main-color-hover);
-      }
+    // Первому элементу ставим отступ = 0, чтобы не выпирал
+    a:first-child {
+      margin-left: 0;
     }
 
     .active {
+      color: var(--main-color);
       border-bottom: var(--main-border-bottom);
+    }
+  }
+
+  .navigation-tags {
+    padding-top: 2rem;
+    display: flex;
+
+    .teg {
+      margin-right: 1rem;
+      background-color: #B7EAED;
+      padding: 0.2rem 1rem;
+      color: #348498;
+      border-radius: 5px;
     }
   }
 
@@ -299,6 +307,7 @@ const newsList = [
     // border: 2px solid red;
     display: flex;
     flex-direction: column;
+    padding: 1.5rem 2.5rem 0 2.5rem;
     width: 100%;
 
     .content-filter {
@@ -397,7 +406,6 @@ const newsList = [
 
     .middle-panel {
       display: flex;
-      flex-direction: row;
 
       .title {
         color: rgb(8, 7, 7);
@@ -407,19 +415,14 @@ const newsList = [
         align-items: center;
       }
 
-      .main-text {
-
-        padding: 20px;
-
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
       .column-left {
-        flex-basis: 60%;
-        padding: 0 10px;
+        h2 {
+          color: #000;
+          font-size: 20px;
+          font-weight: 600;
+          height: 2rem;
+          font-family: 'Montserrat', sans-serif;
+        }
       }
 
       .column-right {

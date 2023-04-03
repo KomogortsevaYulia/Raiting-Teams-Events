@@ -58,7 +58,7 @@ itemList.forEach((item, index) => {
 </template>
 
 <style lang="scss" scoped>
-@import '../assets/globals.scss';
+@import '@/assets/globals.scss';
 
 .btn {
     padding-top: 1rem;
