@@ -37,25 +37,45 @@ export class TeamsService {
     return `This action removes a #${id} team`;
   }
 
-  // get all teams with leadeaders
-  async findAll(): Promise<Team[]> {
-    const head = "Руководитель"
+    // get all teams with leadeaders
+    async findAll(): Promise<Team[]> {
+      const head = "Руководитель"
+  
+      return this.teamsRepository
+        .createQueryBuilder("teams")
+  
+        .select(["teams.id", "teams.title", "teams.image", "teams.description", "teams.type_team"])
+        .where("teams.type_team = :type", { type: "teams" })
+        .leftJoin("teams.functions", "functions")
+        .addSelect("functions.title")
+        .andWhere("functions.title = :head", { head: "Руководитель" })
+  
+        .leftJoin("functions.userFunctions", "user_functions")
+        .addSelect("user_functions.id")
+        .leftJoinAndSelect("user_functions.user", "user")
+        .addSelect("user.title_role")
+        .orderBy("teams.id","DESC")
+        .getMany()
+    }
 
-    return this.teamsRepository
-      .createQueryBuilder("teams")
+    
+  // get all teams of specific direction for statistic
+  async findAllTeamsOfDirection(type_team:string, id_parent:number): Promise<Team[]> {
+
+    let teams = this.teamsRepository
+      .createQueryBuilder(type_team)
 
       .select(["teams.id", "teams.title", "teams.image", "teams.description", "teams.type_team"])
-      .where("teams.type_team = :type", { type: "teams" })
-      .leftJoin("teams.functions", "functions")
-      .addSelect("functions.title")
-      .andWhere("functions.title = :head", { head: "Руководитель" })
+      .where("teams.type_team = :type", { type: type_team })
 
-      .leftJoin("functions.userFunctions", "user_functions")
-      .addSelect("user_functions.id")
-      .leftJoinAndSelect("user_functions.user", "user")
-      .addSelect("user.title_role")
-
-      .getMany()
+      // с учетом направления
+      if(id_parent > 0){
+        teams.andWhere("teams.id_parent = :id_parent ",{ id_parent: id_parent } )
+        .leftJoin("teams.id_parent", "id_parent")
+        .addSelect(["id_parent.id", "id_parent.shortname"])
+      }
+      
+    return teams.getMany()
   }
 
   //вывести команду
