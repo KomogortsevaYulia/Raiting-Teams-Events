@@ -18,7 +18,7 @@ const show = ref(true);
 const data = ref()
 
 function onSubmit(id: number) {
-  return "/team/"+id;
+  return "/team/" + id;
 }
 
 onBeforeMount(async () => {
@@ -190,7 +190,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         flex-wrap: wrap;
 
         .cardEvent {
-          border: 2px solid red;
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
           height: 350px;
@@ -200,6 +199,10 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           border-radius: 5px;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           transition: all .5s;
+
+          a {
+            color: #000;
+          }
         }
 
         .cardEvent:hover {
@@ -235,6 +238,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
+          height: 100%;
 
           .date {
             text-align: end;
