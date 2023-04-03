@@ -8,8 +8,6 @@ import { usePermissionsStore } from '@/store/permissions_store';
 import { useTeamStore } from "../store/team_store";
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 
-
-
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 
@@ -19,10 +17,8 @@ const menu_items = teamStore.menu_items;
 const show = ref(true);
 const data = ref()
 
-const valueID = ref();
-function onSubmit() {
-  console.log('See here');
-  console.log(valueID.value);
+function onSubmit(id: number) {
+  return "api/teams/" + id;
 }
 
 onBeforeMount(async () => {
@@ -74,17 +70,20 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-grid' : 'wrapper-list']">
           <div v-for="team in data" class="cardEvent">
-            <div @click="valueID=team.title, onSubmit()" class="imgEvent">
-              <div></div>
-              <p>{{ team.title }}</p>
-              <img :src="team.image">
-            </div>
-            <div class="wrapperContent">
-              <div>
-                <p>{{ team.description }}</p>
-                <!-- <p class="date">06.04.2021</p> -->
+            <router-link :to="'/team/' + team.id">
+              <div class="imgEvent">
+                <!-- <div @click="valueID = team.id, onSubmit()" class="imgEvent"> -->
+                <div></div>
+                <p>{{ team.title }}</p>
+                <img :src="team.image">
               </div>
-            </div>
+              <div class="wrapperContent">
+                <div>
+                  <p>{{ team.description }}</p>
+                  <!-- <p class="date">06.04.2021</p> -->
+                </div>
+              </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -200,6 +199,10 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           border-radius: 5px;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           transition: all .5s;
+
+          a {
+            color: #000;
+          }
         }
 
         .cardEvent:hover {
@@ -235,6 +238,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
+          height: 100%;
 
           .date {
             text-align: end;

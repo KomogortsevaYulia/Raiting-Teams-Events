@@ -27,7 +27,7 @@ const router = createRouter({
       meta: {}
     },
     {
-      path: "/team",
+      path: "/team/:id?",
       name: "Team",
       // @ts-ignore
       component: () => import('@/views/Team.vue'),
