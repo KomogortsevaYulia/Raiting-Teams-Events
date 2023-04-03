@@ -23,10 +23,10 @@ export class EventsController {
     return this.eventsService.findAllExternal();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.eventsService.findOne(+id);
-  // }
+  @Get('/external/:id')
+  findOne(@Param('id') id: string) {
+    return this.eventsService.findOne(+id);
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
