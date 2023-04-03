@@ -4,6 +4,10 @@ import { onBeforeMount, ref } from 'vue';
 import TeamsForm from './TeamsForm.vue'
 
 import { useTeamStore } from "../store/team_store"
+import axios from 'axios';
+import { useRoute } from "vue-router";
+
+const route = useRoute()
 
 const show = ref(true);
 const layout = ref(true);
@@ -14,13 +18,14 @@ const data = ref()
 
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
-  fetchTeams()
+  // fetchTeams()
+  fetchCurrentTeams();
 })
 
 // вытащить коллективы из бд 
-async function fetchTeams() {
-  data.value = await useTeamStore().fetchTeams()
-}
+// async function fetchTeams() {
+//   data.value = await useTeamStore().fetchTeams()
+// }
 
 function setCurrentPage(page: number) {
   currentPage.value = page
@@ -42,6 +47,14 @@ function previousPage() {
   else {
     currentPage.value = 3
   }
+}
+
+async function fetchCurrentTeams() {
+  // я эту хуйню позже перепишу
+  await axios.get('/api/teams/' + route.params.id)
+    .then((respose: any) => {
+      data.value = respose.data
+    })
 }
 
 const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
@@ -76,10 +89,7 @@ const newsList = [
     <div class="full-width">
       <div class="full-width wrapper-team__top-panel">
         <div class="text-area">
-          <label>Студенческое научное общество «Квантум» состоит из энтузиастов-изобретателей, будущих ученых, кандидатов
-            и докторов наук. Специалисты и бакалавры, инженеры и техники реализуют свой потенциал и обмениваются
-            накопленным опытом в различных сферах профессиональной деятельности. </label>
-          <button>Подать заявку</button>
+          <label>{{data.title}}</label>
         </div>
       </div>
     </div>
@@ -171,7 +181,7 @@ const newsList = [
   .full-width {
     position: relative;
     margin-top: -1.5em;
-    width: 100vw; 
+    width: 100vw;
     position: relative;
     left: 50%;
     right: 50%;

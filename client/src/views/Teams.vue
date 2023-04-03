@@ -18,7 +18,7 @@ const show = ref(true);
 const data = ref()
 
 function onSubmit(id: number) {
-  return "/team/" + id;
+  return "api/teams/" + id;
 }
 
 onBeforeMount(async () => {
@@ -70,7 +70,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-grid' : 'wrapper-list']">
           <div v-for="team in data" class="cardEvent">
-            <a :href="onSubmit(team.id)">
+            <router-link :to="'/team/' + team.id">
               <div class="imgEvent">
                 <!-- <div @click="valueID = team.id, onSubmit()" class="imgEvent"> -->
                 <div></div>
@@ -83,7 +83,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                   <!-- <p class="date">06.04.2021</p> -->
                 </div>
               </div>
-            </a>
+            </router-link>
           </div>
         </div>
       </div>
