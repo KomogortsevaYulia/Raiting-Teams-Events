@@ -149,15 +149,15 @@ async function fetchEvents() {
 
 }
 
-// .full-width {
-//   position: relative;
-//   margin-top: -1.5em;
-//   width: 100vw;
-//   left: 50%;
-//   right: 50%;
-//   margin-left: -50vw;
-//   margin-right: -50vw;
-// }
+.full-width {
+  position: relative;
+  margin-top: -1.5em;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
 
 .mainBanner {
   display: flex;
