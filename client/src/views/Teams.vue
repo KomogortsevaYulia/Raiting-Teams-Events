@@ -5,15 +5,25 @@ import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
-import { useTeamStore } from "../store/team_store"
+import { useTeamStore } from "../store/team_store";
+import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
+
+
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 
 const can = permissions_store.can;
+const menu_items = teamStore.menu_items;
 
 const show = ref(true);
 const data = ref()
+
+const valueID = ref();
+function onSubmit() {
+  console.log('See here');
+  console.log(valueID.value);
+}
 
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
@@ -46,19 +56,17 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <div v-if="show" class="wrapper-team__content">
 
       <!-- Фильтр -->
-    <div class="content-filter">
-      <Filter />
-    </div>
+      <CheckBox_Menu :menu_items="menu_items" />
 
-    <!-- Обертка контента с карточками -->
-    <div class="content-cards">
+      <!-- Обертка контента с карточками -->
+      <div class="content-cards">
 
-      <!-- Инпут с поиском -->
-      <div class="cards__search">
-        <input placeholder="Начните поиск..." />
-        <div class="search-toggle">
-          <Switch_toggle />
-        </div>
+        <!-- Инпут с поиском -->
+        <div class="cards__search">
+          <input placeholder="Начните поиск..." />
+          <div class="search-toggle">
+            <Switch_toggle />
+          </div>
         </div>
         <!--  {{ data }}-->
 
@@ -66,7 +74,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-grid' : 'wrapper-list']">
           <div v-for="team in data" class="cardEvent">
-            <div class="imgEvent">
+            <div @click="valueID=team.title, onSubmit()" class="imgEvent">
               <div></div>
               <p>{{ team.title }}</p>
               <img :src="team.image">
@@ -77,21 +85,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                 <!-- <p class="date">06.04.2021</p> -->
               </div>
             </div>
-            <!-- <img class="imgTeams" width="250" height="145" :src="team.image"> -->
-            <!-- <div class="wrapper-content">
-                                                <a>{{ team.title }}</a>
-                                                <p>{{ team.description }}</p>
-                                                <p>Руководители:
-                                                  <span v-for="leader in (team.functions[0]).userFunctions">
-                                                    {{ leader.user.fullname }}<br>
-                                                  </span>
-                                                </p>
-                                                <div class="btn">
-                                                  <RouterLink to="/team-page">
-                                                    <button>Подробнее</button>
-                                                  </RouterLink>
-                                                </div>
-                                              </div> -->
           </div>
         </div>
       </div>
