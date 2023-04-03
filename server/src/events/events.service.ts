@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import {Event} from './entities/event.entity'
+import { Level, Type } from './enums/enums';
 
 @Injectable()
 export class EventsService {
@@ -25,14 +26,13 @@ export class EventsService {
   }
 
 
-  // findAllEvents(): Promise<Event[]> {
+  findAllEvents(type:Type, level:Level): Promise<Event[]> {
 
-  //   return this.eventsRepository
-  //   .createQueryBuilder("events")
-  //   .orderBy("events.dateStart")
-  //   .where("events.type = :type", { type: "Внешнее" })
-  //   .getMany()
-  // }
+    return this.eventsRepository
+    .createQueryBuilder("events")
+    // .where("events.type = :type", { type: type })
+    .getMany()
+  }
 
   findOne(id: number) {
     return `This action returns a #${id} event`;

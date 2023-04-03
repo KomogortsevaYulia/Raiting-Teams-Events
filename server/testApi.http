@@ -9,6 +9,13 @@ GET http://localhost:3000/api/users?limit=4&email=mail
 
 
 
+###
+# EVENTS--------------------------------------------------------
+GET http://localhost:3000/api/events/external
+
+
+
+
 
 
 ###
