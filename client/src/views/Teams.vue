@@ -8,8 +8,6 @@ import { usePermissionsStore } from '@/store/permissions_store';
 import { useTeamStore } from "../store/team_store";
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 
-
-
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 
@@ -19,10 +17,8 @@ const menu_items = teamStore.menu_items;
 const show = ref(true);
 const data = ref()
 
-const valueID = ref();
-function onSubmit() {
-  console.log('See here');
-  console.log(valueID.value);
+function onSubmit(id: number) {
+  return "/team/"+id;
 }
 
 onBeforeMount(async () => {
@@ -74,17 +70,20 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-grid' : 'wrapper-list']">
           <div v-for="team in data" class="cardEvent">
-            <div @click="valueID=team.title, onSubmit()" class="imgEvent">
-              <div></div>
-              <p>{{ team.title }}</p>
-              <img :src="team.image">
-            </div>
-            <div class="wrapperContent">
-              <div>
-                <p>{{ team.description }}</p>
-                <!-- <p class="date">06.04.2021</p> -->
+            <a :href="onSubmit(team.id)">
+              <div class="imgEvent">
+                <!-- <div @click="valueID = team.id, onSubmit()" class="imgEvent"> -->
+                <div></div>
+                <p>{{ team.title }}</p>
+                <img :src="team.image">
               </div>
-            </div>
+              <div class="wrapperContent">
+                <div>
+                  <p>{{ team.description }}</p>
+                  <!-- <p class="date">06.04.2021</p> -->
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -191,6 +190,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         flex-wrap: wrap;
 
         .cardEvent {
+          border: 2px solid red;
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
           height: 350px;
