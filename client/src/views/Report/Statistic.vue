@@ -1,11 +1,12 @@
 <script setup lang="ts" >
-import { ref } from 'vue';
+import { onBeforeMount, onMounted, ref, type Ref } from 'vue';
 import { DatePicker } from 'v-calendar';
 import DownloadReport from './DowloadReport.vue';
 import EPie from '@/components/Charts/EPie.vue';
 import EBar from '@/components/Charts/EBar.vue';
-import EBar2 from '@/components/Charts/ELine.vue';
+import { useTeamStore } from '@/store/team_store';
 
+const teamStore = useTeamStore();
 // константные значения
 
 // direction
@@ -61,11 +62,7 @@ const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом',
 ]
 const dataTopTeams = [2, 5, 8, 8, 9]
 
-// const labelsDatesOfEvents = ['Осень', 'Зима', 'Лето', 'Весна']
-// const dataDatesOfEvents = [2, 5, 8, 8]
 
-
-// const labelsEventsTwoType = ['Внешние', 'Внутренние']
 const dataEventsTwoType = [
   { value: 10, name: 'Внешние' },
   { value: 75, name: 'Внутренние' },]
@@ -73,6 +70,40 @@ const dataEventsTwoType = [
 
 const show = ref(true);
 
+
+
+
+// dropdowns-----------------------------------------------------------
+const teamSelected = ref({ name: "Все коллективы", id: 0 })
+const foundTeams = ref()
+
+// { id: number, shortname: string }
+const directionsFromDatabase = ref()           //дата
+
+onBeforeMount(async () => {
+ 
+  await getDirections()
+  getTeams(-1)
+})
+
+
+// получить идшники направлений с бд, чтобы по этим идшникам найти коллективвы,
+//которые этим направления принадлежат
+async function getDirections() {
+
+  let directions = await teamStore.fetchTeamsOfDirection(-1, "direction")
+ 
+  let arrayData = []
+
+  for (let i = 0; i < directions.length; i++) {
+    // console.log("directions " + directions[i].shortname)
+    let direction = directions[i]
+
+    arrayData[i] = { id: direction.id, shortname: direction.shortname };
+  }
+
+  directionsFromDatabase.value = arrayData
+}
 
 
 // проверить какие графики показать, а какие убрать
@@ -93,9 +124,47 @@ function seeGraphics(typeGraphics: any) {
 }
 
 
+// получить всех пользователей и выбрать из них нужных
+async function getTeams(directionId:number) {
+
+  let limit = 30
+  let data = await teamStore.fetchTeamsOfDirection(directionId)
+
+  // console.log("selectedDirection.value " + selectedDirection.value+ " " + data)
+  //получить всех найденных юзеров
+  let teams = data
+
+
+  let arrayData = []
+
+  arrayData[0] = { name: "Все коллективы", id: 0 }
+
+  for (let i = 0; i < teams.length; i++) {
+    let team = teams[i]
+
+    // console.log("team " + team.title)
+    arrayData[i + 1] = { name: team.title, id: team.id };
+  }
+  foundTeams.value = arrayData
+
+}
+
 
 function changeDirection(direction: any) {
   selectedDirection.value = direction.id
+
+  let directionsFD = directionsFromDatabase.value
+  let directionId = -1
+
+  for(let i = 0; i < directionsFD.length; i++){
+    console.log("short " + directionsFD[i].shortname  + "  direction.data " + direction.data)
+    if(directionsFD[i].shortname == direction.data){
+      directionId = directionsFD[i].id
+    }
+  }
+
+  getTeams(directionId)
+
 }
 </script>
 
@@ -106,7 +175,7 @@ function changeDirection(direction: any) {
   <div class=" block-content">
 
     <div class="row text-center mb-2">
-      <h6>Период</h6>
+    <h6>Период</h6>
     </div>
 
     <!-- time -->
@@ -125,7 +194,7 @@ function changeDirection(direction: any) {
         </div>
 
       </div>
-    </div>
+  </div>
 
     <!-- time -->
 
@@ -138,7 +207,7 @@ function changeDirection(direction: any) {
       <div v-for="direc in directions" class="col-auto d-flex my-1">
         <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{ direc.data
         }}</a>
-    </div>
+      </div>
 
     </div>
     <!-- выбрать направление -->
@@ -149,36 +218,43 @@ function changeDirection(direction: any) {
     <!-- dropdowns select property for event or team -->
     <div class="row">
       <!-- date -->
+      <!-- <div class="col-auto  d-flex my-1">
+           events_or_teams
+            <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
+              <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+            </select>
+          </div> -->
       <div class="col-auto  d-flex my-1">
-        <!-- events_or_teams -->
-        <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-          <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
-        </select>
-      </div>
-      <div class="col-auto  d-flex my-1">
-        <select class="form-select" aria-label="Default select example">
-        <option selected>Все коллективы</option>
-
-        </select>
+        <div class="mb-3">
+          <label class="form-label">коллектив</label>
+          <v-select placeholder="Название коллектива" label="name" :options="foundTeams"
+            v-model="teamSelected"></v-select>
+        </div>
       </div>
       <!-- level -->
       <div class="col-auto  d-flex my-1">
-        <select class="form-select" aria-label="Default select example" v-model="selectedLevel">
-          <option v-for="lvl in levels" :value="lvl.id" :selected="lvl.id == 1">{{ lvl.data }}</option>
-        </select>
+        <div class="mb-3">
+          <label class="form-label">уровень мероприятий</label>
+          <select class="form-select" aria-label="Default select example" v-model="selectedLevel">
+            <option v-for="lvl in levels" :value="lvl.id" :selected="lvl.id == 1">{{ lvl.data }}</option>
+          </select>
+        </div>
       </div>
       <!-- types -->
       <div class="col-auto  d-flex my-1">
-        <select class="form-select" aria-label="Default select example" v-model="selectedType">
-          <option v-for="tp in types" :value="tp.id" :selected="tp.id == 1">{{ tp.data }}</option>
-        </select>
+        <div class="mb-3">
+          <label class="form-label">тип мероприятий</label>
+          <select class="form-select" aria-label="Default select example" v-model="selectedType">
+            <option v-for="tp in types" :value="tp.id" :selected="tp.id == 1">{{ tp.data }}</option>
+          </select>
+        </div>
       </div>
 
     </div>
 
     <!--Отчетность  -->
     <DownloadReport :date="0" :event-or-team="eventOrTeams[selectedEvOrTeam]" :direction="directions[selectedDirection]"
-      teams="все" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
+      :teams="teamSelected.name" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
 
 
     <!-- Graphics -->
@@ -232,7 +308,7 @@ function changeDirection(direction: any) {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                            title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                                          title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
@@ -240,7 +316,7 @@ function changeDirection(direction: any) {
 
               <EPie :data="dataEventsTwoType" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                            title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                          title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -259,7 +335,7 @@ function changeDirection(direction: any) {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                            title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                          title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>
@@ -274,6 +350,7 @@ function changeDirection(direction: any) {
 
 <style lang="scss">
 @import 'v-calendar/dist/style.css';
+@import 'vue-select/dist/vue-select.css';
 
 // dropdown for calendar----------------------------------------------------------------------
 .dropbtn {
@@ -314,6 +391,8 @@ function changeDirection(direction: any) {
 // otchet--------------------------------------------------------------------------------
 .form-select {
   width: fit-content;
+  padding: 5px;
+  min-width: 150px;
 }
 
 
@@ -360,8 +439,9 @@ function changeDirection(direction: any) {
       background-color: var(--second-color);
       color: white;
     }
-  }
 
+
+  }
 
   hr {
     height: 1.5px;
@@ -490,11 +570,11 @@ function changeDirection(direction: any) {
 // global
 
 .form-select,
-.accordion-header {
+.accordion-heade {
   border: 1px solid var(--second-color);
   border-radius: 0.25rem;
   line-height: 1.5;
-
+  box-shadow: none;
 
   &:focus {
     box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
@@ -502,16 +582,12 @@ function changeDirection(direction: any) {
     border: 0;
   }
 
+}
 
-  option {
-    &:hover {
-      background-color: #ff502f;
-      color: #5BD1D7;
-    }
-  }
+.accordion-header {
+
 
   .accordion-button {
-
 
     &:focus,
     &:hover {

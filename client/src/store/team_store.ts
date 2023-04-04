@@ -11,12 +11,20 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
     // Вывести все коллективвы с руководителсями
-   async function fetchTeams():Promise<any> {
+    async function fetchTeams(): Promise<any> {
         const res = await axios.get('/api/teams')
         const data = res.data
 
         return data
     }
+
+    async function fetchTeamsOfDirection(direction: number = -1, type_team = "teams"): Promise<any> {
+        const res = await axios.get('/api/teams/direction', { params: { id_parent: direction,  type_team: type_team } })
+        const data = res.data
+
+        return data
+    }
+
 
     async function fetchCreateTeams() {
         await axios.get('/api')
@@ -57,6 +65,7 @@ export const useTeamStore = defineStore("teams", () => {
         fetchTeams,
         createTeam,
         setLayout,
+        fetchTeamsOfDirection,
 
         layout,
     }

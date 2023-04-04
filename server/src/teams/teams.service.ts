@@ -60,12 +60,14 @@ export class TeamsService {
 
     
   // get all teams of specific direction for statistic
-  async findAllTeamsOfDirection(type_team:string, id_parent:number): Promise<Team[]> {
+  async findAllTeamsOfDirection(type_team = "teams", id_parent=-1): Promise<Team[]> {
+
 
     let teams = this.teamsRepository
-      .createQueryBuilder(type_team)
+      .createQueryBuilder("teams")
 
-      .select(["teams.id", "teams.title", "teams.image", "teams.description", "teams.type_team"])
+      .select(["teams.id", "teams.title", "teams.image", "teams.description", "teams.type_team",
+      "teams.shortname"])
       .where("teams.type_team = :type", { type: type_team })
 
       // с учетом направления
