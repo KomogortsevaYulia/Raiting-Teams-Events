@@ -138,6 +138,7 @@ async function getTeams(directionId:number) {
   let arrayData = []
 
   arrayData[0] = { name: "Все коллективы", id: 0 }
+  teamSelected.value =  arrayData[0]
 
   for (let i = 0; i < teams.length; i++) {
     let team = teams[i]
@@ -157,7 +158,7 @@ function changeDirection(direction: any) {
   let directionId = -1
 
   for(let i = 0; i < directionsFD.length; i++){
-    console.log("short " + directionsFD[i].shortname  + "  direction.data " + direction.data)
+    //console.log("short " + directionsFD[i].shortname  + "  direction.data " + direction.data)
     if(directionsFD[i].shortname == direction.data){
       directionId = directionsFD[i].id
     }
