@@ -17,10 +17,6 @@ const menu_items = teamStore.menu_items;
 const show = ref(true);
 const data = ref()
 
-function onSubmit(id: number) {
-  return "api/teams/" + id;
-}
-
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
   fetchTeams()
@@ -77,6 +73,11 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                 <img :src="team.image">
               </div>
               <div class="wrapperContent">
+                <div class="navigation-tags">
+                  <div v-for="(item, index) in itemLink" :key="index" class="teg">
+                    {{ item.name }}
+                  </div>
+                </div>
                 <div>
                   <p>{{ team.description }}</p>
                   <!-- <p class="date">06.04.2021</p> -->
@@ -92,7 +93,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 </template>
 
 <style lang="scss" scoped>
-// @import '../assets/globals.scss';
+@import '@/assets/globals.scss';
 
 .wrapper-team {
   display: block;
@@ -239,6 +240,19 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           padding: 1rem;
           height: 100%;
 
+          .navigation-tags {
+            padding-bottom: 1rem;
+            display: flex;
+
+            .teg {
+              margin-right: 1rem;
+              background-color: #B7EAED;
+              padding: 0.2rem 1rem;
+              color: #348498;
+              border-radius: 5px;
+            }
+          }
+
           .date {
             text-align: end;
             font-size: 1.6rem;
@@ -254,7 +268,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .cardEvent {
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-          width: 830px;
+          width: 100%;
           height: 350px;
           margin: 0 1rem 1rem 0;
           flex-wrap: wrap;
@@ -297,6 +311,19 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
+
+          .navigation-tags {
+            padding-bottom: 1rem;
+            display: flex;
+
+            .teg {
+              margin-right: 1rem;
+              background-color: #B7EAED;
+              padding: 0.2rem 1rem;
+              color: #348498;
+              border-radius: 5px;
+            }
+          }
 
           .date {
             text-align: end;

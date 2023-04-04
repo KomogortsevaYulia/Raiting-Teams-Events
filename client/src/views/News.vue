@@ -1,36 +1,40 @@
 <template>
   <div>
-    <div class="mainBanner">
-      <span class="descr">
-        Надо что-то написать
-        <button class="bannerBtn">Нажми меня</button>
-      </span>
+    <div class="full-width">
+      <div class="mainBanner">
+        <span class="descr">
+          Надо что-то написать
+          <button class="bannerBtn">Нажми меня</button>
+        </span>
+      </div>
     </div>
     <div class="events__container">
       <!-- Боковое меню -->
-      <CheckBox_Menu :menu_items = "menu_items"/>
+      <CheckBox_Menu :menu_items="menu_items" />
       <!-- Правая часть контейнера -->
       <div class="cards__container">
         <!-- Поисковые строки -->
         <div class="cards__search">
           <input class="title__search" placeholder="Начните поиск..." />
-          <input class="date__search" placeholder="Выберите дату" type="date"/>
+          <input class="date__search" placeholder="Выберите дату" type="date" />
           <Switch_toggle />
         </div>
         <div class="cards">
           <div class="card" v-for="event in data" :key="event.id">
             <div class="card__banner"></div>
-            <div class="card__content">
-              <div class="card__event-name">{{ event.title }}</div>
-              <div class="teg__container">
-                <div class="teg">Тег 1</div>
-                <div class="teg">Тег 2</div>
+            <router-link :to="'/event/' + event.id">
+              <div class="card__content">
+                <div class="card__event-name">{{ event.title }}</div>
+                <div class="teg__container">
+                  <div class="teg">Тег 1</div>
+                  <div class="teg">Тег 2</div>
+                </div>
+                <div class="card__text">{{ event.description.slice(0, 150) }}</div>
+                <div class="btn__container">
+                  <button class="card__btn">Подать заявку</button>
+                </div>
               </div>
-              <div class="card__text">{{ event.description.slice(0,150)}}</div>
-              <div class="btn__container">
-                <button class="card__btn">Подать заявку</button>
-              </div>
-            </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -59,26 +63,32 @@ async function fetchEvents() {
 </script>
 
 <style lang="scss" scoped>
-.events__container{
+.events__container {
   display: flex;
   padding-top: 1rem;
-  .cards__container{
+
+  .cards__container {
     margin-left: 2rem;
     width: 100%;
+
     .cards__search {
       display: flex;
       justify-content: space-between;
-    .title__search{
-      width: 70%;
+
+      .title__search {
+        width: 70%;
+      }
     }
-    }
-    .cards__wrap{
+
+    .cards__wrap {
       background-color: #fff;
       width: 10%;
     }
-    .cards{
+
+    .cards {
       padding-top: 2rem;
-      .card{
+
+      .card {
         width: 100%;
         background-color: #fff;
         height: 15rem;
@@ -88,23 +98,27 @@ async function fetchEvents() {
         display: flex;
         flex-direction: row;
 
-        .card__banner{
+        .card__banner {
           height: 100%;
           width: 12rem;
           border-radius: 5px 0 0 5px;
           background-color: #a3a3a3;
         }
-        .card__content{
+
+        .card__content {
           padding: 2rem;
           width: 100%;
-          .card__event-name{
+
+          .card__event-name {
             color: #373737;
             font-size: 1.2rem;
           }
-          .teg__container{
+
+          .teg__container {
             display: flex;
             margin-top: 0.5rem;
-            .teg{
+
+            .teg {
               margin-right: 1rem;
               background-color: #B7EAED;
               padding: 0.2rem 1rem;
@@ -112,18 +126,21 @@ async function fetchEvents() {
               border-radius: 5px;
             }
           }
-          .card__text{
+
+          .card__text {
             color: #373737;
           }
-          .btn__container{
+
+          .btn__container {
             display: flex;
             justify-content: right;
             margin-top: 1rem;
-            .card__btn{
-            background-color: #FF502F;
-            color: #fff;
-            padding: 0.8rem 2rem;
-          }
+
+            .card__btn {
+              background-color: #FF502F;
+              color: #fff;
+              padding: 0.8rem 2rem;
+            }
           }
         }
       }
@@ -131,6 +148,17 @@ async function fetchEvents() {
   }
 
 }
+
+.full-width {
+  position: relative;
+  margin-top: -1.5em;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
 .mainBanner {
   display: flex;
   width: 100%;
@@ -167,5 +195,4 @@ async function fetchEvents() {
   cursor: pointer;
   opacity: 1;
 }
-
 </style>
