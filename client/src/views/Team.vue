@@ -84,26 +84,26 @@ itemList.forEach((item, index) => {
 
 const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "/teams" },]
 
-// const newsList = [
-//   {
-//     id: 1,
-//     title: 'Хакатон Умник-ON',
-//     description: 'В Иркутском политехе 9 октября стартовал хакатон инженерных решений УМНИК-ON. Студентам предстоит разработать проекты, посвященные модернизации инфраструктуры университета. Мероприятие проводит отдел организации научной деятельности молодых ученых и студентов.',
-//     imageUrl: 'https://www.istu.edu/upload/iblock/044/IMG_5137.JPG'
-//   },
-//   {
-//     id: 2,
-//     title: 'Конкурс лучшее СНО 2022',
-//     description: 'В Иркутском политехе определили лидеров конкурса «Лучшее студенческое научное общество» (СНО). Гранты в размере 75 тыс. рублей, переходящие кубки получили НИСКО «Транспортный менеджмент» и СКБ «Промышленная электроника и робототехника». Награждение состоялось на итоговом мероприятии Всероссийского фестиваля NAUKA 0+в Точке кипения университета',
-//     imageUrl: 'https://www.istu.edu/upload/iblock/137/20201109_IMG_7941.JPG'
-//   },
-//   {
-//     id: 3,
-//     title: 'Научно-дискуссионный клуб ИРНИТУ',
-//     description: ' В Точке кипения ИРНИТУ 17 февраля состоялось первое собрание Научно-дискуссионного клуба. Политеховцы обсудили проекты в сфере модернизации пропускных систем, цифровизации авиастроения и сварочных технологий.',
-//     imageUrl: 'https://www.istu.edu/upload/iblock/e10/IMG_1367.jpg'
-//   },
-// ]
+const newsList = [
+  {
+    id: 1,
+    title: 'Хакатон Умник-ON',
+    description: 'В Иркутском политехе 9 октября стартовал хакатон инженерных решений УМНИК-ON. Студентам предстоит разработать проекты, посвященные модернизации инфраструктуры университета. Мероприятие проводит отдел организации научной деятельности молодых ученых и студентов.',
+    imageUrl: 'https://www.istu.edu/upload/iblock/044/IMG_5137.JPG'
+  },
+  {
+    id: 2,
+    title: 'Конкурс лучшее СНО 2022',
+    description: 'В Иркутском политехе определили лидеров конкурса «Лучшее студенческое научное общество» (СНО). Гранты в размере 75 тыс. рублей, переходящие кубки получили НИСКО «Транспортный менеджмент» и СКБ «Промышленная электроника и робототехника». Награждение состоялось на итоговом мероприятии Всероссийского фестиваля NAUKA 0+в Точке кипения университета',
+    imageUrl: 'https://www.istu.edu/upload/iblock/137/20201109_IMG_7941.JPG'
+  },
+  {
+    id: 3,
+    title: 'Научно-дискуссионный клуб ИРНИТУ',
+    description: ' В Точке кипения ИРНИТУ 17 февраля состоялось первое собрание Научно-дискуссионного клуба. Политеховцы обсудили проекты в сфере модернизации пропускных систем, цифровизации авиастроения и сварочных технологий.',
+    imageUrl: 'https://www.istu.edu/upload/iblock/e10/IMG_1367.jpg'
+  },
+]
 
 </script>
 
@@ -179,56 +179,48 @@ const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "
             </div>
           </div>
         </div>
+        <div>
+          <div class="wrapper-team__section-name">
+            <label class="active">Новости</label>
+          </div>
+          <div class="news-panel">
+            <div class="news-card" v-for="news in newsList" :key="news.id">
+              <div class="image-container">
+                <img :src="news.imageUrl">
+              </div>
+              <div class="text-container">
+                <h2 class="title">{{ news.title }}</h2>
+                <label class="description">{{ news.description }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div v-if="(selectedItem === 1)">
         <a>Компонент Занятий</a>
       </div>
-      <div>
-        <div class="wrapper-team__section-name">
-          <label class="active">Новости</label>
-        </div>
-        <div class="news-panel">
-          <div class="news-card" v-for="news in newsList" :key="news.id">
-            <div class="image-container">
-              <img :src="news.imageUrl">
+      <div v-if="selectedItem === 2">
+        <div v-for="item in team">
+          <div class="wrapper">
+            <div class="one">
+              <img src='../assets/events/icon/banner.png'
+                style=" width: 89px;height: 89px;background: #D9D9D9;border-radius: 25px;">
             </div>
-            <div class="text-container">
-              <h2 class="title">{{ news.title }}</h2>
-              <label class="description">{{ news.description }}</label>
+            <div class="container" style="margin-left: 10px;">
+              <a>{{ item.user.fullname }}</a>
+              Группа обучения: <a>{{ item.user.education_group }}</a>
+              Должность: <a>{{ item.function.title }}</a>
+              <div class="con-1" style="margin-left: 1200px;">
+                <button class="btn btn-primary" style="height: 30px; width: 30px;">Статус</button>
+              </div>
+              <div class="con-3" style="margin-left: 1200px;">
+                <button class="btn btn-primary" style="height: 30px; width: 30px;">Редактировать</button>
+              </div>
             </div>
-          </div>
-        </div> -->
-      </div>
-    </div>
-
-    <div v-if="!show" class="wrapper-team__create">
-      <div v-for="item in team">
-
-        <div class="wrapper">
-
-          <div class="one">
-            <img src='../assets/events/icon/banner.png'
-              style=" width: 89px;height: 89px;background: #D9D9D9;border-radius: 25px;">
-          </div>
-          <div class="container" style="margin-left: 10px;">
-            <a>{{ item.user.fullname }}</a>
-            Группа обучения: <a>{{ item.user.education_group }}</a>
-            Должность: <a>{{ item.function.title }}</a>
-            <div class="con-1" style="margin-left: 1200px;">
-              <button class="btn btn-primary" style="height: 30px; width: 30px;">Статус</button>
-            </div>
-            <div class="con-3" style="margin-left: 1200px;">
-              <button class="btn btn-primary" style="height: 30px; width: 30px;">Редактировать</button>
-            </div>
-
-
-
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 </template>
 
