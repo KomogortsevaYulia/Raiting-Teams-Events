@@ -9,20 +9,28 @@ import { useRoute } from "vue-router";
 
 const route = useRoute()
 
+const TeamStore = useTeamStore();
 const show = ref(true);
 const currentPage = ref(1);
 
 const data = ref()
+const team = ref()
 
 onBeforeMount(async () => {
   // fetchTeams()
   fetchCurrentTeams();
+  fetchTeam()
 })
 
 // вытащить коллективы из бд 
 // async function fetchTeams() {
 //   data.value = await useTeamStore().fetchTeams()
 // }
+// вытащить коллективы из бд и отобразить их
+
+async function fetchTeam() {
+  team.value = await TeamStore.fetchTeam();
+}
 
 function setCurrentPage(page: number) {
   currentPage.value = page
@@ -176,7 +184,7 @@ const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "
         <a>Компонент Занятий</a>
       </div>
       <div>
-        <!-- <div class="wrapper-team__section-name">
+        <div class="wrapper-team__section-name">
           <label class="active">Новости</label>
         </div>
         <div class="news-panel">
@@ -194,6 +202,31 @@ const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "
     </div>
 
     <div v-if="!show" class="wrapper-team__create">
+      <div v-for="item in team">
+
+        <div class="wrapper">
+
+          <div class="one">
+            <img src='../assets/events/icon/banner.png'
+              style=" width: 89px;height: 89px;background: #D9D9D9;border-radius: 25px;">
+          </div>
+          <div class="container" style="margin-left: 10px;">
+            <a>{{ item.user.fullname }}</a>
+            Группа обучения: <a>{{ item.user.education_group }}</a>
+            Должность: <a>{{ item.function.title }}</a>
+            <div class="con-1" style="margin-left: 1200px;">
+              <button class="btn btn-primary" style="height: 30px; width: 30px;">Статус</button>
+            </div>
+            <div class="con-3" style="margin-left: 1200px;">
+              <button class="btn btn-primary" style="height: 30px; width: 30px;">Редактировать</button>
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -201,6 +234,14 @@ const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
+
+.wrapper {
+  display: flex;
+  height: 89px;
+  margin: 1rem;
+  background: #d1cdcd;
+  border-radius: 10px;
+}
 
 .wrapper-team {
   display: block;
