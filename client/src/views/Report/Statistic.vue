@@ -81,7 +81,7 @@ const foundTeams = ref()
 const directionsFromDatabase = ref()           //дата
 
 onBeforeMount(async () => {
- 
+
   await getDirections()
   getTeams(-1)
 })
@@ -92,7 +92,7 @@ onBeforeMount(async () => {
 async function getDirections() {
 
   let directions = await teamStore.fetchTeamsOfDirection(-1, "direction")
- 
+
   let arrayData = []
 
   for (let i = 0; i < directions.length; i++) {
@@ -125,7 +125,7 @@ function seeGraphics(typeGraphics: any) {
 
 
 // получить всех пользователей и выбрать из них нужных
-async function getTeams(directionId:number) {
+async function getTeams(directionId: number) {
 
   let limit = 30
   let data = await teamStore.fetchTeamsOfDirection(directionId)
@@ -138,7 +138,7 @@ async function getTeams(directionId:number) {
   let arrayData = []
 
   arrayData[0] = { name: "Все коллективы", id: 0 }
-  teamSelected.value =  arrayData[0]
+  teamSelected.value = arrayData[0]
 
   for (let i = 0; i < teams.length; i++) {
     let team = teams[i]
@@ -157,9 +157,9 @@ function changeDirection(direction: any) {
   let directionsFD = directionsFromDatabase.value
   let directionId = -1
 
-  for(let i = 0; i < directionsFD.length; i++){
+  for (let i = 0; i < directionsFD.length; i++) {
     //console.log("short " + directionsFD[i].shortname  + "  direction.data " + direction.data)
-    if(directionsFD[i].shortname == direction.data){
+    if (directionsFD[i].shortname == direction.data) {
       directionId = directionsFD[i].id
     }
   }
@@ -176,7 +176,7 @@ function changeDirection(direction: any) {
   <div class=" block-content">
 
     <div class="row text-center mb-2">
-    <h6>Период</h6>
+      <h6>Период</h6>
     </div>
 
     <!-- time -->
@@ -184,10 +184,10 @@ function changeDirection(direction: any) {
     <div class="row">
       <div class="w-100 justify-content-center d-flex">
         <div class="date">
-          <button class=" btn-custom-secondary" v-for="dt in dates" @click="changeDate()">{{ dt.date }}</button>
+          <button class=" btn-custom-secondary date" v-for="dt in dates" @click="changeDate()">{{ dt.date }}</button>
 
           <div class="my-dropdown" style="float:center;">
-            <button class="dropbtn btn-custom-secondary"><font-awesome-icon icon="calendar-days" /></button>
+            <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
             <div class="dropdown-content">
               <DatePicker v-model="date" is-range />
             </div>
@@ -195,7 +195,7 @@ function changeDirection(direction: any) {
         </div>
 
       </div>
-  </div>
+    </div>
 
     <!-- time -->
 
@@ -220,11 +220,11 @@ function changeDirection(direction: any) {
     <div class="row">
       <!-- date -->
       <!-- <div class="col-auto  d-flex my-1">
-           events_or_teams
-            <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-              <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
-            </select>
-          </div> -->
+             events_or_teams
+              <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
+                <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+              </select>
+            </div> -->
       <div class="col-auto  d-flex my-1">
         <div class="mb-3">
           <label class="form-label">коллектив</label>
@@ -309,7 +309,7 @@ function changeDirection(direction: any) {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                          title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                                            title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
@@ -317,7 +317,7 @@ function changeDirection(direction: any) {
 
               <EPie :data="dataEventsTwoType" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                          title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                            title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -336,7 +336,7 @@ function changeDirection(direction: any) {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                          title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                            title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>
@@ -458,7 +458,7 @@ function changeDirection(direction: any) {
 
 .date {
 
-  button {
+  button.date {
     background: none;
     padding: 0.5rem 0.8rem;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -467,8 +467,18 @@ function changeDirection(direction: any) {
 
     &:hover {
       box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      background-color: var(--main-color);
     }
   }
+
+  .dropdown-content {
+    button {
+      background: white;
+      color: black;
+    }
+
+  }
+
 
 
 }
