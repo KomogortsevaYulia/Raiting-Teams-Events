@@ -32,6 +32,14 @@ export const useTeamStore = defineStore("teams", () => {
                 // Умные действия
             })
     }
+    async function fetchTeam(): Promise<any> {
+        const id = 6;
+        const res = await axios.get('/api/teams/' + id + '/users')
+        const data = res.data
+        console.log(data)
+        return data
+    }
+
 
     async function createTeam(title: String, description: String,
         shortname: String, userId: Number) {
@@ -59,6 +67,15 @@ export const useTeamStore = defineStore("teams", () => {
         this.layout = res;
     }
 
+    const menu_items = [
+        {
+            id: 1, title: 'Влад', hidden: true, menu_types: [
+                { id: 1, title: 'Придумай' },
+                { id: 2, title: 'Теги' },
+            ]
+        },
+    ]
+
     return {
         CreateTeamsTest,
         fetchCreateTeams,
@@ -68,5 +85,6 @@ export const useTeamStore = defineStore("teams", () => {
         fetchTeamsOfDirection,
 
         layout,
+        menu_items
     }
 });

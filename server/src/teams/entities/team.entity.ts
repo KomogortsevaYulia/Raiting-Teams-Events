@@ -27,6 +27,10 @@ export class Team {
     @ApiProperty() 
     @Column()
     description: string
+
+    @ApiProperty() 
+    @Column({ nullable: true })
+    short_description: string
     
     @ManyToOne((type)=>Team, (team)=>team.id)
     @JoinColumn([{ name: "id_parent" }])

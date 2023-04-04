@@ -26,15 +26,15 @@ const router = createRouter({
       component: () => import('@/views/Teams.vue'),
       meta: {}
     },
-
     {
-      // Какой то конкретный коллектив
-      path: "/team-page",
+      path: "/team/:id?",
+      name: "Team",
       // @ts-ignore
-      component: () => import('@/views/team.vue'),
-      meta: {}
+      component: () => import('@/views/Team.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
-
     {
       // !Ответственный за направления
       path: "/directions",
@@ -54,7 +54,7 @@ const router = createRouter({
       }
     },
     {
-      path: "/event",
+      path: "/event/:id?",
       // @ts-ignore
       component: () => import('@/views/Event.vue'),
       meta: {}
