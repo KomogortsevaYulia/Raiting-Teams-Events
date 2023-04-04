@@ -10,14 +10,11 @@ import { useRoute } from "vue-router";
 const route = useRoute()
 
 const show = ref(true);
-const layout = ref(true);
-
 const currentPage = ref(1);
 
 const data = ref()
 
 onBeforeMount(async () => {
-  // вытащить коллективы из бд и отобразить их
   // fetchTeams()
   fetchCurrentTeams();
 })
@@ -79,26 +76,26 @@ itemList.forEach((item, index) => {
 
 const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "/teams" },]
 
-const newsList = [
-  {
-    id: 1,
-    title: 'Хакатон Умник-ON',
-    description: 'В Иркутском политехе 9 октября стартовал хакатон инженерных решений УМНИК-ON. Студентам предстоит разработать проекты, посвященные модернизации инфраструктуры университета. Мероприятие проводит отдел организации научной деятельности молодых ученых и студентов.',
-    imageUrl: 'https://www.istu.edu/upload/iblock/044/IMG_5137.JPG'
-  },
-  {
-    id: 2,
-    title: 'Конкурс лучшее СНО 2022',
-    description: 'В Иркутском политехе определили лидеров конкурса «Лучшее студенческое научное общество» (СНО). Гранты в размере 75 тыс. рублей, переходящие кубки получили НИСКО «Транспортный менеджмент» и СКБ «Промышленная электроника и робототехника». Награждение состоялось на итоговом мероприятии Всероссийского фестиваля NAUKA 0+в Точке кипения университета',
-    imageUrl: 'https://www.istu.edu/upload/iblock/137/20201109_IMG_7941.JPG'
-  },
-  {
-    id: 3,
-    title: 'Научно-дискуссионный клуб ИРНИТУ',
-    description: ' В Точке кипения ИРНИТУ 17 февраля состоялось первое собрание Научно-дискуссионного клуба. Политеховцы обсудили проекты в сфере модернизации пропускных систем, цифровизации авиастроения и сварочных технологий.',
-    imageUrl: 'https://www.istu.edu/upload/iblock/e10/IMG_1367.jpg'
-  },
-]
+// const newsList = [
+//   {
+//     id: 1,
+//     title: 'Хакатон Умник-ON',
+//     description: 'В Иркутском политехе 9 октября стартовал хакатон инженерных решений УМНИК-ON. Студентам предстоит разработать проекты, посвященные модернизации инфраструктуры университета. Мероприятие проводит отдел организации научной деятельности молодых ученых и студентов.',
+//     imageUrl: 'https://www.istu.edu/upload/iblock/044/IMG_5137.JPG'
+//   },
+//   {
+//     id: 2,
+//     title: 'Конкурс лучшее СНО 2022',
+//     description: 'В Иркутском политехе определили лидеров конкурса «Лучшее студенческое научное общество» (СНО). Гранты в размере 75 тыс. рублей, переходящие кубки получили НИСКО «Транспортный менеджмент» и СКБ «Промышленная электроника и робототехника». Награждение состоялось на итоговом мероприятии Всероссийского фестиваля NAUKA 0+в Точке кипения университета',
+//     imageUrl: 'https://www.istu.edu/upload/iblock/137/20201109_IMG_7941.JPG'
+//   },
+//   {
+//     id: 3,
+//     title: 'Научно-дискуссионный клуб ИРНИТУ',
+//     description: ' В Точке кипения ИРНИТУ 17 февраля состоялось первое собрание Научно-дискуссионного клуба. Политеховцы обсудили проекты в сфере модернизации пропускных систем, цифровизации авиастроения и сварочных технологий.',
+//     imageUrl: 'https://www.istu.edu/upload/iblock/e10/IMG_1367.jpg'
+//   },
+// ]
 
 </script>
 
@@ -116,59 +113,70 @@ const newsList = [
       </div>
     </div>
 
-    <div v-if="show" class="wrapper-team__content wrapper-content mt-4">
+    <div v-if="show" class="wrapper-team__content wrapper-content">
 
       <!-- Навигация -->
       <div class="wrapper-team__navigation">
         <a @click="selectItem(index), showCreate = false" v-for="(item, index) in itemList" :key="index"
           :class="{ active: index == selectedItem }">{{ item.name }}</a>
       </div>
-      <div class="navigation-tags">
-        <div v-for="(item, index) in itemLink" :key="index" class="teg">
-          {{ item.name }}
-        </div>
-      </div>
-      <hr>
 
-      <div class="middle-panel">
-        <div class="column-left">
-          <h2>О коллективе</h2>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates soluta
-          in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-          voluptatibus exercitationem est similique?
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates soluta
-          in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-          voluptatibus exercitationem est similique?
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates soluta
-          in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-          voluptatibus exercitationem est similique?
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates soluta
-          in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-          voluptatibus exercitationem est similique?
-        </div>
-        <div class="column-right">
-          <div class="image-container">
-            <img v-if="currentPage === 1" src="@/assets/icon/event1.png">
-            <img v-if="currentPage === 2" src="@/assets/icon/event2.png">
-            <img v-if="currentPage === 3" src="@/assets/icon/event3.png">
-            <div class="page-arrows">
-              <div class="arrow-left" @click="previousPage">
-                <i class="fa fa-angle-left"></i>
-              </div>
-              <div class="page-buttons">
-                <button @click="setCurrentPage(1)" :class="{ active: currentPage === 1 }"></button>
-                <button @click="setCurrentPage(2)" :class="{ active: currentPage === 2 }"></button>
-                <button @click="setCurrentPage(3)" :class="{ active: currentPage === 3 }"></button>
-              </div>
-              <div class="arrow-right" @click="nextPage">
-                <i class="fa fa-angle-right"></i>
+      <div v-if="(selectedItem === 0)">
+        <div>
+          <div class="navigation-tags">
+            <div v-for="(item, index) in itemLink" :key="index" class="teg">
+              {{ item.name }}
+            </div>
+          </div>
+          <hr>
+          <div class="middle-panel">
+            <div class="column-left">
+              <h2>О коллективе</h2>
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
+              soluta
+              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
+              voluptatibus exercitationem est similique?
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
+              soluta
+              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
+              voluptatibus exercitationem est similique?
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
+              soluta
+              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
+              voluptatibus exercitationem est similique?
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
+              soluta
+              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
+              voluptatibus exercitationem est similique?
+            </div>
+            <div class="column-right">
+              <div class="image-container">
+                <img v-if="currentPage === 1" src="@/assets/icon/event1.png">
+                <img v-if="currentPage === 2" src="@/assets/icon/event2.png">
+                <img v-if="currentPage === 3" src="@/assets/icon/event3.png">
+                <div class="page-arrows">
+                  <div class="arrow-left" @click="previousPage">
+                    <i class="fa fa-angle-left"></i>
+                  </div>
+                  <div class="page-buttons">
+                    <button @click="setCurrentPage(1)" :class="{ active: currentPage === 1 }"></button>
+                    <button @click="setCurrentPage(2)" :class="{ active: currentPage === 2 }"></button>
+                    <button @click="setCurrentPage(3)" :class="{ active: currentPage === 3 }"></button>
+                  </div>
+                  <div class="arrow-right" @click="nextPage">
+                    <i class="fa fa-angle-right"></i>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div v-if="(selectedItem === 1)">
+        <a>Компонент Занятий</a>
+      </div>
       <div>
-        <div class="wrapper-team__section-name">
+        <!-- <div class="wrapper-team__section-name">
           <label class="active">Новости</label>
         </div>
         <div class="news-panel">
@@ -181,7 +189,7 @@ const newsList = [
               <label class="description">{{ news.description }}</label>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -307,7 +315,7 @@ const newsList = [
     // border: 2px solid red;
     display: flex;
     flex-direction: column;
-    padding: 1.5rem 2.5rem 0 2.5rem;
+    padding: 1.5rem 2.5rem 1.5rem 2.5rem;
     width: 100%;
 
     .content-filter {
