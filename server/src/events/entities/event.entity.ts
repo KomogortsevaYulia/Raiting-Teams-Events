@@ -2,6 +2,7 @@ import { User } from "../../users/entities/user.entity"
 import { Entity, PrimaryColumn, ManyToOne, Column, JoinColumn, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { ApiProperty } from "@nestjs/swagger";
 import { Journal } from "./journal.entity";
+import { Direction, Level, Type } from "../enums/enums";
 
 @Entity('events')
 export class Event {
@@ -13,7 +14,7 @@ export class Event {
     @ApiProperty()
     @Column({
         type: "enum",
-        enum: ["Внешнее", "Внутреннее"],
+        enum: Type,
         default: null,
         nullable: true
     })
@@ -84,8 +85,8 @@ export class Event {
     @ApiProperty()
     @Column({
         type: "enum",
-        enum: ["Вузовский", "Городской", "Региональный"],
-        default: "Вузовский",
+        enum: Level,
+        default: Level.UNIVERSITY,
         nullable: true
     })
     level: string
@@ -106,7 +107,7 @@ export class Event {
     @ApiProperty()
     @Column({
         type: "enum",
-        enum: ["Культурно-массовая деятельность", "Общественная деятельность", "Научная деятельность", "Спортивная деятельность", "Учебная деятельность"],
+        enum:Direction,
         nullable: true
     })
     direction: string

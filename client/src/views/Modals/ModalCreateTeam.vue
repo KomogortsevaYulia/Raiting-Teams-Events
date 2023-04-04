@@ -11,6 +11,7 @@ const title = ref();
 const shortname = ref();
 const userLeader = ref();
 const description = ref();
+const room= ref();
 
 // сообщение об ошибках
 const responseMsg = ref();
@@ -77,7 +78,7 @@ async function createTeam() {
 
 <template>
   <!-- Button trigger modal -->
-  <button type="button" class="button-custom" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button type="button" class="btn-custom-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Создать коллектив
   </button>
 
@@ -88,7 +89,7 @@ async function createTeam() {
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Создать коллектив</h1>
-          <button type="button" class=" button-custom btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <!-- Это вся обертка -->
@@ -111,6 +112,8 @@ async function createTeam() {
 
                   <v-select placeholder="ФИО Руководителя или email" class="v-select" label="data" @input="onTextChange"
                     :options="foundUsers" v-model="optionSelect"></v-select>
+
+                    <input type="text" placeholder="Аудитория(кабинет)" v-model="room" required>
 
                   <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
                   <textarea placeholder="Опишите проект" v-model="description" required></textarea>
@@ -161,6 +164,10 @@ async function createTeam() {
         .filds-area {
           display: flex;
           flex-direction: column;
+
+          .v-select{
+            padding-bottom: 1rem;
+          }
 
           textarea {
             min-height: 20%;

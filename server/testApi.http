@@ -4,8 +4,16 @@
 ###
 # USERS--------------------------------------------------------
 # get all users from specific team
-GET http://localhost:3000/api/users?email=str
+GET http://localhost:3000/api/users?limit=4&email=mail
 
+
+
+
+###
+# EVENTS--------------------------------------------------------
+GET http://localhost:3000/api/events?direction=Научная деятельность
+
+#  GET http://localhost:3000/api/events?dateStart=2023-04-26&dateEnd=2024-01-26
 
 
 
@@ -15,11 +23,11 @@ GET http://localhost:3000/api/users?email=str
 # TEAMS--------------------------------------------------------
 # TEAMS--------------------------------------------------------
 # get all users from specific team
-GET http://localhost:3000/api/teams/with_users/2
+GET http://localhost:3000/api/teams/direction?id_parent=3
 
 ###
 # get team by id
-GET http://localhost:3000/api/teams/2
+GET http://localhost:3000/api/teams/?id_parent=3
 
 ###
 # select head user and teams

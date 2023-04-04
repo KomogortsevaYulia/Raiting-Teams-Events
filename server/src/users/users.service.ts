@@ -123,9 +123,7 @@ export class UsersService {
   // modernize function user if user not exist
   // @HttpCode(400)
   // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-  //   //вот зачем нужен left join в случае, если у юзера нет функций при иннер джоин,
-  //   //то в запросе выдаст, что юзера не существует, а так он его выдаст, если тот есть  
-
+    
   //   // if(isNaN(id)){
   //   //   throw new HttpException("такого юзера не существует " + id, 400)
   //   // }

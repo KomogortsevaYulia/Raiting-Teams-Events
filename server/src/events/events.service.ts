@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import {Event} from './entities/event.entity'
+import { Event } from './entities/event.entity'
+import { Level, Type } from './enums/enums';
+import { Direction } from 'readline';
 
 @Injectable()
 export class EventsService {
@@ -22,6 +24,42 @@ export class EventsService {
       .orderBy("events.dateStart")
       .where("events.type = :type", { type: "Внешнее" })
       .getMany()
+  }
+
+
+  // конструктор запроса для получения мероприятия по нужным параметрам
+  //если параметр был выбран, то добавляем его в запрос (И)
+  findAllEvents(type: Type = null, level: Level = Level.UNIVERSITY,
+    direction: Direction = null, dateStart: Date = null, dateEnd: Date = null): Promise<Event[]> {
+
+    //dateStart = new Date()
+    // if (dateStart != null && dateEnd!=null)
+    //   console.log("dateStart: " + (dateStart.toISOString()) + "  dateEnd: " + (dateEnd.toISOString()))
+
+    let buildQuery = this.eventsRepository
+      .createQueryBuilder("events")
+
+    // event type
+    buildQuery = type != null ? buildQuery
+      .andWhere("events.type = :type", { type: type }) : buildQuery
+
+    // event level
+    buildQuery = level != null ? buildQuery
+      .andWhere("events.level = :level", { level: level }) : buildQuery
+
+    // event direction
+    buildQuery = direction != null ? buildQuery
+      .andWhere("events.direction = :direction", { direction: direction }) : buildQuery
+
+    // event dateStart
+    buildQuery = dateStart != null ? buildQuery
+      .andWhere("events.dateStart >= :dateStart", { dateStart: dateStart }) : buildQuery
+
+    // event dateEnd
+    buildQuery = dateEnd != null ? buildQuery
+      .andWhere("events.dateEnd <= :dateEnd", { dateEnd: dateEnd }) : buildQuery
+
+    return buildQuery.getMany()
   }
 
   findOne(id: number) {
