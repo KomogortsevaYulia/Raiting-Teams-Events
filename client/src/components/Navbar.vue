@@ -5,14 +5,10 @@ import User_Profile from '@/components/User_profile.vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
-
 const accountStatus = ref(permissions_store.isLogged);
-
 function OnExitSubmit() {
     permissions_store.logout()
 }
-
-
 const itemLink = [
     // { name: "Анкета(Создание)", path: "/questionnaire" },
     { name: "Мероприятия", path: "/news" },
@@ -64,13 +60,11 @@ const itemLink = [
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
-
 // Блок
 .navbar-wrapper {
     display: flex;
     position: relative;
     align-items: center;
-
     // Элемент иконки
     .navbar__item-logo {
         img {
@@ -78,15 +72,12 @@ const itemLink = [
             width: 40px;
         }
     }
-
     // Элементы навигации
     .navbar__item-link {
         margin: 0 auto 0 auto;
         display: flex;
-
         .link-item {
             padding: 1rem;
-
             p {
                 cursor: pointer;
                 height: 2rem;
@@ -96,13 +87,11 @@ const itemLink = [
                 font-weight: 600;
                 margin: 0;
                 font-family: 'Montserrat', sans-serif;
-
                 &:hover {
                     color: var(--main-color);
                 }
             }
         }
-
         .active {
             p {
                 color: var(--main-color);
@@ -110,7 +99,6 @@ const itemLink = [
             }
         }
     }
-
     // Элемент кнопки "Вход"
     .navbar__item-login {
         .login-button {
@@ -118,17 +106,14 @@ const itemLink = [
             border-radius: 10px;
             background-color: var(--main-color);
             color: #fff;
-
             &:hover {
                 background: var(--main-color-hover);
                 transition: 0.3s;
             }
-
             &:focus {
                 outline: none;
                 box-shadow: 0 0 0 2px #ff746f;
             }
-
             &:active {
                 transition: 0.3s;
                 background-color: #fd524c;
