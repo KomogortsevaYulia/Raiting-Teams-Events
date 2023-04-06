@@ -74,12 +74,10 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
               </div>
               <div class="wrapperContent">
                 <div class="navigation-tags">
-                  <div v-for="(item, index) in itemLink" :key="index" class="teg">
-                    {{ item.name }}
-                  </div>
+                  <div v-for="el in team.tags" class="teg">{{ el }}</div>
                 </div>
                 <div>
-                  <p>{{ team.description }}</p>
+                  <p>{{ team.short_description }}</p>
                   <!-- <p class="date">06.04.2021</p> -->
                 </div>
               </div>

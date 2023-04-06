@@ -132,30 +132,15 @@ const newsList = [
       <div v-if="(selectedItem === 0)">
         <div>
           <div class="navigation-tags">
-            <div v-for="(item, index) in itemLink" :key="index" class="teg">
-              {{ item.name }}
+            <div v-for="(item, index) in data.tags" :key="index" class="teg">
+              {{ item }}
             </div>
           </div>
           <hr>
           <div class="middle-panel">
             <div class="column-left">
               <h2>О коллективе</h2>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
-              soluta
-              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-              voluptatibus exercitationem est similique?
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
-              soluta
-              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-              voluptatibus exercitationem est similique?
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
-              soluta
-              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-              voluptatibus exercitationem est similique?
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
-              soluta
-              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-              voluptatibus exercitationem est similique?
+              {{ data.description }}
             </div>
             <div class="column-right">
               <div class="image-container">
