@@ -85,7 +85,7 @@ async function fetchCurrentEvent() {
                 </div>
 
                 <div class="map col">
-                    <img src="../assets/icon/event3.png" class="rounded mx-auto d-block">
+                    <img :src="data.images" class="rounded mx-auto d-block">
                 </div>
 
                 <div class="row ">
