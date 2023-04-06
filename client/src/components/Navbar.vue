@@ -26,7 +26,7 @@ const itemLink = [
         <!-- Иконка политеха -->
         <nav class="navbar__item-logo">
             <RouterLink to="/">
-                <img src="@/assets/icon/logo.svg" alt="logo">
+                <img src="@/assets/icon/logo.svg" alt="logo" class="logo">
             </RouterLink>
         </nav>
 
@@ -63,15 +63,15 @@ const itemLink = [
 // Блок
 .navbar-wrapper {
     display: flex;
-    padding: 1rem;
+
     position: relative;
     align-items: center;
 
     // Элемент иконки
     .navbar__item-logo {
         img {
-            height: 64px;
-            width: 64px;
+            height: 40px;
+            width: 40px;
         }
     }
 

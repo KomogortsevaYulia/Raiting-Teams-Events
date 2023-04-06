@@ -29,7 +29,7 @@ onBeforeMount(async () => {
 // вытащить коллективы из бд и отобразить их
 
 async function fetchTeam() {
-  team.value = await TeamStore.fetchTeam();
+  team.value = await TeamStore.fetchTeam()
 }
 
 function setCurrentPage(page: number) {
@@ -123,7 +123,7 @@ const newsList = [
       </div>
     </div>
 
-    <div v-if="show" class="wrapper-team__content wrapper-content">
+  <div v-if="show" class="wrapper-team__content wrapper-content">
 
       <!-- Навигация -->
       <div class="wrapper-team__navigation">
@@ -191,21 +191,75 @@ const newsList = [
         <WIP />
       </div>
       <div v-if="selectedItem === 2">
+
         <div v-for="item in team">
-          <div class="wrapper">
-            <div class="one">
-              <img src='../assets/events/icon/banner.png'
-                style=" width: 89px;height: 89px;background: #D9D9D9;border-radius: 25px;">
-            </div>
-            <div class="container" style="margin-left: 10px;">
-              <a>{{ item.user.fullname }}</a>
-              Группа обучения: <a>{{ item.user.education_group }}</a>
-              Должность: <a>{{ item.function.title }}</a>
-              <div class="con-1" style="margin-left: 1200px;">
-                <button class="btn btn-primary" style="height: 30px; width: 30px;">Статус</button>
+
+          <div v-if="item.function.title === 'Руководитель'" class="mt-5">
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
+            <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet">
+            <div class="about" style="margin-top: 20px;">
+              <div class="member-card">
+                <!-- <img class="member-image" src="../assets/icon/event1.png" alt="" /> -->
+                <div class="member-info">
+                  <div>
+                    <h1>{{ item.user.fullname }}</h1>
+
+                    <h2>Роль: {{ item.function.title }}</h2>
+                  </div>
+                  <div class="member-buttons">
+                    <button class="btn">Редактировать</button>
+                  </div>
+
+                </div>
+
               </div>
-              <div class="con-3" style="margin-left: 1200px;">
-                <button class="btn btn-primary" style="height: 30px; width: 30px;">Редактировать</button>
+            </div>
+          </div>
+
+
+          <div v-else>
+            <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+                        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
+                        <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet"> -->
+            <div class="about">
+              <div class="member-card py-2">
+                <div class="row ms-lg-3">
+
+                  <!-- image member -->
+                  <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
+                    <img class="member-image" src="../assets/icon/user.png" alt="" />
+                  </div>
+
+                  <div class="col-lg-10 col-md-12">
+                    <div class="member-info">
+
+                      <div class="col">
+                        <div class="row ">
+                          <h1>{{ item.user.fullname }}</h1>
+                        </div>
+                        <div class="row">
+                          <h2>Группа: {{ item.user.education_group }}</h2>
+                        </div>
+                        <div class="row">
+                          <h2>Роль: {{ item.function.title }}</h2>
+                        </div>
+
+                        <div class="row d-flex justify-content-end">
+                          <div class="member-buttons">
+                            <button class="btn button px-3">Редактировать</button>
+                            <button class="btn button  px-3">Удалить</button>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+                    </div>
+                  </div>
+                </div>
+
+
               </div>
             </div>
           </div>
@@ -217,6 +271,71 @@ const newsList = [
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
+
+
+.member-card {
+  width: 100%;
+  margin-bottom: 12px;
+  background: rgb(243, 243, 243);
+  border-radius: 25px 20px 20px 25px;
+
+}
+
+.member-info {
+  width: 100%;
+  padding: 19px 50px 19px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.member-image {
+  object-fit: cover;
+  height: 89px;
+  width: 89px;
+  border-radius: 20px 0 0 20px;
+}
+
+.member-info h1 {
+  color: black;
+  font-family: 'Raleway', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 38px;
+  padding-bottom: 10px;
+}
+
+.member-info h2 {
+  color: rgba(90, 90, 90, 1);
+  font-family: 'Inter', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.member-buttons {
+  display: flex;
+  justify-content: end;
+}
+
+.member-buttons .button {
+  background-color: rgba(217, 217, 217, 1);
+  color: rgba(102, 102, 102, 1);
+  
+  width: 270px;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Inter', serif;
+  font-style: normal;
+  font-weight: 400;
+ 
+  line-height: 24px;
+  margin-left: 15px;
+}
 
 .wrapper {
   display: flex;
@@ -531,6 +650,7 @@ const newsList = [
       }
     }
 
+ 
     .news-panel {
       display: flex;
       flex-direction: column;
