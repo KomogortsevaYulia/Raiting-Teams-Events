@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="full-width">
+    <!-- <div class="full-width">
       <div class="mainBanner">
         <span class="descr">
           Надо что-то написать
           <button class="bannerBtn">Нажми меня</button>
         </span>
       </div>
-    </div>
+    </div> -->
     <div class="events__container">
       <!-- Боковое меню -->
       <CheckBox_Menu :menu_items="menu_items" />
@@ -124,6 +124,7 @@ async function fetchEvents() {
 
           .teg__container {
             display: flex;
+            padding-bottom: 1rem;
             margin-top: 0.5rem;
 
             .teg {
