@@ -71,4 +71,9 @@ export class User {
         this.password = await argon2.hash(this.password);
     }
 
+    @Column({ nullable: true })
+    image: string;
+
+    @Column({ nullable: true })
+    course: number;
 }

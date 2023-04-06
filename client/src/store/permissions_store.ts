@@ -68,12 +68,20 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
         await checkLogin()
     }
 
+     // Получение информации о юзере
+     async function fetchUser(): Promise<any> {
+        const res = await axios.get('/api/users/check-login')
+        const data = res.data
+        return data
+    }
+
     return {
         permissions,
         username,
         fullname,
         isLogged,
 
+        fetchUser,
         checkLogin,
         login,
         logout,

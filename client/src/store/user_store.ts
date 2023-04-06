@@ -13,16 +13,9 @@ export const useUserStore = defineStore("user", () => {
     });
   }
 
-  async function getInfoUser() {
-    let response = await axios.get("api/users/check-login")
-    if (response){return response}
-    // return await axios.get('api/users/'+username, {
-    // });
-  }
-
-  return {
+   return {
     getUsersByNameEmail,
-    getInfoUser
+  
   }
 });
 

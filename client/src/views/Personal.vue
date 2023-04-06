@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUserStore } from '@/store/user_store';
+import { usePermissionsStore } from '@/store/permissions_store';
 import { ref, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -21,7 +21,7 @@ onBeforeMount(async () => {
 })
 
 async function getInfoUser() {
-  user.value = await useUserStore().getInfoUser()
+  user.value = await usePermissionsStore().fetchUser()
 }
 
 
@@ -29,11 +29,11 @@ async function getInfoUser() {
 <template>
   <div class="avatar">
     <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="me-2 mt-2 " />
-    <img class="icon" width="150" height="150" src="@/assets/icon/avatar.png" alt="icon" />
-    <p class="FIO">Олег Олегов Олегович</p>
-    <p class="text"> Институт информационных технологий и анализа данных</p>
-    <p>2 курс</p>
-    <p>ИСТБ-20-1</p>
+    <img class="icon" width="150" height="150" :src="user.image" alt="icon" style="object-fit: cover;"/>
+    <p class="FIO">{{ user.fullname }}</p>
+    <p class="text"> {{ user.institute }}</p>
+    <p>{{ user.course}} курс</p>
+    <p>{{ user.education_group }}</p>
     <div class="tags">
       <div class="tag">
         Волейбол
