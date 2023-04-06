@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import WIP from '@/components/WIP.vue';
 
 const selectedItem = ref(0);
 const showCreate = ref(false);
@@ -54,7 +55,9 @@ itemList.forEach((item, index) => {
                 </div>
             </form>
         </div>
+
     </div>
+    <WIP />
 </template>
 
 <style lang="scss" scoped>
