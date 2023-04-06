@@ -21,7 +21,9 @@
         </div>
         <div class="cards">
           <div class="card" v-for="event in data" :key="event.id">
-            <div class="card__banner"></div>
+            <div class="card__banner">
+              <img :src="event.images" class="d-block" style="width: 100%;object-fit: cover;">
+            </div>
             <router-link :to="'/event/' + event.id">
               <div class="card__content">
                 <div class="card__event-name">{{ event.title }}</div>
