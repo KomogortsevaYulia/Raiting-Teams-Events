@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import { createPinia } from 'pinia';
 import App from "./App.vue";
 import router from "./router";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
@@ -22,6 +23,7 @@ library.add(faUser, faCalendarDays, faClose, faEdit)
 const app = createApp(App);
 app.component('v-select', vSelect)
 app.component('font-awesome-icon', FontAwesomeIcon)
+
 
 // app.use(store);
 app.use(createPinia())

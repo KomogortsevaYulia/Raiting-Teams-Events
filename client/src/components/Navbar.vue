@@ -15,6 +15,7 @@ function OnExitSubmit() {
 
 const itemLink = [
     { name: "Анкета(Создание)", path: "/questionnaire" },
+    // { name: "Мероприятие (создать)", path: "/event-create" },
     { name: "Мероприятия", path: "/news" },
     { name: "Коллективы", path: "/teams" },
     { name: "Статистика", path: "/statistic" },

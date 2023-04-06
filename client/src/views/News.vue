@@ -1,4 +1,11 @@
 <template>
+  <router-link :to="'/event-create'">
+    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Создать мероприятие
+    </button>
+  </router-link>
+
+
   <div>
     <!-- <div class="full-width">
       <div class="mainBanner">
@@ -49,20 +56,16 @@ import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import { useEventStore } from "@/store/events_store";
 import { useTeamStore } from "../store/team_store";
 import { onBeforeMount, ref } from 'vue';
-
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
 const menu_items = eventStore.menu_items;
 const data = ref()
-
-
 onBeforeMount(async () => {
   fetchEvents()
 })
 async function fetchEvents() {
   data.value = await eventStore.fetchEvents()
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -238,7 +241,6 @@ async function fetchEvents() {
       }
     }
   }
-
 }
 
 .full-width {
@@ -281,7 +283,6 @@ async function fetchEvents() {
   opacity: 0;
   transition: all .5s;
 }
-
 
 .mainBanner:hover .descr {
   cursor: pointer;
