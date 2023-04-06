@@ -112,7 +112,7 @@ async function createTeam() {
                     v-model="optionSelect"></v-select>
 
                 <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
-                <textarea placeholder="Опишите проект" v-model="description" required></textarea>
+                <textarea placeholder="Опишите коллектив" v-model="description" required></textarea>
             </div>
 
             <div class="fuck-off-btn">

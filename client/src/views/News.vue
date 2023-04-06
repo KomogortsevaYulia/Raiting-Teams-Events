@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="'/event-create'">
+  <router-link :to="'/event-create'" v-if="can('can view directions')" >
     <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Создать мероприятие
     </button>
@@ -59,9 +59,12 @@ import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import { useEventStore } from "@/store/events_store";
 import { useTeamStore } from "../store/team_store";
 import { onBeforeMount, ref } from 'vue';
+import { usePermissionsStore } from '@/store/permissions_store';
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
 const menu_items = eventStore.menu_items;
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
 const data = ref()
 onBeforeMount(async () => {
   fetchEvents()
