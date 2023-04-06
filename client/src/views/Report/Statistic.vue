@@ -1,12 +1,16 @@
 <script setup lang="ts" >
-import { onBeforeMount, onMounted, ref, type Ref } from 'vue';
+import { computed, onBeforeMount, onMounted, ref, type Ref } from 'vue';
 import { DatePicker } from 'v-calendar';
 import DownloadReport from './DowloadReport.vue';
 import EPie from '@/components/Charts/EPie.vue';
 import EBar from '@/components/Charts/EBar.vue';
 import { useTeamStore } from '@/store/team_store';
+import { useJournalStore } from '@/store/journals_store';
+import _ from 'lodash';
 
+// store
 const teamStore = useTeamStore();
+const journalStore = useJournalStore();
 // константные значения
 
 // direction
@@ -35,6 +39,7 @@ const eventOrTeams = [{ id: 0, data: 'Мероприятия' }, { id: 1, data: 
 const date = ref(1)             //дата
 
 const selectedDirection = ref(0)    //все направления
+// const selectedTeam = ref(0)    //все направления
 
 const selectedLevel = ref(0)    //уровень
 const selectedType = ref(0)     //тип мероприятия
@@ -87,6 +92,13 @@ onBeforeMount(async () => {
 })
 
 
+computed(()=>teamSelected.value, {
+  onTrigger(e){
+    console.log("computed ")
+    getJournals(teamSelected.value.id)
+  }
+})
+
 // получить идшники направлений с бд, чтобы по этим идшникам найти коллективвы,
 //которые этим направления принадлежат
 async function getDirections() {
@@ -131,7 +143,6 @@ async function getTeams(directionId: number) {
   let data = await teamStore.fetchTeamsOfDirection(directionId)
 
   // console.log("selectedDirection.value " + selectedDirection.value+ " " + data)
-  //получить всех найденных юзеров
   let teams = data
 
 
@@ -143,11 +154,45 @@ async function getTeams(directionId: number) {
   for (let i = 0; i < teams.length; i++) {
     let team = teams[i]
 
-    // console.log("team " + team.title)
     arrayData[i + 1] = { name: team.title, id: team.id };
   }
   foundTeams.value = arrayData
 
+}
+
+
+
+//получить journals-------------------------------------------------
+// const funcTimer = _.debounce((teamId:number) => {
+//   getJournals(teamId)
+// }, 300)
+
+// //отслеживать изменение текста для v-select 
+// async function onTextChangeJournal(e: any) {
+//   selectedTeam.value = e.target.value
+//   console.log("val " +  e.target.value)
+//   // optionSelect.value = null
+//   funcTimer(-1)
+// }
+
+
+async function getJournals(teamId: number) {
+
+  let data = await journalStore.fetchJournals(teamId)
+
+  //получить всех найденне journal
+  let journals = data
+
+  let arrayData = []
+
+  for (let i = 0; i < journals.length; i++) {
+    let journal = journals[i]
+
+    // console.log("team " + team.title)
+    arrayData[i + 1] = { id: journal.id };
+  }
+  foundTeams.value = arrayData
+console.log("journals " + data)
 }
 
 
@@ -171,7 +216,7 @@ function changeDirection(direction: any) {
 
 
 
-<template>
+<template>{{ teamSelected }}
   <!-- menu -->
   <div class=" block-content">
 
@@ -220,11 +265,11 @@ function changeDirection(direction: any) {
     <div class="row">
       <!-- date -->
       <!-- <div class="col-auto  d-flex my-1">
-             events_or_teams
-              <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-                <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
-              </select>
-            </div> -->
+               events_or_teams
+                <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
+                  <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+                </select>
+              </div> -->
       <div class="col-auto  d-flex my-1">
         <div class="mb-3">
           <label class="form-label">коллектив</label>
@@ -309,7 +354,7 @@ function changeDirection(direction: any) {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                            title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                                              title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
@@ -317,7 +362,7 @@ function changeDirection(direction: any) {
 
               <EPie :data="dataEventsTwoType" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                            title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                              title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -336,7 +381,7 @@ function changeDirection(direction: any) {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                            title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                              title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>
