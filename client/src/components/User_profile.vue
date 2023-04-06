@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { RouterLink } from 'vue-router'
 import { usePermissionsStore } from '@/store/permissions_store';
 import { ref } from 'vue';
 
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
+
+
+const {
+  username
+} = storeToRefs(permissions_store);
 
 const isOpen = ref(false);
 
@@ -37,7 +43,7 @@ function OnExitSubmit() {
             <!-- <img width="40" height="40" src="@/assets/icon/77ddd4b13964c93ab31bc99566e58b14c4880c3a69e7bd87e0bfa4656ac274de_1.jpg" alt="icon"/> -->
         </div>
         <section class="dropdownMenu" v-if="isOpen">
-            <RouterLink @click="openClose" v-if="permissions_store.isLogged" to="/my">
+            <RouterLink @click="openClose" v-if="permissions_store.isLogged" :to="'/personal/'+ username">
                 <p>
                     <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 448 512">
                         <path

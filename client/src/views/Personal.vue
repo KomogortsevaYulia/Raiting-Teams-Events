@@ -1,7 +1,35 @@
+<script setup lang="ts">
+import { useUserStore } from '@/store/user_store';
+import { ref, onBeforeMount } from 'vue';
+import { useRoute } from 'vue-router';
+
+const selectedColor = ref('blue');
+const attrs = ref([
+  {
+    key: 'test',
+    highlight: true,
+    dates: { start: new Date(2019, 3, 15), end: new Date(2019, 3, 19) },
+  }
+]);
+
+const route = useRoute();
+const username = route.params.username;
+
+const user = ref()
+onBeforeMount(async () => {
+  getInfoUser()
+})
+
+async function getInfoUser() {
+  user.value = await useUserStore().getInfoUser()
+}
+
+
+</script>
 <template>
   <div class="avatar">
-    <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="me-2 mt-2 "/>
-    <img class="icon" width="150" height="150" src="@/assets/icon/avatar.png" alt="icon"/>
+    <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="me-2 mt-2 " />
+    <img class="icon" width="150" height="150" src="@/assets/icon/avatar.png" alt="icon" />
     <p class="FIO">Олег Олегов Олегович</p>
     <p class="text"> Институт информационных технологий и анализа данных</p>
     <p>2 курс</p>
@@ -21,56 +49,53 @@
   <div class="information">
     <VCalendar expanded />
   </div>
-
 </template>
-<script setup>
-import { ref } from 'vue';
 
-const selectedColor = ref('blue');
-const attrs = ref([
-  {
-    key: 'test',
-    highlight: true,
-    dates: { start: new Date(2019, 3, 15), end: new Date(2019, 3, 19) },
-  }
-]);
-</script>
 <style lang="scss">
 .container {
   display: flex;
 }
-.vc-day-content{
+
+.vc-day-content {
   position: absolute;
   top: 0;
   right: 0;
 
 }
-.vc-day{
+
+.vc-day {
   height: 70px;
 }
-.vc-weekday{
+
+.vc-weekday {
   background-color: #cbecee;
 }
+
 .information {
   width: 800px;
   height: 700px;
   background-color: rgb(236, 228, 228);
 }
-.vc-day-box-center-center{
+
+.vc-day-box-center-center {
   border: 1px groove;
 }
-.vc-arrow{
+
+.vc-arrow {
   width: 35px;
   height: 30px;
   color: #fd524c;
 }
-.vc-header .vc-title{
+
+.vc-header .vc-title {
   color: #fd524c;
 }
-button{
+
+button {
   background: none;
   padding: 0em;
 }
+
 .avatar {
   margin-right: 2em;
   width: 30%;
@@ -79,11 +104,13 @@ button{
   background-color: rgb(236, 228, 228);
 
 }
-.tag{
+
+.tag {
   background-color: #5BD1D7;
   border-radius: 15px;
 }
-.tags{
+
+.tags {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-column-gap: 10px;
@@ -92,10 +119,12 @@ button{
   margin-right: 2em;
   margin-bottom: 2em;
 }
+
 .FIO {
   font-size: 1.4rem;
 }
-.text{
+
+.text {
   margin-right: 5em;
   margin-left: 5em;
   text-align: center;
@@ -103,7 +132,8 @@ button{
 
 .icon {
   margin: 2em 1em 2em 5em;
-  border-radius: 1000px; /* Радиус скругления */
+  border-radius: 1000px;
+  /* Радиус скругления */
 }
-//
-</style>
+
+//</style>

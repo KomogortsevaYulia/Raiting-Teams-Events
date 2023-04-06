@@ -69,7 +69,7 @@ const router = createRouter({
       }
     },
     {
-      path: "/my",
+      path: "/personal/:username",
       name: "Personal",
       // @ts-ignore
       component: () => import('@/views/Personal.vue'),
