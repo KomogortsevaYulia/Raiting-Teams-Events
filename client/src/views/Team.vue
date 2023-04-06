@@ -223,7 +223,7 @@ const newsList = [
                         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
                         <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet"> -->
             <div class="about">
-              <div class="member-card py-3">
+              <div class="member-card py-2">
                 <div class="row ms-lg-3">
 
                   <!-- image member -->
