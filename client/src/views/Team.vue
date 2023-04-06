@@ -114,9 +114,11 @@ const newsList = [
     <!-- Обертка карточек коллективов -->
     <div class="full-width">
       <div class="wrapper-team__top-panel">
-        <div class="text-area container">
-          <p>{{ data.title }}</p>
-          <button>Подать заявку</button>
+        <div class="text-area">
+          <div class="container">
+            <p>{{ data.title }}</p>
+            <button>Подать заявку</button>
+          </div>
         </div>
       </div>
     </div>
@@ -144,9 +146,12 @@ const newsList = [
             </div>
             <div class="column-right">
               <div class="image-container">
-                <img v-if="currentPage === 1" src="https://sun4-12.userapi.com/impg/7cihnmozwdZo5B63fTDkT2T3A7wDFjvi1BSlzQ/n_74trN1o-Y.jpg?size=2560x1707&quality=95&sign=1aa84293a83c6337204aa80f02b53440&type=album">
-                <img v-if="currentPage === 2" src="https://sun9-58.userapi.com/impg/VXN1cqTuomn5r9s09OBiIJvGlBH-5r3wPDXkHA/Jpe2z5gYSw4.jpg?size=2560x1707&quality=95&sign=3e817f4cc607e03118139bf5b88a4319&type=album">
-                <img v-if="currentPage === 3" src="https://sun9-54.userapi.com/impg/uU55dZtENJqdqiiJw4aCdVFwmqjhnaXTkDoAwg/-nAHiUtXYOY.jpg?size=2560x1707&quality=95&sign=2b5ab35fb1a53a17615833188fc8d519&type=album">
+                <img v-if="currentPage === 1"
+                  src="https://sun4-12.userapi.com/impg/7cihnmozwdZo5B63fTDkT2T3A7wDFjvi1BSlzQ/n_74trN1o-Y.jpg?size=2560x1707&quality=95&sign=1aa84293a83c6337204aa80f02b53440&type=album">
+                <img v-if="currentPage === 2"
+                  src="https://sun9-58.userapi.com/impg/VXN1cqTuomn5r9s09OBiIJvGlBH-5r3wPDXkHA/Jpe2z5gYSw4.jpg?size=2560x1707&quality=95&sign=3e817f4cc607e03118139bf5b88a4319&type=album">
+                <img v-if="currentPage === 3"
+                  src="https://sun9-54.userapi.com/impg/uU55dZtENJqdqiiJw4aCdVFwmqjhnaXTkDoAwg/-nAHiUtXYOY.jpg?size=2560x1707&quality=95&sign=2b5ab35fb1a53a17615833188fc8d519&type=album">
                 <div class="page-arrows">
                   <div class="arrow-left" @click="previousPage">
                     <i class="fa fa-angle-left"></i>
@@ -241,14 +246,26 @@ const newsList = [
   .wrapper-team__top-panel {
     background-image: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 10%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%), url('https://sun9-70.userapi.com/impg/hoGoGUgoywvDUTx8l17HB-5Rnpn3xKM7M1IP0Q/aRoqzu5at1s.jpg?size=2560x1707&quality=95&sign=f10e37ffd001af7dbd3cd5ab53041dee&type=album');
     background-size: 100% auto;
+    background-color: rgba(0, 0, 0, 0.5);
     background-position: center;
     height: 350px;
     width: 100%;
+    overflow: hidden;
+
     display: flex;
     justify-content: start;
     align-items: center;
+    position: relative;
 
     .text-area {
+      display: flex;
+      align-items: center;
+      background-size: 100% auto;
+      height: 350px;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      opacity: 1;
       // color: #FFF;
       // text-align: center;
       // color: rgb(8, 7, 7);
@@ -270,7 +287,7 @@ const newsList = [
       }
     }
   }
-
+  
   .wrapper-team__navigation {
     padding-bottom: 2rem;
 
@@ -527,7 +544,7 @@ const newsList = [
         // background-color: #B7EAED;
         // border-style: #000000,10px;
         border: 2px solid #B7EAED;
-        
+
         margin-bottom: 20px;
         border-radius: 25px;
 
