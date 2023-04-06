@@ -74,9 +74,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
               </div>
               <div class="wrapperContent">
                 <div class="navigation-tags">
-                  <div v-for="(item, index) in data.tags" :key="index" class="teg">
-                    {{ item }}
-                  </div>
+                  <div v-for="el in team.tags" class="teg">{{ el }}</div>
                 </div>
                 <div>
                   <p>{{ team.short_description }}</p>
@@ -213,7 +211,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .imgEvent {
           position: relative;
           height: 13rem;
-          // z-index: 4;
           overflow: hidden;
 
           p {
