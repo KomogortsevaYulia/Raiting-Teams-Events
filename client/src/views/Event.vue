@@ -84,7 +84,7 @@ async function fetchCurrentEvent() {
                         </div>
                         <div class="address d-flex align-items-center">
                             <i class="fas fa-location-dot fa-xl ms-1"></i>
-                            <p class="mb-0 ms-4 fs-5"> 2-я Красноказачья ул., 3-а, Иркутск, Иркутская обл., 664007</p>
+                            <p class="mb-0 ms-4 fs-5">Точка кипения - г. Иркутск, ул. Лермонтова, 83, пересечение корпуса К и Г - 2 этаж (ауд. К-223) </p>
                         </div>
 
                     </div>
