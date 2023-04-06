@@ -9,6 +9,8 @@ import { useRoute } from "vue-router";
 
 const route = useRoute()
 
+const idTeam = Number(route.params.id);
+
 const TeamStore = useTeamStore();
 const show = ref(true);
 const currentPage = ref(1);
@@ -29,7 +31,8 @@ onBeforeMount(async () => {
 // вытащить коллективы из бд и отобразить их
 
 async function fetchTeam() {
-  team.value = await TeamStore.fetchTeam()
+
+  team.value = await TeamStore.fetchTeam(idTeam)
 }
 
 function setCurrentPage(page: number) {
