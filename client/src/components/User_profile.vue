@@ -61,6 +61,7 @@ function OnExitSubmit() {
 @import '@/assets/globals.scss';
 
 .DropdownWrapper__menu {
+    z-index: 1;
     position: relative;
 
     .dropDownMenuButton {
@@ -107,7 +108,7 @@ function OnExitSubmit() {
         background-color: antiquewhite;
         transition: 0.2s ease;
         padding: 0.75rem;
-        box-shadow: 0 0 10px 5px rgba(221, 221, 221, 1);
+        box-shadow: 0 0 15px 15px rgba(114, 114, 114, 0.239);
 
         p {
             cursor: pointer;

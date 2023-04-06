@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Filter from '@/components/Filter.vue';
+import WIP from '@/components/WIP.vue';
 import { onBeforeMount, ref } from 'vue';
 import TeamsForm from './TeamsForm.vue'
 
@@ -87,21 +87,21 @@ const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "
 const newsList = [
   {
     id: 1,
-    title: 'Хакатон Умник-ON',
-    description: 'В Иркутском политехе 9 октября стартовал хакатон инженерных решений УМНИК-ON. Студентам предстоит разработать проекты, посвященные модернизации инфраструктуры университета. Мероприятие проводит отдел организации научной деятельности молодых ученых и студентов.',
-    imageUrl: 'https://www.istu.edu/upload/iblock/044/IMG_5137.JPG'
+    title: 'Выступление на встрече',
+    description: '28 марта прошла встреча с Жугдэрдэмидийн Гуррагча, президентом Общества "Монголия - Россия", героем Советского Союза, первым космонавтом Монгольской Народной Республики (МНР).',
+    imageUrl: 'https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album'
   },
   {
     id: 2,
-    title: 'Конкурс лучшее СНО 2022',
-    description: 'В Иркутском политехе определили лидеров конкурса «Лучшее студенческое научное общество» (СНО). Гранты в размере 75 тыс. рублей, переходящие кубки получили НИСКО «Транспортный менеджмент» и СКБ «Промышленная электроника и робототехника». Награждение состоялось на итоговом мероприятии Всероссийского фестиваля NAUKA 0+в Точке кипения университета',
-    imageUrl: 'https://www.istu.edu/upload/iblock/137/20201109_IMG_7941.JPG'
+    title: 'Гала-концерт',
+    description: '18 марта на сцене ИРНИТУ состоялся гала-концерт межрегионального многожанрового музыкального конкурса, посвящённого 75-летию со дня рождения поэта, композитора, телеведущего, Народного артиста России Геннадия Дмитриевича Заволокина.',
+    imageUrl: 'https://sun9-72.userapi.com/impg/3fBWXOId3AxVXmsor6HR50f5IOf7A0K-sp-iPA/GMnrC6OqDew.jpg?size=2560x1707&quality=95&sign=6a57308ab9691669faf9452b1f3e1f85&type=album'
   },
   {
     id: 3,
-    title: 'Научно-дискуссионный клуб ИРНИТУ',
-    description: ' В Точке кипения ИРНИТУ 17 февраля состоялось первое собрание Научно-дискуссионного клуба. Политеховцы обсудили проекты в сфере модернизации пропускных систем, цифровизации авиастроения и сварочных технологий.',
-    imageUrl: 'https://www.istu.edu/upload/iblock/e10/IMG_1367.jpg'
+    title: 'Выступление на ректорском приеме',
+    description: 'Ректорский прием, посвященный международному женскому дню, состоялся 7 марта. Наш коллектив также принял участие в концертной программе и поздравил прекрасную половину нашего университета с праздником!',
+    imageUrl: 'https://sun9-35.userapi.com/impg/qo49V2NSbiMOrTTqwmnJoffy7v7tzMv3pPs6Bg/44aBwrBj2Ak.jpg?size=1280x853&quality=95&sign=f8ced23a9edd565a4e14e94858a709c0&type=album'
   },
 ]
 
@@ -114,9 +114,11 @@ const newsList = [
     <!-- Обертка карточек коллективов -->
     <div class="full-width">
       <div class="wrapper-team__top-panel">
-        <div class="text-area container">
-          <p>{{ data.title }}</p>
-          <button>Подать заявку</button>
+        <div class="text-area">
+          <div class="container">
+            <p>{{ data.title }}</p>
+            <button>Подать заявку</button>
+          </div>
         </div>
       </div>
     </div>
@@ -132,36 +134,24 @@ const newsList = [
       <div v-if="(selectedItem === 0)">
         <div>
           <div class="navigation-tags">
-            <div v-for="(item, index) in itemLink" :key="index" class="teg">
-              {{ item.name }}
+            <div v-for="(item, index) in data.tags" :key="index" class="teg">
+              {{ item }}
             </div>
           </div>
           <hr>
           <div class="middle-panel">
             <div class="column-left">
               <h2>О коллективе</h2>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
-              soluta
-              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-              voluptatibus exercitationem est similique?
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
-              soluta
-              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-              voluptatibus exercitationem est similique?
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
-              soluta
-              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-              voluptatibus exercitationem est similique?
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium aliquam vitae laboriosam voluptates
-              soluta
-              in similique magni maiores veritatis debitis quis, doloremque odio. Suscipit incidunt reprehenderit,
-              voluptatibus exercitationem est similique?
+              {{ data.description }}
             </div>
             <div class="column-right">
               <div class="image-container">
-                <img v-if="currentPage === 1" src="@/assets/icon/event1.png">
-                <img v-if="currentPage === 2" src="@/assets/icon/event2.png">
-                <img v-if="currentPage === 3" src="@/assets/icon/event3.png">
+                <img v-if="currentPage === 1"
+                  src="https://sun4-12.userapi.com/impg/7cihnmozwdZo5B63fTDkT2T3A7wDFjvi1BSlzQ/n_74trN1o-Y.jpg?size=2560x1707&quality=95&sign=1aa84293a83c6337204aa80f02b53440&type=album">
+                <img v-if="currentPage === 2"
+                  src="https://sun9-58.userapi.com/impg/VXN1cqTuomn5r9s09OBiIJvGlBH-5r3wPDXkHA/Jpe2z5gYSw4.jpg?size=2560x1707&quality=95&sign=3e817f4cc607e03118139bf5b88a4319&type=album">
+                <img v-if="currentPage === 3"
+                  src="https://sun9-54.userapi.com/impg/uU55dZtENJqdqiiJw4aCdVFwmqjhnaXTkDoAwg/-nAHiUtXYOY.jpg?size=2560x1707&quality=95&sign=2b5ab35fb1a53a17615833188fc8d519&type=album">
                 <div class="page-arrows">
                   <div class="arrow-left" @click="previousPage">
                     <i class="fa fa-angle-left"></i>
@@ -179,6 +169,7 @@ const newsList = [
             </div>
           </div>
         </div>
+        <!-- Блок с НОВОСТЯМИ -->
         <div>
           <div class="wrapper-team__section-name">
             <label class="active">Новости</label>
@@ -197,7 +188,7 @@ const newsList = [
         </div>
       </div>
       <div v-if="(selectedItem === 1)">
-        <a>Компонент Занятий</a>
+        <WIP />
       </div>
       <div v-if="selectedItem === 2">
 
@@ -372,16 +363,28 @@ const newsList = [
   }
 
   .wrapper-team__top-panel {
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 10%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%), url('@/assets/icon/event1.png');
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 10%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%), url('https://sun9-70.userapi.com/impg/hoGoGUgoywvDUTx8l17HB-5Rnpn3xKM7M1IP0Q/aRoqzu5at1s.jpg?size=2560x1707&quality=95&sign=f10e37ffd001af7dbd3cd5ab53041dee&type=album');
     background-size: 100% auto;
+    background-color: rgba(0, 0, 0, 0.5);
     background-position: center;
     height: 350px;
     width: 100%;
+    overflow: hidden;
+
     display: flex;
     justify-content: start;
     align-items: center;
+    position: relative;
 
     .text-area {
+      display: flex;
+      align-items: center;
+      background-size: 100% auto;
+      height: 350px;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      opacity: 1;
       // color: #FFF;
       // text-align: center;
       // color: rgb(8, 7, 7);
@@ -403,8 +406,10 @@ const newsList = [
       }
     }
   }
-
+  
   .wrapper-team__navigation {
+    padding-bottom: 2rem;
+
     a {
       cursor: pointer;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -431,7 +436,6 @@ const newsList = [
   }
 
   .navigation-tags {
-    padding-top: 2rem;
     display: flex;
 
     .teg {
@@ -657,7 +661,10 @@ const newsList = [
         align-items: center;
         height: 230px;
         width: 80%;
-        background-color: #B7EAED;
+        // background-color: #B7EAED;
+        // border-style: #000000,10px;
+        border: 2px solid #B7EAED;
+
         margin-bottom: 20px;
         border-radius: 25px;
 

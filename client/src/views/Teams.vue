@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import Filter from '@/components/Filter.vue';
+import Filter from '@/components/WIP.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import { onBeforeMount, ref } from 'vue';
@@ -39,9 +39,13 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{ active: show }">Общий список</a>
-      <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
-      <ModalCreateTeam />
+      <div v-if="can('can create teams')" class="mt-4">
+        <ModalCreateTeam />
+      </div>
+      <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
+          <div v-if="can('can create teams')" class="mt-4">
+            <ModalCreateTeam />
+          </div> -->
     </div>
 
     <!-- Обертка карточек коллективов -->
@@ -64,24 +68,18 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
 
         <!-- Сами карточки -->
-        <div :class="[teamStore.layout === true ? 'wrapper-grid' : 'wrapper-list']">
+        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
           <div v-for="team in data" class="cardEvent">
+            <div class="card__banner">
+              <img :src="team.image" class="d-block" style="width: 100%;object-fit: cover;">
+            </div>
             <router-link :to="'/team/' + team.id">
-              <div class="imgEvent">
-                <div></div>
-                <p>{{ team.title }}</p>
-                <img :src="team.image">
-              </div>
               <div class="wrapperContent">
+                <div class="card__event-name">{{ team.title }}</div>
                 <div class="navigation-tags">
-                  <div v-for="(item, index) in itemLink" :key="index" class="teg">
-                    {{ item.name }}
-                  </div>
+                  <div v-for="el in team.tags" class="teg">{{ el }}</div>
                 </div>
-                <div>
-                  <p>{{ team.description }}</p>
-                  <!-- <p class="date">06.04.2021</p> -->
-                </div>
+                <p>{{ team.short_description }}</p>
               </div>
             </router-link>
           </div>
@@ -159,29 +157,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .search-toggle {
           display: flex;
           padding-left: 1rem;
-          // align-items: center;
-          // justify-content: center;
-
-          // img {
-          //   cursor: pointer;
-          //   padding-right: 1rem;
-          //   transition: 0.3s;
-          //   height: 28px;
-          //   width: 28px;
-          //   opacity: 0.5;
-
-          //   &:hover {
-          //     opacity: 1;
-          //   }
-
-          //   &:active {
-          //     opacity: 0.5;
-          //   }
-          // }
-
-          // .active {
-          //   opacity: 1;
-          // }
         }
       }
 
@@ -192,7 +167,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .cardEvent {
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
-          height: 350px;
+          height: 350px auto;
           margin: 0 1rem 1rem 0;
           flex-wrap: wrap;
           overflow: hidden;
@@ -203,6 +178,19 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           a {
             color: #000;
           }
+        }
+
+        .card__banner {
+          height: 15rem;
+          max-width: 15rem;
+          width: 100%;
+          max-width: 100%;
+          flex-wrap: wrap;
+          border-radius: 5px 0 0 0;
+          width: 100%;
+          overflow: hidden;
+          background-position: center;
+          display: flex;
         }
 
         .cardEvent:hover {
@@ -238,18 +226,23 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
-          height: 100%;
 
           .navigation-tags {
+            flex-wrap: wrap;
             padding-bottom: 1rem;
             display: flex;
 
             .teg {
               margin-right: 1rem;
+              margin-bottom: 1rem;
               background-color: #B7EAED;
               padding: 0.2rem 1rem;
               color: #348498;
               border-radius: 5px;
+            }
+
+            .teg:last-child {
+              margin-bottom: 0;
             }
           }
 
@@ -263,19 +256,34 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
       }
 
       .wrapper-list {
-        display: flex;
-        flex-wrap: wrap;
+        padding-top: 2rem;
 
         .cardEvent {
-          box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 100%;
-          height: 350px;
-          margin: 0 1rem 1rem 0;
-          flex-wrap: wrap;
-          overflow: hidden;
-          border-radius: 5px;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          background-color: #fff;
+          height: 15rem;
+          margin-bottom: 1rem;
+          border: none;
+          box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+          display: flex;
+          flex-direction: row;
           transition: all .5s;
+
+          .card__banner {
+            height: 100%;
+            width: 15rem;
+            max-width: 15rem;
+            border-radius: 5px 0 0 0;
+            width: 100%;
+            overflow: hidden;
+            background-position: center;
+            display: flex;
+          }
+        }
+
+        .card__event-name {
+          color: #373737;
+          font-size: 1.2rem;
         }
 
         .cardEvent:hover {
@@ -283,36 +291,15 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
         }
 
-        .imgEvent {
-          position: relative;
-          height: 13rem;
-          overflow: hidden;
+        .wrapperContent {
+          padding: 2rem;
 
           p {
-            font-weight: 100;
-            font-size: 1.4rem;
-            margin: 4rem 0 0 1rem;
-            color: #fff;
-            position: absolute;
+            color: #000;
           }
-
-          div {
-            width: 100%;
-            height: 13rem;
-            background-color: rgba(0, 0, 0, 0.295);
-            position: absolute;
-          }
-
-          img {
-            width: 100%;
-          }
-
-        }
-
-        .wrapperContent {
-          padding: 1rem;
 
           .navigation-tags {
+            margin-top: 0.5rem;
             padding-bottom: 1rem;
             display: flex;
 

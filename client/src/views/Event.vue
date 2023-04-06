@@ -23,21 +23,27 @@ async function fetchCurrentEvent() {
 
 
 <template>
-    <div class="col">
-        <div class="imgEvent full-width  mb-5">
-            <img src="../assets/icon/stairway.jpg" class="rounded w-100 d-block" style="object-fit: cover;">
+    <div class="wrapper-team">
+        <!-- Обертка карточек коллективов -->
+        <div class="full-width">
+            <div class="wrapper-team__top-panel">
+                <div class="text-area">
+                    <div class="container">
+                        <p>{{ data.title }}</p>
+                        <button>Подать заявку</button>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="eventInfo row">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" />
 
             <h1 class="ps-0">{{ data.title }}</h1>
 
-            <div class="teg__container ps-0">
-                <div class="teg">
-                    Offline
-                </div>
-                <div class="teg">
-                    Межвузовский
+            <div class="navigation-tags">
+                <div v-for="(item, index) in data.tags" :key="index" class="teg">
+                    {{ item }}
                 </div>
             </div>
             <div class="rating d-flex ms-5 ">
@@ -85,7 +91,7 @@ async function fetchCurrentEvent() {
                 </div>
 
                 <div class="map col">
-                    <img src="../assets/icon/event3.png" class="rounded mx-auto d-block">
+                    <img :src="data.images" class="rounded mx-auto d-block">
                 </div>
 
                 <div class="row ">
@@ -106,12 +112,67 @@ async function fetchCurrentEvent() {
 @import '@/assets/globals.scss';
 
 .full-width {
+    // margin-top: -1.5em;
+    // width: 100vw;
+    // position: relative;
+    // left: 50%;
+    // right: 50%;
+    // margin-left: -50vw;
+    // margin-right: -50vw;
+
+    position: relative;
+    margin-top: -1.5em;
     width: 100vw;
     position: relative;
     left: 50%;
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
+
+    .wrapper-team__top-panel {
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 10%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%), url('https://kartinkin.net/uploads/posts/2022-03/1646221438_8-kartinkin-net-p-pole-chudes-kartinki-8.jpg');
+        background-size: 100% auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        background-position: center;
+        height: 350px;
+        width: 100%;
+        overflow: hidden;
+
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        position: relative;
+
+        .text-area {
+            display: flex;
+            align-items: center;
+            background-size: 100% auto;
+            height: 350px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            opacity: 1;
+            // color: #FFF;
+            // text-align: center;
+            // color: rgb(8, 7, 7);
+            // padding: 20px;
+            // width: 40%;
+            // border: 2px solid red;
+
+            // border-radius: 10px;
+            // display: flex;
+            // flex-direction: column;
+            // align-items: center;
+
+            p {
+                font-size: 36px;
+                font-weight: 600;
+                font-family: 'Montserrat', sans-serif;
+                margin: 0;
+                margin-bottom: 2rem;
+            }
+        }
+    }
 }
 
 
@@ -260,26 +321,15 @@ async function fetchCurrentEvent() {
 
 }
 
-.teg__container {
-
-    padding-top: 1em;
-    font-family: 'Montserrat';
-    font-style: normal;
-    color: #348498;
-    font-size: 1rem;
-    justify-content: space-between;
-    margin-inline-start: 5rem;
-
-    margin-bottom: 2em;
+.navigation-tags {
+    display: flex;
 
     .teg {
-
-        display: inline-block;
-        background-color: #9DD9D2;
-        padding: 0.6rem;
-        line-height: 20px;
-        border-radius: 0.6rem;
-        margin: 0 0.6rem 0 0;
+        margin-right: 1rem;
+        background-color: #B7EAED;
+        padding: 0.2rem 1rem;
+        color: #348498;
+        border-radius: 5px;
     }
 }
 </style>

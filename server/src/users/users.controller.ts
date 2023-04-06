@@ -60,12 +60,6 @@ export class UsersController {
     return res;
   }
 
-  
-  @Get('/generate-functions')
-  async generateFunctions(@Request() req): Promise<any> {
-    return  await this.usersService.generateFunctions();
-  }
-
   @ApiOperation({ summary: "Регистрация пользователя" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })

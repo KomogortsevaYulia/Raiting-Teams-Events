@@ -44,7 +44,7 @@ export class TeamsService {
       return this.teamsRepository
         .createQueryBuilder("teams")
   
-        .select(["teams.id", "teams.title", "teams.image", "teams.description","teams.short_description", "teams.type_team"])
+        .select(["teams.id", "teams.title","teams.tags", "teams.image", "teams.description","teams.short_description", "teams.type_team"])
         .where("teams.type_team = :type", { type: "teams" })
         .leftJoin("teams.functions", "functions")
         .addSelect("functions.title")
