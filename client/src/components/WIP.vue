@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div class="d-flex flex-column align-items-center">
+    <div class="wrapper-wip d-flex flex-column align-items-center justify-content-center">
         <h3>Компонент в разработке</h3>
         <svg class="p-4" xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 512 512">
             <path fill="#ff502f"
@@ -12,4 +12,8 @@
     </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+h3 {
+    color: #959595;
+}
+</style>

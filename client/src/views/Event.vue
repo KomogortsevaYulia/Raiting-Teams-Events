@@ -84,7 +84,7 @@ async function fetchCurrentEvent() {
                         </div>
                         <div class="address d-flex align-items-center">
                             <i class="fas fa-location-dot fa-xl ms-1"></i>
-                            <p class="mb-0 ms-4 fs-5"> 2-я Красноказачья ул., 3-а, Иркутск, Иркутская обл., 664007</p>
+                            <p class="mb-0 ms-4 fs-5">Точка кипения - г. Иркутск, ул. Лермонтова, 83, пересечение корпуса К и Г - 2 этаж (ауд. К-223) </p>
                         </div>
 
                     </div>
@@ -112,14 +112,6 @@ async function fetchCurrentEvent() {
 @import '@/assets/globals.scss';
 
 .full-width {
-    // margin-top: -1.5em;
-    // width: 100vw;
-    // position: relative;
-    // left: 50%;
-    // right: 50%;
-    // margin-left: -50vw;
-    // margin-right: -50vw;
-
     position: relative;
     margin-top: -1.5em;
     width: 100vw;
@@ -152,17 +144,6 @@ async function fetchCurrentEvent() {
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
             opacity: 1;
-            // color: #FFF;
-            // text-align: center;
-            // color: rgb(8, 7, 7);
-            // padding: 20px;
-            // width: 40%;
-            // border: 2px solid red;
-
-            // border-radius: 10px;
-            // display: flex;
-            // flex-direction: column;
-            // align-items: center;
 
             p {
                 font-size: 36px;
@@ -315,8 +296,6 @@ async function fetchCurrentEvent() {
 
     h2 {
         font-size: 1.0em;
-
-
     }
 
 }

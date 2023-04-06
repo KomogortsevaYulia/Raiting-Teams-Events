@@ -43,9 +43,9 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         <ModalCreateTeam />
       </div>
       <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
-          <div v-if="can('can create teams')" class="mt-4">
-            <ModalCreateTeam />
-          </div> -->
+                <div v-if="can('can create teams')" class="mt-4">
+                  <ModalCreateTeam />
+                </div> -->
     </div>
 
     <!-- Обертка карточек коллективов -->
@@ -59,7 +59,8 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         <!-- Инпут с поиском -->
         <div class="cards__search">
-          <input placeholder="Начните поиск..." />
+          <input class="search-inp" placeholder="Начните поиск..." />
+          <input placeholder="Выберите дату" type="date" />
           <div class="search-toggle">
             <Switch_toggle />
           </div>
@@ -99,7 +100,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
   justify-content: center;
 
   .wrapper-team__navigation {
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
     width: 100%;
 
     a {
@@ -130,8 +131,8 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
   .wrapper-team__content {
     display: flex;
-    height: 600px;
-    width: 100%;
+    height: 100%;
+    width: 100% auto;
 
     .content-filter {
       border-radius: 15px;
@@ -141,17 +142,22 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     }
 
     .content-cards {
-      padding-left: 2rem;
+      margin-left: 2rem;
       width: 80%;
 
       .cards__search {
         display: flex;
-        padding-bottom: 1rem;
+        justify-content: space-between;
+        // padding-bottom: 1rem;
+
+        .search-inp {
+          width: 70%;
+        }
 
         input {
-          margin: 0;
+          // margin: 0;
           // height: 40px;
-          width: 80%;
+          // width: 80%;
         }
 
         .search-toggle {

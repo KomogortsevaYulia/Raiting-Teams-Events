@@ -2,6 +2,7 @@
 import WIP from '@/components/WIP.vue';
 import { onBeforeMount, ref } from 'vue';
 import TeamsForm from './TeamsForm.vue'
+import Ankets from '@/views/Questionnaire.vue';
 
 import { useTeamStore } from "../store/team_store"
 import axios from 'axios';
@@ -126,7 +127,7 @@ const newsList = [
       </div>
     </div>
 
-  <div v-if="show" class="wrapper-team__content wrapper-content">
+    <div v-if="show" class="wrapper-team__content wrapper-content">
 
       <!-- Навигация -->
       <div class="wrapper-team__navigation">
@@ -223,8 +224,8 @@ const newsList = [
 
           <div v-else>
             <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-                        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
-                        <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet"> -->
+                          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
+                          <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet"> -->
             <div class="about">
               <div class="member-card py-2">
                 <div class="row ms-lg-3">
@@ -267,6 +268,9 @@ const newsList = [
             </div>
           </div>
         </div>
+      </div>
+      <div v-if="selectedItem === 3">
+        <Ankets />
       </div>
     </div>
   </div>
@@ -326,7 +330,7 @@ const newsList = [
 .member-buttons .button {
   background-color: rgba(217, 217, 217, 1);
   color: rgba(102, 102, 102, 1);
-  
+
   width: 270px;
   padding: 10px;
   text-align: center;
@@ -335,7 +339,7 @@ const newsList = [
   font-family: 'Inter', serif;
   font-style: normal;
   font-weight: 400;
- 
+
   line-height: 24px;
   margin-left: 15px;
 }
@@ -409,7 +413,7 @@ const newsList = [
       }
     }
   }
-  
+
   .wrapper-team__navigation {
     padding-bottom: 2rem;
 
@@ -653,7 +657,7 @@ const newsList = [
       }
     }
 
- 
+
     .news-panel {
       display: flex;
       flex-direction: column;
