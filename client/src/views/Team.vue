@@ -223,11 +223,11 @@ const newsList = [
                         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
                         <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet"> -->
             <div class="about">
-              <div class="member-card py-4">
-                <div class="row">
+              <div class="member-card py-3">
+                <div class="row mx-3">
 
                   <!-- image member -->
-                  <div class="col-lg-2 d-flex col-md-12 justify-content-center">
+                  <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
                     <img class="member-image" src="../assets/icon/user.png" alt="" />
                   </div>
 
@@ -301,7 +301,7 @@ const newsList = [
   font-family: 'Raleway', serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 32px;
+  font-size: 22px;
   line-height: 38px;
   padding-bottom: 10px;
 }
@@ -311,7 +311,7 @@ const newsList = [
   font-family: 'Inter', serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 15px;
   line-height: 24px;
 }
 
@@ -332,7 +332,7 @@ const newsList = [
   font-family: 'Inter', serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 20px;
+ 
   line-height: 24px;
   margin-left: 15px;
 }
