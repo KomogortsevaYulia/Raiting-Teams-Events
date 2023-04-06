@@ -121,7 +121,7 @@ const newsList = [
       </div>
     </div>
 
-    <div v-if="show" class="wrapper-team__content wrapper-content">
+  <div v-if="show" class="wrapper-team__content wrapper-content">
 
       <!-- Навигация -->
       <div class="wrapper-team__navigation">
@@ -200,68 +200,94 @@ const newsList = [
         <a>Компонент Занятий</a>
       </div>
       <div v-if="selectedItem === 2">
-        
-        <div v-for="item in team"> 
-            <div v-if=" item.function.title === 'Руководитель'">
+
+        <div v-for="item in team">
+
+          <div v-if="item.function.title === 'Руководитель'" class="mt-5">
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
             <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet">
-            <div className="about" style="margin-top: 20px;">
-              <div className="member-card">
-                <img className="member-image" src="../assets/icon/event1.png" alt=""/>
-                <div className="member-info">
+            <div class="about" style="margin-top: 20px;">
+              <div class="member-card">
+                <!-- <img class="member-image" src="../assets/icon/event1.png" alt="" /> -->
+                <div class="member-info">
                   <div>
                     <h1>{{ item.user.fullname }}</h1>
 
                     <h2>Роль: {{ item.function.title }}</h2>
                   </div>
-                  <div className="member-buttons">
-                    <div className="button">Редактировать</div>
-
+                  <div class="member-buttons">
+                    <button class="btn">Редактировать</button>
                   </div>
 
-              </div>
+                </div>
 
-            </div>
-          </div>
-    </div>
-  <div v-else> 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet">
-        <div className="about">
-          <div className="member-card">
-            <img className="member-image" src="../assets/icon/user.png" alt=""/>
-            <div className="member-info">
-              <div>
-                <h1>{{ item.user.fullname }}</h1>
-                <h2>Группа: {{ item.user.education_group }}</h2>
-                <h2>Роль: {{ item.function.title }}</h2>
-              </div>
-              <div className="member-buttons">
-                <div className="button">Редактировать</div>
-                <div className="button">Удалить</div>
               </div>
             </div>
           </div>
+
+
+          <div v-else>
+            <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+                        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
+                        <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet"> -->
+            <div class="about">
+              <div class="member-card py-4">
+                <div class="row">
+
+                  <!-- image member -->
+                  <div class="col-lg-2 d-flex col-md-12 justify-content-center">
+                    <img class="member-image" src="../assets/icon/user.png" alt="" />
+                  </div>
+
+                  <div class="col-lg-10 col-md-12">
+                    <div class="member-info">
+
+                      <div class="col">
+                        <div class="row ">
+                          <h1>{{ item.user.fullname }}</h1>
+                        </div>
+                        <div class="row">
+                          <h2>Группа: {{ item.user.education_group }}</h2>
+                        </div>
+                        <div class="row">
+                          <h2>Роль: {{ item.function.title }}</h2>
+                        </div>
+
+                        <div class="row d-flex justify-content-end">
+                          <div class="member-buttons">
+                            <button class="btn button px-3">Редактировать</button>
+                            <button class="btn button  px-3">Удалить</button>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</div>
-</div>
-
-
 </template>
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
+
+
 .member-card {
   width: 100%;
   margin-bottom: 12px;
   background: rgb(243, 243, 243);
   border-radius: 25px 20px 20px 25px;
-  display: flex;
+
 }
 
 .member-info {
@@ -306,7 +332,7 @@ const newsList = [
 .member-buttons .button {
   background-color: rgba(217, 217, 217, 1);
   color: rgba(102, 102, 102, 1);
-  border-radius: 20px;
+  
   width: 270px;
   padding: 10px;
   text-align: center;
@@ -319,6 +345,7 @@ const newsList = [
   line-height: 24px;
   margin-left: 15px;
 }
+
 .wrapper {
   display: flex;
   height: 89px;
@@ -619,6 +646,7 @@ const newsList = [
       }
     }
 
+ 
     .news-panel {
       display: flex;
       flex-direction: column;
