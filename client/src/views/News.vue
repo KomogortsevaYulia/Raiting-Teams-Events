@@ -124,6 +124,7 @@ async function fetchEvents() {
 
           .teg__container {
             display: flex;
+            padding-bottom: 1rem;
             margin-top: 0.5rem;
 
             .teg {
