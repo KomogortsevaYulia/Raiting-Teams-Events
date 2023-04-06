@@ -6,12 +6,15 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity'
 import { Level, Type } from './enums/enums';
 import { Direction } from 'readline';
+import { Journal } from './entities/journal.entity';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectRepository(Event)  // user //,
     private readonly eventsRepository: Repository<Event>,
+    @InjectRepository(Journal) 
+    private readonly journalsRepository: Repository<Journal>,
   ) { }
 
   create(createEventDto: CreateEventDto) {
@@ -73,4 +76,22 @@ export class EventsService {
   remove(id: number) {
     return `This action removes a #${id} event`;
   }
+
+
+  
+  findAllJournals(team:number = -1): Promise<Journal[]> {
+
+    let buildQuery = this.journalsRepository
+    .createQueryBuilder("journals")
+    .leftJoin("journals.team", "team")
+    .addSelect("team.id")
+
+    buildQuery = team > 0 ? buildQuery
+      .andWhere("journals.team_id = :team", { team: team }) : buildQuery
+
+    return buildQuery.getMany()
+  }
+  
 }
+
+

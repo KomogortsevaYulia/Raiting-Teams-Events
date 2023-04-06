@@ -49,6 +49,14 @@ export class EventsController {
     return this.eventsService.findOne(+id);
   }
 
+  @Get('journal')
+  @ApiOperation({ summary: "Получение списка мероприятий из журнала" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findAllJournals(@Query() params) {
+    return this.eventsService.findAllJournals(params.team_id);
+  }
+
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
   //   return this.eventsService.update(+id, updateEventDto);
