@@ -83,6 +83,7 @@ export const useTeamStore = defineStore("teams", () => {
         createTeam,
         setLayout,
         fetchTeamsOfDirection,
+        fetchTeam,
 
         layout,
         menu_items
