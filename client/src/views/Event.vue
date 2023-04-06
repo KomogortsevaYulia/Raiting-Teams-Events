@@ -39,26 +39,28 @@ async function fetchCurrentEvent() {
         <div class="eventInfo row">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" />
 
-            <h1 class="ps-0">{{ data.title }}</h1>
+            <!-- <h1 class="">{{ data.title }}</h1>
 
-            <div class="navigation-tags">
+            <div>
+                <div class="navigation-tags">
                 <div v-for="(item, index) in data.tags" :key="index" class="teg">
                     {{ item }}
                 </div>
             </div>
-            <div class="rating d-flex ms-5 ">
-                <span class="star" data-value="1">&#9733;</span>
+            <div class=" ">
+                <span class="" data-value="1">&#9733;</span>
                 <span class="star" data-value="2">&#9733;</span>
                 <span class="star" data-value="3">&#9733;</span>
                 <span class="star" data-value="4">&#9733;</span>
                 <span class="star" data-value="5">&#9733;</span>
-                <p class="ms-3">
+                <p class="">
                     Нет оценок
                 </p>
             </div>
+            </div>
             <div class="line ">
 
-            </div>
+            </div> -->
             <div class="row ">
                 <div class="wrapperContent col align-items-center ps-0">
                     <div class="row mb-5">
@@ -188,13 +190,14 @@ async function fetchCurrentEvent() {
 
 .eventInfo {
 
-    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 5px 2px rgb(221, 221, 221);
     width: 102%;
     height: auto;
     justify-content: center;
     border-radius: 1rem;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     transition: all .5s;
+    margin-top: 2rem;
 
     h1 {
 

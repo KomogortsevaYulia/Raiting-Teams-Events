@@ -19,7 +19,7 @@
           <input class="date__search" placeholder="Выберите дату" type="date" />
           <Switch_toggle />
         </div>
-        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
+        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data.length  > 0">
           <div class="card" v-for="event in data" :key="event.id">
             <div class="card__banner">
               <img :src="event.images" class="d-block" style="width: 100%;object-fit: cover;">
@@ -37,6 +37,9 @@
               </div>
             </router-link>
           </div>
+        </div>
+        <div>
+          Постов нет
         </div>
       </div>
     </div>
