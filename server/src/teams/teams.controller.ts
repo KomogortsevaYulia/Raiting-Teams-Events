@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -12,14 +12,26 @@ export class TeamsController {
   constructor(private readonly teamsService: TeamsService,
     private readonly usersService: UsersService) { }
 
+
   @Get()
   @ApiOperation({ summary: "Получение списка коллективов с их руководителями" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAll() {
     return this.teamsService.findAll();
-    
+
   }
+
+  @Get('direction')
+  @ApiOperation({ summary: "Получение списка коллективов c учетом параметров (направление, вид)" })
+  @ApiParam({ name: "type_team", required: false, description: "указать тип коллектива" })
+  @ApiParam({ name: "id_parent", required: false, description: "указать его родителя (если коллектив, то направление)" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findAllTeamsOfDirection(@Query() params) {
+    return this.teamsService.findAllTeamsOfDirection(params.type_team, params.id_parent);
+  }
+
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateTeamDto: UpdateTeamDto) {
@@ -73,13 +85,13 @@ export class TeamsController {
   }
 
 
-    // @Get('directions')
-    // @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
-    // @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
-    // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
-    // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-    // directionsAndUsers() {
-    //   return this.teamsService.directionsAndUsers()
-    // }
+  // @Get('directions')
+  // @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
+  // @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
+  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
+  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  // directionsAndUsers() {
+  //   return this.teamsService.directionsAndUsers()
+  // }
 
 }

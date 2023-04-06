@@ -11,12 +11,20 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
     // Вывести все коллективвы с руководителсями
-   async function fetchTeams():Promise<any> {
+    async function fetchTeams(): Promise<any> {
         const res = await axios.get('/api/teams')
         const data = res.data
 
         return data
     }
+
+    async function fetchTeamsOfDirection(direction: number = -1, type_team = "teams"): Promise<any> {
+        const res = await axios.get('/api/teams/direction', { params: { id_parent: direction,  type_team: type_team } })
+        const data = res.data
+
+        return data
+    }
+
 
     async function fetchCreateTeams() {
         await axios.get('/api')
@@ -24,6 +32,14 @@ export const useTeamStore = defineStore("teams", () => {
                 // Умные действия
             })
     }
+    async function fetchTeam(): Promise<any> {
+        const id = 6;
+        const res = await axios.get('/api/teams/' + id + '/users')
+        const data = res.data
+        console.log(data)
+        return data
+    }
+
 
     async function createTeam(title: String, description: String,
         shortname: String, userId: Number) {
@@ -51,13 +67,24 @@ export const useTeamStore = defineStore("teams", () => {
         this.layout = res;
     }
 
+    const menu_items = [
+        {
+            id: 1, title: 'Влад', hidden: true, menu_types: [
+                { id: 1, title: 'Придумай' },
+                { id: 2, title: 'Теги' },
+            ]
+        },
+    ]
+
     return {
         CreateTeamsTest,
         fetchCreateTeams,
         fetchTeams,
         createTeam,
         setLayout,
+        fetchTeamsOfDirection,
 
         layout,
+        menu_items
     }
 });

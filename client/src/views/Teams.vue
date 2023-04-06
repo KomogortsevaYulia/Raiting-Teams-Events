@@ -1,16 +1,18 @@
 <script setup lang="ts">
 
-import Filter from '@/components/Filter.vue';
+import Filter from '@/components/WIP.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
-import { useTeamStore } from "../store/team_store"
+import { useTeamStore } from "../store/team_store";
+import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 
 const can = permissions_store.can;
+const menu_items = teamStore.menu_items;
 
 const show = ref(true);
 const data = ref()
@@ -38,27 +40,27 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <a @click="show = true" :class="{ active: show }">Общий список</a>
+      <div v-if="can('can create teams')" class="mt-4">
+        <ModalCreateTeam />
+      </div>
       <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
-      <ModalCreateTeam />
     </div>
 
     <!-- Обертка карточек коллективов -->
     <div v-if="show" class="wrapper-team__content">
 
       <!-- Фильтр -->
-    <div class="content-filter">
-      <Filter />
-    </div>
+      <CheckBox_Menu :menu_items="menu_items" />
 
-    <!-- Обертка контента с карточками -->
-    <div class="content-cards">
+      <!-- Обертка контента с карточками -->
+      <div class="content-cards">
 
-      <!-- Инпут с поиском -->
-      <div class="cards__search">
-        <input placeholder="Начните поиск..." />
-        <div class="search-toggle">
-          <Switch_toggle />
-        </div>
+        <!-- Инпут с поиском -->
+        <div class="cards__search">
+          <input placeholder="Начните поиск..." />
+          <div class="search-toggle">
+            <Switch_toggle />
+          </div>
         </div>
         <!--  {{ data }}-->
 
@@ -66,32 +68,19 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-grid' : 'wrapper-list']">
           <div v-for="team in data" class="cardEvent">
-            <div class="imgEvent">
-              <div></div>
-              <p>{{ team.title }}</p>
-              <img :src="team.image">
-            </div>
-            <div class="wrapperContent">
-              <div>
-                <p>{{ team.description }}</p>
-                <!-- <p class="date">06.04.2021</p> -->
+            <router-link :to="'/team/' + team.id">
+              <div class="imgEvent">
+                <div></div>
+                <p>{{ team.title }}</p>
+                <img :src="team.image">
               </div>
-            </div>
-            <!-- <img class="imgTeams" width="250" height="145" :src="team.image"> -->
-            <!-- <div class="wrapper-content">
-                                                <a>{{ team.title }}</a>
-                                                <p>{{ team.description }}</p>
-                                                <p>Руководители:
-                                                  <span v-for="leader in (team.functions[0]).userFunctions">
-                                                    {{ leader.user.fullname }}<br>
-                                                  </span>
-                                                </p>
-                                                <div class="btn">
-                                                  <RouterLink to="/team-page">
-                                                    <button>Подробнее</button>
-                                                  </RouterLink>
-                                                </div>
-                                              </div> -->
+              <div class="wrapperContent">
+                <div class="navigation-tags">
+                  <div v-for="el in team.tags" class="teg">{{ el }}</div>
+                </div>
+                <p>{{ team.short_description }}</p>
+              </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -101,7 +90,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 </template>
 
 <style lang="scss" scoped>
-// @import '../assets/globals.scss';
+@import '@/assets/globals.scss';
 
 .wrapper-team {
   display: block;
@@ -200,13 +189,17 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .cardEvent {
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
-          height: 350px;
+          height: 350px auto;
           margin: 0 1rem 1rem 0;
           flex-wrap: wrap;
           overflow: hidden;
           border-radius: 5px;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           transition: all .5s;
+
+          a {
+            color: #000;
+          }
         }
 
         .cardEvent:hover {
@@ -242,6 +235,25 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
+
+          .navigation-tags {
+            flex-wrap: wrap;
+            padding-bottom: 1rem;
+            display: flex;
+
+            .teg {
+              margin-right: 1rem;
+              margin-bottom: 1rem;
+              background-color: #B7EAED;
+              padding: 0.2rem 1rem;
+              color: #348498;
+              border-radius: 5px;
+            }
+
+            .teg:last-child {
+              margin-bottom: 0;
+            }
+          }
 
           .date {
             text-align: end;
@@ -258,7 +270,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .cardEvent {
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-          width: 830px;
+          width: 100%;
           height: 350px;
           margin: 0 1rem 1rem 0;
           flex-wrap: wrap;
@@ -301,6 +313,19 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
+
+          .navigation-tags {
+            padding-bottom: 1rem;
+            display: flex;
+
+            .teg {
+              margin-right: 1rem;
+              background-color: #B7EAED;
+              padding: 0.2rem 1rem;
+              color: #348498;
+              border-radius: 5px;
+            }
+          }
 
           .date {
             text-align: end;

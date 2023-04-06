@@ -26,15 +26,15 @@ const router = createRouter({
       component: () => import('@/views/Teams.vue'),
       meta: {}
     },
-
     {
-      // Какой то конкретный коллектив
-      path: "/team-page",
+      path: "/team/:id?",
+      name: "Team",
       // @ts-ignore
-      component: () => import('@/views/team.vue'),
-      meta: {}
+      component: () => import('@/views/Team.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
-
     {
       // !Ответственный за направления
       path: "/directions",
@@ -48,13 +48,13 @@ const router = createRouter({
       path: "/statistic",
       name: "Statistic",
       // @ts-ignore
-      component: () => import('@/views/Statistic.vue'),
+      component: () => import('@/views/Report/Statistic.vue'),
       meta: {
         requiresAuth: true
       }
     },
     {
-      path: "/event",
+      path: "/event/:id?",
       // @ts-ignore
       component: () => import('@/views/Event.vue'),
       meta: {}
@@ -69,24 +69,6 @@ const router = createRouter({
       }
     },
     {
-      // Отвественный ИРНИТУ
-      path: "/reports-university",
-      // @ts-ignore
-      component: () => import('@/views/reportsView/University_reports.vue'),
-      meta: {
-        permission: 'can view reports directions'
-      }
-    },
-    {
-      // Отвественный НАПРАВЛЕНИЯ
-      path: "/reports-directions",
-      // @ts-ignore
-      component: () => import('@/views/reportsView/Directions_reports.vue'),
-      meta: {
-        permission: 'can view reports teams'
-      }
-    },
-    {
       path: "/my",
       name: "Personal",
       // @ts-ignore
@@ -94,15 +76,16 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       }
-    },{
-      path: "/questionnaire",
-      name: "Questionnaire",
-      // @ts-ignore
-      component: () => import('@/views/Questionnaire.vue'),
-      meta: {
-        requiresAuth: true
-      }
-    }
+    },
+    // {
+    //   path: "/questionnaire",
+    //   name: "Questionnaire",
+    //   // @ts-ignore
+    //   component: () => import('@/views/Questionnaire.vue'),
+    //   meta: {
+    //     requiresAuth: true
+    //   }
+    // }
   ],
 });
 

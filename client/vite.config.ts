@@ -13,7 +13,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // '/api': "http://localhost:3000"
+      //  '/api': "http://localhost:3000"
       '/api': "http://rating-teams-events.ovz1.j37315531.m1yvm.vps.myjino.ru"
     }
   }
