@@ -76,15 +76,16 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       }
-    },{
-      path: "/questionnaire",
-      name: "Questionnaire",
-      // @ts-ignore
-      component: () => import('@/views/Questionnaire.vue'),
-      meta: {
-        requiresAuth: true
-      }
-    }
+    },
+    // {
+    //   path: "/questionnaire",
+    //   name: "Questionnaire",
+    //   // @ts-ignore
+    //   component: () => import('@/views/Questionnaire.vue'),
+    //   meta: {
+    //     requiresAuth: true
+    //   }
+    // }
   ],
 });
 
