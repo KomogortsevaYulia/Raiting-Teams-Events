@@ -19,7 +19,7 @@
           <input class="date__search" placeholder="Выберите дату" type="date" />
           <Switch_toggle />
         </div>
-        <div class="cards">
+        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
           <div class="card" v-for="event in data" :key="event.id">
             <div class="card__banner">
               <img :src="event.images" class="d-block" style="width: 100%;object-fit: cover;">
@@ -28,13 +28,12 @@
               <div class="card__content">
                 <div class="card__event-name">{{ event.title }}</div>
                 <div class="teg__container">
-                  <div class="teg">Тег 1</div>
-                  <div class="teg">Тег 2</div>
+                  <div v-for="el in event.tags" class="teg">{{ el }}</div>
                 </div>
                 <div class="card__text">{{ event.description.slice(0, 150) }}</div>
-                <div class="btn__container">
+                <!-- <div class="btn__container">
                   <button class="card__btn">Подать заявку</button>
-                </div>
+                </div> -->
               </div>
             </router-link>
           </div>
@@ -48,9 +47,11 @@
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import { useEventStore } from "@/store/events_store";
+import { useTeamStore } from "../store/team_store";
 import { onBeforeMount, ref } from 'vue';
 
 const eventStore = useEventStore();
+const teamStore = useTeamStore();
 const menu_items = eventStore.menu_items;
 const data = ref()
 
@@ -87,7 +88,7 @@ async function fetchEvents() {
       width: 10%;
     }
 
-    .cards {
+    .wrapper-list {
       padding-top: 2rem;
 
       .card {
@@ -96,15 +97,20 @@ async function fetchEvents() {
         height: 15rem;
         margin-bottom: 1rem;
         border: none;
-        box-shadow: 0px 5px 10px 0px rgba(114, 114, 114, 0.1);
+        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: row;
+        transition: all .5s;
 
         .card__banner {
           height: 100%;
-          width: 12rem;
+          width: 15rem;
+          max-width: 15rem;
           border-radius: 5px 0 0 5px;
-          background-color: #a3a3a3;
+          width: 100%;
+          overflow: hidden;
+          background-position: center;
+          display: flex;
         }
 
         .card__content {
@@ -145,6 +151,89 @@ async function fetchEvents() {
             }
           }
         }
+      }
+
+      .card:hover {
+        cursor: pointer;
+        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .wrapper-grid {
+      padding-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+
+      .card {
+        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        background-color: #fff;
+        height: 350px auto;
+        margin: 0 1rem 1rem 0;
+        flex-wrap: wrap;
+        overflow: hidden;
+        border: none;
+        display: flex;
+        // flex-direction: row;
+        transition: all .5s;
+
+        .card__banner {
+          height: 15rem;
+          max-width: 15rem;
+          width: 100%;
+          max-width: 100%;
+          flex-wrap: wrap;
+          border-radius: 5px 0 0 0;
+          width: 100%;
+          overflow: hidden;
+          background-position: center;
+          display: flex;
+        }
+
+        .card__content {
+          padding: 2rem;
+          width: 100%;
+          flex-wrap: wrap;
+
+          .card__event-name {
+            color: #373737;
+            font-size: 1.2rem;
+          }
+
+          .teg__container {
+            display: flex;
+            margin-top: 0.5rem;
+
+            .teg {
+              margin-right: 1rem;
+              background-color: #B7EAED;
+              padding: 0.2rem 1rem;
+              color: #348498;
+              border-radius: 5px;
+            }
+          }
+
+          .card__text {
+            color: #373737;
+          }
+
+          .btn__container {
+            display: flex;
+            justify-content: right;
+            margin-top: 1rem;
+
+            .card__btn {
+              background-color: #FF502F;
+              color: #fff;
+              padding: 0.8rem 2rem;
+            }
+          }
+        }
+      }
+
+      .card:hover {
+        cursor: pointer;
+        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
       }
     }
   }
