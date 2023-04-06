@@ -34,6 +34,7 @@ const props = defineProps({
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
     width: 20rem;
     padding: 2rem;
+    height: 100%;
     max-height: 100rem;
     border-radius: 5px;
     margin-bottom: 4rem;

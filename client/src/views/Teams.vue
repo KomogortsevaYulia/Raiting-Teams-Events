@@ -39,10 +39,13 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{ active: show }">Общий список</a>
       <div v-if="can('can create teams')" class="mt-4">
         <ModalCreateTeam />
       </div>
+      <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
+          <div v-if="can('can create teams')" class="mt-4">
+            <ModalCreateTeam />
+          </div> -->
     </div>
 
     <!-- Обертка карточек коллективов -->
@@ -290,6 +293,10 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 2rem;
+
+          p {
+            color: #000;
+          }
 
           .navigation-tags {
             margin-top: 0.5rem;
