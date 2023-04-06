@@ -224,7 +224,7 @@ const newsList = [
                         <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet"> -->
             <div class="about">
               <div class="member-card py-3">
-                <div class="row mx-3">
+                <div class="row ms-lg-3">
 
                   <!-- image member -->
                   <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
