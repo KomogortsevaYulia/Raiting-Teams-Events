@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Filter from '@/components/Filter.vue';
+import WIP from '@/components/WIP.vue';
 import { onBeforeMount, ref } from 'vue';
 import TeamsForm from './TeamsForm.vue'
 
@@ -164,25 +164,26 @@ const newsList = [
             </div>
           </div>
         </div>
-        <div>
-          <div class="wrapper-team__section-name">
-            <label class="active">Новости</label>
-          </div>
-          <div class="news-panel">
-            <div class="news-card" v-for="news in newsList" :key="news.id">
-              <div class="image-container">
-                <img :src="news.imageUrl">
+        <!-- Блок с НОВОСТЯМИ -->
+        <!-- <div>
+              <div class="wrapper-team__section-name">
+                <label class="active">Новости</label>
               </div>
-              <div class="text-container">
-                <h2 class="title">{{ news.title }}</h2>
-                <label class="description">{{ news.description }}</label>
+              <div class="news-panel">
+                <div class="news-card" v-for="news in newsList" :key="news.id">
+                  <div class="image-container">
+                    <img :src="news.imageUrl">
+                  </div>
+                  <div class="text-container">
+                    <h2 class="title">{{ news.title }}</h2>
+                    <label class="description">{{ news.description }}</label>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </div> -->
       </div>
       <div v-if="(selectedItem === 1)">
-        <a>Компонент Занятий</a>
+        <WIP />
       </div>
       <div v-if="selectedItem === 2">
         <div v-for="item in team">
@@ -271,6 +272,8 @@ const newsList = [
   }
 
   .wrapper-team__navigation {
+    padding-bottom: 2rem;
+
     a {
       cursor: pointer;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -297,7 +300,6 @@ const newsList = [
   }
 
   .navigation-tags {
-    padding-top: 2rem;
     display: flex;
 
     .teg {

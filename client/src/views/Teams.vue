@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import Filter from '@/components/Filter.vue';
+import Filter from '@/components/WIP.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import { onBeforeMount, ref } from 'vue';
@@ -40,8 +40,10 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <a @click="show = true" :class="{ active: show }">Общий список</a>
+      <div v-if="can('can create teams')" class="mt-4">
+        <ModalCreateTeam />
+      </div>
       <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
-      <ModalCreateTeam />
     </div>
 
     <!-- Обертка карточек коллективов -->
@@ -76,10 +78,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                 <div class="navigation-tags">
                   <div v-for="el in team.tags" class="teg">{{ el }}</div>
                 </div>
-                <div>
-                  <p>{{ team.short_description }}</p>
-                  <!-- <p class="date">06.04.2021</p> -->
-                </div>
+                <p>{{ team.short_description }}</p>
               </div>
             </router-link>
           </div>
@@ -190,7 +189,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .cardEvent {
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
-          height: 350px;
+          height: 350px auto;
           margin: 0 1rem 1rem 0;
           flex-wrap: wrap;
           overflow: hidden;
@@ -236,18 +235,23 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
-          height: 100%;
 
           .navigation-tags {
+            flex-wrap: wrap;
             padding-bottom: 1rem;
             display: flex;
 
             .teg {
               margin-right: 1rem;
+              margin-bottom: 1rem;
               background-color: #B7EAED;
               padding: 0.2rem 1rem;
               color: #348498;
               border-radius: 5px;
+            }
+
+            .teg:last-child {
+              margin-bottom: 0;
             }
           }
 
