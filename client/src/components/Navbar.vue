@@ -14,7 +14,7 @@ function OnExitSubmit() {
 
 
 const itemLink = [
-    { name: "Анкета(Создание)", path: "/questionnaire" },
+    // { name: "Анкета(Создание)", path: "/questionnaire" },
     { name: "Мероприятия", path: "/news" },
     { name: "Коллективы", path: "/teams" },
     { name: "Статистика", path: "/statistic" },
@@ -63,7 +63,6 @@ const itemLink = [
 // Блок
 .navbar-wrapper {
     display: flex;
-
     position: relative;
     align-items: center;
 
