@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { RouterLink } from 'vue-router'
 import { usePermissionsStore } from '@/store/permissions_store';
 import { ref } from 'vue';
 
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
+
+
+const {
+  username
+} = storeToRefs(permissions_store);
 
 const isOpen = ref(false);
 
@@ -37,7 +43,7 @@ function OnExitSubmit() {
             <!-- <img width="40" height="40" src="@/assets/icon/77ddd4b13964c93ab31bc99566e58b14c4880c3a69e7bd87e0bfa4656ac274de_1.jpg" alt="icon"/> -->
         </div>
         <section class="dropdownMenu" v-if="isOpen">
-            <RouterLink @click="openClose" v-if="permissions_store.isLogged" to="/account">
+            <RouterLink @click="openClose" v-if="permissions_store.isLogged" :to="'/personal/'+ username">
                 <p>
                     <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 448 512">
                         <path
@@ -61,6 +67,7 @@ function OnExitSubmit() {
 @import '@/assets/globals.scss';
 
 .DropdownWrapper__menu {
+    z-index: 1;
     position: relative;
 
     .dropDownMenuButton {
@@ -107,7 +114,7 @@ function OnExitSubmit() {
         background-color: antiquewhite;
         transition: 0.2s ease;
         padding: 0.75rem;
-        box-shadow: 0 0 10px 5px rgba(221, 221, 221, 1);
+        box-shadow: 0 0 15px 15px rgba(114, 114, 114, 0.239);
 
         p {
             cursor: pointer;

@@ -15,7 +15,7 @@ function OnExitSubmit() {
 
 const itemLink = [
     { name: "Анкета(Создание)", path: "/questionnaire" },
-    { name: "Мероприятие (создать)", path: "/event-create" },
+    // { name: "Мероприятие (создать)", path: "/event-create" },
     { name: "Мероприятия", path: "/news" },
     { name: "Коллективы", path: "/teams" },
     { name: "Статистика", path: "/statistic" },
@@ -43,21 +43,6 @@ const itemLink = [
             <nav v-if="can('can view directions')" class="link-item">
                 <RouterLink class="link" active-class="active" :to="'/directions'">
                     <p>Направления</p>
-                </RouterLink>
-            </nav>
-
-
-            <!-- Руководитель за ИРНИТУ -->
-            <nav v-if="can('can view reports directions')" class="link-item">
-                <RouterLink class="link" active-class="active" :to="'/reports-university'">
-                    <p>Отчеты ИРНИТУ</p>
-                </RouterLink>
-            </nav>
-
-            <!-- Руководитель за НАПРАВЛЕНИЯ -->
-            <nav v-if="can('can view reports teams')" class="link-item">
-                <RouterLink class="link" active-class="active" :to="'/reports-directions'">
-                    <p>Отчеты НАПРАВЛЕНИЯ</p>
                 </RouterLink>
             </nav>
         </div>

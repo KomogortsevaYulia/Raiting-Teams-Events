@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus,Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus, Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -26,23 +26,23 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async findAll(@Query() params: any) {
 
-    let limit:number = params.limit
-    let fullname:string = params.fullname
-    let email:string = params.email
+    let limit: number = params.limit
+    let fullname: string = params.fullname
+    let email: string = params.email
 
     // console.log(" email " + params.fullname) 
     let users
-    if(fullname || email){
+    if (fullname || email) {
       // console.log("name")
       users = this.usersService.findByName(limit, fullname, email);
-    }else{
+    } else {
       // console.log("findAll")
-      users = this.usersService.findAll(limit);
+      users = this.usersService.findAllWithLimit(limit);
     }
     return users
   }
 
-  // @Get(':id')
+  // @Get('id/:id')
   // @ApiOperation({ summary: "Получение пользователя" })
   // @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
   // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
@@ -66,8 +66,11 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @UsePipes(new ValidationPipe())
   @Post()
-  async create(@Request() req, @Body('user') userData: CreateUserDto) {
-
+  async create(@Request() req) {
+    const userData = new CreateUserDto();
+    userData.username = req.body.user.username;
+    userData.password = req.body.user.password;
+    userData.email = req.body.user.email;
     const user = await this.usersService.create(userData)
     if (user) {
       req.session.user_id = user.id;

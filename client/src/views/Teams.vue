@@ -1,16 +1,18 @@
 <script setup lang="ts">
 
-import Filter from '@/components/Filter.vue';
+import Filter from '@/components/WIP.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
-import { useTeamStore } from "../store/team_store"
+import { useTeamStore } from "../store/team_store";
+import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 
 const can = permissions_store.can;
+const menu_items = teamStore.menu_items;
 
 const show = ref(true);
 const data = ref()
@@ -37,61 +39,49 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <a @click="show = true" :class="{ active: show }">Общий список</a>
-      <!-- <a @click="show = false" :class="{ active: !show }">Создать коллектив</a> -->
-      <ModalCreateTeam />
+      <div v-if="can('can create teams')" class="mt-4">
+        <ModalCreateTeam />
+      </div>
+      <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
+          <div v-if="can('can create teams')" class="mt-4">
+            <ModalCreateTeam />
+          </div> -->
     </div>
 
     <!-- Обертка карточек коллективов -->
     <div v-if="show" class="wrapper-team__content">
 
       <!-- Фильтр -->
-    <div class="content-filter">
-      <Filter />
-    </div>
+      <CheckBox_Menu :menu_items="menu_items" />
 
-    <!-- Обертка контента с карточками -->
-    <div class="content-cards">
+      <!-- Обертка контента с карточками -->
+      <div class="content-cards">
 
-      <!-- Инпут с поиском -->
-      <div class="cards__search">
-        <input placeholder="Начните поиск..." />
-        <div class="search-toggle">
-          <Switch_toggle />
-        </div>
+        <!-- Инпут с поиском -->
+        <div class="cards__search">
+          <input placeholder="Начните поиск..." />
+          <div class="search-toggle">
+            <Switch_toggle />
+          </div>
         </div>
         <!--  {{ data }}-->
 
 
         <!-- Сами карточки -->
-        <div :class="[teamStore.layout === true ? 'wrapper-grid' : 'wrapper-list']">
+        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
           <div v-for="team in data" class="cardEvent">
-            <div class="imgEvent">
-              <div></div>
-              <p>{{ team.title }}</p>
-              <img :src="team.image">
+            <div class="card__banner">
+              <img :src="team.image" class="d-block" style="width: 100%;object-fit: cover;">
             </div>
-            <div class="wrapperContent">
-              <div>
-                <p>{{ team.description }}</p>
-                <!-- <p class="date">06.04.2021</p> -->
+            <router-link :to="'/team/' + team.id">
+              <div class="wrapperContent">
+                <div class="card__event-name">{{ team.title }}</div>
+                <div class="navigation-tags">
+                  <div v-for="el in team.tags" class="teg">{{ el }}</div>
+                </div>
+                <p>{{ team.short_description }}</p>
               </div>
-            </div>
-            <!-- <img class="imgTeams" width="250" height="145" :src="team.image"> -->
-            <!-- <div class="wrapper-content">
-                                                <a>{{ team.title }}</a>
-                                                <p>{{ team.description }}</p>
-                                                <p>Руководители:
-                                                  <span v-for="leader in (team.functions[0]).userFunctions">
-                                                    {{ leader.user.fullname }}<br>
-                                                  </span>
-                                                </p>
-                                                <div class="btn">
-                                                  <RouterLink to="/team-page">
-                                                    <button>Подробнее</button>
-                                                  </RouterLink>
-                                                </div>
-                                              </div> -->
+            </router-link>
           </div>
         </div>
       </div>
@@ -101,7 +91,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 </template>
 
 <style lang="scss" scoped>
-// @import '../assets/globals.scss';
+@import '@/assets/globals.scss';
 
 .wrapper-team {
   display: block;
@@ -167,29 +157,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .search-toggle {
           display: flex;
           padding-left: 1rem;
-          // align-items: center;
-          // justify-content: center;
-
-          // img {
-          //   cursor: pointer;
-          //   padding-right: 1rem;
-          //   transition: 0.3s;
-          //   height: 28px;
-          //   width: 28px;
-          //   opacity: 0.5;
-
-          //   &:hover {
-          //     opacity: 1;
-          //   }
-
-          //   &:active {
-          //     opacity: 0.5;
-          //   }
-          // }
-
-          // .active {
-          //   opacity: 1;
-          // }
         }
       }
 
@@ -200,13 +167,30 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .cardEvent {
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
-          height: 350px;
+          height: 350px auto;
           margin: 0 1rem 1rem 0;
           flex-wrap: wrap;
           overflow: hidden;
           border-radius: 5px;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           transition: all .5s;
+
+          a {
+            color: #000;
+          }
+        }
+
+        .card__banner {
+          height: 15rem;
+          max-width: 15rem;
+          width: 100%;
+          max-width: 100%;
+          flex-wrap: wrap;
+          border-radius: 5px 0 0 0;
+          width: 100%;
+          overflow: hidden;
+          background-position: center;
+          display: flex;
         }
 
         .cardEvent:hover {
@@ -242,6 +226,25 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
+
+          .navigation-tags {
+            flex-wrap: wrap;
+            padding-bottom: 1rem;
+            display: flex;
+
+            .teg {
+              margin-right: 1rem;
+              margin-bottom: 1rem;
+              background-color: #B7EAED;
+              padding: 0.2rem 1rem;
+              color: #348498;
+              border-radius: 5px;
+            }
+
+            .teg:last-child {
+              margin-bottom: 0;
+            }
+          }
 
           .date {
             text-align: end;
@@ -253,19 +256,34 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
       }
 
       .wrapper-list {
-        display: flex;
-        flex-wrap: wrap;
+        padding-top: 2rem;
 
         .cardEvent {
+          width: 100%;
+          background-color: #fff;
+          height: 15rem;
+          margin-bottom: 1rem;
+          border: none;
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-          width: 830px;
-          height: 350px;
-          margin: 0 1rem 1rem 0;
-          flex-wrap: wrap;
-          overflow: hidden;
-          border-radius: 5px;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          display: flex;
+          flex-direction: row;
           transition: all .5s;
+
+          .card__banner {
+            height: 100%;
+            width: 15rem;
+            max-width: 15rem;
+            border-radius: 5px 0 0 0;
+            width: 100%;
+            overflow: hidden;
+            background-position: center;
+            display: flex;
+          }
+        }
+
+        .card__event-name {
+          color: #373737;
+          font-size: 1.2rem;
         }
 
         .cardEvent:hover {
@@ -273,34 +291,26 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
         }
 
-        .imgEvent {
-          position: relative;
-          height: 13rem;
-          overflow: hidden;
+        .wrapperContent {
+          padding: 2rem;
 
           p {
-            font-weight: 100;
-            font-size: 1.4rem;
-            margin: 4rem 0 0 1rem;
-            color: #fff;
-            position: absolute;
+            color: #000;
           }
 
-          div {
-            width: 100%;
-            height: 13rem;
-            background-color: rgba(0, 0, 0, 0.295);
-            position: absolute;
+          .navigation-tags {
+            margin-top: 0.5rem;
+            padding-bottom: 1rem;
+            display: flex;
+
+            .teg {
+              margin-right: 1rem;
+              background-color: #B7EAED;
+              padding: 0.2rem 1rem;
+              color: #348498;
+              border-radius: 5px;
+            }
           }
-
-          img {
-            width: 100%;
-          }
-
-        }
-
-        .wrapperContent {
-          padding: 1rem;
 
           .date {
             text-align: end;

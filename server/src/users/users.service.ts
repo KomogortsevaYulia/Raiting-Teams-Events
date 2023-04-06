@@ -14,6 +14,7 @@ import { SECRET } from '../config';
 import { LoginUserDto } from './dto/login-user.dto';
 import * as argon2 from 'argon2';
 import { validate } from 'class-validator';
+import { Team } from 'src/teams/entities/team.entity';
 const jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -26,6 +27,8 @@ export class UsersService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
+    @InjectRepository(Team)
+    private readonly teamsRepository: Repository<Team>,
   ) { }
 
   async findByName(limit: number, name: string, email: string) {
@@ -42,17 +45,19 @@ export class UsersService {
     })
 
   }
-  async findAll(limit: number): Promise<User[]> {
+
+  async findAllWithLimit(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });
   }
 
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.createQueryBuilder("users").getMany();
+  }
 
   // modernize function user if user not exist
   // @HttpCode(400)
   // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-  //   //вот зачем нужен left join в случае, если у юзера нет функций при иннер джоин,
-  //   //то в запросе выдаст, что юзера не существует, а так он его выдаст, если тот есть  
-
+    
   //   // if(isNaN(id)){
   //   //   throw new HttpException("такого юзера не существует " + id, 400)
   //   // }
@@ -138,11 +143,11 @@ export class UsersService {
   }
 
   async findById(id: number): Promise<User> {
-     const user = await this.usersRepository.
+    const user = await this.usersRepository.
       createQueryBuilder("users")
       .where("users.id = :id", { id })
       .getOne();
-      
+
     if (!user) {
       const errors = { User: 'Not found' };
       throw new HttpException({ errors }, 401);
