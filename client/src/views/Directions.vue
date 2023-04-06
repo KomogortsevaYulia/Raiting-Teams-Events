@@ -55,9 +55,8 @@ itemList.forEach((item, index) => {
                 </div>
             </form>
         </div>
-
+        <WIP />
     </div>
-    <WIP />
 </template>
 
 <style lang="scss" scoped>

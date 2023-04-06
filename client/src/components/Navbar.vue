@@ -17,7 +17,7 @@ const itemLink = [
     // { name: "Анкета(Создание)", path: "/questionnaire" },
     { name: "Мероприятия", path: "/news" },
     { name: "Коллективы", path: "/teams" },
-    { name: "Статистика", path: "/statistic" },
+    // { name: "Статистика", path: "/statistic" },
 ]
 </script>
 
@@ -38,6 +38,11 @@ const itemLink = [
                 </RouterLink>
             </nav>
 
+            <nav v-if="can('can view directions')" class="link-item">
+                <RouterLink class="link" active-class="active" :to="'/statistic'">
+                    <p>Статистика</p>
+                </RouterLink>
+            </nav>
 
             <nav v-if="can('can view directions')" class="link-item">
                 <RouterLink class="link" active-class="active" :to="'/directions'">
