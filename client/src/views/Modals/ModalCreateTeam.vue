@@ -78,7 +78,7 @@ async function createTeam() {
 
 <template>
   <!-- Button trigger modal -->
-  <button type="button" class="btn-custom-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Создать коллектив
   </button>
 
@@ -140,7 +140,8 @@ async function createTeam() {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import '@/assets/globals.scss';
 @import 'vue-select/dist/vue-select.css';
 
 .wrapper-team__create {
