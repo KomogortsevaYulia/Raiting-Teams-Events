@@ -7,6 +7,7 @@ import { Event } from './entities/event.entity';
 import { Direction, Level } from './enums/enums';
 import { Type } from 'class-transformer';
 
+
 @ApiTags('events')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('events')
 export class EventsController {

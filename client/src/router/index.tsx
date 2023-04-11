@@ -60,6 +60,12 @@ const router = createRouter({
       meta: {}
     },
     {
+      path: "/event-create",
+      // @ts-ignore
+      component: () => import('@/views/EventCreate.vue'),
+      meta: {}
+    },
+    {
       // Страница с личным кабинетом
       path: "/account",
       // @ts-ignore
@@ -68,41 +74,24 @@ const router = createRouter({
         // isLoged: true
       }
     },
-    // {
-    //   // Отвественный ИРНИТУ
-    //   path: "/reports-university",
-    //   // @ts-ignore
-    //   component: () => import('@/views/reportsView/University_reports.vue'),
-    //   meta: {
-    //     permission: 'can view reports directions'
-    //   }
-    // },
-    // {
-    //   // Отвественный НАПРАВЛЕНИЯ
-    //   path: "/reports-directions",
-    //   // @ts-ignore
-    //   component: () => import('@/views/reportsView/Directions_reports.vue'),
-    //   meta: {
-    //     permission: 'can view reports teams'
-    //   }
-    // },
     {
-      path: "/my",
+      path: "/personal/:username",
       name: "Personal",
       // @ts-ignore
       component: () => import('@/views/Personal.vue'),
       meta: {
         requiresAuth: true
       }
-    },{
-      path: "/questionnaire",
-      name: "Questionnaire",
-      // @ts-ignore
-      component: () => import('@/views/Questionnaire.vue'),
-      meta: {
-        requiresAuth: true
-      }
-    }
+    },
+    // {
+    //   path: "/questionnaire",
+    //   name: "Questionnaire",
+    //   // @ts-ignore
+    //   component: () => import('@/views/Questionnaire.vue'),
+    //   meta: {
+    //     requiresAuth: true
+    //   }
+    // }
   ],
 });
 

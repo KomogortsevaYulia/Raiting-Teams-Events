@@ -5,19 +5,15 @@ import User_Profile from '@/components/User_profile.vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
-
 const accountStatus = ref(permissions_store.isLogged);
-
 function OnExitSubmit() {
     permissions_store.logout()
 }
-
-
 const itemLink = [
-    { name: "Анкета(Создание)", path: "/questionnaire" },
+    // { name: "Анкета(Создание)", path: "/questionnaire" },
     { name: "Мероприятия", path: "/news" },
     { name: "Коллективы", path: "/teams" },
-    { name: "Статистика", path: "/statistic" },
+    // { name: "Статистика", path: "/statistic" },
 ]
 </script>
 
@@ -26,7 +22,7 @@ const itemLink = [
         <!-- Иконка политеха -->
         <nav class="navbar__item-logo">
             <RouterLink to="/">
-                <img src="@/assets/icon/logo.svg" alt="logo">
+                <img src="@/assets/icon/logo.svg" alt="logo" class="logo">
             </RouterLink>
         </nav>
 
@@ -38,25 +34,15 @@ const itemLink = [
                 </RouterLink>
             </nav>
 
+            <nav v-if="can('can view directions')" class="link-item">
+                <RouterLink class="link" active-class="active" :to="'/statistic'">
+                    <p>Статистика</p>
+                </RouterLink>
+            </nav>
 
             <nav v-if="can('can view directions')" class="link-item">
                 <RouterLink class="link" active-class="active" :to="'/directions'">
                     <p>Направления</p>
-                </RouterLink>
-            </nav>
-
-
-            <!-- Руководитель за ИРНИТУ -->
-            <nav v-if="can('can view reports directions')" class="link-item">
-                <RouterLink class="link" active-class="active" :to="'/reports-university'">
-                    <p>Отчеты ИРНИТУ</p>
-                </RouterLink>
-            </nav>
-
-            <!-- Руководитель за НАПРАВЛЕНИЯ -->
-            <nav v-if="can('can view reports teams')" class="link-item">
-                <RouterLink class="link" active-class="active" :to="'/reports-directions'">
-                    <p>Отчеты НАПРАВЛЕНИЯ</p>
                 </RouterLink>
             </nav>
         </div>
@@ -74,30 +60,24 @@ const itemLink = [
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
-
 // Блок
 .navbar-wrapper {
     display: flex;
-    padding: 1rem;
     position: relative;
     align-items: center;
-
     // Элемент иконки
     .navbar__item-logo {
         img {
-            height: 64px;
-            width: 64px;
+            height: 40px;
+            width: 40px;
         }
     }
-
     // Элементы навигации
     .navbar__item-link {
         margin: 0 auto 0 auto;
         display: flex;
-
         .link-item {
             padding: 1rem;
-
             p {
                 cursor: pointer;
                 height: 2rem;
@@ -107,13 +87,11 @@ const itemLink = [
                 font-weight: 600;
                 margin: 0;
                 font-family: 'Montserrat', sans-serif;
-
                 &:hover {
                     color: var(--main-color);
                 }
             }
         }
-
         .active {
             p {
                 color: var(--main-color);
@@ -121,7 +99,6 @@ const itemLink = [
             }
         }
     }
-
     // Элемент кнопки "Вход"
     .navbar__item-login {
         .login-button {
@@ -129,17 +106,14 @@ const itemLink = [
             border-radius: 10px;
             background-color: var(--main-color);
             color: #fff;
-
             &:hover {
                 background: var(--main-color-hover);
                 transition: 0.3s;
             }
-
             &:focus {
                 outline: none;
                 box-shadow: 0 0 0 2px #ff746f;
             }
-
             &:active {
                 transition: 0.3s;
                 background-color: #fd524c;

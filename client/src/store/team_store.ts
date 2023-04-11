@@ -19,7 +19,7 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
     async function fetchTeamsOfDirection(direction: number = -1, type_team = "teams"): Promise<any> {
-        const res = await axios.get('/api/teams/direction', { params: { id_parent: direction,  type_team: type_team } })
+        const res = await axios.get('/api/teams/direction', { params: { id_parent: direction, type_team: type_team } })
         const data = res.data
 
         return data
@@ -32,8 +32,7 @@ export const useTeamStore = defineStore("teams", () => {
                 // Умные действия
             })
     }
-    async function fetchTeam(): Promise<any> {
-        const id = 6;
+    async function fetchTeam(id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
         console.log(data)
@@ -69,9 +68,18 @@ export const useTeamStore = defineStore("teams", () => {
 
     const menu_items = [
         {
-            id: 1, title: 'Влад', hidden: true, menu_types: [
-                { id: 1, title: 'Придумай' },
-                { id: 2, title: 'Теги' },
+            id: 1, title: 'Набор', hidden: true, menu_types: [
+                { id: 1, title: 'Набор открыт' },
+                { id: 2, title: 'Набор закрыт' },
+            ]
+        },
+        {
+            id: 2, title: 'Вид деятельности', hidden: true, menu_types: [
+                { id: 1, title: 'Научная деятельность' },
+                { id: 2, title: 'Учебная деятельность' },
+                { id: 3, title: 'Научная деятельность' },
+                { id: 4, title: 'Спортивная деятельность' },
+                { id: 5, title: 'Культурно-творческая деятельность' },
             ]
         },
     ]
@@ -83,6 +91,7 @@ export const useTeamStore = defineStore("teams", () => {
         createTeam,
         setLayout,
         fetchTeamsOfDirection,
+        fetchTeam,
 
         layout,
         menu_items
