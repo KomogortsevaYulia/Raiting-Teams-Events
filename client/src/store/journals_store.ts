@@ -11,6 +11,7 @@ export const useJournalStore = defineStore("journals", () => {
         return data
       }
     
+
         return{
             fetchJournals
         }

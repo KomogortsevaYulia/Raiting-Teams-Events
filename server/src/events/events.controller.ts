@@ -39,11 +39,7 @@ export class EventsController {
     return this.eventsService.findAllEvents(type, level, direction, dStart, dEnd);
   }
 
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.eventsService.findOne(+id);
-  // }
+  
   @Get('/external/:id')
   findOne(@Param('id') id: string) {
     return this.eventsService.findOne(+id);
@@ -55,6 +51,14 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAllJournals(@Query() params) {
     return this.eventsService.findAllJournals(params.team_id);
+  }
+
+  @ApiOperation({ summary: "Получение мероприятия" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  @Get('/:id')
+  find(@Param('id') id: number) {
+    return this.eventsService.findOne(id);
   }
 
   // @Patch(':id')

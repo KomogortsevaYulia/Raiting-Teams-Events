@@ -85,6 +85,8 @@ export class EventsService {
     .createQueryBuilder("journals")
     .leftJoin("journals.team", "team")
     .addSelect("team.id")
+    .leftJoin("journals.event", "event")
+    .addSelect("event.id")
 
     buildQuery = team > 0 ? buildQuery
       .andWhere("journals.team_id = :team", { team: team }) : buildQuery

@@ -9,6 +9,14 @@ export const useEventStore = defineStore("events", () => {
 
     return data
   }
+
+  async function fetchEventById(id:number):Promise<any> {
+    const res = await axios.get('api/events/' + id)
+    const data = res.data
+
+    return data
+  }
+
     const menu_items = [
         {id: 1, title: 'Формат проведения', menu_types:[
           {id: 1, title:'Online'},
@@ -44,6 +52,7 @@ export const useEventStore = defineStore("events", () => {
 
     return{
         menu_items,
-        fetchEvents
+        fetchEvents,
+        fetchEventById
     }
 })
