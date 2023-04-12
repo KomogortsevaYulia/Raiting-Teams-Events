@@ -11,14 +11,16 @@ GET http://localhost:3000/api/users?limit=4&email=mail
 
 ###
 # EVENTS--------------------------------------------------------
-GET http://localhost:3000/api/events?direction=Научная деятельность
+GET http://localhost:3000/api/events?direction=1
 
 ###
-GET http://localhost:3000/api/events/journal?team_id=7
+GET http://localhost:3000/api/events/20
 
 
-#  GET http://localhost:3000/api/events?dateStart=2023-04-26&dateEnd=2024-01-26
 
+###
+# journals
+GET http://localhost:3000/api/events/journal
 
 
 
@@ -115,7 +117,7 @@ content-type: application/json
 
 {
     "password":123,
-    "email": "admin@mail.ru"
+    "username": "bossTeam"
 }
 
 

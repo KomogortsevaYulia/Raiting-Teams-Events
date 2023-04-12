@@ -8,6 +8,8 @@ import { useTeamStore } from '@/store/team_store';
 import { useJournalStore } from '@/store/journals_store';
 import _ from 'lodash';
 import { useEventStore } from '@/store/events_store';
+import { Direction } from '@/store/enums/enum_event';
+
 
 // store
 const teamStore = useTeamStore();
@@ -17,8 +19,8 @@ const eventStore = useEventStore();
 // константные значения
 
 // direction
-const directions = [{ id: 0, data: 'ВСЕ' }, { id: 1, data: 'НИД' }, { id: 2, data: 'КТД' },
-{ id: 3, data: 'СД' }, { id: 4, data: 'ОД' }, { id: 5, data: 'УД' }]
+const directions = [{ id: 0, data: 'ВСЕ', fullname: Direction.ALL }, { id: 1, data: 'НИД', fullname: Direction.NID}, { id: 2, data: 'КТД',  fullname: Direction.KTD },
+{ id: 3, data: 'СД', fullname: Direction.SD }, { id: 4, data: 'ОД', fullname: Direction.OD }, { id: 5, data: 'УД', fullname: Direction.UD }]
 
 // grdphics
 const typeGraphics = [{ id: 0, data: 'Статистика дат проведения мероприятий' },
@@ -82,14 +84,14 @@ const show = ref(true);
 
 
 // dropdowns-----------------------------------------------------------
-const teamSelected = ref({ name: "Все коллективы", id: 0 })
+const teamSelected = ref({ name: "Все", id: 0 })
 const foundTeams = ref()
 const foundJournals = ref()
 const foundEvents = ref()
 
 
 // { id: number, shortname: string }
-const directionsFromDatabase = ref()           //дата
+const directionsFromDatabase = ref([{ id: 0, shortname: "Все" }])           //дата
 
 onBeforeMount(async () => {
 
@@ -97,8 +99,12 @@ onBeforeMount(async () => {
   getTeams(-1)
 })
 
+// если выбран коллектив то получить статистику с мероприятий
 watch(() => teamSelected.value, () => {
-  getJournals(teamSelected.value.id)
+  // если в поле для коллектива выбрано "все", то взять все мероприятия по этому направлению
+  if (teamSelected.value.id == 0) getEvents()
+  //  иначе идем в журнал и смотрим по ид коллетива
+  else getEventsViaJournals(teamSelected.value.id)
 })
 
 // получить идшники направлений с бд, чтобы по этим идшникам найти коллективвы,
@@ -113,7 +119,7 @@ async function getDirections() {
     // console.log("directions " + directions[i].shortname)
     let direction = directions[i]
 
-    arrayData[i] = { id: direction.id, shortname: direction.shortname };
+    arrayData[i] = { id: direction.id, shortname: direction.shortname};
   }
 
   directionsFromDatabase.value = arrayData
@@ -150,7 +156,7 @@ async function getTeams(directionId: number) {
 
   let arrayData = []
 
-  arrayData[0] = { name: "Все коллективы", id: 0 }
+  arrayData[0] = { name: "Все", id: 0 }
   teamSelected.value = arrayData[0]
 
   for (let i = 0; i < teams.length; i++) {
@@ -178,7 +184,7 @@ async function getTeams(directionId: number) {
 // }
 
 
-async function getJournals(teamId: number) {
+async function getEventsViaJournals(teamId: number) {
 
   let data = await journalStore.fetchJournals(teamId)
 
@@ -195,7 +201,7 @@ async function getJournals(teamId: number) {
     console.log("jrn  " + eventId)
 
     let event = await eventStore.fetchEventById(eventId)
-    arrayData[i] = { id: event.dateStart }
+    arrayData[i] = { id: event.id }
 
 
     // arrayData[i + 1] = { id: journal.id };
@@ -205,6 +211,29 @@ async function getJournals(teamId: number) {
 
   console.log("journal" + arrayData[0].id)
 }
+
+
+
+// получить мероприятия
+async function getEvents() {
+
+  let directionName = Direction.ALL
+  directionName = directions[selectedDirection.value].fullname
+
+  let events = await eventStore.getEventsByDirection(directionName)
+
+  let arrayData = []
+
+  for (let i = 0; i < events.length; i++) {
+    let event = events[i]
+    arrayData[i] = { id: event.id, dateStart: event.dateStart }
+  }
+
+  foundEvents.value = arrayData
+  console.log("evnt " + foundEvents.value)
+}
+
+
 
 
 function changeDirection(direction: any) {
@@ -277,11 +306,11 @@ function changeDirection(direction: any) {
     <div class="row">
       <!-- date -->
       <!-- <div class="col-auto  d-flex my-1">
-                     events_or_teams
-                      <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-                        <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
-                      </select>
-                    </div> -->
+                                 events_or_teams
+                                  <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
+                                    <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+                                  </select>
+                                </div> -->
       <div class="col-auto  d-flex my-1">
         <div class="mb-3">
           <label class="form-label">коллектив</label>
@@ -366,7 +395,7 @@ function changeDirection(direction: any) {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                                    title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                                                                title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
@@ -374,7 +403,7 @@ function changeDirection(direction: any) {
 
               <EPie :data="dataEventsTwoType" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                                    title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                                                title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -393,7 +422,7 @@ function changeDirection(direction: any) {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                    title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                                                title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>
