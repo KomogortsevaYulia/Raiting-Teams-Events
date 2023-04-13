@@ -39,9 +39,9 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <div v-if="can('can create teams')" class="mt-4">
+      <!-- <div v-if="can('can create teams')" class="mt-4"> -->
         <ModalCreateTeam />
-      </div>
+      <!-- </div> -->
       <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
                 <div v-if="can('can create teams')" class="mt-4">
                   <ModalCreateTeam />

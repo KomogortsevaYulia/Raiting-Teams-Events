@@ -9,6 +9,8 @@ import { useJournalStore } from '@/store/journals_store';
 import _ from 'lodash';
 import { useEventStore } from '@/store/events_store';
 import { Direction } from '@/store/enums/enum_event';
+import { useChartStore } from './chart_logic';
+import { Type } from '@/store/enums/enum_event';
 
 
 // store
@@ -16,10 +18,12 @@ const teamStore = useTeamStore();
 const journalStore = useJournalStore();
 const eventStore = useEventStore();
 
+const chartStore = useChartStore();
+
 // константные значения
 
 // direction
-const directions = [{ id: 0, data: 'ВСЕ', fullname: Direction.ALL }, { id: 1, data: 'НИД', fullname: Direction.NID}, { id: 2, data: 'КТД',  fullname: Direction.KTD },
+const directions = [{ id: 0, data: 'ВСЕ', fullname: Direction.ALL }, { id: 1, data: 'НИД', fullname: Direction.NID }, { id: 2, data: 'КТД', fullname: Direction.KTD },
 { id: 3, data: 'СД', fullname: Direction.SD }, { id: 4, data: 'ОД', fullname: Direction.OD }, { id: 5, data: 'УД', fullname: Direction.UD }]
 
 // grdphics
@@ -73,9 +77,9 @@ const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом',
 const dataTopTeams = [2, 5, 8, 8, 9]
 
 
-const dataEventsTwoType = [
-  { value: 10, name: 'Внешние' },
-  { value: 75, name: 'Внутренние' },]
+let dataEventsInnerOuter = [
+  { value: 0, name: Type.INSIDE },
+  { value: 0, name: Type.OUTSIDE },]
 
 
 const show = ref(true);
@@ -107,6 +111,28 @@ watch(() => teamSelected.value, () => {
   else getEventsViaJournals(teamSelected.value.id)
 })
 
+
+watch(() => foundEvents.value, () => {
+  updateCharts()
+})
+
+
+async function updateCharts(){
+
+ 
+  if(statisticDateEvent.value){
+    dataEventsInnerOuter =  chartStore.countEventsInnerOuter(foundEvents.value)
+
+    console.log(dataEventsInnerOuter)
+  }
+     
+      //statisticTeamsAndEvent.value = !statisticTeamsAndEvent.value
+     
+     // defaultStatistic.value = !defaultStatistic.value
+    
+}
+
+
 // получить идшники направлений с бд, чтобы по этим идшникам найти коллективвы,
 //которые этим направления принадлежат
 async function getDirections() {
@@ -119,7 +145,7 @@ async function getDirections() {
     // console.log("directions " + directions[i].shortname)
     let direction = directions[i]
 
-    arrayData[i] = { id: direction.id, shortname: direction.shortname};
+    arrayData[i] = { id: direction.id, shortname: direction.shortname };
   }
 
   directionsFromDatabase.value = arrayData
@@ -201,7 +227,7 @@ async function getEventsViaJournals(teamId: number) {
     console.log("jrn  " + eventId)
 
     let event = await eventStore.fetchEventById(eventId)
-    arrayData[i] = { id: event.id }
+    arrayData[i] = event
 
 
     // arrayData[i + 1] = { id: journal.id };
@@ -222,14 +248,14 @@ async function getEvents() {
 
   let events = await eventStore.getEventsByDirection(directionName)
 
-  let arrayData = []
+  // let arrayData = []
 
-  for (let i = 0; i < events.length; i++) {
-    let event = events[i]
-    arrayData[i] = { id: event.id, dateStart: event.dateStart }
-  }
+  // for (let i = 0; i < events.length; i++) {
+  //   let event = events[i]
+  //   arrayData[i] = { id: event.id, dateStart: event.dateStart }
+  // }
 
-  foundEvents.value = arrayData
+  foundEvents.value = events
   console.log("evnt " + foundEvents.value)
 }
 
@@ -306,11 +332,11 @@ function changeDirection(direction: any) {
     <div class="row">
       <!-- date -->
       <!-- <div class="col-auto  d-flex my-1">
-                                 events_or_teams
-                                  <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-                                    <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
-                                  </select>
-                                </div> -->
+                                   events_or_teams
+                                    <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
+                                      <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+                                    </select>
+                                  </div> -->
       <div class="col-auto  d-flex my-1">
         <div class="mb-3">
           <label class="form-label">коллектив</label>
@@ -395,15 +421,15 @@ function changeDirection(direction: any) {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                                                title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                                                                  title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
               <h6>Количество внутренних/внешних мероприятий</h6>
 
-              <EPie :data="dataEventsTwoType" />
+              <EPie :data="dataEventsInnerOuter" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                                                title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                                                  title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -422,7 +448,7 @@ function changeDirection(direction: any) {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                                                  title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>
