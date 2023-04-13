@@ -84,19 +84,17 @@ const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом',
 ]
 const dataTopTeams = [2, 5, 8, 8, 9]
 
+// data for graphics---------------------------------------------------
 
+//данные для графика внутренние/внешние мероприятия
 let dataEventsInnerOuter = ref([
   { value: 0, name: Type.INSIDE },
   { value: 0, name: Type.OUTSIDE },])
 
 
-const show = ref(true)
-
-
 const colorfulBlocksData = ref([
   { value: 0, name: "Число мероприятий" },
   { value: 0, name: "Число коллективов" },])
-
 
 // dropdowns-----------------------------------------------------------
 const teamSelected = ref({ name: "Все", id: 0 })
@@ -189,13 +187,14 @@ async function getTeams(directionId: number) {
 
   // console.log("selectedDirection.value " + selectedDirection.value+ " " + data)
   let teams = data[0]
+  colorfulBlocksData.value[0].value = data[1]
   let arrayData = []
 
   arrayData[0] = { name: "Все", id: 0 }
   teamSelected.value = arrayData[0]
 
- 
-  for (let i = 0; i < teams.length-1; i++) {
+
+  for (let i = 0; i < teams.length - 1; i++) {
     let team = teams[i]
     // console.log("team " + team)
     arrayData[i + 1] = { name: team.title, id: team.id };
@@ -257,14 +256,8 @@ async function getEvents() {
   directionName = directions[selectedDirection.value].fullname
 
   let data = await eventStore.getEventsByDirection(directionName)
-
   let events = data[0]
-  // let arrayData = []
-
-  // for (let i = 0; i < events.length; i++) {
-  //   let event = events[i]
-  //   arrayData[i] = { id: event.id, dateStart: event.dateStart }
-  // }
+  colorfulBlocksData.value[1].value = data[1] 
 
   foundEvents.value = events
   console.log("evnt " + foundEvents.value)
@@ -346,11 +339,11 @@ function changeDirection(direction: any) {
     <div class="row">
       <!-- date -->
       <!-- <div class="col-auto  d-flex my-1">
-                                        events_or_teams
-                                         <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-                                           <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
-                                         </select>
-                                       </div> -->
+                                              events_or_teams
+                                               <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
+                                                 <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+                                               </select>
+                                             </div> -->
       <div class="col-auto  d-flex my-1">
         <div class="mb-3">
           <label class="form-label">коллектив</label>
@@ -379,9 +372,14 @@ function changeDirection(direction: any) {
 
     </div>
 
+
+
     <!--Отчетность  -->
     <DownloadReport :date="0" :event-or-team="eventOrTeams[selectedEvOrTeam]" :direction="directions[selectedDirection]"
       :teams="teamSelected.name" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
+    <!--Отчетность  -->
+
+
 
 
     <!-- Graphics -->
@@ -419,7 +417,7 @@ function changeDirection(direction: any) {
 
 
     <!-- statistic -->
-    <div v-if="show" class="col">
+    <div class="col">
 
       <!-- Мероприятия -->
       <div v-if="statisticDateEvent" class="block-content">
@@ -431,7 +429,7 @@ function changeDirection(direction: any) {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                                                       title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                                                                             title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
@@ -439,7 +437,7 @@ function changeDirection(direction: any) {
 
               <EPie :data="dataEventsInnerOuter" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                                                       title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                                                             title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -458,7 +456,7 @@ function changeDirection(direction: any) {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                       title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                                                             title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>
