@@ -39,33 +39,33 @@ async function fetchCurrentEvent() {
         <div class="eventInfo row">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" />
 
-            <!-- <h1 class="">{{ data.title }}</h1>
+            <h1 class="">{{ data.title }}</h1>
 
-            <div>
+            <div class="header__info">
                 <div class="navigation-tags">
-                <div v-for="(item, index) in data.tags" :key="index" class="teg">
-                    {{ item }}
+                    <div v-for="(item, index) in data.tags" :key="index" class="teg">
+                        {{ item }}
+                    </div>
                 </div>
-            </div>
-            <div class=" ">
-                <span class="" data-value="1">&#9733;</span>
-                <span class="star" data-value="2">&#9733;</span>
-                <span class="star" data-value="3">&#9733;</span>
-                <span class="star" data-value="4">&#9733;</span>
-                <span class="star" data-value="5">&#9733;</span>
-                <p class="">
-                    Нет оценок
-                </p>
-            </div>
+                <div class="rating">
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                    <p>
+                        Нет оценок
+                    </p>
+                </div>
             </div>
             <div class="line ">
 
-            </div> -->
+            </div>
             <div class="row ">
                 <div class="wrapperContent col align-items-center ps-0">
                     <div class="row mb-5">
                         <h2>О мероприятии</h2>
-                        <p>
+                        <p class="event__description">
                             {{ data.description }}
                         </p>
                     </div>
@@ -96,11 +96,9 @@ async function fetchCurrentEvent() {
                     <img :src="data.images" class="rounded mx-auto d-block">
                 </div>
 
-                <div class="row ">
-                    <div class="down d-flex align-items-center pb-5 pt-5 ">
-                        <button type="button" class="button ">Подать заявку</button>
-                        <p class="date">01.04.2021</p>
-                    </div>
+                <div class="down">
+                    <button type="button" class="button ">Подать заявку</button>
+                    <p class="date">01.04.2021</p>
                 </div>
             </div>
 
@@ -113,6 +111,18 @@ async function fetchCurrentEvent() {
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
 
+.header__info{
+    margin-left: 4rem;
+}
+
+.rating{
+    display: flex;
+    flex-direction: row;
+    
+    p{
+        margin-left: 1rem;
+    }
+}
 .full-width {
     position: relative;
     margin-top: -1.5em;
@@ -198,6 +208,7 @@ async function fetchCurrentEvent() {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     transition: all .5s;
     margin-top: 2rem;
+    margin-bottom: 5rem;
 
     h1 {
 
@@ -206,19 +217,21 @@ async function fetchCurrentEvent() {
         padding-top: 1em;
 
         margin-bottom: 1rem;
-        margin-inline-start: 3.8em;
-        margin-inline-end: 1.71rem;
+        margin-left: 4rem;
 
     }
-
+    .event__description{
+        text-align: justify;
+    }
 
 
 }
 
 .down {
-
     display: flex;
     justify-content: space-between;
+    padding: 2rem;
+    margin-bottom: 2rem;
 
     .date {
         text-align: end;
@@ -270,7 +283,7 @@ async function fetchCurrentEvent() {
 }
 
 .map {
-
+    margin-top: 1rem;
 
     img {
         width: 540px;
@@ -304,6 +317,7 @@ async function fetchCurrentEvent() {
 }
 
 .navigation-tags {
+    margin-bottom: 0.5rem;
     display: flex;
 
     .teg {
