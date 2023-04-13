@@ -1,8 +1,8 @@
 
-<script setup lang="ts">import axios from 'axios';
+<script setup lang="ts">
+import axios from 'axios';
 import { onBeforeMount, ref } from 'vue';
 import _ from 'lodash'
-import 'vue-select/dist/vue-select.css';
 
 // values from form
 const title = ref();
@@ -131,7 +131,9 @@ async function createTeam() {
 
 </template>
 
-<style>
+<style lang="scss" scoped>
+@import 'vue-select/dist/vue-select.css';
+
 .v-select {
     margin: 15px 0px;
 }
