@@ -187,7 +187,7 @@ async function getTeams(directionId: number) {
 
   // console.log("selectedDirection.value " + selectedDirection.value+ " " + data)
   let teams = data[0]
-  colorfulBlocksData.value[0].value = data[1]
+  colorfulBlocksData.value[1].value = data[1]
   let arrayData = []
 
   arrayData[0] = { name: "Все", id: 0 }
@@ -224,7 +224,8 @@ async function getEventsViaJournals(teamId: number) {
   let data = await journalStore.fetchJournals(teamId)
 
   //получить всех найденне journal
-  let journals = data
+  let journals = data[0]
+  colorfulBlocksData.value[0].value = data[1]
 
   let arrayData = []
 
@@ -257,7 +258,7 @@ async function getEvents() {
 
   let data = await eventStore.getEventsByDirection(directionName)
   let events = data[0]
-  colorfulBlocksData.value[1].value = data[1] 
+  colorfulBlocksData.value[0].value = data[1] 
 
   foundEvents.value = events
   console.log("evnt " + foundEvents.value)

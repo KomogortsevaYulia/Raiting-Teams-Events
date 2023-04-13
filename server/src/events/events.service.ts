@@ -79,7 +79,9 @@ export class EventsService {
 
 
   
-  findAllJournals(team:number = -1): Promise<Journal[]> {
+  // journals-------------------------------------------------------------------------
+  
+  findAllJournals(team:number = -1): Promise<[Journal[], number]> {
 
     let buildQuery = this.journalsRepository
     .createQueryBuilder("journals")
@@ -91,8 +93,11 @@ export class EventsService {
     buildQuery = team > 0 ? buildQuery
       .andWhere("journals.team_id = :team", { team: team }) : buildQuery
 
-    return buildQuery.getMany()
+    return buildQuery.getManyAndCount()
   }
+
+  // journals-------------------------------------------------------------------------
+
   
 }
 
