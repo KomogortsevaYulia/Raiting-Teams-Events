@@ -60,7 +60,7 @@ export class TeamsService {
 
     
   // get all teams of specific direction for statistic
-  async findAllTeamsOfDirection(type_team = "teams", id_parent=-1): Promise<Team[]> {
+  async findAllTeamsOfDirection(type_team = "teams", id_parent=-1): Promise<[Team[], number]> {
 
 
     let teams = this.teamsRepository
@@ -77,7 +77,7 @@ export class TeamsService {
         .addSelect(["id_parent.id", "id_parent.shortname"])
       }
       
-    return teams.getMany()
+    return teams.getManyAndCount()
   }
 
   //вывести команду

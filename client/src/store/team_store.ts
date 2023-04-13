@@ -18,10 +18,11 @@ export const useTeamStore = defineStore("teams", () => {
         return data
     }
 
+    // data will be returned as index 0 - is data, index 1 is count
     async function fetchTeamsOfDirection(direction: number = -1, type_team = "teams"): Promise<any> {
         const res = await axios.get('/api/teams/direction', { params: { id_parent: direction, type_team: type_team } })
         const data = res.data
-
+       
         return data
     }
 

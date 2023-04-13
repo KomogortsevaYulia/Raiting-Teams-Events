@@ -29,11 +29,11 @@ GET http://localhost:3000/api/events/journal
 # TEAMS--------------------------------------------------------
 # TEAMS--------------------------------------------------------
 # get all users from specific team
-GET http://localhost:3000/api/teams/direction?id_parent=3
+GET http://localhost:3000/api/teams/direction?id_parent=2
 
 ###
 # get team by id
-GET http://localhost:3000/api/teams/?id_parent=3
+GET http://localhost:3000/api/teams/?id_parent=2
 
 ###
 # select head user and teams

@@ -1,9 +1,17 @@
+
+<!-- в БД в teams->direction->shortname должны быть
+   (НИД, КТД, УД, СД, ОД) хардкод, а как по другому определить вид направления? -->
+
 <script setup lang="ts" >
 import { computed, onBeforeMount, onMounted, ref, watch, type Ref } from 'vue';
 import { DatePicker } from 'v-calendar';
 import DownloadReport from './DowloadReport.vue';
+
+// graphics
+import ColorfulBlocks from '@/components/Charts/ColorfulBlocks.vue';
 import EPie from '@/components/Charts/EPie.vue';
 import EBar from '@/components/Charts/EBar.vue';
+
 import { useTeamStore } from '@/store/team_store';
 import { useJournalStore } from '@/store/journals_store';
 import _ from 'lodash';
@@ -77,14 +85,17 @@ const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом',
 const dataTopTeams = [2, 5, 8, 8, 9]
 
 
-let dataEventsInnerOuter = [
+let dataEventsInnerOuter = ref([
   { value: 0, name: Type.INSIDE },
-  { value: 0, name: Type.OUTSIDE },]
+  { value: 0, name: Type.OUTSIDE },])
 
 
-const show = ref(true);
+const show = ref(true)
 
 
+const colorfulBlocksData = ref([
+  { value: 0, name: "Число мероприятий" },
+  { value: 0, name: "Число коллективов" },])
 
 
 // dropdowns-----------------------------------------------------------
@@ -117,19 +128,19 @@ watch(() => foundEvents.value, () => {
 })
 
 
-async function updateCharts(){
+async function updateCharts() {
 
- 
-  if(statisticDateEvent.value){
-    dataEventsInnerOuter =  chartStore.countEventsInnerOuter(foundEvents.value)
+
+  if (statisticDateEvent.value) {
+    dataEventsInnerOuter.value = chartStore.countEventsInnerOuter(foundEvents.value)
 
     console.log(dataEventsInnerOuter)
   }
-     
-      //statisticTeamsAndEvent.value = !statisticTeamsAndEvent.value
-     
-     // defaultStatistic.value = !defaultStatistic.value
-    
+
+  //statisticTeamsAndEvent.value = !statisticTeamsAndEvent.value
+
+  // defaultStatistic.value = !defaultStatistic.value
+
 }
 
 
@@ -137,8 +148,9 @@ async function updateCharts(){
 //которые этим направления принадлежат
 async function getDirections() {
 
-  let directions = await teamStore.fetchTeamsOfDirection(-1, "direction")
+  let data = await teamStore.fetchTeamsOfDirection(-1, "direction")
 
+  let directions = data[0]
   let arrayData = []
 
   for (let i = 0; i < directions.length; i++) {
@@ -173,21 +185,19 @@ function seeGraphics(typeGraphics: any) {
 // получить всех пользователей и выбрать из них нужных
 async function getTeams(directionId: number) {
 
-  let limit = 30
   let data = await teamStore.fetchTeamsOfDirection(directionId)
 
   // console.log("selectedDirection.value " + selectedDirection.value+ " " + data)
-  let teams = data
-
-
+  let teams = data[0]
   let arrayData = []
 
   arrayData[0] = { name: "Все", id: 0 }
   teamSelected.value = arrayData[0]
 
-  for (let i = 0; i < teams.length; i++) {
+ 
+  for (let i = 0; i < teams.length-1; i++) {
     let team = teams[i]
-
+    // console.log("team " + team)
     arrayData[i + 1] = { name: team.title, id: team.id };
   }
   foundTeams.value = arrayData
@@ -246,8 +256,9 @@ async function getEvents() {
   let directionName = Direction.ALL
   directionName = directions[selectedDirection.value].fullname
 
-  let events = await eventStore.getEventsByDirection(directionName)
+  let data = await eventStore.getEventsByDirection(directionName)
 
+  let events = data[0]
   // let arrayData = []
 
   // for (let i = 0; i < events.length; i++) {
@@ -257,6 +268,7 @@ async function getEvents() {
 
   foundEvents.value = events
   console.log("evnt " + foundEvents.value)
+  console.log("directions " + directions[selectedDirection.value].fullname + "   selectedDirection " + selectedDirection.value)
 }
 
 
@@ -269,7 +281,7 @@ function changeDirection(direction: any) {
   let directionId = -1
 
   for (let i = 0; i < directionsFD.length; i++) {
-    //console.log("short " + directionsFD[i].shortname  + "  direction.data " + direction.data)
+    console.log("short " + directionsFD[i].shortname + "  direction.data " + direction.data)
     if (directionsFD[i].shortname == direction.data) {
       directionId = directionsFD[i].id
     }
@@ -279,11 +291,13 @@ function changeDirection(direction: any) {
 
 }
 </script>
-
-
-
+   
+   
+   
 <template>
   {{ teamSelected }}
+  <hr />
+  {{ dataEventsInnerOuter }}
   <!-- menu -->
   <div class=" block-content">
 
@@ -332,11 +346,11 @@ function changeDirection(direction: any) {
     <div class="row">
       <!-- date -->
       <!-- <div class="col-auto  d-flex my-1">
-                                   events_or_teams
-                                    <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-                                      <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
-                                    </select>
-                                  </div> -->
+                                        events_or_teams
+                                         <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
+                                           <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+                                         </select>
+                                       </div> -->
       <div class="col-auto  d-flex my-1">
         <div class="mb-3">
           <label class="form-label">коллектив</label>
@@ -390,15 +404,11 @@ function changeDirection(direction: any) {
       </div>
     </div>
 
+
     <!--Общие показатели  -->
     <div v-if="defaultStatistic" class="row mt-4">
 
-      <div class="col" v-for="i in 4">
-        <div :class="['colored-block-' + i]" class="my-2">
-          <div class="row">info</div>
-          <div class="row">info</div>
-        </div>
-      </div>
+      <ColorfulBlocks :data="colorfulBlocksData" />
 
     </div>
   </div>
@@ -421,7 +431,7 @@ function changeDirection(direction: any) {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                                                  title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                                                                       title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
@@ -429,7 +439,7 @@ function changeDirection(direction: any) {
 
               <EPie :data="dataEventsInnerOuter" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                                                  title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                                                       title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -448,7 +458,7 @@ function changeDirection(direction: any) {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                  title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                                                       title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>
@@ -458,9 +468,9 @@ function changeDirection(direction: any) {
 
   </div>
 </template>
-
-
-
+   
+   
+   
 <style lang="scss">
 @import 'v-calendar/dist/style.css';
 @import 'vue-select/dist/vue-select.css';
@@ -654,41 +664,6 @@ function changeDirection(direction: any) {
 // accordeon--------------------------------------------------------------------------------
 
 
-// colored-block
-
-.colored-block-1,
-.colored-block-2,
-.colored-block-3,
-.colored-block-4 {
-
-  border-radius: 10px;
-  padding: 20px 80px;
-  min-width: fit-content;
-  min-height: 100px;
-}
-
-.colored-block-1 {
-  background: #CEEAB2;
-  background: linear-gradient(120deg, #CEEAB2 0%, #ABECEC 100%);
-}
-
-.colored-block-2 {
-  background: #FFADAD;
-  background: linear-gradient(120deg, #FFADAD 0%, #E7C756 100%);
-}
-
-.colored-block-3 {
-  background: #A9ADFF;
-  background: linear-gradient(120deg, #A9ADFF 0%, #5BDFDF 100%);
-}
-
-.colored-block-4 {
-  background: #E5ADFF;
-  background: linear-gradient(120deg, #E5ADFF 0%, #718CED 100%);
-}
-
-
-
 
 // global
 
@@ -732,7 +707,8 @@ function changeDirection(direction: any) {
 
 }
 </style>
-
-
-
-
+   
+   
+   
+   
+   

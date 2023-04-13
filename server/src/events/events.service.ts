@@ -33,7 +33,7 @@ export class EventsService {
   // конструктор запроса для получения мероприятия по нужным параметрам
   //если параметр был выбран, то добавляем его в запрос (И)
   findAllEvents(type: Type = null, level: Level = Level.UNIVERSITY,
-    direction: Direction = null, dateStart: Date = null, dateEnd: Date = null): Promise<Event[]> {
+    direction: Direction = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]>{
 
     //dateStart = new Date()
     // if (dateStart != null && dateEnd!=null)
@@ -62,7 +62,7 @@ export class EventsService {
     buildQuery = dateEnd != null ? buildQuery
       .andWhere("events.dateEnd <= :dateEnd", { dateEnd: dateEnd }) : buildQuery
 
-    return buildQuery.getMany()
+    return buildQuery.getManyAndCount()
   }
 
   findOne(id: number) {
