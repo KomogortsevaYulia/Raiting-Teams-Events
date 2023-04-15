@@ -72,6 +72,7 @@ const showCreate = ref(false);
 
 const itemList = [
   { name: "Главная" },
+  { name: "Новости" },
   { name: "Расписание занятий" },
   { name: "Участники" },
   { name: "Заявки" }
@@ -173,28 +174,28 @@ const newsList = [
             </div>
           </div>
         </div>
+      </div>
+
+      <div v-if="(selectedItem === 1)">
         <!-- Блок с НОВОСТЯМИ -->
-        <div>
-          <div class="wrapper-team__section-name">
-            <label class="active">Новости</label>
-          </div>
-          <div class="news-panel">
-            <div class="news-card" v-for="news in newsList" :key="news.id">
-              <div class="image-container">
-                <img :src="news.imageUrl">
-              </div>
-              <div class="text-container">
-                <h2 class="title">{{ news.title }}</h2>
-                <label class="description">{{ news.description }}</label>
-              </div>
+        <div class="news-panel">
+          <div class="news-card" v-for="news in newsList" :key="news.id">
+            <div class="image-container">
+              <img :src="news.imageUrl">
+            </div>
+            <div class="text-container">
+              <h2 class="title">{{ news.title }}</h2>
+              <label class="description">{{ news.description }}</label>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="(selectedItem === 1)">
+
+      <div v-if="(selectedItem === 2)">
         <WIP />
       </div>
-      <div v-if="selectedItem === 2">
+
+      <div v-if="(selectedItem === 3)">
 
         <div v-for="item in team">
 
@@ -269,9 +270,11 @@ const newsList = [
           </div>
         </div>
       </div>
-      <div v-if="selectedItem === 3">
+
+      <div v-if="(selectedItem === 4)">
         <Ankets />
       </div>
+
     </div>
   </div>
 </template>
@@ -662,12 +665,13 @@ const newsList = [
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-top: 20px;
 
       .news-card {
         display: flex;
         align-items: center;
         height: 230px;
-        width: 80%;
+        // width: 80%;
         // background-color: #B7EAED;
         // border-style: #000000,10px;
         border: 2px solid #B7EAED;
