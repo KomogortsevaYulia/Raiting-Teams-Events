@@ -18,10 +18,33 @@ export const useEventStore = defineStore("events", () => {
         return data
     }
 
+    async function createEvent(title: String, description: String,
+        dateStart: Date, dateEnd: Date) {
+
+        let responseMsg = "сохранено"
+
+        //create team
+        await axios.post("api/events", {
+            title: title,
+            description: description,
+            dateStart: dateStart,
+            dateEnd: dateEnd
+        })
+            .catch((err) => {
+                if (err.response) {
+                    responseMsg = err.response.data.message[0]
+                }
+            })
+
+        return responseMsg
+    }
+
+
+
     return {
         CreateTeamsTest,
         fetchEvents,
-    
+        createEvent,
 
         layout,
     }

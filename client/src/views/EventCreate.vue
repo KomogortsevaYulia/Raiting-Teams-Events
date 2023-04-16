@@ -1,12 +1,17 @@
 <script setup lang="ts">
+import axios from 'axios';
 import { onBeforeMount, ref, computed } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 
 
-const date1 = ref()
-const date2 = ref()
+const title = ref();
+const description = ref();
+const dateStart = ref()
+const dateEnd= ref()
 const date3 = ref()
 const date4 = ref()
+const responseMsg = ref();
+const optionSelect = ref()
 
 const hoursArray = computed(() => {
     const arr = [];
@@ -24,17 +29,38 @@ const minutesArray = computed(() => {
     return arr;
 });
 
+
+async function createEvent() {
+
+responseMsg.value = "сохранено";
+
+//create team
+await axios.post("api/events", {
+    title: title.value,
+    description: description.value,
+    dateStart: dateStart.value,
+    dateEnd: dateEnd.value
+})
+    .catch((err) => {
+        if (err.response) {
+            responseMsg.value = err.response.data.message[0]
+        }
+    })
+
+// console.log(newTeam)
+}
+
 </script>
 
 <template>
     <div class="eventInfo row">
         <div class="margins-edit row">
             <p class="text-edit">Название мероприятия</p>
-            <input placeholder="edit me" />
+            <input placeholder="edit me" v-model="title" />
         </div>
         <div class="margins-edit row">
             <p class="text-edit">Описание</p>
-            <input placeholder="edit me" />
+            <input placeholder="edit me" v-model="description" />
         </div>
 
         <div class=" margins-edit datePickers row ">
@@ -43,7 +69,7 @@ const minutesArray = computed(() => {
                     <p class="text-edit" style="text-align: center;">Дата начала мероприятия</p>
                 </div>
                 <div class="row">
-                    <VueDatePicker locale="ru" v-model="date1" placeholder="Start Typing ..." text-input
+                    <VueDatePicker locale="ru" v-model="dateStart" placeholder="Start Typing ..." text-input
                         :enable-time-picker="false"></VueDatePicker>
                 </div>
 
@@ -54,7 +80,7 @@ const minutesArray = computed(() => {
                     <p class="text-edit" style="text-align: center;">Дата окончания мероприятия</p>
                 </div>
                 <div class="row">
-                    <VueDatePicker locale="ru" v-model="date2" placeholder="Start Typing ..." text-input
+                    <VueDatePicker locale="ru" v-model="dateEnd" placeholder="Start Typing ..." text-input
                         :enable-time-picker="false"></VueDatePicker>
                 </div>
 
@@ -159,7 +185,7 @@ const minutesArray = computed(() => {
             <input placeholder="edit me" />
         </div>
         <div class="d-flex justify-content-end pb-3">
-            <button type="button" class="button ">Создать</button>
+            <button type="button" class="button " @submit.prevent="" v-on:click="createEvent()">Создать</button>
         </div>
     </div>
 </template>
