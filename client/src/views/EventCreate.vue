@@ -37,9 +37,9 @@ responseMsg.value = "сохранено";
 //create team
 await axios.post("api/events", {
     title: title.value,
-    description: description.value,
-    dateStart: dateStart.value,
-    dateEnd: dateEnd.value
+    description:  description.value,
+    dateStart: new Date(dateStart.value) ,
+    dateEnd: new Date(dateEnd.value)
 })
     .catch((err) => {
         if (err.response) {

@@ -9,11 +9,11 @@ export class CreateEventDto {
         message: 'Описание, максимальная длина текста 1000'
     })
     description: string
+    
+    @IsDate()
+    dateStart: Date
 
     @IsDate()
-    dateStart:Date
-
-    @IsDate()
-    dateEnd:Date
+    dateEnd: Date
     // functions:Function[]
 }

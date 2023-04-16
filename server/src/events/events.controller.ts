@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query } 
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Event } from './entities/event.entity';
 import { Direction, Level } from './enums/enums';
 import { Type } from 'class-transformer';
@@ -43,10 +43,11 @@ export class EventsController {
 
   @Post()
   @ApiOperation({ summary: "Создать новое мероприятие" })
+  @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   create(@Body() createEventDto: CreateEventDto) {
-    // console.log(createTeamDto)
+      console.log(createEventDto)
     return this.eventsService.create(createEventDto);
   }
 
