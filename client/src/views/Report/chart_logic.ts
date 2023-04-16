@@ -7,10 +7,12 @@ export const useChartStore = defineStore("echarts", () => {
 
         let inner = 0
         let outer = 0
-
+     
         for (let i = 0; i < events.length; i++) {
 
+          
             let event = events[i]
+            console.log("event.type  " + event.type)
             if (event.type == Type.INSIDE) inner += 1
             else outer += 1
         }

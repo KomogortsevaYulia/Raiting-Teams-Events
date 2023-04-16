@@ -11,17 +11,29 @@ export const useEventStore = defineStore("events", () => {
     return data
   }
 
-  async function fetchEventById(id: number): Promise<any> {
-    const res = await axios.get('api/events/' + id)
-    const data = res.data
+  async function fetchEventById(id: number, dateStart: Date, dateEnd: Date, level: Level = Level.ALL, type: Type = Type.ALL
+  ): Promise<any> {
 
-    return data
+    let lvl = level != Level.ALL ? level : null
+    let tp = type != Type.ALL ? type : null
+
+    const res = await axios.get('api/events', {
+      params: {
+        id:id,
+        level: lvl, type: tp,
+        dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
+      }
+    })
+
+    const data = res.data[0]
+
+    return data[0]
   }
 
   // найти мероприятия по направлению
   async function getEventsByDirection(direction: Direction = Direction.ALL,
-    dateStart:Date, dateEnd:Date, level: Level = Level.ALL, type: Type = Type.ALL
-     ): Promise<any> {
+    dateStart: Date, dateEnd: Date, level: Level = Level.ALL, type: Type = Type.ALL
+  ): Promise<any> {
 
     let res = null
 
@@ -30,8 +42,12 @@ export const useEventStore = defineStore("events", () => {
     let dr = direction != Direction.ALL ? direction : null
 
     //need get all directions
-    res = await axios.get('api/events/', { params: { direction: dr, level: lvl, type: tp,
-      dateStart:dateStart.toISOString(), dateEnd:dateEnd.toISOString()} })
+    res = await axios.get('api/events/', {
+      params: {
+        direction: dr, level: lvl, type: tp,
+        dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
+      }
+    })
 
     const data = res.data
 

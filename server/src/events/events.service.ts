@@ -13,7 +13,7 @@ export class EventsService {
   constructor(
     @InjectRepository(Event)  // user //,
     private readonly eventsRepository: Repository<Event>,
-    @InjectRepository(Journal) 
+    @InjectRepository(Journal)
     private readonly journalsRepository: Repository<Journal>,
   ) { }
 
@@ -32,8 +32,8 @@ export class EventsService {
 
   // конструктор запроса для получения мероприятия по нужным параметрам
   //если параметр был выбран, то добавляем его в запрос (И)
-  findAllEvents(type: Type = null, level: Level = Level.UNIVERSITY,
-    direction: Direction = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]>{
+  findAllEvents(id: number = null, type: Type = null, level: Level = Level.UNIVERSITY,
+    direction: Direction = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
 
     //dateStart = new Date()
     // if (dateStart != null && dateEnd!=null)
@@ -41,6 +41,10 @@ export class EventsService {
 
     let buildQuery = this.eventsRepository
       .createQueryBuilder("events")
+
+    //id 
+    buildQuery = id  != null ? buildQuery
+      .andWhere("events.id = :id", { id: id }) : buildQuery
 
     // event type
     buildQuery = type != null ? buildQuery
@@ -78,19 +82,19 @@ export class EventsService {
   }
 
 
-  
+
   // journals-------------------------------------------------------------------------
-  
-  findAllJournals(team:number = -1): Promise<[Journal[], number]> {
+
+  findAllJournals(team: number = null): Promise<[Journal[], number]> {
 
     let buildQuery = this.journalsRepository
-    .createQueryBuilder("journals")
-    .leftJoin("journals.team", "team")
-    .addSelect("team.id")
-    .leftJoin("journals.event", "event")
-    .addSelect("event.id")
+      .createQueryBuilder("journals")
+      .leftJoin("journals.team", "team")
+      .addSelect("team.id")
+      .leftJoin("journals.event", "event")
+      .addSelect("event.id")
 
-    buildQuery = team > 0 ? buildQuery
+    buildQuery = team !=null ? buildQuery
       .andWhere("journals.team_id = :team", { team: team }) : buildQuery
 
     return buildQuery.getManyAndCount()
@@ -98,7 +102,7 @@ export class EventsService {
 
   // journals-------------------------------------------------------------------------
 
-  
+
 }
 
 
