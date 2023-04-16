@@ -17,9 +17,7 @@ export class EventsService {
     private readonly journalsRepository: Repository<Journal>,
   ) { }
 
-  create(createEventDto: CreateEventDto) {
-    return 'This action adds a new event';
-  }
+ 
 
   findAllExternal(): Promise<Event[]> {
     return this.eventsRepository
@@ -83,6 +81,7 @@ export class EventsService {
 
 
 
+
   // journals-------------------------------------------------------------------------
 
   findAllJournals(team: number = null): Promise<[Journal[], number]> {
@@ -102,6 +101,21 @@ export class EventsService {
 
   // journals-------------------------------------------------------------------------
 
+
+
+  async create(createEventDto: CreateEventDto): Promise<Event> {
+
+    let event = await this.eventsRepository.save({
+      ...createEventDto,
+      // image: [],
+      // tags: [],
+      // type_team: "teams",
+      // creation_date: new Date()
+    })
+
+
+    return event;
+  }
 
 }
 

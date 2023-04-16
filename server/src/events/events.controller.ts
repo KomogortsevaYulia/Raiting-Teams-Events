@@ -39,7 +39,23 @@ export class EventsController {
     return this.eventsService.findAllEvents(id, type, level, direction, dStart, dEnd);
   }
 
-  
+
+
+  @Post()
+  @ApiOperation({ summary: "Создать новое мероприятие" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  create(@Body() createEventDto: CreateEventDto) {
+    // console.log(createTeamDto)
+    return this.eventsService.create(createEventDto);
+  }
+
+
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.eventsService.findOne(+id);
+  // }
+
   @Get('/external/:id')
   findOne(@Param('id') id: string) {
     return this.eventsService.findOne(+id);
