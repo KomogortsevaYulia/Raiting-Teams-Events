@@ -3,11 +3,11 @@
     <div class="wrapper-question" v-for="(input, index) in inputs" :key="index">
         <div class="question-label">
           <div class="num-question">Вопрос {{ index+1 }}</div>
-          <div class="checkbox-label">
+          <label class="checkbox-label">
             <input type="checkbox" v-model="input.required" />
-            <span class="checkbox-custom"></span>
+            <div class="checkbox-custom"></div>
             <span class="checkbox-text">Обязательный</span>
-        </div>
+        </label>
         </div>
         <div class="wrap-input">
           <textarea class="input-question" v-model="input.value" />
@@ -49,34 +49,6 @@
 </script>
 
 <style lang="scss">
-.modal {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.5);
-display: flex;
-justify-content: center;
-align-items: center;
-}
-
-.modal-content {
-background-color: #fff;
-padding: 1rem;
-border-radius: 0.25rem;
-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
-}
-
-.close-btn {
-  background-color: rgb(236, 75, 75);
-  color: white;
-  border: none;
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  margin-left: 0.5rem;
-}
 
 .form {
   display: block;
@@ -106,34 +78,45 @@ box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
 
       .checkbox-text{
         font-family: 'Montserrat';
-        font-style: normal;
-        font-weight: 700;
+        font-weight: 400;
         font-size: 14px;
         text-decoration-line: line-through;
+        margin-left: 5px;
+        transition: color 0.2s;
 
-        color: #373737;
+        color: #A2A2A2;
+
+        &::before {
+          color:#FF502F;
+        }
       }
 
         .checkbox-custom {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
+          position: relative;
           width: 1rem;
           height: 1rem;
-          margin-right: 0.5rem;
-          background: #CDEEF0;
-          border-radius: 5px;
+          border-radius: 0.3rem;
+          background-color: #CDEEF0;
+          
+          &:hover{
+            cursor: pointer;
+            background-color: #b9e6e9;
+          }
 
           &::before {
             content: "";
-            display: inline-block;
-            width: 0.5rem;
-            height: 0.5rem;
-            background-color: #3c3c3c;
-            border-radius: 100%;
+            position: relative; 
+            display: block;
+            width: 1rem;
+            height: 1rem;
+            background-color: #5BD1D7;
+            background-image: url(@/assets/icon/checked.svg);
+            background-position: center;
+            border-radius: 0.3rem;
+            position: absolute;
             opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s, visibility 1s;
+            transition: .2s;
           }
         }
 
@@ -143,6 +126,10 @@ box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
           &:checked ~ .checkbox-custom::before {
             opacity: 1;
             visibility: visible;
+          }
+          &:checked ~ .checkbox-text {
+            color: #373737;
+            text-decoration-line: none;
           }
         }
       }
@@ -166,8 +153,8 @@ box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
         color: rgba(0, 0, 0, 0.8);
 
         &:focus {
-          box-shadow: 0 0 0 0.35rem rgba(215, 255, 71, 0.25);
-          outline: 0;
+          text-decoration-line: none;
+          color: #373737;
         }
       }
       .remove-btn {
@@ -197,6 +184,10 @@ box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
     color: #FFFFFF;
     background: rgba(52, 132, 152, 0.8);
     border-radius: 10px;
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 0;
+    }
   }
   .save-btn{
     display: block;
@@ -210,5 +201,9 @@ box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
     color: #FFFFFF;
     background: #348498;
     border-radius: 10px;
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #348498;
+    }
   }
 }</style>
