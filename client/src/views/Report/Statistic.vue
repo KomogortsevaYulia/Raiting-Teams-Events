@@ -264,7 +264,7 @@ async function getEventsViaJournalsByTeam(teamId: number) {
 
 
     let eventId = journal.event.id
-    console.log("eventId   " + eventId)
+    // console.log("eventId   " + eventId)
 
     let event = await eventStore.fetchEventById(eventId,
       dateRange.value.start, dateRange.value.end,
@@ -275,7 +275,7 @@ async function getEventsViaJournalsByTeam(teamId: number) {
     if (event != null)
       arrayData[i] = event
 
-    console.log("arrayData " + event.id)
+    // console.log("arrayData " + event.id)
 
     // arrayData[i + 1] = { id: journal.id };
   }
@@ -303,8 +303,8 @@ async function getEventsByDirection() {
   colorfulBlocksData.value[0].value = data[1]
 
   foundEvents.value = events
-  console.log("evnt " + foundEvents.value)
-  console.log("directions " + foundDirections.value[selectedDirection.value].shortname + "   selectedDirection " + selectedDirection.value)
+  // console.log("evnt " + foundEvents.value)
+  // console.log("directions " + foundDirections.value[selectedDirection.value].shortname + "   selectedDirection " + selectedDirection.value)
 }
 
 
@@ -346,12 +346,12 @@ function changeTypeReport() {
       
       
 <template>
-  selectedDirection
+  <!-- selectedDirection
   {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
   {{ dateRange }}
   {{ selectedTeam }}
   <hr />
-  {{ dataEventsInnerOuter }}
+  {{ dataEventsInnerOuter }} -->
   <!-- menu -->
   <div class=" block-content">
 
