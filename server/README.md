@@ -62,6 +62,7 @@ git pull
 Для клиента:
 
 ```bash
+cd client
 npm install
 npm run build
 
@@ -69,9 +70,17 @@ npm run build
 
 Для сервера
 ```bash
+cd server
 npm install
 npm run build
 pm2 restart api-Raiting-Teams-Events
 
 ```
 
+Распаковка бэкапа БД
+```bash
+psql
+\c raiting_teams_events
+\i 'backup.sql'
+```
+*что бы выйти из режима работы с БД нажать CTRL+Z
