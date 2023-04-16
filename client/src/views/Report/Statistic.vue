@@ -361,7 +361,7 @@ function changeTypeReport() {
   <div class=" block-content">
 
     <div class="row text-center mb-2">
-      <h6>Период</h6>
+      <h6>{{ dateRange.start.toDateString()}} - {{ dateRange.end.toDateString()}}</h6> 
     </div>
 
     <!-- time -->
@@ -406,10 +406,10 @@ function changeTypeReport() {
     <!-- dropdowns select property for event or team -->
 
     <!-- team statistic or directions statistic -->
-    <div class="row my-4">
+    <div class="row my-4 d-flex ">
 
       <label class="form-label">Тип отчетности</label>
-      <div class="form-check col-auto" v-for="drT in typeReports">
+      <div class="form-check col-auto mx-2" v-for="drT in typeReports">
         <input class="form-check-input" type="radio" name="flexRadioDefault" :checked="drT.data == selectedTypeReport"
           :value="drT.data" v-model="selectedTypeReport" @change="changeTypeReport()">
         <label class="form-check-label">
