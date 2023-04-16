@@ -2,11 +2,13 @@ export enum Level {
   UNIVERSITY = 'Вузовский',
   CITY = 'Городской',
   REGION = 'Региональный',
+  ALL = "Все"
 }
 
 export enum Type {
     OUTSIDE = 'Внешнее',
     INSIDE = 'Внутреннее',
+    ALL = "Все"
 }
 
 export enum Direction{

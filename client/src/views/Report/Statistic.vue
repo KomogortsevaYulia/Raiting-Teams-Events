@@ -16,10 +16,11 @@ import { useTeamStore } from '@/store/team_store';
 import { useJournalStore } from '@/store/journals_store';
 import _ from 'lodash';
 import { useEventStore } from '@/store/events_store';
-import { Direction } from '@/store/enums/enum_event';
+import { Direction, Level } from '@/store/enums/enum_event';
 import { useChartStore } from './chart_logic';
-import { Type } from '@/store/enums/enum_event';
 
+import { Type } from '@/store/enums/enum_event';
+import { TimeRange, TypeReport } from '@/store/enums/enums_report';
 
 // store
 const teamStore = useTeamStore();
@@ -40,37 +41,35 @@ const typeGraphics = [{ id: 0, data: 'Статистика дат проведе
 { id: 2, data: 'Общие показатели' }]
 
 // dates
-const dates = [{ id: 0, date: '1н' }, { id: 1, date: '1м' }, { id: 2, date: '1г' }]
+const dates = [{ id: 0, date: '1н', timeRange: TimeRange.WEEK }, { id: 1, date: '1м', timeRange: TimeRange.MONTH }, { id: 2, date: '1г', timeRange: TimeRange.YEAR }]
 
 
 // dropdowns
-const levels = [{ id: 0, data: "Все уровни" }, { id: 1, data: 'вузовский' },
-{ id: 2, data: 'городской' }, { id: 3, data: 'региональный' }]
+const levels = [{ id: 0, data: Level.ALL }, { id: 1, data: Level.UNIVERSITY },
+{ id: 2, data: Level.CITY }, { id: 3, data: Level.REGION }]
 
-const types = [{ id: 0, data: 'Все типы' }, { id: 1, data: 'внутренние' }, { id: 2, data: 'внешние' }]
+const types = [{ id: 0, data: Type.ALL }, { id: 1, data: Type.INSIDE }, { id: 2, data: Type.OUTSIDE }]
 
-const eventOrTeams = [{ id: 0, data: 'Мероприятия' }, { id: 1, data: 'Коллективы' }]
+const typeReports = [{ id: 0, data: TypeReport.DIRECTION }, { id: 1, data: TypeReport.TEAM }]
 
-
-
-const date = ref(1)             //дата
+//start 1 year millis * 5 = 5 years millis  and current year -  5 years
+const dateRange = ref({ start: new Date( new Date().getTime() -  31556952000*5), end: new Date() })    //дата
 
 const selectedDirection = ref(0)    //все направления
 // const selectedTeam = ref(0)    //все направления
 
 const selectedLevel = ref(0)    //уровень
 const selectedType = ref(0)     //тип мероприятия
-const selectedEvOrTeam = ref(0) //меропприятие или коллектив
+const selectedTypeReport = ref(TypeReport.DIRECTION) //тип отчета
+const selectedTeam = ref({ name: "Все", id: 0 })
+
+// const dateStart = ref(new Date())
+// const dateEnd = ref(new Date())
 
 //statitstic graphics
 const statisticDateEvent = ref(true)      //Статистика дат проведения мероприятий
 const statisticTeamsAndEvent = ref(true)  //Статистика коллективов с количество мероприятий
 const defaultStatistic = ref(true)        //Общие показатели
-
-
-function changeDate(start: Date = new Date(), end: Date = new Date()) {
-}
-
 
 const datessOfEvents = [
   { value: 10, name: 'Осень' },
@@ -79,10 +78,10 @@ const datessOfEvents = [
   { value: 4, name: 'Весна' },
 ]
 // данные для вывода в графики
-const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом', 'Волейбол',
+let labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом', 'Волейбол',
   'Бокс', 'Футбол и мини-футбол',
 ]
-const dataTopTeams = [2, 5, 8, 0, 9]
+let dataTopTeams = [2, 5, 8, 0, 9]
 
 // data for graphics---------------------------------------------------
 
@@ -97,41 +96,99 @@ const colorfulBlocksData = ref([
   { value: 0, name: "Число коллективов" },])
 
 // dropdowns-----------------------------------------------------------
-const teamSelected = ref({ name: "Все", id: 0 })
-const foundTeams = ref()
-const foundJournals = ref()
+
+const foundTeams = ref([{ name: "Все", id: 0 }])
 const foundEvents = ref()
+const foundJournals = ref()
 
 
 // { id: number, shortname: string }
-const directionsFromDatabase = ref([{ id: 0, shortname: "Все" }])           //дата
+const foundDirections = ref([{ id: 0, shortname: Direction.ALL, idDB: 0 }])           //дата
 
 onBeforeMount(async () => {
-
   await getDirections()
-  getTeamsOfDirection(-1)
+  getEvents()
 })
 
 // если выбран коллектив то получить статистику с мероприятий
-watch(() => teamSelected.value, async () => {
-  // если в поле для коллектива выбрано "все", то взять все мероприятия по этому направлению
-  if (teamSelected.value.id == 0) getEventsByDirection()
-  //  иначе идем в журнал и смотрим по ид коллетива
-  else {
-    const journals = await getEventsViaJournals(teamSelected.value.id)
-    foundEvents.value = journals.data
-    colorfulBlocksData.value[0].value = journals.count
-  }
+watch(() => selectedTeam.value, async () => {
+  getEvents()
 })
 
+// date in calendar changed
+watch(() => dateRange.value, () => {
+  getEvents()
+})
 
 watch(() => foundEvents.value, () => {
   updateCharts()
 })
 
 
-async function updateCharts() {
 
+async function getEvents() {
+
+  switch (selectedTypeReport.value) {
+    case TypeReport.DIRECTION:
+      getEventsByDirection()
+      break
+    case TypeReport.TEAM:
+      await getEventsOfTeam(selectedTeam.value.id)
+      // foundEvents.value = journals.data
+      // colorfulBlocksData.value[0].value = journals.count
+      break
+  }
+
+}
+
+async function changeTimeViaButton(timeRange: TimeRange) {
+
+  let dStart = new Date()
+  let dEnd: Date = new Date()
+
+  switch (timeRange) {
+    case TimeRange.WEEK:
+      dStart.setTime(dStart.getTime() - 604800000)//week in millis
+      break;
+    case TimeRange.MONTH:
+      dStart.setTime(dStart.getTime() - 2629800000)//month in millis
+      break;
+    case TimeRange.YEAR:
+      dStart.setFullYear(dStart.getFullYear() - 1)
+      break;
+    case TimeRange.RANGE:
+      break;
+  }
+
+  dateRange.value.start = dStart
+  dateRange.value.end = dEnd
+}
+
+async function getEventsOfTeam(teamId: number) {
+
+  // labelsTopTeams = []
+  // dataTopTeams = []
+  // foundEvents.value = null
+
+  // for (let i = 1; i < foundTeams.value.length; i++) {
+  // alert("ggg " + foundTeams.value[i].id)
+  // const team = foundTeams.value[i]
+
+  const eventOfTeam = await getEventsViaJournalsByTeam(teamId)
+
+  foundEvents.value = eventOfTeam.data
+  colorfulBlocksData.value[0].value = eventOfTeam.count
+
+  // labelsTopTeams[i] = team.name
+  // dataTopTeams[i] = eventOfTeam.count
+
+  // console.log("labelsTopTeams " + labelsTopTeams)
+  //}
+
+
+}
+
+async function updateCharts() {
 
   if (statisticDateEvent.value) {
     dataEventsInnerOuter.value = chartStore.countEventsInnerOuter(foundEvents.value)
@@ -139,30 +196,27 @@ async function updateCharts() {
     console.log(dataEventsInnerOuter)
   }
 
-  //statisticTeamsAndEvent.value = !statisticTeamsAndEvent.value
-
-  // defaultStatistic.value = !defaultStatistic.value
-
 }
 
 
-// получить идшники направлений с бд, чтобы по этим идшникам найти коллективвы,
-//которые этим направления принадлежат
+// получить идшники направлений с бд, чтобы по этим идшникам найти
+// эти направления 
 async function getDirections() {
 
   let data = await teamStore.fetchTeamsOfDirection(-1, "direction")
 
   let directions = data[0]
   let arrayData = []
+  arrayData[0] = { id: 0, shortname: Direction.ALL, idDB: 0 }
 
   for (let i = 0; i < directions.length; i++) {
     // console.log("directions " + directions[i].shortname)
     let direction = directions[i]
 
-    arrayData[i] = { id: direction.id, shortname: direction.shortname };
+    arrayData[i + 1] = { id: i + 1, shortname: direction.shortname, idDB: direction.id };
   }
 
-  directionsFromDatabase.value = arrayData
+  foundDirections.value = arrayData
 }
 
 
@@ -194,43 +248,28 @@ async function getTeamsOfDirection(directionId: number) {
   colorfulBlocksData.value[1].value = data[1]
   let arrayData = []
 
-  arrayData[0] = { name: "Все", id: 0 }
-  teamSelected.value = arrayData[0]
+  //arrayData[0] = { name: "Все", id: 0 }
 
-  let arrayTeamEvents = [{ team: "-", countEvents: 0 }]
 
   for (let i = 0; i < teams.length - 1; i++) {
     let team = teams[i]
     // console.log("team " + team)
-    arrayData[i + 1] = { name: team.title, id: team.id };
-
-    const eventOfTeam = await getEventsViaJournals(team.id)
-
-    labelsTopTeams[i] = team.title
-    dataTopTeams[i] = eventOfTeam.count
-    // console.log("labelsTopTeams " + labelsTopTeams)
+    arrayData[i] = { name: team.title, id: team.id };
   }
+
+  if (teams.length > 0)
+    selectedTeam.value = arrayData[0]
+
+
   foundTeams.value = arrayData
 }
 
+//получит Events via journals-------------------------------------------------
 
 
-//получить journals-------------------------------------------------
-// const funcTimer = _.debounce((teamId:number) => {
-//   getJournals(teamId)
-// }, 300)
+async function getEventsViaJournalsByTeam(teamId: number) {
 
-// //отслеживать изменение текста для v-select 
-// async function onTextChangeJournal(e: any) {
-//   selectedTeam.value = e.target.value
-//   console.log("val " +  e.target.value)
-//   // optionSelect.value = null
-//   funcTimer(-1)
-// }
-
-
-async function getEventsViaJournals(teamId: number) {
-
+  // alert("teamId " + teamId)
   let data = await journalStore.fetchJournals(teamId)
 
   //получить всех найденне journal
@@ -266,38 +305,58 @@ async function getEventsByDirection() {
   let directionName = Direction.ALL
   directionName = directions[selectedDirection.value].fullname
 
-  let data = await eventStore.getEventsByDirection(directionName)
+  let data = await eventStore.getEventsByDirection(directionName,
+    dateRange.value.start, dateRange.value.end,
+    levels[selectedLevel.value].data,
+    types[selectedType.value].data,)
+
   let events = data[0]
   colorfulBlocksData.value[0].value = data[1]
 
   foundEvents.value = events
-  console.log("evnt " + foundEvents.value)
-  console.log("directions " + directions[selectedDirection.value].fullname + "   selectedDirection " + selectedDirection.value)
+  //console.log("evnt " + foundEvents.value)
+  // console.log("directions " + directions[selectedDirection.value].fullname + "   selectedDirection " + selectedDirection.value)
 }
 
 
 async function changeDirection(direction: any) {
+
   selectedDirection.value = direction.id
 
-  let directionsFD = directionsFromDatabase.value
-  let directionId = -1
-
-  for (let i = 0; i < directionsFD.length; i++) {
-    console.log("short " + directionsFD[i].shortname + "  direction.data " + direction.data)
-    if (directionsFD[i].shortname == direction.data) {
-      directionId = directionsFD[i].id
-    }
+  switch (selectedTypeReport.value) {
+    case TypeReport.DIRECTION:
+      getEvents()
+      break
+    case TypeReport.TEAM:
+      await getTeamsOfDirection(direction.idDB)
+      getEventsOfTeam(selectedTeam.value.id)
+      break
   }
 
-  await getTeamsOfDirection(directionId)
-
 }
+
+
+function changeTypeReport() {
+  const tR = selectedTypeReport.value
+  switch (tR) {
+    case TypeReport.DIRECTION:
+      selectedTeam.value = { name: "Все", id: 0 }
+      break
+    case TypeReport.TEAM:
+      let directionName = Direction.ALL
+      directionName = directions[selectedDirection.value].fullname
+      getTeamsOfDirection(foundDirections.value[selectedDirection.value].idDB)
+      break
+  }
+}
+
 </script>
       
       
       
 <template>
-  {{ teamSelected }}
+  {{ dateRange }}
+  {{ selectedTeam }}
   <hr />
   {{ dataEventsInnerOuter }}
   <!-- menu -->
@@ -312,12 +371,14 @@ async function changeDirection(direction: any) {
     <div class="row">
       <div class="w-100 justify-content-center d-flex">
         <div class="date">
-          <button class=" btn-custom-secondary date" v-for="dt in dates" @click="changeDate()">{{ dt.date }}</button>
+          <button class=" btn-custom-secondary date" v-for="dt in dates" @click="changeTimeViaButton(dt.timeRange)">{{
+            dt.date
+          }}</button>
 
           <div class="my-dropdown" style="float:center;">
             <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
             <div class="dropdown-content">
-              <DatePicker v-model="date" is-range />
+              <DatePicker v-model="dateRange" is-range />
             </div>
           </div>
         </div>
@@ -333,8 +394,8 @@ async function changeDirection(direction: any) {
     <!-- выбрать направление -->
     <div class="row my-4 d-flex justify-content-md-center directions">
 
-      <div v-for="direc in directions" class="col-auto d-flex my-1">
-        <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{ direc.data
+      <div v-for="direc in foundDirections" class="col-auto d-flex my-1">
+        <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{ direc.shortname
         }}</a>
       </div>
 
@@ -345,36 +406,49 @@ async function changeDirection(direction: any) {
 
 
     <!-- dropdowns select property for event or team -->
+
+    <!-- team statistic or directions statistic -->
+    <div class="row my-4">
+
+      <label class="form-label">Тип отчетности</label>
+      <div class="form-check col-auto" v-for="drT in typeReports">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" :checked="drT.data == selectedTypeReport"
+          :value="drT.data" v-model="selectedTypeReport" @change="changeTypeReport()">
+        <label class="form-check-label">
+          {{ drT.data }}
+        </label>
+      </div>
+
+    </div>
+
     <div class="row">
-      <!-- date -->
-      <!-- <div class="col-auto  d-flex my-1">
-                                                       events_or_teams
-                                                        <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-                                                          <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
-                                                        </select>
-                                                      </div> -->
-      <div class="col-auto  d-flex my-1">
+
+
+      <!-- team -->
+      <div class="col-auto  d-flex my-1" v-if="selectedTypeReport == TypeReport.TEAM">
         <div class="mb-3">
           <label class="form-label">коллектив</label>
           <v-select placeholder="Название коллектива" label="name" :options="foundTeams"
-            v-model="teamSelected"></v-select>
+            v-model="selectedTeam"></v-select>
         </div>
       </div>
+
       <!-- level -->
       <div class="col-auto  d-flex my-1">
         <div class="mb-3">
           <label class="form-label">уровень мероприятий</label>
-          <select class="form-select" aria-label="Default select example" v-model="selectedLevel">
-            <option v-for="lvl in levels" :value="lvl.id" :selected="lvl.id == 1">{{ lvl.data }}</option>
+          <select class="form-select" aria-label="Default select example" v-model="selectedLevel" @change="getEvents()">
+            <option v-for="lvl in levels" :value="lvl.id">{{ lvl.data }}</option>
           </select>
         </div>
       </div>
       <!-- types -->
       <div class="col-auto  d-flex my-1">
         <div class="mb-3">
+
           <label class="form-label">тип мероприятий</label>
-          <select class="form-select" aria-label="Default select example" v-model="selectedType">
-            <option v-for="tp in types" :value="tp.id" :selected="tp.id == 1">{{ tp.data }}</option>
+          <select class="form-select" aria-label="Default select example" v-model="selectedType" @change="getEvents()">
+            <option v-for="tp in types" :value="tp.id">{{ tp.data }}</option>
           </select>
         </div>
       </div>
@@ -384,8 +458,8 @@ async function changeDirection(direction: any) {
 
 
     <!--Отчетность  -->
-    <DownloadReport :date="0" :event-or-team="eventOrTeams[selectedEvOrTeam]" :direction="directions[selectedDirection]"
-      :teams="teamSelected.name" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
+    <DownloadReport :date="0" :event-or-team="selectedTypeReport" :direction="directions[selectedDirection]"
+      :teams="selectedTeam.name" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
     <!--Отчетность  -->
 
 
@@ -438,7 +512,7 @@ async function changeDirection(direction: any) {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                                                                      title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                                                                                                                                                    title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
@@ -446,7 +520,7 @@ async function changeDirection(direction: any) {
 
               <EPie :data="dataEventsInnerOuter" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                                                                      title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                                                                                                                                    title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -465,7 +539,7 @@ async function changeDirection(direction: any) {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                                      title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                                                                                                                                    title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>

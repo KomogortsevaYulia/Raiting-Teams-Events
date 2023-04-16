@@ -1,5 +1,6 @@
 <template>
-  <router-link :to="'/event-create'" v-if="can('can view directions')" >
+  <router-link :to="'/event-create'" > 
+    <!--  v-if="can('can view directions')" -->
     <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Создать мероприятие
     </button>

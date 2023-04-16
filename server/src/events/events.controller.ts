@@ -29,7 +29,7 @@ export class EventsController {
   @ApiOperation({ summary: "Получение списка мероприятий с учетом различных параметров" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAllEvents(@Query() { type = null, level = Level.UNIVERSITY,
+  findAllEvents(@Query() { type = null, level = null,
     direction = null, dateStart = null, dateEnd = null }) {
 
      // console.log( dateStart==null ? null : (new Date(dateStart)).toISOString())

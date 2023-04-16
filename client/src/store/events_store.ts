@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { Direction } from "./enums/enum_event";
+import { Direction, Level, Type } from "./enums/enum_event";
 
 export const useEventStore = defineStore("events", () => {
 
@@ -19,12 +19,19 @@ export const useEventStore = defineStore("events", () => {
   }
 
   // найти мероприятия по направлению
-  async function getEventsByDirection(direction: Direction): Promise<any> {
-   
+  async function getEventsByDirection(direction: Direction = Direction.ALL,
+    dateStart:Date, dateEnd:Date, level: Level = Level.ALL, type: Type = Type.ALL
+     ): Promise<any> {
+
     let res = null
-    if (direction != Direction.ALL) //need get all directions
-      res = await axios.get('api/events/', { params: { direction: direction } })
-    else res = await axios.get('api/events/')
+
+    let lvl = level != Level.ALL ? level : null
+    let tp = type != Type.ALL ? type : null
+    let dr = direction != Direction.ALL ? direction : null
+
+    //need get all directions
+    res = await axios.get('api/events/', { params: { direction: dr, level: lvl, type: tp,
+      dateStart:dateStart.toISOString(), dateEnd:dateEnd.toISOString()} })
 
     const data = res.data
 

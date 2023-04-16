@@ -1,14 +1,13 @@
 <script setup lang="ts">
+import type { TypeReport } from '@/store/enums/enums_report';
+
 
 const props = defineProps<{
     direction: {
         id: number;
         data: string;
     },
-    eventOrTeam: {
-        id: number;
-        data: string;
-    },
+    eventOrTeam: TypeReport,
     teams: string,
     level: {
         id: number;
