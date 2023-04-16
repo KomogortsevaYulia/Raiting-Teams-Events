@@ -34,14 +34,14 @@ const itemLink = [
                 </RouterLink>
             </nav>
 
-            <!-- <nav v-if="can('can view directions')" class="link-item"> -->
-            <nav class="link-item">
+            <nav v-if="can('can view directions')" class="link-item">
+
                 <RouterLink class="link" active-class="active" :to="'/statistic'">
                     <p>Статистика</p>
                 </RouterLink>
-            </nav>
-            <!-- </nav> -->
 
+            </nav>
+            
             <nav v-if="can('can view directions')" class="link-item">
                 <RouterLink class="link" active-class="active" :to="'/directions'">
                     <p>Направления</p>
@@ -133,4 +133,5 @@ const itemLink = [
             }
         }
     }
-}</style>
+}
+</style>

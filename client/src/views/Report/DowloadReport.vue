@@ -49,7 +49,7 @@ const props = defineProps<{
           <div class="accordion-body m-4">
             <div class="row">
               <div class="col"> направление: </div>
-              <div class="col">{{direction.data}}</div>
+              <div class="col">{{direction.shortname}}</div>
             </div>
 
             <div class="row my-3">

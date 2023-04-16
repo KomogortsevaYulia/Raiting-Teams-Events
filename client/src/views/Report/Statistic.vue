@@ -164,10 +164,10 @@ async function changeTimeViaButton(timeRange: TimeRange) {
 
 async function getEventsOfTeam(teamId: number) {
 
-  const eventOfTeam = await getEventsViaJournalsByTeam(teamId)
+  const eventsOfTeam = await getEventsViaJournalsByTeam(teamId)
 
-  foundEvents.value = eventOfTeam.data
-  colorfulBlocksData.value[0].value = eventOfTeam.count
+  foundEvents.value = eventsOfTeam.data
+  colorfulBlocksData.value[0].value = eventsOfTeam.count
 }
 
 async function updateCharts() {
@@ -252,6 +252,7 @@ async function getEventsViaJournalsByTeam(teamId: number) {
 
   // alert("teamId " + teamId)
   let data = await journalStore.fetchJournals(teamId)
+  let countAppropriate = 0
 
   //получить всех найденне journal
   let journals = data[0]
@@ -272,15 +273,19 @@ async function getEventsViaJournalsByTeam(teamId: number) {
       types[selectedType.value].data,)
 
 
-    if (event != null)
+    if (event??false){
+      // console.log("arrayData " + event)
       arrayData[i] = event
+      countAppropriate++
+   
+    }
 
-    // console.log("arrayData " + event.id)
+  
 
     // arrayData[i + 1] = { id: journal.id };
   }
 
-  return { data: arrayData, count: data[1] }
+  return { data: arrayData, count: countAppropriate }
 
 
   // console.log("journal" + arrayData[0].id)
@@ -347,11 +352,11 @@ function changeTypeReport() {
       
 <template>
   <!-- selectedDirection
-  {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
-  {{ dateRange }}
-  {{ selectedTeam }}
-  <hr />
-  {{ dataEventsInnerOuter }} -->
+      {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
+      {{ dateRange }}
+      {{ selectedTeam }}
+      <hr />
+      {{ dataEventsInnerOuter }} -->
   <!-- menu -->
   <div class=" block-content">
 
@@ -505,7 +510,7 @@ function changeTypeReport() {
               <h6>Статистика дат проведения мероприятий</h6>
               <EPie :data="datessOfEvents" />
               <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                                                                                                                                                title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+                          title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
 
             <div class="col-lg-6 col-md-12 chartBorder">
@@ -513,7 +518,7 @@ function changeTypeReport() {
 
               <EPie :data="dataEventsInnerOuter" />
               <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                                                                                                                                                title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+                                 title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
 
@@ -532,7 +537,7 @@ function changeTypeReport() {
             <div class="col">
               <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
               <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                                                                                                                title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                                                                                                                                                    title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
             </div>
           </div>
         </div>
