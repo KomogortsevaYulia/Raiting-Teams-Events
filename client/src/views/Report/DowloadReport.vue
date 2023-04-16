@@ -1,23 +1,25 @@
 <script setup lang="ts">
+import type { Direction } from '@/store/enums/enum_event';
 import type { TypeReport } from '@/store/enums/enums_report';
 
 
 const props = defineProps<{
-    direction: {
-        id: number;
-        data: string;
-    },
-    eventOrTeam: TypeReport,
-    teams: string,
-    level: {
-        id: number;
-        data: string;
-    },
-    typeEvent: {
-        id: number;
-        data: string;
-    },
-    date: any
+  direction: {
+    id: number;
+    shortname: Direction;
+    idDB: number;
+},
+  eventOrTeam: TypeReport,
+  teams: string,
+  level: {
+    id: number;
+    data: string;
+  },
+  typeEvent: {
+    id: number;
+    data: string;
+  },
+  date: any
 }>()
 
 
