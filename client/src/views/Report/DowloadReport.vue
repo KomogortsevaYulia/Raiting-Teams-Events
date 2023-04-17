@@ -8,7 +8,7 @@ const props = defineProps<{
     id: number;
     shortname: Direction;
     idDB: number;
-},
+  },
   eventOrTeam: TypeReport,
   teams: string,
   level: {
@@ -19,7 +19,7 @@ const props = defineProps<{
     id: number;
     data: string;
   },
-  date: any
+  dateRange: { start: Date, end: Date }
 }>()
 
 
@@ -74,7 +74,7 @@ const props = defineProps<{
 
             <div class="row  my-3">
               <div class="col"> дата:</div>
-              <div class="col"> 01.01.2023 - 01.02.2023</div>
+              <div class="col"> {{ dateRange.start.toLocaleDateString() }} - {{ dateRange.end.toLocaleDateString() }}</div>
             </div>
 
             <div class="row mt-4 mx-3 d-flex  justify-content-end">

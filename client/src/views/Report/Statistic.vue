@@ -3,7 +3,7 @@
    (НИД, КТД, УД, СД, ОД) хардкод, а как по другому определить вид направления? -->
 
 <script setup lang="ts" >
-import { computed, onBeforeMount, onMounted, ref, watch, type Ref } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { DatePicker } from 'v-calendar';
 import DownloadReport from './DowloadReport.vue';
 
@@ -20,7 +20,7 @@ import { Direction, Level } from '@/store/enums/enum_event';
 import { useChartStore } from './chart_logic';
 
 import { Type } from '@/store/enums/enum_event';
-import { TimeRange, TypeReport } from '@/store/enums/enums_report';
+import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from '@/store/enums/enums_report';
 
 // store
 const teamStore = useTeamStore();
@@ -29,16 +29,10 @@ const eventStore = useEventStore();
 
 const chartStore = useChartStore();
 
-// константные значения
-
-// direction
-// const directions = [{ id: 0, data: 'ВСЕ', fullname: Direction.ALL }, { id: 1, data: 'НИД', fullname: Direction.NID }, { id: 2, data: 'КТД', fullname: Direction.KTD },
-// { id: 3, data: 'СД', fullname: Direction.SD }, { id: 4, data: 'ОД', fullname: Direction.OD }, { id: 5, data: 'УД', fullname: Direction.UD }]
-
-// grdphics
-const typeGraphics = [{ id: 0, data: 'Статистика дат проведения мероприятий' },
-{ id: 1, data: 'Статистика коллективов с количество мероприятий' },
-{ id: 2, data: 'Общие показатели' }]
+// graphics and checkboxes
+const typeGraphics = ref([{ id: 0, data: TypeGraphic.EVENTS_STATISTIC, isVisibleChart: true, typeReport: TypeReport.DIRECTION },
+{ id: 1, data: TypeGraphic.TEAMS_EVENTS, isVisibleChart: false, typeReport: TypeReport.TEAM },
+{ id: 2, data: TypeGraphic.DEFAULT_PARAMETERS, isVisibleChart: true, typeReport: TypeReport.DIRECTION }])
 
 // dates
 const dates = [{ id: 0, date: '1н', timeRange: TimeRange.WEEK }, { id: 1, date: '1м', timeRange: TimeRange.MONTH }, { id: 2, date: '1г', timeRange: TimeRange.YEAR }]
@@ -56,32 +50,22 @@ const typeReports = [{ id: 0, data: TypeReport.DIRECTION }, { id: 1, data: TypeR
 const dateRange = ref({ start: new Date(new Date().getTime() - 31556952000 * 5), end: new Date() })    //дата
 
 const selectedDirection = ref(0)    //все направления
-// const selectedTeam = ref(0)    //все направления
+// const selectedTeam = ref(0)      //все направления
 
-const selectedLevel = ref(0)    //уровень
-const selectedType = ref(0)     //тип мероприятия
+const selectedLevel = ref(0)                         //уровень
+const selectedType = ref(0)                          //тип мероприятия
 const selectedTypeReport = ref(TypeReport.DIRECTION) //тип отчета
 const selectedTeam = ref({ name: "Все", id: 0 })
 
-// const dateStart = ref(new Date())
-// const dateEnd = ref(new Date())
-
-//statitstic graphics
-const statisticDateEvent = ref(true)      //Статистика дат проведения мероприятий
-const statisticTeamsAndEvent = ref(true)  //Статистика коллективов с количество мероприятий
-const defaultStatistic = ref(true)        //Общие показатели
-
-const datessOfEvents = [
-  { value: 10, name: 'Осень' },
-  { value: 75, name: 'Зима' },
-  { value: 50, name: 'Лето' },
-  { value: 4, name: 'Весна' },
-]
+const eventsSeasons = ref([
+  { value: 0, name: TypeSeason.AUTUMN },
+  { value: 0, name: TypeSeason.WINTER },
+  { value: 0, name: TypeSeason.SPRING },
+  { value: 0, name: TypeSeason.SUMMER },
+])
 // данные для вывода в графики
-let labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом', 'Волейбол',
-  'Бокс', 'Футбол и мини-футбол',
-]
-let dataTopTeams = [2, 5, 8, 0, 9]
+let labelsTopTeams = ref(['-'])
+let dataTopTeams = ref([0])
 
 // data for graphics---------------------------------------------------
 
@@ -99,7 +83,6 @@ const colorfulBlocksData = ref([
 
 const foundTeams = ref([{ name: "Все", id: 0 }])
 const foundEvents = ref()
-const foundJournals = ref()
 
 
 // { id: number, shortname: string }
@@ -130,8 +113,6 @@ async function getEvents() {
       break
     case TypeReport.TEAM:
       await getEventsOfTeam(selectedTeam.value.id)
-      // foundEvents.value = journals.data
-      // colorfulBlocksData.value[0].value = journals.count
       break
   }
 
@@ -162,6 +143,7 @@ async function changeTimeViaButton(timeRange: TimeRange) {
   dateRange.value.end = dEnd
 }
 
+// получить мероприятия коллектива
 async function getEventsOfTeam(teamId: number) {
 
   const eventsOfTeam = await getEventsViaJournalsByTeam(teamId)
@@ -170,12 +152,35 @@ async function getEventsOfTeam(teamId: number) {
   colorfulBlocksData.value[0].value = eventsOfTeam.count
 }
 
+// обновить гарфики
 async function updateCharts() {
 
-  if (statisticDateEvent.value) {
-    dataEventsInnerOuter.value = chartStore.countEventsInnerOuter(foundEvents.value)
-  }
+  typeGraphics.value.forEach(async (it) => {
 
+    switch (it.data) {
+      case TypeGraphic.EVENTS_STATISTIC:
+        if (it.isVisibleChart) { //если график нужно отобразить
+          dataEventsInnerOuter.value = chartStore.countEventsInnerOuter(foundEvents.value)
+          eventsSeasons.value = chartStore.countEventsBySeason(foundEvents.value)
+        }
+        break;
+      case TypeGraphic.TEAMS_EVENTS:
+        // let teamsMax = 5
+
+        let res = await chartStore.countTeamsEvents(foundTeams.value,
+          dateRange.value.start, dateRange.value.end,
+          levels[selectedLevel.value].data,
+          types[selectedType.value].data)
+
+        labelsTopTeams.value =  res.labelsTopTeams
+        dataTopTeams.value = res.dataTopTeams
+        break;
+      case TypeGraphic.DEFAULT_PARAMETERS:
+
+        break;
+    }
+
+  })
 }
 
 
@@ -201,20 +206,14 @@ async function getDirections() {
 
 
 // проверить какие графики показать, а какие убрать
-function seeGraphics(typeGraphics: any) {
+function seeGraphics(graphic: {
+  id: number;
+  data: TypeGraphic;
+  isVisibleChart: boolean;
+}) {
 
-  // alert(statisticDateEvent.value)
-  switch (typeGraphics.id) {
-    case 0:
-      statisticDateEvent.value = !statisticDateEvent.value
-      break;
-    case 1:
-      statisticTeamsAndEvent.value = !statisticTeamsAndEvent.value
-      break;
-    case 2:
-      defaultStatistic.value = !defaultStatistic.value
-      break;
-  }
+  typeGraphics.value[graphic.id].isVisibleChart = !graphic.isVisibleChart
+
 }
 
 
@@ -231,9 +230,9 @@ async function getTeamsOfDirection(directionId: number) {
   //arrayData[0] = { name: "Все", id: 0 }
 
 
-  for (let i = 0; i < teams.length - 1; i++) {
+  for (let i = 0; i < teams.length; i++) {
     let team = teams[i]
-    // console.log("team " + team)
+    console.log("team " + team.title)
     arrayData[i] = { name: team.title, id: team.id };
   }
 
@@ -337,11 +336,11 @@ function changeTypeReport() {
   switch (tR) {
     case TypeReport.DIRECTION:
       selectedTeam.value = { name: "Все", id: 0 }
+
       break
     case TypeReport.TEAM:
-      let directionName = Direction.ALL
-      directionName = foundDirections.value[selectedDirection.value].shortname
       getTeamsOfDirection(foundDirections.value[selectedDirection.value].idDB)
+
       break
   }
 }
@@ -352,11 +351,11 @@ function changeTypeReport() {
       
 <template>
   <!-- selectedDirection
-            {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
-            {{ dateRange }}
-            {{ selectedTeam }}
-            <hr />
-            {{ dataEventsInnerOuter }} -->
+                                                          {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
+                                                          {{ dateRange }}
+                                                          {{ selectedTeam }}
+                                                          <hr />
+                                                          {{ dataEventsInnerOuter }} -->
   <!-- menu -->
   <div class="row">
     <div class="col-lg-5">
@@ -461,8 +460,9 @@ function changeTypeReport() {
 
 
         <!--Отчетность  -->
-        <DownloadReport :date="0" :event-or-team="selectedTypeReport" :direction="foundDirections[selectedDirection]"
-          :teams="selectedTeam.name" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
+        <DownloadReport :date-range="dateRange" :event-or-team="selectedTypeReport"
+          :direction="foundDirections[selectedDirection]" :teams="selectedTeam.name" :level="levels[selectedLevel]"
+          :type-event="types[selectedType]" />
         <!--Отчетность  -->
 
 
@@ -477,20 +477,23 @@ function changeTypeReport() {
         <!-- checkboxes -->
         <div class="row">
 
-          <div class="col-auto d-flex" v-for="g in typeGraphics">
-            <div class="checkbox__block" @change="seeGraphics(g)">
-              <label class="checkbox__container">
-                <input type="checkbox" class="checkbox">
-                <span class="fake"></span>
-                <span class="span__title">{{ g.data }}</span>
+          <div v-for="g in 
+                    typeGraphics">
+
+            <div class="form-check" v-if="g.typeReport == selectedTypeReport || g.typeReport == TypeReport.DIRECTION"
+              @change="seeGraphics(g)">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" :checked="g.isVisibleChart">
+              <label class="form-check-label" for="flexCheckChecked">
+                {{ g.data }}
               </label>
             </div>
+
           </div>
         </div>
 
 
         <!--Общие показатели  -->
-        <div v-if="defaultStatistic" class="row mt-4">
+        <div v-if="typeGraphics[2].isVisibleChart" class="row mt-4">
 
           <ColorfulBlocks :data="colorfulBlocksData" />
 
@@ -502,46 +505,46 @@ function changeTypeReport() {
     <div class="col-lg-7">
       <div class="chart-container">
         <!-- statistic -->
-      
-          <!-- Мероприятия -->
-          <div v-if="statisticDateEvent" class="block-content">
 
-            <div class="row d-flex justify-content-center text-center">
-              <h4>Мероприятия</h4>
-              <div class="row g-4">
-                <div class="col-12 chartBorder">
-                  <h6>Статистика дат проведения мероприятий</h6>
-                  <EPie :data="datessOfEvents" />
-                </div>
+        <!-- Мероприятия -->
+        <div v-if="typeGraphics[0].isVisibleChart" class="block-content">
 
-                <div class="col-12 chartBorder">
-                  <h6>Количество внутренних/внешних мероприятий</h6>
-
-                  <EPie :data="dataEventsInnerOuter" />
-                
-                </div>
+          <div class="row d-flex justify-content-center text-center">
+            <h4>Мероприятия</h4>
+            <div class="row g-4">
+              <div class="col-12 chartBorder">
+                <h6>Статистика дат проведения мероприятий</h6>
+                <EPie :data="eventsSeasons" />
               </div>
 
+              <div class="col-12 chartBorder">
+                <h6>Количество внутренних/внешних мероприятий</h6>
+
+                <EPie :data="dataEventsInnerOuter" />
+
+              </div>
             </div>
+
           </div>
+        </div>
 
 
-          <!-- Коллективы -->
-          <div v-if="statisticTeamsAndEvent" class="block-content">
+        <!-- Коллективы -->
+        <div v-if="typeGraphics[1].isVisibleChart" class="block-content">
 
-            <div class="row d-flex justify-content-center text-center">
-              <h4>Коллективы</h4>
-              <div class="row mt-4 chartBorder">
-                <h6>Топ коллективов с наибольшим числом мероприятий</h6>
+          <div class="row d-flex justify-content-center text-center">
+            <h4>Коллективы</h4>
+            <div class="row mt-4 chartBorder">
+              <h6>Топ коллективов с наибольшим числом мероприятий</h6>
 
-                <div class="col">
-                  <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
-                  <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                                                                                                                          title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
-                </div>
+              <div class="col">
+                <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
+                <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
+                                                                                                                                                                                                                        title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
               </div>
             </div>
           </div>
+        </div>
 
       </div>
     </div>
@@ -685,64 +688,6 @@ function changeTypeReport() {
 }
 
 // чекбоксы--------------------------------------------------------------------------------
-
-.checkbox__container {
-  color: #A1A1A1;
-  padding: 0.2rem 0.5rem;
-  display: flex;
-
-  .checkbox {
-    display: none;
-
-    &:checked+.fake::before {
-      opacity: 1;
-    }
-
-  }
-
-  .span__title {
-    font-size: 1rem;
-    margin-left: 1rem;
-    hyphens: manual;
-
-  }
-
-  .fake {
-    display: inline-block;
-    position: relative;
-    background-image: url(@/assets/icon/checked.svg);
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 0.3rem;
-
-    background-color: #5BD1D7;
-
-    &:hover {
-      cursor: pointer;
-    }
-
-  }
-
-  .fake::before {
-    content: "";
-    position: absolute;
-    display: block;
-    width: 1.5rem;
-    height: 1.5rem;
-    background-color: #CDEEF0;
-
-    border-radius: 0.3rem;
-    transform: (-50%, -50%);
-    opacity: 0;
-    transition: .2s;
-  }
-}
-
-
-
-// accordeon--------------------------------------------------------------------------------
-
-
 
 // global
 
