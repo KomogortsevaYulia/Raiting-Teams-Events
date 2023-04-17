@@ -14,6 +14,7 @@ import {
   TitleComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
+import { computed } from "vue";
 
 use([
 
@@ -33,7 +34,8 @@ const props = defineProps<{
 
 
 
-const option = {
+const option =  computed( () => {
+  return {
   xAxis: {
     type: 'category',
     boundaryGap: false,
@@ -50,6 +52,7 @@ const option = {
     }
   ]
 };
+})
 
 
 </script>

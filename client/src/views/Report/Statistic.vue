@@ -273,14 +273,14 @@ async function getEventsViaJournalsByTeam(teamId: number) {
       types[selectedType.value].data,)
 
 
-    if (event??false){
+    if (event ?? false) {
       // console.log("arrayData " + event)
       arrayData[i] = event
       countAppropriate++
-   
+
     }
 
-  
+
 
     // arrayData[i + 1] = { id: journal.id };
   }
@@ -352,199 +352,199 @@ function changeTypeReport() {
       
 <template>
   <!-- selectedDirection
-      {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
-      {{ dateRange }}
-      {{ selectedTeam }}
-      <hr />
-      {{ dataEventsInnerOuter }} -->
+            {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
+            {{ dateRange }}
+            {{ selectedTeam }}
+            <hr />
+            {{ dataEventsInnerOuter }} -->
   <!-- menu -->
-  <div class=" block-content">
+  <div class="row">
+    <div class="col-lg-5">
+      <div class=" block-content">
 
-    <div class="row text-center mb-2">
-      <h6>{{ dateRange.start.toDateString()}} - {{ dateRange.end.toDateString()}}</h6> 
-    </div>
+        <div class="row text-center mb-2">
+          <h6>{{ dateRange.start.toDateString() }} - {{ dateRange.end.toDateString() }}</h6>
+        </div>
 
-    <!-- time -->
+        <!-- time -->
 
-    <div class="row">
-      <div class="w-100 justify-content-center d-flex">
-        <div class="date">
-          <button class=" btn-custom-secondary date" v-for="dt in dates" @click="changeTimeViaButton(dt.timeRange)">{{
-            dt.date
-          }}</button>
+        <div class="row">
+          <div class="w-100 justify-content-center d-flex">
+            <div class="date">
+              <button class=" btn-custom-secondary date" v-for="dt in dates" @click="changeTimeViaButton(dt.timeRange)">{{
+                dt.date
+              }}</button>
 
-          <div class="my-dropdown" style="float:center;">
-            <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
-            <div class="dropdown-content">
-              <DatePicker v-model="dateRange" is-range />
+              <div class="my-dropdown" style="float:center;">
+                <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
+                <div class="dropdown-content">
+                  <DatePicker v-model="dateRange" is-range />
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- time -->
+        <!-- time -->
 
 
 
 
-    <!-- выбрать направление -->
-    <div class="row my-4 d-flex justify-content-md-center directions">
+        <!-- выбрать направление -->
+        <div class="row my-4 d-flex justify-content-md-center directions">
 
-      <div v-for="direc in foundDirections" class="col-auto d-flex my-1">
-        <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{ direc.shortname
-        }}</a>
-      </div>
+          <div v-for="direc in foundDirections" class="col-auto d-flex my-1">
+            <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{
+              direc.shortname
+            }}</a>
+          </div>
 
-    </div>
-    <!-- выбрать направление -->
-
-
-
-
-    <!-- dropdowns select property for event or team -->
-
-    <!-- team statistic or directions statistic -->
-    <div class="row my-4 d-flex ">
-
-      <label class="form-label">Тип отчетности</label>
-      <div class="form-check col-auto mx-2" v-for="drT in typeReports">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" :checked="drT.data == selectedTypeReport"
-          :value="drT.data" v-model="selectedTypeReport" @change="changeTypeReport()">
-        <label class="form-check-label">
-          {{ drT.data }}
-        </label>
-      </div>
-
-    </div>
-
-    <div class="row">
-
-
-      <!-- team -->
-      <div class="col-auto  d-flex my-1" v-if="selectedTypeReport == TypeReport.TEAM">
-        <div class="mb-3">
-          <label class="form-label">коллектив</label>
-          <v-select placeholder="Название коллектива" label="name" :options="foundTeams"
-            v-model="selectedTeam"></v-select>
         </div>
-      </div>
+        <!-- выбрать направление -->
 
-      <!-- level -->
-      <div class="col-auto  d-flex my-1">
-        <div class="mb-3">
-          <label class="form-label">уровень мероприятий</label>
-          <select class="form-select" aria-label="Default select example" v-model="selectedLevel" @change="getEvents()">
-            <option v-for="lvl in levels" :value="lvl.id">{{ lvl.data }}</option>
-          </select>
+
+
+
+        <!-- dropdowns select property for event or team -->
+
+        <!-- team statistic or directions statistic -->
+        <div class="row my-4 d-flex ">
+
+          <label class="form-label">Тип отчетности</label>
+          <div class="form-check col-auto mx-2" v-for="drT in typeReports">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" :checked="drT.data == selectedTypeReport"
+              :value="drT.data" v-model="selectedTypeReport" @change="changeTypeReport()">
+            <label class="form-check-label">
+              {{ drT.data }}
+            </label>
+          </div>
+
         </div>
-      </div>
-      <!-- types -->
-      <div class="col-auto  d-flex my-1">
-        <div class="mb-3">
 
-          <label class="form-label">тип мероприятий</label>
-          <select class="form-select" aria-label="Default select example" v-model="selectedType" @change="getEvents()">
-            <option v-for="tp in types" :value="tp.id">{{ tp.data }}</option>
-          </select>
-        </div>
-      </div>
-
-    </div>
+        <div class="row">
 
 
-
-    <!--Отчетность  -->
-    <DownloadReport :date="0" :event-or-team="selectedTypeReport" :direction="foundDirections[selectedDirection]"
-      :teams="selectedTeam.name" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
-    <!--Отчетность  -->
-
-
-
-
-    <!-- Graphics -->
-    <div class="my-4">
-      <p>Отобразить графики</p>
-      <hr>
-    </div>
-
-    <!-- checkboxes -->
-    <div class="row">
-
-      <div class="col-auto d-flex" v-for="g in typeGraphics">
-        <div class="checkbox__block" @change="seeGraphics(g)">
-          <label class="checkbox__container">
-            <input type="checkbox" class="checkbox">
-            <span class="fake"></span>
-            <span class="span__title">{{ g.data }}</span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-
-    <!--Общие показатели  -->
-    <div v-if="defaultStatistic" class="row mt-4">
-
-      <ColorfulBlocks :data="colorfulBlocksData" />
-
-    </div>
-  </div>
-
-
-  <div class="chart-container">
-
-
-
-    <!-- statistic -->
-    <div class="col">
-
-      <!-- Мероприятия -->
-      <div v-if="statisticDateEvent" class="block-content">
-
-        <div class="row d-flex justify-content-center text-center">
-          <h4>Мероприятия</h4>
-          <div class="row mt-4 ">
-            <div class="col-lg-6 col-md-12 chartBorder">
-              <h6>Статистика дат проведения мероприятий</h6>
-              <EPie :data="datessOfEvents" />
-              <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                          title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
+          <!-- team -->
+          <div class="col-auto  d-flex my-1" v-if="selectedTypeReport == TypeReport.TEAM">
+            <div class="mb-3">
+              <label class="form-label">коллектив</label>
+              <v-select placeholder="Название коллектива" label="name" :options="foundTeams"
+                v-model="selectedTeam"></v-select>
             </div>
+          </div>
 
-            <div class="col-lg-6 col-md-12 chartBorder">
-              <h6>Количество внутренних/внешних мероприятий</h6>
+          <!-- level -->
+          <div class="col-auto  d-flex my-1">
+            <div class="mb-3">
+              <label class="form-label">уровень мероприятий</label>
+              <select class="form-select" aria-label="Default select example" v-model="selectedLevel"
+                @change="getEvents()">
+                <option v-for="lvl in levels" :value="lvl.id">{{ lvl.data }}</option>
+              </select>
+            </div>
+          </div>
+          <!-- types -->
+          <div class="col-auto  d-flex my-1">
+            <div class="mb-3">
 
-              <EPie :data="dataEventsInnerOuter" />
-              <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                 title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+              <label class="form-label">тип мероприятий</label>
+              <select class="form-select" aria-label="Default select example" v-model="selectedType"
+                @change="getEvents()">
+                <option v-for="tp in types" :value="tp.id">{{ tp.data }}</option>
+              </select>
             </div>
           </div>
 
         </div>
-      </div>
 
 
-      <!-- Коллективы -->
-      <div v-if="statisticTeamsAndEvent" class="block-content">
 
-        <div class="row d-flex justify-content-center text-center">
-          <h4>Коллективы</h4>
-          <div class="row mt-4 chartBorder">
-            <h6>Топ коллективов с наибольшим числом мероприятий</h6>
+        <!--Отчетность  -->
+        <DownloadReport :date="0" :event-or-team="selectedTypeReport" :direction="foundDirections[selectedDirection]"
+          :teams="selectedTeam.name" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
+        <!--Отчетность  -->
 
-            <div class="col">
-              <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
-              <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                                                                                                                    title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+
+
+
+        <!-- Graphics -->
+        <div class="my-4">
+          <p>Отобразить графики</p>
+          <hr>
+        </div>
+
+        <!-- checkboxes -->
+        <div class="row">
+
+          <div class="col-auto d-flex" v-for="g in typeGraphics">
+            <div class="checkbox__block" @change="seeGraphics(g)">
+              <label class="checkbox__container">
+                <input type="checkbox" class="checkbox">
+                <span class="fake"></span>
+                <span class="span__title">{{ g.data }}</span>
+              </label>
             </div>
           </div>
         </div>
-      </div>
 
+
+        <!--Общие показатели  -->
+        <div v-if="defaultStatistic" class="row mt-4">
+
+          <ColorfulBlocks :data="colorfulBlocksData" />
+
+        </div>
+      </div>
     </div>
 
+
+    <div class="col-lg-7">
+      <div class="chart-container">
+        <!-- statistic -->
+      
+          <!-- Мероприятия -->
+          <div v-if="statisticDateEvent" class="block-content">
+
+            <div class="row d-flex justify-content-center text-center">
+              <h4>Мероприятия</h4>
+              <div class="row g-4">
+                <div class="col-12 chartBorder">
+                  <h6>Статистика дат проведения мероприятий</h6>
+                  <EPie :data="datessOfEvents" />
+                </div>
+
+                <div class="col-12 chartBorder">
+                  <h6>Количество внутренних/внешних мероприятий</h6>
+
+                  <EPie :data="dataEventsInnerOuter" />
+                
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+          <!-- Коллективы -->
+          <div v-if="statisticTeamsAndEvent" class="block-content">
+
+            <div class="row d-flex justify-content-center text-center">
+              <h4>Коллективы</h4>
+              <div class="row mt-4 chartBorder">
+                <h6>Топ коллективов с наибольшим числом мероприятий</h6>
+
+                <div class="col">
+                  <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
+                  <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
+                                                                                                                                                                          title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+      </div>
+    </div>
   </div>
 </template>
       
