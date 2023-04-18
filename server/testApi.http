@@ -14,7 +14,7 @@ GET http://localhost:3000/api/users?limit=4&email=mail
 GET http://localhost:3000/api/events?id=20
 
 ###
-GET http://localhost:3000/api/events/20
+GET http://localhost:3000/api/events/5
 
 
 
@@ -120,6 +120,9 @@ content-type: application/json
     "username": "bossTeam"
 }
 
+###
+# DICTIONARY
+GET http://localhost:3000/api/general/dictionary/2
 
 
 

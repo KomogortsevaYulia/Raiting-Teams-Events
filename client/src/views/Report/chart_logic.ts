@@ -19,14 +19,14 @@ export const useChartStore = defineStore("echarts", () => {
         for (let i = 0; i < events.length; i++) {
 
             let event = events[i]
-            if (event.type == Type.INSIDE) inner += 1
+            if (event.type != null && event.type.id == Type.INSIDE) inner += 1
             else outer += 1
         }
 
 
         return [
-            { value: inner, name: Type.INSIDE },
-            { value: outer, name: Type.OUTSIDE },]
+            { value: inner, name: "Внутренние" },
+            { value: outer, name: "Внешние" },]
     }
 
 
@@ -64,19 +64,19 @@ export const useChartStore = defineStore("echarts", () => {
     async function countTeamsEvents(teams: { name: string, id: number }[], dateStart: Date, dateEnd: Date,
         level: Level,
         type: Type, count = 200) {
-      
-        let dataTopTm:number[] = []
-        let labelsTopTm:string[] = []
+
+        let dataTopTm: number[] = []
+        let labelsTopTm: string[] = []
 
         let c = 0 //just counter
-        teams.forEach(async (it) => {
-           
-            if(c >= count)return
+        teams.forEach(async (team) => {
+
+
+            if (c >= count) return
             c++
 
-            labelsTopTm.push(it.name)
             let countEvents = 0
-            let data = await journalStore.fetchJournals(it.id)
+            let data = await journalStore.fetchJournals(team.id)
 
             //получить всех найденне journal
             let journals = data[0]
@@ -90,11 +90,13 @@ export const useChartStore = defineStore("echarts", () => {
 
                 let eventId: number = journal.event.id
 
+
                 let event = await eventStore.fetchEventById(eventId,
                     dateStart, dateEnd,
                     level,
                     type)
 
+               
 
                 if (event ?? false) {
                     arrayData[i] = event
@@ -102,11 +104,16 @@ export const useChartStore = defineStore("echarts", () => {
 
                 }
             }
+
+           
             dataTopTm.push(countEvents)
+            labelsTopTm.push(team.name)
+
+            // alert("dataTopTm " + dataTopTm + "  labelsTopTm " + labelsTopTm)
         })
 
 
-        return { dataTopTeams: dataTopTm, labelsTopTeams:labelsTopTm }
+        return { dataTopTeams: dataTopTm, labelsTopTeams: labelsTopTm }
     }
 
     return {

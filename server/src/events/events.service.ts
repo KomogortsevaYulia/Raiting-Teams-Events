@@ -23,7 +23,8 @@ export class EventsService {
     return this.eventsRepository
       .createQueryBuilder("events")
       .orderBy("events.dateStart")
-      .where("events.type = :type", { type: "Внешнее" })
+      .leftJoinAndSelect("events.type", "type")
+      .where("type.id = :type", { type: Type.OUTSIDE })
       .getMany()
   }
 
@@ -39,6 +40,9 @@ export class EventsService {
 
     let buildQuery = this.eventsRepository
       .createQueryBuilder("events")
+      .leftJoinAndSelect("events.level", "level")
+      .leftJoinAndSelect("events.type", "type")
+      .leftJoinAndSelect("events.direction", "direction")
 
     //id 
     buildQuery = id  != null ? buildQuery
@@ -68,7 +72,7 @@ export class EventsService {
   }
 
   findOne(id: number) {
-    return this.eventsRepository.findOneBy({ id: id });
+    return this.eventsRepository.findOne({ where: {id: id},relations:{level:true, type:true, direction:true} });
   }
 
   update(id: number, updateEventDto: UpdateEventDto) {

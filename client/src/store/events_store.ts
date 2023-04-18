@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { Direction, Level, Type } from "./enums/enum_event";
+import { DirectionName } from "./enums/enum_teams";
 
 export const useEventStore = defineStore("events", () => {
 
