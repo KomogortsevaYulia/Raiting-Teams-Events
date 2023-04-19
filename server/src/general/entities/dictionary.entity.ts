@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { ApiProperty } from "@nestjs/swagger";
 import {Event} from '../../events/entities/event.entity'
+import { Achievement } from "../../users/entities/achievement.entity";
 
 @Entity('dictionary')
 export class Dictionary {
@@ -16,14 +17,16 @@ export class Dictionary {
     // @OneToMany((type)=>Journal, (journal)=>journal.event)
     // journal:Journal[]
 
+    //Event
+
     @OneToMany(() => Event, (event) => event.direction)
-    direction: Event[]
+    directionE: Event[]
 
     @OneToMany(() => Event, (event) => event.level)
     level: Event[]
 
     @OneToMany(() => Event, (event) => event.type)
-    type: Event[]
+    typeE: Event[]
 
     @OneToMany(() => Event, (event) => event.type_participation)
     type_participation: Event[]
@@ -36,6 +39,18 @@ export class Dictionary {
 
     @OneToMany(() => Event, (event) => event.character_event)
     character_event: Event[]
+
+
+    // Achievement
+    @OneToMany(() => Achievement, (achievement) => achievement.direction)
+    directionA: Achievement[]
+
+    @OneToMany(() => Achievement, (achievement) => achievement.status)
+    status: Achievement[]
+
+    @OneToMany(() => Achievement, (achievement) => achievement.type)
+    typeA: Achievement[]
+
 }
 
  
