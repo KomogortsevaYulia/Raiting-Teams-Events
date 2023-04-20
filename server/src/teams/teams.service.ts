@@ -53,7 +53,7 @@ export class TeamsService {
         .leftJoin("functions.userFunctions", "user_functions")
         .addSelect("user_functions.id")
         .leftJoinAndSelect("user_functions.user", "user")
-        .addSelect("user.title_role")
+        // .addSelect("user.title_role")
         .orderBy("teams.id","DESC")
         .getMany()
     }
