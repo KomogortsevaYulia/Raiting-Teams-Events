@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus, Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus, Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -122,6 +122,15 @@ export class UsersController {
   createFunction(@Body() createFunctionDto: CreateFunctionDto) {
     return this.usersService.createFunction(createFunctionDto);
   }
+
+  @Put('functions/:id')
+  @ApiOperation({ summary: "Обновить функцию для пользователя" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  updateFunction(@Param("id") idFunction, @Body() createFunctionDto: CreateFunctionDto) {
+    return this.usersService.updateFunction(idFunction, createFunctionDto);
+  }
+
 
 
   // function--------------------------------------------------------------------

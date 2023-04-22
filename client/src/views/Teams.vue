@@ -22,6 +22,14 @@ onBeforeMount(async () => {
   fetchTeams()
 })
 
+async function archiveTeam(){
+
+}
+
+async function editTeam(){
+
+}
+
 
 // вытащить коллективы из бд 
 async function fetchTeams() {
@@ -40,7 +48,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <!-- <div v-if="can('can create teams')" class="mt-4"> -->
-        <ModalCreateTeam />
+      <ModalCreateTeam />
       <!-- </div> -->
       <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
                 <div v-if="can('can create teams')" class="mt-4">
@@ -74,15 +82,34 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
             <div class="card__banner">
               <img :src="team.image" class="d-block" style="width: 100%;object-fit: cover;">
             </div>
-            <router-link :to="'/team/' + team.id">
-              <div class="wrapperContent">
-                <div class="card__event-name">{{ team.title }}</div>
+
+            <div class="wrapperContent">
+              <div class="card__event-name relative">
+                <div class="row">
+                  <div class="col-8"> {{ team.title }} </div>
+                  <!-- <div class="col-4"> -->
+                    <!-- <div class="row"> -->
+                      <!-- <div class="col d-flex justify-content-end align-items-start">
+                        <div @click="archiveTeam()"><font-awesome-icon class="ic" icon="archive" /></div>
+                      </div> -->
+                      <div class="col d-flex justify-content-end align-items-start">
+                        <div @click="editTeam()"><font-awesome-icon class="ic" icon="pencil-square" /></div>
+                      </div>
+                    <!-- </div>
+                  </div> -->
+
+                </div>
+
+              </div>
+
+              <router-link :to="'/team/' + team.id" class="w-100">
                 <div class="navigation-tags">
                   <div v-for="el in team.tags" class="teg">{{ el }}</div>
                 </div>
                 <p>{{ team.short_description }}</p>
-              </div>
-            </router-link>
+              </router-link>
+            </div>
+
           </div>
         </div>
       </div>
@@ -92,7 +119,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 </template>
 
 <style lang="scss" scoped>
-@import '@/assets/globals.scss';
+
 
 .wrapper-team {
   display: block;
@@ -133,6 +160,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     display: flex;
     height: 100%;
     width: 100% auto;
+
 
     .content-filter {
       border-radius: 15px;
@@ -232,11 +260,14 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
+          width: 100%;
+
 
           .navigation-tags {
             flex-wrap: wrap;
             padding-bottom: 1rem;
             display: flex;
+            width: max-content;
 
             .teg {
               margin-right: 1rem;
@@ -287,9 +318,21 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           }
         }
 
+        .ic {
+          width: 30px;
+          height: 30px;
+          color:grey;
+
+          &:hover{
+            transition: 0.4s;
+            color: var(--main-color-hover);
+          }
+        }
+
         .card__event-name {
           color: #373737;
           font-size: 1.2rem;
+          width: 100%;
         }
 
         .cardEvent:hover {

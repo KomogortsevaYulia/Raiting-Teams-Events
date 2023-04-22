@@ -10,8 +10,17 @@ import { useUserStore } from '@/store/user_store';
 const title = ref();
 const shortname = ref();
 const userLeader = ref();
+const cabinet = ref();
+
+const charterTeam = ref();
+const document = ref();
+
 const description = ref();
-const room= ref();
+
+// files
+const charterTeamFile = ref();
+const documentFile = ref();
+
 
 // сообщение об ошибках
 const responseMsg = ref();
@@ -60,7 +69,6 @@ async function getUsers() {
 //создать коллектив
 async function createTeam() {
 
-
   let userId = -1
   //проверить является id числом или нет и выбрана ли опция
   if (!optionSelect.value || isNaN(optionSelect.value.id)) {
@@ -73,6 +81,22 @@ async function createTeam() {
     shortname.value, userId)
 
   // console.log(newTeam)
+}
+
+async function handleFileUstavUpload(event: any) {
+  console.log("filefffffff ")
+  const file = event.target.files[0];
+
+  // Get file size
+  const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
+  // Get file extension
+  const fileExtention = file.name.split(".").pop()
+  // Get file name
+  const fileName = file.name.split(".").shift()
+  // Check if file is an image
+  const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
+  // Print to console
+  console.log(fileSize, fileExtention, fileName, isImage);
 }
 </script>
 
@@ -89,7 +113,8 @@ async function createTeam() {
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Создать коллектив</h1>
-          <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal"
+            aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <!-- Это вся обертка -->
@@ -113,10 +138,23 @@ async function createTeam() {
                   <v-select placeholder="ФИО Руководителя или email" class="v-select" label="data" @input="onTextChange"
                     :options="foundUsers" v-model="optionSelect"></v-select>
 
-                    <input type="text" placeholder="Аудитория(кабинет)" v-model="room" required>
+                  <input type="text" placeholder="Аудитория(кабинет)" v-model="cabinet" required>
+
+                  <div class="mb-2">
+                    <label for="formFile" class="form-label">загрузить устав</label>
+                    <input class="form-control" type="file" id="formFile" @change="handleFileUstavUpload">
+                  </div>
+
+                  <div class="mb-2">
+                    <label for="formFile1" class="form-label">загрузить документ(ы)</label>
+                    <input class="form-control" type="file" id="formFile1">
+                  </div>
 
                   <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
                   <textarea placeholder="Опишите проект" v-model="description" required></textarea>
+
+
+
                 </div>
 
                 <div class="fuck-off-btn">
@@ -140,57 +178,58 @@ async function createTeam() {
   </div>
 </template>
 
-<style lang="scss" scoped>
-@import '@/assets/globals.scss';
+<style lang="scss" >
+
 @import 'vue-select/dist/vue-select.css';
 
+
 .wrapper-team__create {
-    .form-team__create {
+  .form-team__create {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-radius: 15px;
+    border: var(--main-border-card);
+
+    .fuck-off-btn {
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      border-radius: 15px;
-      border: var(--main-border-card);
+      justify-content: end;
+    }
 
-      .fuck-off-btn {
+    .create-filds {
+      display: block;
+      padding: 2rem;
+      width: 100%;
+
+      .filds-area {
         display: flex;
-        justify-content: end;
-      }
+        flex-direction: column;
 
-      .create-filds {
-        display: block;
-        padding: 2rem;
-        width: 100%;
+        .v-select {
+          padding-bottom: 1rem;
+        }
 
-        .filds-area {
-          display: flex;
-          flex-direction: column;
+        textarea {
+          min-height: 20%;
+          min-width: 70%;
+          max-width: max-content;
+          margin-bottom: 1rem;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
 
-          .v-select{
-            padding-bottom: 1rem;
-          }
-
-          textarea {
-            min-height: 20%;
-            min-width: 70%;
-            max-width: max-content;
-            margin-bottom: 1rem;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-          }
-
-          input {
-            margin-bottom: 1rem;
-          }
+        input {
+          margin-bottom: 1rem;
         }
       }
+    }
 
-      .create-wrapper-img {
-        width: 30%;
-        border-radius: 0 1rem 1rem 0;
-        background-color: #D9D9D9;
-        background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");
-        background-size: cover;
-      }
+    .create-wrapper-img {
+      width: 30%;
+      border-radius: 0 1rem 1rem 0;
+      background-color: #D9D9D9;
+      background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");
+      background-size: cover;
     }
   }
+}
 </style>

@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsNumber, Length } from 'class-validator'
+import {IsNotEmpty, IsNumber, IsOptional, Length, MaxLength, isEmpty } from 'class-validator'
 import { Team } from '../entities/team.entity'
 import { Function } from '../../users/entities/function.entity'
 
@@ -23,5 +23,18 @@ export class CreateTeamDto {
 
     @IsNumber()
     userID:number
+
+    @IsOptional()
+    @Length(1,50, {
+        message: 'Кабинет, максимальная длина текста 50'
+    })
+    cabinet:string
+
+    @IsNotEmpty({ message: 'Ссылка на документ пустая' })
+    document:string
+
+    @IsNotEmpty({ message: 'Ссылка на устав пустая' })
+    charterTeam:string
+
     // functions:Function[]
 }

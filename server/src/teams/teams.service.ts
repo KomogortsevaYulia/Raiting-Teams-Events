@@ -29,54 +29,88 @@ export class TeamsService {
     return this.teamsRepository.findOneBy({ id: id });
   }
 
-  update(id: number, updateTeamDto: UpdateTeamDto) {
-    return `This action updates a #${id} team`;
+
+
+  async update(id: number, updateTeamDto: UpdateTeamDto) {
+
+   let team =  await this.teamsRepository.save({id, 
+      ...updateTeamDto
+    })
+
+
+    // удалить прошлого лидера
+    await this.removeLeader(team, updateTeamDto.oldLeaderId)
+
+    // назначить нового пользвоателя
+    let newUserFunction = await this.assignLeader(team, updateTeamDto.newLeaderId)
+
+    return newUserFunction
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} team`;
-  }
 
-    // get all teams with leadeaders
-    async findAll(): Promise<Team[]> {
-      const head = "Руководитель"
-  
-      return this.teamsRepository
-        .createQueryBuilder("teams")
-  
-        .select(["teams.id", "teams.title","teams.tags", "teams.image", "teams.description","teams.short_description", "teams.type_team"])
-        .where("teams.type_team = :type", { type: "teams" })
-        .leftJoin("teams.functions", "functions")
-        .addSelect("functions.title")
-        .andWhere("functions.title = :head", { head: "Руководитель" })
-  
-        .leftJoin("functions.userFunctions", "user_functions")
-        .addSelect("user_functions.id")
-        .leftJoinAndSelect("user_functions.user", "user")
-        // .addSelect("user.title_role")
-        .orderBy("teams.id","DESC")
-        .getMany()
+
+  //удалить руководителя
+  async removeLeader(team: Team, oldLeaderId: number) {
+
+    let functions = await this.usersService.findFunctionByTeam(team.id)
+
+    for (let f in functions) {
+      let funId = functions[f].id
+      let res = await this.usersService.removeUserFunctionByFunctionAndUser(funId, oldLeaderId)
+      
+      if( res.affected > 0){
+        await this.usersService.removeFunction(funId)
+      }
+     
     }
-
     
+  }
+
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} team`;
+  // }
+
+  // get all teams with leadeaders
+  async findAll(): Promise<Team[]> {
+    const head = "Руководитель"
+
+    return this.teamsRepository
+      .createQueryBuilder("teams")
+
+      .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description", "teams.short_description", "teams.type_team"])
+      .where("teams.type_team = :type", { type: "teams" })
+      .leftJoin("teams.functions", "functions")
+      .addSelect("functions.title")
+      .andWhere("functions.title = :head", { head: "Руководитель" })
+
+      .leftJoin("functions.userFunctions", "user_functions")
+      .addSelect("user_functions.id")
+      .leftJoinAndSelect("user_functions.user", "user")
+      // .addSelect("user.title_role")
+      .orderBy("teams.id", "DESC")
+      .getMany()
+  }
+
+
   // get all teams of specific direction for statistic
-  async findAllTeamsOfDirection(type_team = "teams", id_parent=-1): Promise<[Team[], number]> {
+  async findAllTeamsOfDirection(type_team = "teams", id_parent = -1): Promise<[Team[], number]> {
 
 
     let teams = this.teamsRepository
       .createQueryBuilder("teams")
 
       .select(["teams.id", "teams.title", "teams.image", "teams.description", "teams.type_team",
-      "teams.shortname"])
+        "teams.shortname"])
       .where("teams.type_team = :type", { type: type_team })
 
-      // с учетом направления
-      if(id_parent > 0){
-        teams.andWhere("teams.id_parent = :id_parent ",{ id_parent: id_parent } )
+    // с учетом направления
+    if (id_parent > 0) {
+      teams.andWhere("teams.id_parent = :id_parent ", { id_parent: id_parent })
         .leftJoin("teams.id_parent", "id_parent")
         .addSelect(["id_parent.id", "id_parent.shortname"])
-      }
-      
+    }
+
     return teams.getManyAndCount()
   }
 

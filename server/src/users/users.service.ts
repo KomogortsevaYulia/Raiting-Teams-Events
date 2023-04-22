@@ -57,7 +57,7 @@ export class UsersService {
   // modernize function user if user not exist
   // @HttpCode(400)
   // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-    
+
   //   // if(isNaN(id)){
   //   //   throw new HttpException("такого юзера не существует " + id, 400)
   //   // }
@@ -157,9 +157,34 @@ export class UsersService {
 
   // function--------------------------------------------------------------------
   async createFunction(createFunctionDto: CreateFunctionDto): Promise<Function> {
+
     return await this.functionsRepository.save(createFunctionDto);
   }
 
+  async updateFunction(idFunction: number, createFunctionDto: CreateFunctionDto) {
+    await this.functionsRepository.update(idFunction, createFunctionDto);
+  }
+
+
+  // найти функции по ид команды
+  async findFunctionByTeam(idTeam: number) {
+
+    const functions = await this.functionsRepository.
+      createQueryBuilder("functions")
+      .leftJoin("functions.team", "team")
+      .addSelect("team.id")
+      .where("team.id = :idTeam", { idTeam })
+      .getMany();
+
+    return functions
+  }
+
+  async removeFunction(id: number) {
+
+    const res = await this.functionsRepository.delete(id)
+
+    return res
+  }
 
   // function--------------------------------------------------------------------
 
@@ -182,6 +207,36 @@ export class UsersService {
       dateStart: dateStart,
       dateEnd: dateEnd
     });
+  }
+
+  // найти пользвоателя по ид юера и фцнкции
+  // async findUserFunctionByFunctionAndUser(idFunction: number, idUser: number) {
+
+  //   const userFunctions = await this.userFunctionsRepository.
+  //     createQueryBuilder("user_functions")
+  //     .leftJoin("user_functions.function", "function")
+  //     .addSelect("function.id")
+  //     .leftJoin("user_functions.user", "user")
+  //     .addSelect("user.id")
+  //     .where("function.id = :idFunction and user.id = :idUser ", { idFunction, idUser})
+  //     .getMany();
+
+  //   return userFunctions
+  // }
+
+  async removeUserFunctionByFunctionAndUser(idFunction: number, idUser: number) {
+
+    const userFunctions = await this.userFunctionsRepository.
+      createQueryBuilder("user_functions")
+      .leftJoin("user_functions.function", "function")
+      .addSelect("function.id")
+      .leftJoin("user_functions.user", "user")
+      .addSelect("user.id")
+      .where("function.id = :idFunction and user.id = :idUser ", { idFunction, idUser})
+      .delete()
+      .execute();
+
+    return userFunctions
   }
   //user functions---------------------------------------------------------------
 
