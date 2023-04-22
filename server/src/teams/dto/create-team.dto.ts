@@ -10,7 +10,7 @@ export class CreateTeamDto {
         message: 'Название, максимальная длина текста 50'
     })
     title: string
-    @Length(1,1000,{
+    @Length(1,3000,{
         message: 'Описание, максимальная длина текста 1000'
     })
     description: string

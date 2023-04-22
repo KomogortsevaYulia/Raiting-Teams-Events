@@ -59,11 +59,12 @@ export class TeamsService {
     return this.teamsRepository
       .createQueryBuilder("teams")
 
-      .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description", "teams.short_description", "teams.type_team"])
+      .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description",
+       "teams.short_description", "teams.type_team", "teams.cabinet", "teams.document", "teams.charter_team"])
       .where("teams.type_team = :type", { type: "teams" })
       .leftJoin("teams.functions", "functions")
       .addSelect("functions.title")
-      .andWhere("functions.title = :head", { head: "Руководитель" })
+      .andWhere("functions.title = :head", { head: head})
 
       .leftJoin("functions.userFunctions", "user_functions")
       .addSelect("user_functions.id")

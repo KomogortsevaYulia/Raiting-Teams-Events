@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 // import type { Permission } from "@/types";
 import axios from "axios";
+import type UpdateTeam from "@/views/Modals/UpdateTeam";
 
 export const useTeamStore = defineStore("teams", () => {
     const layout = ref(true)
@@ -22,7 +23,7 @@ export const useTeamStore = defineStore("teams", () => {
     async function fetchTeamsOfDirection(direction: number = -1, type_team = "teams"): Promise<any> {
         const res = await axios.get('/api/teams/direction', { params: { id_parent: direction, type_team: type_team } })
         const data = res.data
-       
+
         return data
     }
 
@@ -62,6 +63,32 @@ export const useTeamStore = defineStore("teams", () => {
         return responseMsg
     }
 
+
+    async function updateTeam(uT: UpdateTeam) {
+
+        let responseMsg = "сохранено"
+
+        await axios.put("api/teams/" + uT.id, {
+            title: uT.title,
+            description: uT.description,
+            shortname: uT.shortname,
+            cabinet: uT.cabinet,
+            oldLeaderId: uT.oldUserId,
+            newLeaderId: uT.newUserId,
+            document: "dcf",
+            charterTeam: "заглушка",
+        })
+            .catch((err) => {
+                if (err.response) {
+                    responseMsg = err.response.data.message[0]
+                }
+            })
+
+        return responseMsg
+
+
+    }
+
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия
     function setLayout(res: any) {
         this.layout = res;
@@ -93,6 +120,7 @@ export const useTeamStore = defineStore("teams", () => {
         setLayout,
         fetchTeamsOfDirection,
         fetchTeam,
+        updateTeam,
 
         layout,
         menu_items

@@ -10,7 +10,7 @@ export class UpdateTeamDto {
     })
     title: string
     
-    @Length(1,1000,{
+    @Length(1,3000,{
         message: 'Описание, максимальная длина текста 1000'
     })
     description: string
@@ -34,9 +34,15 @@ export class UpdateTeamDto {
     cabinet:string
 
     @IsNotEmpty({ message: 'Ссылка на документ пустая' })
+    @Length(1,300,{
+        message: 'Ссылка на документ, максимальная длина текста 300'
+    })
     document:string
 
     @IsNotEmpty({ message: 'Ссылка на устав пустая' })
+    @Length(1,300,{
+        message: 'ССсылка на устав, максимальная длина текста 300'
+    })
     charterTeam:string
 
     // functions:Function[]

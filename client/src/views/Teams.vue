@@ -17,17 +17,24 @@ const menu_items = teamStore.menu_items;
 const show = ref(true);
 const data = ref()
 
+// переключить на редактирвоание коллектива или на создание новаого
+const isEditTeam = ref(false)
+const teamEdit = ref()
+
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
   fetchTeams()
 })
 
-async function archiveTeam(){
+// архивировать коллектив
+async function archiveTeam() {
 
 }
 
-async function editTeam(){
-
+ function editTeam(editT: boolean, team:any) {
+  // редактируем колектив или создаем новый
+  isEditTeam.value = editT
+  teamEdit.value = team
 }
 
 
@@ -45,10 +52,16 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
   <!-- Это вся обертка -->
   <div class="wrapper-team">
 
+  
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <!-- <div v-if="can('can create teams')" class="mt-4"> -->
-      <ModalCreateTeam />
+      <!-- Button trigger modal -->
+      <button @click="editTeam(false, null)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Создать коллектив
+      </button>
+      <ModalCreateTeam :is-edit-team="isEditTeam" :team="teamEdit" />
+
       <!-- </div> -->
       <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
                 <div v-if="can('can create teams')" class="mt-4">
@@ -88,14 +101,16 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                 <div class="row">
                   <div class="col-8"> {{ team.title }} </div>
                   <!-- <div class="col-4"> -->
-                    <!-- <div class="row"> -->
-                      <!-- <div class="col d-flex justify-content-end align-items-start">
+                  <!-- <div class="row"> -->
+                  <!-- <div class="col d-flex justify-content-end align-items-start">
                         <div @click="archiveTeam()"><font-awesome-icon class="ic" icon="archive" /></div>
                       </div> -->
-                      <div class="col d-flex justify-content-end align-items-start">
-                        <div @click="editTeam()"><font-awesome-icon class="ic" icon="pencil-square" /></div>
-                      </div>
-                    <!-- </div>
+                  <div class="col d-flex justify-content-end align-items-start">
+                    <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      <font-awesome-icon class="ic" icon="pencil-square" />
+                    </div>
+                  </div>
+                  <!-- </div>
                   </div> -->
 
                 </div>
@@ -119,8 +134,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 </template>
 
 <style lang="scss" scoped>
-
-
 .wrapper-team {
   display: block;
   width: 100%;
@@ -321,9 +334,9 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .ic {
           width: 30px;
           height: 30px;
-          color:grey;
+          color: grey;
 
-          &:hover{
+          &:hover {
             transition: 0.4s;
             color: var(--main-color-hover);
           }

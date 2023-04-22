@@ -1,25 +1,33 @@
 <script setup lang="ts">
 
-import { onBeforeMount, ref } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import _ from 'lodash'
 import { useTeamStore } from '@/store/team_store';
 import { useUserStore } from '@/store/user_store';
+import { faDharmachakra } from '@fortawesome/free-solid-svg-icons';
+import UpdateTeam from './UpdateTeam';
 
+const props = defineProps<{
+  isEditTeam: boolean, //если модальное окно вызвано для редактирования (не создание нового коллектива)
+  team: any
+}>()
 
 // values from form
-const title = ref();
-const shortname = ref();
+const title = ref("");
+const shortname = ref("");
 const userLeader = ref();
-const cabinet = ref();
+const cabinet = ref("");
 
 const charterTeam = ref();
 const document = ref();
 
-const description = ref();
+const description = ref("");
 
 // files
 const charterTeamFile = ref();
 const documentFile = ref();
+
+const oldUserId = ref(-1)
 
 
 // сообщение об ошибках
@@ -42,9 +50,46 @@ async function onTextChange(e: any) {
   func()
 }
 
+watch(
+  () => props.team, (value, previousValue) => {
+    fillForm()
+
+    if (props.team != null) {
+
+    }
+
+  })
+
 onBeforeMount(async () => {
   await getUsers()
+
 })
+
+async function fillForm() {
+
+  if (props.team != null) {
+    let t = props.team
+
+    title.value = t.title
+    shortname.value = t.shortname
+    description.value = t.description
+    cabinet.value = t.cabinet
+
+    // alert(t.functions [0].userFunctions[0].id)
+    //если есть руководитель коллектива
+    if (t.functions != null && t.functions[0].userFunctions != null) {
+      let uF = t.functions[0].userFunctions[0].user
+      optionSelect.value = { name: uF.username, email: uF.email, id: uF.id, data: uF.username + " " + uF.email }
+      oldUserId.value = uF.id
+    }
+
+  } else { //если коллектив не задан , то очистить все поля
+    title.value = shortname.value = description.value
+      = cabinet.value = ""
+    optionSelect.value = null
+  }
+
+}
 
 // получить всех пользователей и выбрать из них нужных
 async function getUsers() {
@@ -83,6 +128,32 @@ async function createTeam() {
   // console.log(newTeam)
 }
 
+// обночить коллектив
+async function updateTeam() {
+
+  let newUserId = -1
+  //проверить является id числом или нет и выбрана ли опция
+  if (!optionSelect.value || isNaN(optionSelect.value.id)) {
+    responseMsg.value = "такого пользователя нет " + newUserId
+    return
+  } else { newUserId = optionSelect.value.id }
+
+  //create team
+  const uT = new UpdateTeam()
+  uT.cabinet = cabinet.value
+  uT.description = description.value
+  uT.id = props.team.id
+  uT.oldUserId = oldUserId.value
+  uT.newUserId = newUserId
+  uT.shortname = shortname.value
+  uT.title = title.value
+
+  responseMsg.value = await useTeamStore().updateTeam(uT)
+
+  // console.log(newTeam)
+}
+
+
 async function handleFileUstavUpload(event: any) {
   console.log("filefffffff ")
   const file = event.target.files[0];
@@ -98,21 +169,24 @@ async function handleFileUstavUpload(event: any) {
   // Print to console
   console.log(fileSize, fileExtention, fileName, isImage);
 }
+
+
+async function achiveTeam() {
+
+}
+
 </script>
 
 <template>
-  <!-- Button trigger modal -->
-  <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Создать коллектив
-  </button>
-
+  {{ optionSelect }}
   <!-- Modal -->
   <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Создать коллектив</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">
+            {{ isEditTeam ? "Редактировать коллектив" : "Создать коллектив" }}</h1>
           <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal"
             aria-label="Close"></button>
         </div>
@@ -128,7 +202,7 @@ async function handleFileUstavUpload(event: any) {
             </div>
 
             <!-- Форма с полями для создания -->
-            <form class="form-team__create" @submit.prevent="createTeam()">
+            <form class="form-team__create" @submit.prevent="isEditTeam ? updateTeam(): createTeam()">
               <div class="create-filds">
 
                 <div class="filds-area">
@@ -159,7 +233,16 @@ async function handleFileUstavUpload(event: any) {
 
                 <div class="fuck-off-btn">
                   <!--  v-on:click="showCreate = false" -->
-                  <button type="submit">Создать коллектив</button>
+                  <div class="row">
+                    <div class="col"> <button type="submit">Сохранить коллектив</button>
+                    </div>
+                    <div class="col-auto" v-if="isEditTeam">
+                      <button type="button" @click="achiveTeam()" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <font-awesome-icon icon="archive" />
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
@@ -179,7 +262,6 @@ async function handleFileUstavUpload(event: any) {
 </template>
 
 <style lang="scss" >
-
 @import 'vue-select/dist/vue-select.css';
 
 
