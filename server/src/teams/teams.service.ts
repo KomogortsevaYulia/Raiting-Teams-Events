@@ -37,34 +37,15 @@ export class TeamsService {
       ...updateTeamDto
     })
 
-
     // удалить прошлого лидера
-    await this.removeLeader(team, updateTeamDto.oldLeaderId)
+    await this.usersService.removeLeader(team.id, updateTeamDto.oldLeaderId)
 
     // назначить нового пользвоателя
-    let newUserFunction = await this.assignLeader(team, updateTeamDto.newLeaderId)
+    let newUserFunction = await this.usersService.assignLeader(team, updateTeamDto.newLeaderId)
 
     return newUserFunction
   }
 
-
-
-  //удалить руководителя
-  async removeLeader(team: Team, oldLeaderId: number) {
-
-    let functions = await this.usersService.findFunctionByTeam(team.id)
-
-    for (let f in functions) {
-      let funId = functions[f].id
-      let res = await this.usersService.removeUserFunctionByFunctionAndUser(funId, oldLeaderId)
-      
-      if( res.affected > 0){
-        await this.usersService.removeFunction(funId)
-      }
-     
-    }
-    
-  }
 
 
   // remove(id: number) {
@@ -164,29 +145,11 @@ export class TeamsService {
       creation_date: new Date()
     })
 
-    await this.assignLeader(team, createTeamDto.userID)
+    await this.usersService.assignLeader(team, createTeamDto.userID)
 
     return team;
   }
 
-
-  //назначить руководителя
-  async assignLeader(team: Team, leaderid: number) {
-
-    //создать руководителя
-    let newFunction = await this.usersService.createFunction({
-      title: 'Руководитель',
-      team: team
-    })
-
-    let newUserFunction = await this.usersService.createUserFunction({
-      function: newFunction.id,
-      user: leaderid
-    })
-
-
-    return newUserFunction
-  }
 
 }
 

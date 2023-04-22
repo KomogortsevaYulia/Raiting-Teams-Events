@@ -71,11 +71,6 @@ content-type: application/json
    
 }
 
-
-
-
-
-
 ###
 # student-------------------------------------------------------
 POST http://localhost:3000/api/users HTTP/1.1
@@ -110,6 +105,9 @@ content-type: application/json
     "team": 31
    
 }
+
+###
+DELETE  http://localhost:3000/api/users/team/17/leader/54 HTTP/1.1
 
 # update
 ###

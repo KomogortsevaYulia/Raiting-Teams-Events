@@ -186,8 +186,43 @@ export class UsersService {
     return res
   }
 
+
   // function--------------------------------------------------------------------
 
+   //удалить руководителя
+   async removeLeader(team: number, oldLeaderId: number) {
+
+    let functions = await this.findFunctionByTeam(team)
+
+    for (let f in functions) {
+      let funId = functions[f].id
+      let res = await this.removeUserFunctionByFunctionAndUser(funId, oldLeaderId)
+      
+      if( res.affected > 0){
+        await this.removeFunction(funId)
+      }
+     
+    }
+    
+  }
+
+    //назначить руководителя
+    async assignLeader(team: Team, leaderid: number) {
+
+      //создать руководителя
+      let newFunction = await this.createFunction({
+        title: 'Руководитель',
+        team: team
+      })
+  
+      let newUserFunction = await this.createUserFunction({
+        function: newFunction.id,
+        user: leaderid
+      })
+  
+  
+      return newUserFunction
+    }
 
 
   //user functions---------------------------------------------------------------
@@ -208,21 +243,6 @@ export class UsersService {
       dateEnd: dateEnd
     });
   }
-
-  // найти пользвоателя по ид юера и фцнкции
-  // async findUserFunctionByFunctionAndUser(idFunction: number, idUser: number) {
-
-  //   const userFunctions = await this.userFunctionsRepository.
-  //     createQueryBuilder("user_functions")
-  //     .leftJoin("user_functions.function", "function")
-  //     .addSelect("function.id")
-  //     .leftJoin("user_functions.user", "user")
-  //     .addSelect("user.id")
-  //     .where("function.id = :idFunction and user.id = :idUser ", { idFunction, idUser})
-  //     .getMany();
-
-  //   return userFunctions
-  // }
 
   async removeUserFunctionByFunctionAndUser(idFunction: number, idUser: number) {
 

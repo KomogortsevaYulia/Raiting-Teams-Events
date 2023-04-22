@@ -135,7 +135,15 @@ export class UsersController {
 
   // function--------------------------------------------------------------------
 
-
+  @Delete('team/:id_team/leader/:id_leader')
+  @ApiOperation({ summary: "Удалить лидера коллектива" })
+  @ApiParam({ name: "id_team", required: true, description: "ид коллектива" })
+  @ApiParam({ name: "id_leader", required: true, description: "ид лидера" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  removeLeader(@Param('id_leader') idLeader: number,@Param('id_team') idTeam: number) {
+    return this.usersService.removeLeader(idTeam,idLeader)
+  }
 
   //user functions---------------------------------------------------------------
   @Post('userFunctions')
