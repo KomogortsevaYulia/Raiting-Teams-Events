@@ -33,6 +33,13 @@ export class TeamsController {
     return this.teamsService.findAllTeamsOfDirection(params.type_team, params.id_parent);
   }
 
+  @Put(":id/archive")
+  @ApiOperation({ summary: "Архивировать коллектив или наоборот" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  changeArchiveTeam(@Param("id") id, @Body() data) {
+    return this.teamsService.changeArchiveTeam(id,  data.isArchive);
+  }
 
   @Put(':id')
   update(@Param('id') id: number, @Body() updateTeamDto: UpdateTeamDto) {
@@ -84,6 +91,8 @@ export class TeamsController {
     // console.log(createTeamDto)
     return this.teamsService.create(createTeamDto);
   }
+
+ 
 
 
   // @Get('directions')

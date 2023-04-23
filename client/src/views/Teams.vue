@@ -26,16 +26,13 @@ onBeforeMount(async () => {
   fetchTeams()
 })
 
-// архивировать коллектив
-async function archiveTeam() {
 
-}
-
- function editTeam(editT: boolean, team:any) {
+function editTeam(editT: boolean, team: any) {
   // редактируем колектив или создаем новый
   isEditTeam.value = editT
   teamEdit.value = team
 }
+
 
 
 // вытащить коллективы из бд 
@@ -52,7 +49,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
   <!-- Это вся обертка -->
   <div class="wrapper-team">
 
-  
+
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <!-- <div v-if="can('can create teams')" class="mt-4"> -->
@@ -106,7 +103,8 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                         <div @click="archiveTeam()"><font-awesome-icon class="ic" icon="archive" /></div>
                       </div> -->
                   <div class="col d-flex justify-content-end align-items-start">
-                    <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal"
+                      data-bs-target="#exampleModal">
                       <font-awesome-icon class="ic" icon="pencil-square" />
                     </div>
                   </div>

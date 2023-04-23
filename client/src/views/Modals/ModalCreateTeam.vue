@@ -7,6 +7,8 @@ import { useUserStore } from '@/store/user_store';
 import { faDharmachakra } from '@fortawesome/free-solid-svg-icons';
 import UpdateTeam from './UpdateTeam';
 
+const teamStore = useTeamStore();
+
 const props = defineProps<{
   isEditTeam: boolean, //если модальное окно вызвано для редактирования (не создание нового коллектива)
   team: any
@@ -67,6 +69,8 @@ onBeforeMount(async () => {
 
 async function fillForm() {
 
+  responseMsg.value = ""
+
   if (props.team != null) {
     let t = props.team
 
@@ -122,7 +126,7 @@ async function createTeam() {
   } else { userId = optionSelect.value.id }
 
   //create team
-  responseMsg.value = await useTeamStore().createTeam(title.value, description.value,
+  responseMsg.value = await teamStore.createTeam(title.value, description.value,
     shortname.value, userId)
 
   // console.log(newTeam)
@@ -148,7 +152,7 @@ async function updateTeam() {
   uT.shortname = shortname.value
   uT.title = title.value
 
-  responseMsg.value = await useTeamStore().updateTeam(uT)
+  responseMsg.value = await teamStore.updateTeam(uT)
 
   // console.log(newTeam)
 }
@@ -171,14 +175,19 @@ async function handleFileUstavUpload(event: any) {
 }
 
 
-async function achiveTeam() {
+// архивировать коллектив
+async function archiveTeam(id: number, isArchive: boolean) {
 
+
+  let res = await teamStore.archiveTeam(id, isArchive)
+  responseMsg.value = res.responseMsg
+
+  if (res.isOK) props.team.is_archive = isArchive
 }
 
 </script>
 
 <template>
-  {{ optionSelect }}
   <!-- Modal -->
   <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -186,7 +195,17 @@ async function achiveTeam() {
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">
-            {{ isEditTeam ? "Редактировать коллектив" : "Создать коллектив" }}</h1>
+
+            <!-- редактирование или создание нвого колелктива -->
+            <b v-if="isEditTeam"> Редактировать коллектив </b>
+            <b v-else>Создать коллектив </b>
+            
+            <!-- если коллектив в архиве -->
+            <sup v-if="team!=null && team.is_archive!=null && team.is_archive" class="text-bg-danger"> (В архиве)</sup>
+            <!-- если он действующий -->
+            <sup v-else-if="team!=null" class="text-bg-success"> (действующий)</sup>
+
+          </h1>
           <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal"
             aria-label="Close"></button>
         </div>
@@ -194,7 +213,8 @@ async function achiveTeam() {
           <!-- Это вся обертка -->
 
           <div class="wrapper-team__create">
-            <p>Прежде чем создать в системе новый коллектив, нужно
+            <p v-if="isEditTeam">
+              Прежде чем создать в системе новый коллектив, нужно
               утвердить его приказом!</p>
 
             <div v-if="responseMsg" class="alert alert-primary" role="alert">
@@ -202,7 +222,7 @@ async function achiveTeam() {
             </div>
 
             <!-- Форма с полями для создания -->
-            <form class="form-team__create" @submit.prevent="isEditTeam ? updateTeam(): createTeam()">
+            <form class="form-team__create" @submit.prevent="isEditTeam ? updateTeam() : createTeam()">
               <div class="create-filds">
 
                 <div class="filds-area">
@@ -237,9 +257,11 @@ async function achiveTeam() {
                     <div class="col"> <button type="submit">Сохранить коллектив</button>
                     </div>
                     <div class="col-auto" v-if="isEditTeam">
-                      <button type="button" @click="achiveTeam()" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      <button type="button" class="btn btn-secondary" @click="archiveTeam(team.id, !team.is_archive)"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="Архивировать коллектив">
                         <font-awesome-icon icon="archive" />
                       </button>
+
                     </div>
                   </div>
 
@@ -293,7 +315,7 @@ async function achiveTeam() {
 
         textarea {
           min-height: 20%;
-          min-width: 70%;
+          min-width: 100%;
           max-width: max-content;
           margin-bottom: 1rem;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;

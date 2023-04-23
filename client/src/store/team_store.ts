@@ -64,6 +64,7 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
 
+    // обновить коллектив
     async function updateTeam(uT: UpdateTeam) {
 
         let responseMsg = "сохранено"
@@ -87,6 +88,24 @@ export const useTeamStore = defineStore("teams", () => {
         return responseMsg
 
 
+    }
+
+    //архивировать или нет колелктив
+    async function archiveTeam(id: number, isArchive: boolean) {
+        let responseMsg = isArchive ? "архивировано" : "разархивировано"
+        let isOK = true
+
+        await axios.put(`api/teams/${id}/archive`, {
+            isArchive: isArchive
+        })
+            .catch((err) => {
+                if (err.response) {
+                    responseMsg = err.response.data.message[0]
+                    isOK = false
+                }
+            })
+
+        return {responseMsg, isOK}
     }
 
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия
@@ -121,6 +140,7 @@ export const useTeamStore = defineStore("teams", () => {
         fetchTeamsOfDirection,
         fetchTeam,
         updateTeam,
+        archiveTeam,
 
         layout,
         menu_items

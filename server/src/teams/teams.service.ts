@@ -33,7 +33,8 @@ export class TeamsService {
 
   async update(id: number, updateTeamDto: UpdateTeamDto) {
 
-   let team =  await this.teamsRepository.save({id, 
+    let team = await this.teamsRepository.save({
+      id,
       ...updateTeamDto
     })
 
@@ -60,11 +61,11 @@ export class TeamsService {
       .createQueryBuilder("teams")
 
       .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description",
-       "teams.short_description", "teams.type_team", "teams.cabinet", "teams.document", "teams.charter_team"])
+        "teams.short_description", "teams.type_team", "teams.cabinet", "teams.is_archive", "teams.document", "teams.shortname", "teams.charter_team"])
       .where("teams.type_team = :type", { type: "teams" })
       .leftJoin("teams.functions", "functions")
       .addSelect("functions.title")
-      .andWhere("functions.title = :head", { head: head})
+      .andWhere("functions.title = :head", { head: head })
 
       .leftJoin("functions.userFunctions", "user_functions")
       .addSelect("user_functions.id")
@@ -151,6 +152,11 @@ export class TeamsService {
     return team;
   }
 
+  //архивировать или наоборот
+  async changeArchiveTeam(id: number, isArchive: boolean) {
+
+    return await this.teamsRepository.update(id, { is_archive: isArchive })
+  }
 
 }
 

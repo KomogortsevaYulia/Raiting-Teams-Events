@@ -40,6 +40,14 @@ GET http://localhost:3000/api/teams/?id_parent=2
 GET http://localhost:3000/api/teams
 
 ###
+PUT  http://localhost:3000/api/teams/37/change_archive HTTP/1.1
+content-type: application/json
+
+{
+    "isArchive":true
+    
+}
+###
 # create new team
 POST http://localhost:3000/api/teams HTTP/1.1
 content-type: application/json
