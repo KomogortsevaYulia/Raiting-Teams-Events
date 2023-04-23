@@ -97,12 +97,13 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
               <div class="card__event-name relative">
                 <div class="row">
                   <div class="col-8"> {{ team.title }} </div>
-                  <!-- <div class="col-4"> -->
-                  <!-- <div class="row"> -->
-                  <!-- <div class="col d-flex justify-content-end align-items-start">
-                        <div @click="archiveTeam()"><font-awesome-icon class="ic" icon="archive" /></div>
-                      </div> -->
+
                   <div class="col d-flex justify-content-end align-items-start">
+                    <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive" > (В
+                      архиве)</p>
+                  </div>
+
+                  <div class="col-auto d-flex justify-content-end align-items-start">
                     <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal"
                       data-bs-target="#exampleModal">
                       <font-awesome-icon class="ic" icon="pencil-square" />
@@ -120,6 +121,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                   <div v-for="el in team.tags" class="teg">{{ el }}</div>
                 </div>
                 <p>{{ team.short_description }}</p>
+
               </router-link>
             </div>
 
@@ -352,6 +354,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         }
 
         .wrapperContent {
+          width: 100%;
           padding: 2rem;
 
           p {
