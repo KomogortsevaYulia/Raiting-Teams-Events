@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, Put, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -6,12 +6,15 @@ import { Team } from './entities/team.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
 import { UsersService } from '../users/users.service';
 import { UpdateTeamDto } from './dto/update-team.dto';
+import { UploadsService } from 'src/uploads/uploads.service';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService,
-    private readonly usersService: UsersService) { }
+    private readonly usersService: UsersService,
+    private readonly uploadsService: UploadsService) { }
 
 
   @Get()
@@ -38,7 +41,7 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   changeArchiveTeam(@Param("id") id, @Body() data) {
-    return this.teamsService.changeArchiveTeam(id,  data.isArchive);
+    return this.teamsService.changeArchiveTeam(id, data.isArchive);
   }
 
   @Put(':id')
@@ -81,18 +84,29 @@ export class TeamsController {
     return this.teamsService.teamsFunctions(id)
   }
 
+  // @UseInterceptors(FileInterceptor('file'))
+  // async uploadFile(@UploadedFile() file) {
 
   @Post()
   @ApiOperation({ summary: "Создать новый коллектив (ответственный по направлению)" })
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
-  create(@Body() createTeamDto: CreateTeamDto) {
-    // console.log(createTeamDto)
-    return this.teamsService.create(createTeamDto);
+  @UseInterceptors(FileInterceptor('file'))
+  // @UseInterceptors(FileInterceptor('document'))
+  async create(@UploadedFile("file") file, @Body() createTeamDto: CreateTeamDto) {
+    console.log(file)
+
+    let path = await this.uploadsService.uploadFile(file)
+    createTeamDto.charterTeam = path
+    console.log("path " + path)
+
+    let team = await this.teamsService.create(createTeamDto);
+
+    return team
   }
 
- 
+
 
 
   // @Get('directions')

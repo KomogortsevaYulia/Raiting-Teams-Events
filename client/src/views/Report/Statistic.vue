@@ -22,7 +22,7 @@ import { useChartStore } from './chart_logic';
 import { useStatiscticLogicStore } from './statistic_logic';
 
 import { Type } from '@/store/enums/enum_event';
-import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from '@/store/enums/enums_report';
+import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from './enums_report';
 import { DirectionName } from '@/store/enums/enum_teams';
 
 

@@ -1,17 +1,20 @@
-import {IsNotEmpty, IsNumber, IsOptional, Length, MaxLength, isEmpty } from 'class-validator'
+import {IsNotEmpty, IsNumber, IsOptional, IsString, Length, MaxLength, isEmpty, isString } from 'class-validator'
 import { Team } from '../entities/team.entity'
 import { Function } from '../../users/entities/function.entity'
+import { Type } from 'class-transformer'
 
 
 export class CreateTeamDto {
 
     @IsNotEmpty({ message: 'Поле пустое' })
+    @IsString()
     @Length(1,100,{
-        message: 'Название, максимальная длина текста 50'
+        message: 'Название, максимальная длина текста 100'
     })
     title: string
+
     @Length(1,3000,{
-        message: 'Описание, максимальная длина текста 1000'
+        message: 'Описание, максимальная длина текста 3000'
     })
     description: string
 
@@ -22,6 +25,7 @@ export class CreateTeamDto {
     shortname:string
 
     @IsNumber()
+    @Type(() => Number)
     userID:number
 
     @IsOptional()
@@ -30,11 +34,12 @@ export class CreateTeamDto {
     })
     cabinet:string
 
-    @IsNotEmpty({ message: 'Ссылка на документ пустая' })
-    document:string
+    // @IsOptional()
+    // @IsNotEmpty({ message: 'Ссылка на документ пустая' })
+    // document:string
 
+    @IsOptional()
     @IsNotEmpty({ message: 'Ссылка на устав пустая' })
     charterTeam:string
 
-    // functions:Function[]
 }

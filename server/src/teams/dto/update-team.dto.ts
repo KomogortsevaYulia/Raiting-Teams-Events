@@ -21,9 +21,11 @@ export class UpdateTeamDto {
     })
     shortname:string
 
+    @IsOptional()
     @IsNumber()
     oldLeaderId:number
 
+    @IsOptional()
     @IsNumber()
     newLeaderId:number
 

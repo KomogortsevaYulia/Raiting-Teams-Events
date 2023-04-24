@@ -6,8 +6,10 @@ import { useTeamStore } from '@/store/team_store';
 import { useUserStore } from '@/store/user_store';
 import { faDharmachakra } from '@fortawesome/free-solid-svg-icons';
 import UpdateTeam from './UpdateTeam';
+import { useFileStore } from '@/store/save_file_store';
 
 const teamStore = useTeamStore();
+const fileStore = useFileStore();
 
 const props = defineProps<{
   isEditTeam: boolean, //если модальное окно вызвано для редактирования (не создание нового коллектива)
@@ -69,6 +71,7 @@ onBeforeMount(async () => {
 
 async function fillForm() {
 
+  
   responseMsg.value = ""
 
   if (props.team != null) {
@@ -127,7 +130,7 @@ async function createTeam() {
 
   //create team
   responseMsg.value = await teamStore.createTeam(title.value, description.value,
-    shortname.value, userId)
+    shortname.value, userId, cabinet.value, charterTeamFile.value, documentFile.value)
 
   // console.log(newTeam)
 }
@@ -158,8 +161,8 @@ async function updateTeam() {
 }
 
 
-async function handleFileUstavUpload(event: any) {
-  console.log("filefffffff ")
+async function handleFileUpload(event: any, document: boolean) {
+
   const file = event.target.files[0];
 
   // Get file size
@@ -172,6 +175,20 @@ async function handleFileUstavUpload(event: any) {
   const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
   // Print to console
   console.log(fileSize, fileExtention, fileName, isImage);
+
+  // const formData = new FormData()
+  // formData.append('file', file)
+  // let path = await fileStore.loadFile(formData)
+
+  // const formData = new FormData()
+  if (!document)
+    charterTeamFile.value = file
+  else {
+    documentFile.value = file
+  }
+
+  // load file
+
 }
 
 
@@ -199,11 +216,12 @@ async function archiveTeam(id: number, isArchive: boolean) {
             <!-- редактирование или создание нвого колелктива -->
             <b v-if="isEditTeam"> Редактировать коллектив </b>
             <b v-else>Создать коллектив </b>
-            
+
             <!-- если коллектив в архиве -->
-            <sup v-if="team!=null && team.is_archive!=null && team.is_archive" class="text-bg-danger"> (В архиве)</sup>
+            <sup v-if="team != null && team.is_archive != null && team.is_archive" class="text-bg-danger"> (В
+              архиве)</sup>
             <!-- если он действующий -->
-            <sup v-else-if="team!=null" class="text-bg-success"> (действующий)</sup>
+            <sup v-else-if="team != null" class="text-bg-success"> (действующий)</sup>
 
           </h1>
           <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal"
@@ -221,6 +239,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
               {{ responseMsg }}
             </div>
 
+
             <!-- Форма с полями для создания -->
             <form class="form-team__create" @submit.prevent="isEditTeam ? updateTeam() : createTeam()">
               <div class="create-filds">
@@ -236,19 +255,16 @@ async function archiveTeam(id: number, isArchive: boolean) {
 
                   <div class="mb-2">
                     <label for="formFile" class="form-label">загрузить устав</label>
-                    <input class="form-control" type="file" id="formFile" @change="handleFileUstavUpload">
+                    <input class="form-control" type="file" id="formFile" @change="(e)=>handleFileUpload(e, false)">
                   </div>
 
                   <div class="mb-2">
                     <label for="formFile1" class="form-label">загрузить документ(ы)</label>
-                    <input class="form-control" type="file" id="formFile1">
+                    <input class="form-control" type="file" id="formFile1"  @change="(e)=>handleFileUpload(e, true)">
                   </div>
 
                   <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
                   <textarea placeholder="Опишите проект" v-model="description" required></textarea>
-
-
-
                 </div>
 
                 <div class="fuck-off-btn">

@@ -14,6 +14,9 @@ export const useTeamStore = defineStore("teams", () => {
     // Вывести все коллективвы с руководителсями
     async function fetchTeams(): Promise<any> {
         const res = await axios.get('/api/teams')
+
+        const res2 = await axios.get('/api/uploads/',{params:{path:"/public/media/87a39a3586e19c22106a10ad53d0434b101.pdf"}} )
+        console.log(res2)
         const data = res.data
 
         return data
@@ -42,18 +45,49 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
 
-    async function createTeam(title: String, description: String,
-        shortname: String, userId: Number) {
+    async function createTeam(title: string, description: string,
+        shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
 
         let responseMsg = "сохранено"
 
+
+
+        // const data = {
+
+        //     title: title,
+        //     description: description,
+        //     shortname: shortname,
+        //     userID: userId,
+        //     fileUstav: fileUstav
+        // }
+
+        // alert( fileUstav.name.split(".").shift())
+
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('shortname', shortname);
+        formData.append('userID', userId.toString());
+        formData.append('cabinet', cabinet);
+        formData.append('file', fileUstav);
+        // formData.append('document', fileDocument);
+
+
+
+
+
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+
+        // const res = await axios.post('api/uploads', formData, config);
+
+        // alert("res " + res.data)
+
         //create team
-        await axios.post("api/teams", {
-            title: title,
-            description: description,
-            shortname: shortname,
-            userID: userId
-        })
+        await axios.post("api/teams", formData, config)
             .catch((err) => {
                 if (err.response) {
                     responseMsg = err.response.data.message[0]
@@ -105,7 +139,7 @@ export const useTeamStore = defineStore("teams", () => {
                 }
             })
 
-        return {responseMsg, isOK}
+        return { responseMsg, isOK }
     }
 
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия

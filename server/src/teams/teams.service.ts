@@ -38,13 +38,15 @@ export class TeamsService {
       ...updateTeamDto
     })
 
+    
     // удалить прошлого лидера
-    await this.usersService.removeLeader(team.id, updateTeamDto.oldLeaderId)
+    if (updateTeamDto.oldLeaderId != null && updateTeamDto.newLeaderId != null) {
+      await this.usersService.removeLeader(team.id, updateTeamDto.oldLeaderId)
 
-    // назначить нового пользвоателя
-    let newUserFunction = await this.usersService.assignLeader(team, updateTeamDto.newLeaderId)
+      // назначить нового пользвоателя
+      let newUserFunction = await this.usersService.assignLeader(team, updateTeamDto.newLeaderId)
 
-    return newUserFunction
+    }
   }
 
 
@@ -141,6 +143,7 @@ export class TeamsService {
 
     let team = await this.teamsRepository.save({
       ...createTeamDto,
+      charter_team:createTeamDto.charterTeam,
       image: [],
       tags: [],
       type_team: "teams",

@@ -20,6 +20,7 @@ export class EventsService {
  
 
   findAllExternal(): Promise<Event[]> {
+  
     return this.eventsRepository
       .createQueryBuilder("events")
       .orderBy("events.dateStart")

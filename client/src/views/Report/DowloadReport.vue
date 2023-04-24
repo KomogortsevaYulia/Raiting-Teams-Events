@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Direction } from '@/store/enums/enum_event';
-import type { TypeReport } from '@/store/enums/enums_report';
+import type { TypeReport } from './enums_report';
 
 
 const props = defineProps<{
