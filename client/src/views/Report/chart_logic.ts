@@ -1,5 +1,5 @@
 import { Level, Type } from "@/store/enums/enum_event";
-import { TypeSeason } from "@/store/enums/enums_report";
+import { TypeSeason } from "@/views/Report/enums_report";
 import { useEventStore } from "@/store/events_store";
 import { useJournalStore } from "@/store/journals_store";
 import type { number } from "echarts/core";

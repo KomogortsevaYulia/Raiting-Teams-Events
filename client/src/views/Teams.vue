@@ -17,10 +17,22 @@ const menu_items = teamStore.menu_items;
 const show = ref(true);
 const data = ref()
 
+// переключить на редактирвоание коллектива или на создание новаого
+const isEditTeam = ref(false)
+const teamEdit = ref()
+
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
   fetchTeams()
 })
+
+
+function editTeam(editT: boolean, team: any) {
+  // редактируем колектив или создаем новый
+  isEditTeam.value = editT
+  teamEdit.value = team
+}
+
 
 
 // вытащить коллективы из бд 
@@ -37,10 +49,16 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
   <!-- Это вся обертка -->
   <div class="wrapper-team">
 
+
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <!-- <div v-if="can('can create teams')" class="mt-4"> -->
-        <ModalCreateTeam />
+      <!-- Button trigger modal -->
+      <button @click="editTeam(false, null)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Создать коллектив
+      </button>
+      <ModalCreateTeam :is-edit-team="isEditTeam" :team="teamEdit" />
+
       <!-- </div> -->
       <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
                 <div v-if="can('can create teams')" class="mt-4">
@@ -74,15 +92,39 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
             <div class="card__banner">
               <img :src="team.image" class="d-block" style="width: 100%;object-fit: cover;">
             </div>
-            <router-link :to="'/team/' + team.id">
-              <div class="wrapperContent">
-                <div class="card__event-name">{{ team.title }}</div>
+
+            <div class="wrapperContent">
+              <div class="card__event-name relative">
+                <div class="row">
+                  <div class="col-8"> {{ team.title }} </div>
+
+                  <div class="col d-flex justify-content-end align-items-start">
+                    <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive" > (В
+                      архиве)</p>
+                  </div>
+
+                  <div class="col-auto d-flex justify-content-end align-items-start">
+                    <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal"
+                      data-bs-target="#exampleModal">
+                      <font-awesome-icon class="ic" icon="pencil-square" />
+                    </div>
+                  </div>
+                  <!-- </div>
+                  </div> -->
+
+                </div>
+
+              </div>
+
+              <router-link :to="'/team/' + team.id" class="w-100">
                 <div class="navigation-tags">
                   <div v-for="el in team.tags" class="teg">{{ el }}</div>
                 </div>
                 <p>{{ team.short_description }}</p>
-              </div>
-            </router-link>
+
+              </router-link>
+            </div>
+
           </div>
         </div>
       </div>
@@ -92,8 +134,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 </template>
 
 <style lang="scss" scoped>
-@import '@/assets/globals.scss';
-
 .wrapper-team {
   display: block;
   width: 100%;
@@ -133,6 +173,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     display: flex;
     height: 100%;
     width: 100% auto;
+
 
     .content-filter {
       border-radius: 15px;
@@ -232,11 +273,14 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         .wrapperContent {
           padding: 1rem;
+          width: 100%;
+
 
           .navigation-tags {
             flex-wrap: wrap;
             padding-bottom: 1rem;
             display: flex;
+            width: max-content;
 
             .teg {
               margin-right: 1rem;
@@ -287,9 +331,21 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           }
         }
 
+        .ic {
+          width: 30px;
+          height: 30px;
+          color: grey;
+
+          &:hover {
+            transition: 0.4s;
+            color: var(--main-color-hover);
+          }
+        }
+
         .card__event-name {
           color: #373737;
           font-size: 1.2rem;
+          width: 100%;
         }
 
         .cardEvent:hover {
@@ -298,6 +354,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         }
 
         .wrapperContent {
+          width: 100%;
           padding: 2rem;
 
           p {

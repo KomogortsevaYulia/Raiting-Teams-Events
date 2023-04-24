@@ -40,21 +40,44 @@ GET http://localhost:3000/api/teams/?id_parent=2
 GET http://localhost:3000/api/teams
 
 ###
+PUT  http://localhost:3000/api/teams/37/change_archive HTTP/1.1
+content-type: application/json
+
+{
+    "isArchive":true
+    
+}
+###
 # create new team
 POST http://localhost:3000/api/teams HTTP/1.1
 content-type: application/json
 
 {
-    "userID":1,
+    "userID":5,
     "shortname": "dddd2",
     "description": "Хотим подняться на гору",
-    "title":"hddddhh"
+    "title":"hddddhh",
+    "document":"hddddhh",
+    "charterTeam":"dddddd",
+    "cabinet":"8"
+   
 }
 
+###
+PUT http://localhost:3000/api/teams/17 HTTP/1.1
+content-type: application/json
 
-
-
-
+{
+    "oldLeaderId":63,
+    "newLeaderId":54,
+    "shortname": "train1",
+    "description": "Хотим подняться на гору",
+    "title":"hddddhh",
+    "document":"hddddhh",
+    "charterTeam":"dddddd",
+    "cabinet":"8"
+   
+}
 
 ###
 # student-------------------------------------------------------
@@ -86,10 +109,24 @@ POST http://localhost:3000/api/users/functions HTTP/1.1
 content-type: application/json
 
 {
-    "title": "shit",
-    "team": "45"
+    "title": "shit2",
+    "team": 31
    
 }
+
+###
+DELETE  http://localhost:3000/api/users/team/17/leader/54 HTTP/1.1
+
+# update
+###
+PUT http://localhost:3000/api/users/functions/59 HTTP/1.1
+content-type: application/json
+
+{
+    "title": "shit4",
+    "team":30
+}
+
 
 
 
@@ -123,6 +160,18 @@ content-type: application/json
 ###
 # DICTIONARY
 GET http://localhost:3000/api/general/dictionary/2
+
+
+# FILE
+###
+GET http://localhost:3000/api/uploads HTTP/1.1
+content-type: application/json
+
+{
+    "path":"public/media/b077f410998f48df3627e5698d1ccb9f6.png"
+  
+}
+
 
 
 
