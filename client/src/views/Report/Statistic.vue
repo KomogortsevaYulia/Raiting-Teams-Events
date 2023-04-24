@@ -5,6 +5,7 @@
 <script setup lang="ts" >
 import { onBeforeMount, ref, watch } from 'vue';
 import { DatePicker } from 'v-calendar';
+
 import DownloadReport from './DowloadReport.vue';
 
 // graphics
@@ -14,13 +15,18 @@ import EBar from '@/components/Charts/EBar.vue';
 
 import { useTeamStore } from '@/store/team_store';
 import { useJournalStore } from '@/store/journals_store';
-import _ from 'lodash';
+import _, { defaultsDeep, forIn } from 'lodash';
 import { useEventStore } from '@/store/events_store';
+import { useDictionaryStore } from '@/store/dictionary_store';
 import { Direction, Level } from '@/store/enums/enum_event';
 import { useChartStore } from './chart_logic';
+import { useStatiscticLogicStore } from './statistic_logic';
 
 import { Type } from '@/store/enums/enum_event';
-import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from '@/store/enums/enums_report';
+import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from './enums_report';
+import { DirectionName } from '@/store/enums/enum_teams';
+import { EVENT_LEVEL, EVENT_TYPE } from '@/store/constants/constants_class_names';
+
 
 // store
 const teamStore = useTeamStore();
@@ -28,6 +34,9 @@ const journalStore = useJournalStore();
 const eventStore = useEventStore();
 
 const chartStore = useChartStore();
+const statisticLogic = useStatiscticLogicStore();
+const dictionaryStore = useDictionaryStore();
+
 
 // graphics and checkboxes
 const typeGraphics = ref([{ id: 0, data: TypeGraphic.EVENTS_STATISTIC, isVisibleChart: true, typeReport: TypeReport.DIRECTION },
@@ -39,10 +48,8 @@ const dates = [{ id: 0, date: '1н', timeRange: TimeRange.WEEK }, { id: 1, date:
 
 
 // dropdowns
-const levels = [{ id: 0, data: Level.ALL }, { id: 1, data: Level.UNIVERSITY },
-{ id: 2, data: Level.CITY }, { id: 3, data: Level.REGION }]
-
-const types = [{ id: 0, data: Type.ALL }, { id: 1, data: Type.INSIDE }, { id: 2, data: Type.OUTSIDE }]
+const levels = ref([{ id: 0, name: "Все" }])
+const types = ref([{ id: 0, name: "Все" }])
 
 const typeReports = [{ id: 0, data: TypeReport.DIRECTION }, { id: 1, data: TypeReport.TEAM }]
 
@@ -71,8 +78,8 @@ let dataTopTeams = ref([0])
 
 //данные для графика внутренние/внешние мероприятия
 let dataEventsInnerOuter = ref([
-  { value: 0, name: Type.INSIDE },
-  { value: 0, name: Type.OUTSIDE },])
+  { value: 0, name: "Внешнее" },
+  { value: 0, name: "Внутреннее" },])
 
 
 const colorfulBlocksData = ref([
@@ -86,11 +93,55 @@ const foundEvents = ref()
 
 
 // { id: number, shortname: string }
-const foundDirections = ref([{ id: 0, shortname: Direction.ALL, idDB: 0 }])           //дата
+const foundDirections = ref([{ id: 0, shortname: DirectionName.ALL, idDB: 0, idDirectionEvent: Direction.ALL }])           //дата
+
+
+
+// async function fillDropdown(d: Object) {
+
+//   const res = [{ id: 0, name: "Все" }]
+
+//   Object.keys(d).forEach(async (item) => {
+
+//     let num = Number(item)
+
+//     if (!isNaN(num) && num > 0) {
+
+//       let valFromDictionary = (await dictionaryStore.getDictionary(num))
+//       res.push({ id: valFromDictionary.id, name: valFromDictionary.name })
+//     }
+//   });
+
+//   return res
+//   // forIn(d, (v,k)=>{alert(v + " k " + k)})
+
+// }
+
+function fillDropdowns(data: any) {
+
+  let res = [{ id: 0, name: "Все" }]
+
+  for (let i = 0; i < data.length; i++) {
+    res.push({ id: data[i].id, name: data[i].name })
+  }
+
+  return res
+}
 
 onBeforeMount(async () => {
+
+  let lev = await dictionaryStore.getFromDictionaryByClassID(EVENT_LEVEL)
+  levels.value = fillDropdowns(lev)
+
+  let tp = await dictionaryStore.getFromDictionaryByClassID(EVENT_TYPE)
+  types.value = fillDropdowns(tp)
+
+    // levels.value = await fillDropdown(Level)
+ // types.value = await fillDropdown(Type)
   await getDirections()
   getEvents()
+
+
 })
 
 // если выбран коллектив то получить статистику с мероприятий
@@ -169,10 +220,10 @@ async function updateCharts() {
 
         let res = await chartStore.countTeamsEvents(foundTeams.value,
           dateRange.value.start, dateRange.value.end,
-          levels[selectedLevel.value].data,
-          types[selectedType.value].data)
+          selectedLevel.value,
+          selectedType.value)
 
-        labelsTopTeams.value =  res.labelsTopTeams
+        labelsTopTeams.value = res.labelsTopTeams
         dataTopTeams.value = res.dataTopTeams
         break;
       case TypeGraphic.DEFAULT_PARAMETERS:
@@ -192,13 +243,14 @@ async function getDirections() {
 
   let directions = data[0]
   let arrayData = []
-  arrayData[0] = { id: 0, shortname: Direction.ALL, idDB: 0 }
+  arrayData[0] = { id: 0, shortname: DirectionName.ALL, idDB: 0, idDirectionEvent: Direction.ALL }
 
   for (let i = 0; i < directions.length; i++) {
     // console.log("directions " + directions[i].shortname)
     let direction = directions[i]
 
-    arrayData[i + 1] = { id: i + 1, shortname: direction.shortname, idDB: direction.id };
+    let idDirectionEvent = statisticLogic.directionInTeamsConvertToDirectionInEvents(direction.shortname)
+    arrayData[i + 1] = { id: i + 1, shortname: direction.shortname, idDB: direction.id, idDirectionEvent: idDirectionEvent };
   }
 
   foundDirections.value = arrayData
@@ -268,8 +320,8 @@ async function getEventsViaJournalsByTeam(teamId: number) {
 
     let event = await eventStore.fetchEventById(eventId,
       dateRange.value.start, dateRange.value.end,
-      levels[selectedLevel.value].data,
-      types[selectedType.value].data,)
+      selectedLevel.value,
+      selectedType.value,)
 
 
     if (event ?? false) {
@@ -295,19 +347,19 @@ async function getEventsViaJournalsByTeam(teamId: number) {
 // получить мероприятия
 async function getEventsByDirection() {
 
-  let directionName = Direction.ALL
-  directionName = foundDirections.value[selectedDirection.value].shortname
+  let direction = Direction.ALL
+  direction = foundDirections.value[selectedDirection.value].idDirectionEvent
 
-  let data = await eventStore.getEventsByDirection(directionName,
+  let data = await eventStore.getEventsByDirection(direction,
     dateRange.value.start, dateRange.value.end,
-    levels[selectedLevel.value].data,
-    types[selectedType.value].data,)
+    selectedLevel.value,
+    selectedType.value,)
 
   let events = data[0]
   colorfulBlocksData.value[0].value = data[1]
 
   foundEvents.value = events
-  // console.log("evnt " + foundEvents.value)
+  // console.log("evnt " + foundEvents.value[0].level)
   // console.log("directions " + foundDirections.value[selectedDirection.value].shortname + "   selectedDirection " + selectedDirection.value)
 }
 
@@ -351,11 +403,11 @@ function changeTypeReport() {
       
 <template>
   <!-- selectedDirection
-                                                          {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
-                                                          {{ dateRange }}
-                                                          {{ selectedTeam }}
-                                                          <hr />
-                                                          {{ dataEventsInnerOuter }} -->
+                                                                {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
+                                                                {{ dateRange }}
+                                                                {{ selectedTeam }}
+                                                                <hr />
+                                                                {{ dataEventsInnerOuter }} -->
   <!-- menu -->
   <div class="row">
     <div class="col-lg-5">
@@ -439,7 +491,7 @@ function changeTypeReport() {
               <label class="form-label">уровень мероприятий</label>
               <select class="form-select" aria-label="Default select example" v-model="selectedLevel"
                 @change="getEvents()">
-                <option v-for="lvl in levels" :value="lvl.id">{{ lvl.data }}</option>
+                <option v-for="lvl in levels" :value="lvl.id">{{ lvl.name }}</option>
               </select>
             </div>
           </div>
@@ -450,7 +502,7 @@ function changeTypeReport() {
               <label class="form-label">тип мероприятий</label>
               <select class="form-select" aria-label="Default select example" v-model="selectedType"
                 @change="getEvents()">
-                <option v-for="tp in types" :value="tp.id">{{ tp.data }}</option>
+                <option v-for="tp in types" :value="tp.id">{{ tp.name }}</option>
               </select>
             </div>
           </div>
@@ -459,11 +511,9 @@ function changeTypeReport() {
 
 
 
-        <!--Отчетность  -->
-        <DownloadReport :date-range="dateRange" :event-or-team="selectedTypeReport"
-          :direction="foundDirections[selectedDirection]" :teams="selectedTeam.name" :level="levels[selectedLevel]"
-          :type-event="types[selectedType]" />
-        <!--Отчетность  -->
+
+
+
 
 
 
@@ -478,7 +528,7 @@ function changeTypeReport() {
         <div class="row">
 
           <div v-for="g in 
-                    typeGraphics">
+                        typeGraphics">
 
             <div class="form-check" v-if="g.typeReport == selectedTypeReport || g.typeReport == TypeReport.DIRECTION"
               @change="seeGraphics(g)">
@@ -491,7 +541,6 @@ function changeTypeReport() {
           </div>
         </div>
 
-
         <!--Общие показатели  -->
         <div v-if="typeGraphics[2].isVisibleChart" class="row mt-4">
 
@@ -500,7 +549,6 @@ function changeTypeReport() {
         </div>
       </div>
     </div>
-
 
     <div class="col-lg-7">
       <div class="chart-container">
@@ -529,6 +577,14 @@ function changeTypeReport() {
         </div>
 
 
+
+
+
+
+
+
+
+
         <!-- Коллективы -->
         <div v-if="typeGraphics[1].isVisibleChart" class="block-content">
 
@@ -540,7 +596,7 @@ function changeTypeReport() {
               <div class="col">
                 <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
                 <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                                                                                                                                                                        title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+                                                                                                                                                                                                                              title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
               </div>
             </div>
           </div>

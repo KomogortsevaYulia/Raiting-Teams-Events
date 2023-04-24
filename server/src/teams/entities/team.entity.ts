@@ -48,6 +48,22 @@ export class Team {
     @Column()
     shortname:string
 
+    @ApiProperty()
+    @Column({default:false})
+    is_archive:boolean
+
+    @ApiProperty()
+    @Column({nullable:true})
+    cabinet:string
+
+    @ApiProperty()
+    @Column({nullable:true})
+    charter_team:string
+
+    @ApiProperty()
+    @Column({nullable:true})
+    document:string
+
     @OneToMany((type)=>Function, (func)=>func.team)
     @JoinColumn([{ name: "func_id" }])
     functions:Function[]
