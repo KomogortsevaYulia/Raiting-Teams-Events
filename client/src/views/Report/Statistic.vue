@@ -5,6 +5,7 @@
 <script setup lang="ts" >
 import { onBeforeMount, ref, watch } from 'vue';
 import { DatePicker } from 'v-calendar';
+
 import DownloadReport from './DowloadReport.vue';
 
 // graphics
@@ -24,6 +25,7 @@ import { useStatiscticLogicStore } from './statistic_logic';
 import { Type } from '@/store/enums/enum_event';
 import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from './enums_report';
 import { DirectionName } from '@/store/enums/enum_teams';
+import { EVENT_LEVEL, EVENT_TYPE } from '@/store/constants/constants_class_names';
 
 
 // store
@@ -95,34 +97,51 @@ const foundDirections = ref([{ id: 0, shortname: DirectionName.ALL, idDB: 0, idD
 
 
 
-async function fillDropdown(d: Object) {
+// async function fillDropdown(d: Object) {
 
-  const res = [{ id: 0, name: "Все" }]
+//   const res = [{ id: 0, name: "Все" }]
 
-  Object.keys(d).forEach(async (item) => {
-   
-    let num = Number(item)
- 
-    if (!isNaN(num) && num > 0) {
-     
-      let valFromDictionary = (await dictionaryStore.getDictionary(num))
-      res.push({ id: valFromDictionary.id, name: valFromDictionary.name })
-    }
-  });
+//   Object.keys(d).forEach(async (item) => {
+
+//     let num = Number(item)
+
+//     if (!isNaN(num) && num > 0) {
+
+//       let valFromDictionary = (await dictionaryStore.getDictionary(num))
+//       res.push({ id: valFromDictionary.id, name: valFromDictionary.name })
+//     }
+//   });
+
+//   return res
+//   // forIn(d, (v,k)=>{alert(v + " k " + k)})
+
+// }
+
+function fillDropdowns(data: any) {
+
+  let res = [{ id: 0, name: "Все" }]
+
+  for (let i = 0; i < data.length; i++) {
+    res.push({ id: i + 1, name: data[i].name })
+  }
 
   return res
-  // forIn(d, (v,k)=>{alert(v + " k " + k)})
-
 }
 
-
 onBeforeMount(async () => {
-  levels.value = await fillDropdown(Level)
-  types.value = await fillDropdown(Type)
+
+  let lev = await dictionaryStore.getFromDictionaryByClassID(EVENT_LEVEL)
+  levels.value = fillDropdowns(lev)
+
+  let tp = await dictionaryStore.getFromDictionaryByClassID(EVENT_TYPE)
+  types.value = fillDropdowns(tp)
+
+    // levels.value = await fillDropdown(Level)
+ // types.value = await fillDropdown(Type)
   await getDirections()
   getEvents()
 
-  
+
 })
 
 // если выбран коллектив то получить статистику с мероприятий
@@ -495,7 +514,7 @@ function changeTypeReport() {
 
 
 
-      
+
 
 
 

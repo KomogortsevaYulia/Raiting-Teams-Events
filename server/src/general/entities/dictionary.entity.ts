@@ -14,8 +14,14 @@ export class Dictionary {
     @Column()
     name: string
 
-    // @OneToMany((type)=>Journal, (journal)=>journal.event)
-    // journal:Journal[]
+    
+    @ApiProperty()
+    @Column({nullable:true})
+    class_name: string
+
+    @ApiProperty()
+    @Column({nullable:true})
+    class_id: number
 
     //Event
 
