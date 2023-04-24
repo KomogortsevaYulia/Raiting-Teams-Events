@@ -86,7 +86,7 @@ async function fillForm() {
     //если есть руководитель коллектива
     if (t.functions != null && t.functions[0].userFunctions != null) {
       let uF = t.functions[0].userFunctions[0].user
-      optionSelect.value = { name: uF.username, email: uF.email, id: uF.id, data: uF.username + " " + uF.email }
+      optionSelect.value = { name: uF.fullname, email: uF.email, id: uF.id, data: uF.fullname + " " + uF.email }
       oldUserId.value = uF.id
     }
 
