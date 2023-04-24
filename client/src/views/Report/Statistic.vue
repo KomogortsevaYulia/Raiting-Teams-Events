@@ -122,7 +122,7 @@ function fillDropdowns(data: any) {
   let res = [{ id: 0, name: "Все" }]
 
   for (let i = 0; i < data.length; i++) {
-    res.push({ id: i + 1, name: data[i].name })
+    res.push({ id: data[i].id, name: data[i].name })
   }
 
   return res
