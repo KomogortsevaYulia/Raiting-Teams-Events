@@ -85,6 +85,23 @@ export class Event {
     @Column({ nullable: true })
     target_audience: string
 
+    
+    @ApiProperty()
+    @Column({ nullable: true })
+    status: boolean
+
+    @ApiProperty()
+    @Column({ nullable: true })
+    phone: string
+
+    @ApiProperty()
+    @Column({ nullable: true })
+    email: string
+
+    @ApiProperty()
+    @Column("simple-array",{ nullable: true })
+    social_links: string[]
+
 
 
 

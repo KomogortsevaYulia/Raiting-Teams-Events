@@ -15,8 +15,8 @@ export const useTeamStore = defineStore("teams", () => {
     async function fetchTeams(): Promise<any> {
         const res = await axios.get('/api/teams')
 
-        const res2 = await axios.get('/api/uploads/',{params:{path:"/public/media/87a39a3586e19c22106a10ad53d0434b101.pdf"}} )
-        console.log(res2)
+        // const res2 = await axios.get('/api/uploads/',{params:{path:"/public/media/87a39a3586e19c22106a10ad53d0434b101.pdf"}} )
+        // console.log(res2)
         const data = res.data
 
         return data
