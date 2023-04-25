@@ -16,14 +16,17 @@ const props = defineProps<{
   team: any
 }>()
 
+const team = ref()
+
+
 // values from form
 const title = ref("");
 const shortname = ref("");
 const userLeader = ref();
 const cabinet = ref("");
 
-const charterTeam = ref();
-const document = ref();
+const charterTeamImg = ref();
+// const document = ref();
 
 const description = ref("");
 
@@ -31,7 +34,7 @@ const description = ref("");
 const charterTeamFile = ref();
 const documentFile = ref();
 
-const charterTeamBase64 = ref("https://avatars.mds.yandex.net/i?id=df08e6458e33cfbc22661553097b035637f6cfb5-9231626-images-thumbs&n=13")
+const charterTeamBase64 = ref()
 
 const oldUserId = ref(-1)
 
@@ -57,17 +60,24 @@ async function onTextChange(e: any) {
 }
 
 watch(
-  () => props.team, (value, previousValue) => {
+  () => team.value, (value, previousValue) => {
     fillForm()
 
-    if (props.team != null) {
+    if (team.value != null) {
 
     }
 
   })
 
+  watch(
+  () =>props.team, (value, previousValue) => {
+    team.value = props.team
+  })
+ 
+
 onBeforeMount(async () => {
   await getUsers()
+  team.value = props.team
 
 })
 
@@ -76,21 +86,22 @@ async function fillForm() {
 
   responseMsg.value = ""
 
-  if (props.team != null) {
-    let t = props.team
+  if (team.value != null) {
+    let t = team.value
 
     title.value = t.title
     shortname.value = t.shortname
     description.value = t.description
     cabinet.value = t.cabinet
 
-    if (props.team.charter_team != null) {
-      charterTeam.value = await fileStore.getImageBase64(props.team.charter_team)
+    if (team.value.charter_team != null) {
+      charterTeamImg.value = await fileStore.getImageBase64(team.value.charter_team)
       // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
 
-      const ustavExtention = props.team.charter_team.split(".").pop()
-      charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeam.value
-    }else{ charterTeamBase64.value = ""}
+      const ustavExtention = team.value.charter_team.split(".").pop()
+      charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
+      
+    } else { charterTeamBase64.value = "" }
     // console.log(charterTeamBase64.value)
 
 
@@ -164,16 +175,24 @@ async function updateTeam() {
   const uT = new UpdateTeam()
   uT.cabinet = cabinet.value
   uT.description = description.value
-  uT.id = props.team.id
+  uT.id = team.value.id
   uT.oldUserId = oldUserId.value
   uT.newUserId = newUserId
   uT.shortname = shortname.value
   uT.title = title.value
+  uT.documentPath = team.value.document
+  uT.charterPath = team.value.charter_team
   // files
   uT.fileUstav = charterTeamFile.value
   uT.fileDocument = documentFile.value
 
-  responseMsg.value = await teamStore.updateTeam(uT)
+  const res = await teamStore.updateTeam(uT)
+  responseMsg.value = res.responseMsg
+
+  if(res.team != null){
+    console.log(res.team.data)
+    team.value = res.team.data
+  }
 
   // console.log(newTeam)
 }
@@ -217,12 +236,14 @@ async function archiveTeam(id: number, isArchive: boolean) {
   let res = await teamStore.archiveTeam(id, isArchive)
   responseMsg.value = res.responseMsg
 
-  if (res.isOK) props.team.is_archive = isArchive
+  if (res.isOK) team.value.is_archive = isArchive
 }
 
 </script>
 
 <template>
+  <!-- team {{ team }}
+  team {{ props.team }} -->
   <!-- Modal -->
   <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -231,7 +252,6 @@ async function archiveTeam(id: number, isArchive: boolean) {
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">
 
-            <img v-if="isEditTeam" :src="charterTeamBase64" alt="My Image">
             <!-- редактирование или создание нвого колелктива -->
             <b v-if="isEditTeam"> Редактировать коллектив </b>
             <b v-else>Создать коллектив </b>
@@ -275,11 +295,14 @@ async function archiveTeam(id: number, isArchive: boolean) {
                   <div class="mb-2">
                     <label for="formFile" class="form-label">загрузить устав</label>
                     <input class="form-control" type="file" id="formFile" @change="(e) => handleFileUpload(e, false)">
+                    <p v-if="isEditTeam && team!=null" > {{ team.charter_team }}</p>  
+                    <img v-if="isEditTeam" :src="charterTeamBase64" style="width: 100px; height: 100px;" alt="Устав">
                   </div>
 
                   <div class="mb-2">
                     <label for="formFile1" class="form-label">загрузить документ(ы)</label>
                     <input class="form-control" type="file" id="formFile1" @change="(e) => handleFileUpload(e, true)">
+                    <p v-if="isEditTeam && team!=null" > {{ team.document }}</p>
                   </div>
 
                   <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->

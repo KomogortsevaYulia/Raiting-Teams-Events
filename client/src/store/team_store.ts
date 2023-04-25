@@ -89,12 +89,18 @@ export const useTeamStore = defineStore("teams", () => {
         formData.append('description', uT.description);
         formData.append('shortname', uT.shortname);
         formData.append('cabinet', uT.cabinet);
+        // paths to files
+        if (uT.charterPath.length > 0)
+            formData.append('charterTeam', uT.charterPath);
+        if (uT.documentPath.length > 0)
+            formData.append('document', uT.documentPath);
+
         formData.append('oldLeaderId', uT.oldUserId.toString());
         formData.append('newLeaderId', uT.newUserId.toString());
 
         if (uT.fileUstav != null)
             formData.append('files', uT.fileUstav, `ustav.${uT.fileUstav.name.split(".").pop()}`);
-            
+
         if (uT.fileDocument != null)
             formData.append('files', uT.fileDocument, `document.${uT.fileDocument.name.split(".").pop()}`);
 
@@ -104,14 +110,14 @@ export const useTeamStore = defineStore("teams", () => {
             }
         }
 
-        await axios.put("api/teams/" + uT.id, formData, config)
+        const team = await axios.put("api/teams/" + uT.id, formData, config)
             .catch((err) => {
                 if (err.response) {
                     responseMsg = err.response.data.message[0]
                 }
             })
 
-        return responseMsg
+        return { team, responseMsg }
 
 
     }

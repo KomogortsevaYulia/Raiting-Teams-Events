@@ -54,29 +54,33 @@ export class TeamsController {
     console.log(files)
     console.log(updateTeamDto)
 
-    let ustav = null
-    let doc = null
+    let ustavPath = updateTeamDto.charterTeam
+    let docPath = updateTeamDto.document
 
-    for (let f in files) {
+    console.log("ustav1 " + ustavPath)
+    console.log("doc1 " + docPath)
 
-      console.log(files[f])
-      //оставить только начало файла без расширения
-      if (files[f].originalname.split(".").shift() == "ustav"
-        && ustav == null) {
+    if (files.length < 3) {
+      for (let f in files) {
+        console.log("have files " + (ustavPath))
+        // console.log(files[f])
+        //оставить только начало файла без расширения
+        if (files[f].originalname.split(".").shift() == "ustav") {
 
-       ustav = await this.uploadsService.uploadFile(files[f])
-      } else if (files[f].originalname.split(".").shift() == "document"
-        && doc == null) {
+          console.log("ustav loaded ")
+          ustavPath = await this.uploadsService.uploadFile(files[f])
+        } else if (files[f].originalname.split(".").shift() == "document") {
 
-       doc = await this.uploadsService.uploadFile(files[f])
+          docPath = await this.uploadsService.uploadFile(files[f])
+        }
       }
     }
 
-    updateTeamDto.charterTeam = ustav
-    console.log("ustav " + ustav)
+    updateTeamDto.charterTeam = ustavPath
+    console.log("ustav " + ustavPath)
 
-    updateTeamDto.document = doc
-    console.log("doc " + doc)
+    updateTeamDto.document = docPath
+    console.log("doc " + docPath)
 
     let team = await this.teamsService.update(id, updateTeamDto);
 

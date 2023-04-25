@@ -33,7 +33,6 @@ export class TeamsService {
 // Обновить коллектив
   async update(id: number, updateTeamDto: UpdateTeamDto) {
 
-    console.log("updateTeamDto.charterTeam " + updateTeamDto.charterTeam)
     let team = await this.teamsRepository.save({
       id,
       ...updateTeamDto,
