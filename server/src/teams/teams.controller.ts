@@ -45,9 +45,44 @@ export class TeamsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updateTeamDto: UpdateTeamDto) {
-    return this.teamsService.update(id, updateTeamDto);
+  @ApiOperation({ summary: "Обновить коллектив (ответственный по направлению)" })
+  @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  @UseInterceptors(FilesInterceptor('files'))
+  async update(@Param('id') id: number, @UploadedFiles() files, @Body() updateTeamDto: UpdateTeamDto) {
+    console.log(files)
+    console.log(updateTeamDto)
+
+    let ustav = null
+    let doc = null
+
+    for (let f in files) {
+
+      console.log(files[f])
+      //оставить только начало файла без расширения
+      if (files[f].originalname.split(".").shift() == "ustav"
+        && ustav == null) {
+
+       ustav = await this.uploadsService.uploadFile(files[f])
+      } else if (files[f].originalname.split(".").shift() == "document"
+        && doc == null) {
+
+       doc = await this.uploadsService.uploadFile(files[f])
+      }
+    }
+
+    updateTeamDto.charterTeam = ustav
+    console.log("ustav " + ustav)
+
+    updateTeamDto.document = doc
+    console.log("doc " + doc)
+
+    let team = await this.teamsService.update(id, updateTeamDto);
+
+    return team
   }
+
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {
@@ -92,14 +127,36 @@ export class TeamsController {
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('files'))
   // @UseInterceptors(FileInterceptor('document'))
-  async create(@UploadedFile("file") file, @Body() createTeamDto: CreateTeamDto) {
-    console.log(file)
+  async create(@UploadedFiles() files, @Body() createTeamDto: CreateTeamDto) { //, @Body() createTeamDto: CreateTeamDto
+    // console.log(files)
+    // console.log(createTeamDto)
 
-    let path = await this.uploadsService.uploadFile(file)
-    createTeamDto.charterTeam = path
-    console.log("path " + path)
+    let ustav = null
+    let doc = null
+
+    for (let f in files) {
+
+      console.log(files[f])
+      //оставить только начало файла без расширения
+      if (files[f].originalname.split(".").shift() == "ustav"
+        && ustav == null) {
+
+        ustav = await this.uploadsService.uploadFile(files[f])
+      } else if (files[f].originalname.split(".").shift() == "document"
+        && doc == null) {
+
+        doc = await this.uploadsService.uploadFile(files[f])
+      }
+    }
+
+    // let path = await this.uploadsService.uploadFile(files[0])
+    createTeamDto.charterTeam = ustav
+    console.log("ustav " + ustav)
+
+    createTeamDto.document = doc
+    console.log("doc " + doc)
 
     let team = await this.teamsService.create(createTeamDto);
 

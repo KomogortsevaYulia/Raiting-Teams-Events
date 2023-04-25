@@ -1,4 +1,5 @@
 
+import { Type } from 'class-transformer'
 import {IsNotEmpty, IsNumber, IsOptional, Length, MaxLength, isEmpty } from 'class-validator'
 
 
@@ -23,10 +24,12 @@ export class UpdateTeamDto {
 
     @IsOptional()
     @IsNumber()
+    @Type(() => Number)
     oldLeaderId:number
 
     @IsOptional()
     @IsNumber()
+    @Type(() => Number)
     newLeaderId:number
 
     @IsOptional()
@@ -35,17 +38,18 @@ export class UpdateTeamDto {
     })
     cabinet:string
 
+    @IsOptional()
     @IsNotEmpty({ message: 'Ссылка на документ пустая' })
     @Length(1,300,{
         message: 'Ссылка на документ, максимальная длина текста 300'
     })
     document:string
 
+    @IsOptional()
     @IsNotEmpty({ message: 'Ссылка на устав пустая' })
     @Length(1,300,{
         message: 'ССсылка на устав, максимальная длина текста 300'
     })
     charterTeam:string
 
-    // functions:Function[]
 }

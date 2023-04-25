@@ -50,31 +50,15 @@ export const useTeamStore = defineStore("teams", () => {
 
         let responseMsg = "сохранено"
 
-
-
-        // const data = {
-
-        //     title: title,
-        //     description: description,
-        //     shortname: shortname,
-        //     userID: userId,
-        //     fileUstav: fileUstav
-        // }
-
-        // alert( fileUstav.name.split(".").shift())
-
         const formData = new FormData();
         formData.append('title', title);
         formData.append('description', description);
         formData.append('shortname', shortname);
         formData.append('userID', userId.toString());
         formData.append('cabinet', cabinet);
-        formData.append('file', fileUstav);
-        // formData.append('document', fileDocument);
 
-
-
-
+        formData.append('files', fileUstav, `ustav.${fileUstav.name.split(".").pop()}`);
+        formData.append('files', fileDocument, `document.${fileDocument.name.split(".").pop()}`);
 
         const config = {
             headers: {
@@ -82,9 +66,6 @@ export const useTeamStore = defineStore("teams", () => {
             }
         }
 
-        // const res = await axios.post('api/uploads', formData, config);
-
-        // alert("res " + res.data)
 
         //create team
         await axios.post("api/teams", formData, config)
@@ -103,16 +84,27 @@ export const useTeamStore = defineStore("teams", () => {
 
         let responseMsg = "сохранено"
 
-        await axios.put("api/teams/" + uT.id, {
-            title: uT.title,
-            description: uT.description,
-            shortname: uT.shortname,
-            cabinet: uT.cabinet,
-            oldLeaderId: uT.oldUserId,
-            newLeaderId: uT.newUserId,
-            document: "dcf",
-            charterTeam: "заглушка",
-        })
+        const formData = new FormData();
+        formData.append('title', uT.title);
+        formData.append('description', uT.description);
+        formData.append('shortname', uT.shortname);
+        formData.append('cabinet', uT.cabinet);
+        formData.append('oldLeaderId', uT.oldUserId.toString());
+        formData.append('newLeaderId', uT.newUserId.toString());
+
+        if (uT.fileUstav != null)
+            formData.append('files', uT.fileUstav, `ustav.${uT.fileUstav.name.split(".").pop()}`);
+            
+        if (uT.fileDocument != null)
+            formData.append('files', uT.fileDocument, `document.${uT.fileDocument.name.split(".").pop()}`);
+
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+
+        await axios.put("api/teams/" + uT.id, formData, config)
             .catch((err) => {
                 if (err.response) {
                     responseMsg = err.response.data.message[0]

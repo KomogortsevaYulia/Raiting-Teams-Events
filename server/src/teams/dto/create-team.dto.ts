@@ -34,9 +34,9 @@ export class CreateTeamDto {
     })
     cabinet:string
 
-    // @IsOptional()
-    // @IsNotEmpty({ message: 'Ссылка на документ пустая' })
-    // document:string
+    @IsOptional()
+    @IsNotEmpty({ message: 'Ссылка на документ пустая' })
+    document:string
 
     @IsOptional()
     @IsNotEmpty({ message: 'Ссылка на устав пустая' })

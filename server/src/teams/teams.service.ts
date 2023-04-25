@@ -30,15 +30,17 @@ export class TeamsService {
   }
 
 
-
+// Обновить коллектив
   async update(id: number, updateTeamDto: UpdateTeamDto) {
 
+    console.log("updateTeamDto.charterTeam " + updateTeamDto.charterTeam)
     let team = await this.teamsRepository.save({
       id,
-      ...updateTeamDto
+      ...updateTeamDto,
+      charter_team: updateTeamDto.charterTeam,
     })
 
-    
+
     // удалить прошлого лидера
     if (updateTeamDto.oldLeaderId != null && updateTeamDto.newLeaderId != null) {
       await this.usersService.removeLeader(team.id, updateTeamDto.oldLeaderId)
@@ -47,13 +49,27 @@ export class TeamsService {
       let newUserFunction = await this.usersService.assignLeader(team, updateTeamDto.newLeaderId)
 
     }
+
+    return team
   }
 
 
+  //создать коллектив, с учетом, что есь минимум 1 лидер
+  async create(createTeamDto: CreateTeamDto): Promise<Team> {
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} team`;
-  // }
+    let team = await this.teamsRepository.save({
+      ...createTeamDto,
+      charter_team: createTeamDto.charterTeam,
+      image: [],
+      tags: [],
+      type_team: "teams",
+      creation_date: new Date()
+    })
+
+    await this.usersService.assignLeader(team, createTeamDto.userID)
+
+    return team;
+  }
 
   // get all teams with leadeaders
   async findAll(): Promise<Team[]> {
@@ -137,23 +153,6 @@ export class TeamsService {
     return teamsFunctions
   }
 
-
-  //создать команду, с учетом, что есь минимум 1 лидер
-  async create(createTeamDto: CreateTeamDto): Promise<Team> {
-
-    let team = await this.teamsRepository.save({
-      ...createTeamDto,
-      charter_team:createTeamDto.charterTeam,
-      image: [],
-      tags: [],
-      type_team: "teams",
-      creation_date: new Date()
-    })
-
-    await this.usersService.assignLeader(team, createTeamDto.userID)
-
-    return team;
-  }
 
   //архивировать или наоборот
   async changeArchiveTeam(id: number, isArchive: boolean) {

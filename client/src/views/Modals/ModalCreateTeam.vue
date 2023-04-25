@@ -31,6 +31,8 @@ const description = ref("");
 const charterTeamFile = ref();
 const documentFile = ref();
 
+const charterTeamBase64 = ref("https://avatars.mds.yandex.net/i?id=df08e6458e33cfbc22661553097b035637f6cfb5-9231626-images-thumbs&n=13")
+
 const oldUserId = ref(-1)
 
 
@@ -71,7 +73,7 @@ onBeforeMount(async () => {
 
 async function fillForm() {
 
-  
+
   responseMsg.value = ""
 
   if (props.team != null) {
@@ -82,13 +84,25 @@ async function fillForm() {
     description.value = t.description
     cabinet.value = t.cabinet
 
+    if (props.team.charter_team != null) {
+      charterTeam.value = await fileStore.getImageBase64(props.team.charter_team)
+      // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
+
+      const ustavExtention = props.team.charter_team.split(".").pop()
+      charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeam.value
+    }else{ charterTeamBase64.value = ""}
+    // console.log(charterTeamBase64.value)
+
+
     // alert(t.functions [0].userFunctions[0].id)
     //если есть руководитель коллектива
     if (t.functions != null && t.functions[0].userFunctions != null) {
+
       let uF = t.functions[0].userFunctions[0].user
       optionSelect.value = { name: uF.fullname, email: uF.email, id: uF.id, data: uF.fullname + " " + uF.email }
       oldUserId.value = uF.id
     }
+
 
   } else { //если коллектив не задан , то очистить все поля
     title.value = shortname.value = description.value
@@ -135,6 +149,7 @@ async function createTeam() {
   // console.log(newTeam)
 }
 
+
 // обночить коллектив
 async function updateTeam() {
 
@@ -154,6 +169,9 @@ async function updateTeam() {
   uT.newUserId = newUserId
   uT.shortname = shortname.value
   uT.title = title.value
+  // files
+  uT.fileUstav = charterTeamFile.value
+  uT.fileDocument = documentFile.value
 
   responseMsg.value = await teamStore.updateTeam(uT)
 
@@ -213,6 +231,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">
 
+            <img v-if="isEditTeam" :src="charterTeamBase64" alt="My Image">
             <!-- редактирование или создание нвого колелктива -->
             <b v-if="isEditTeam"> Редактировать коллектив </b>
             <b v-else>Создать коллектив </b>
@@ -255,12 +274,12 @@ async function archiveTeam(id: number, isArchive: boolean) {
 
                   <div class="mb-2">
                     <label for="formFile" class="form-label">загрузить устав</label>
-                    <input class="form-control" type="file" id="formFile" @change="(e)=>handleFileUpload(e, false)">
+                    <input class="form-control" type="file" id="formFile" @change="(e) => handleFileUpload(e, false)">
                   </div>
 
                   <div class="mb-2">
                     <label for="formFile1" class="form-label">загрузить документ(ы)</label>
-                    <input class="form-control" type="file" id="formFile1"  @change="(e)=>handleFileUpload(e, true)">
+                    <input class="form-control" type="file" id="formFile1" @change="(e) => handleFileUpload(e, true)">
                   </div>
 
                   <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
