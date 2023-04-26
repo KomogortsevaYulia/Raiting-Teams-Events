@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, Redirect, HttpStatus, Query } from '@nestjs/common';
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('uploads')
 export class UploadsController {
@@ -14,7 +14,7 @@ export class UploadsController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file) {
 
-    console.log(file)
+    // console.log(file)
     let path = await this.uploadsService.uploadFile(file)
 
     return path
@@ -23,11 +23,12 @@ export class UploadsController {
 
   @Get("file_buffer")
   @ApiOperation({ summary: "Получение файла с сервера в виде буфера" })
+  @ApiParam({name: 'path', description: "путь к файлу для сохранения"})
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async getFileBuffer(@Query() params) {
 
-    console.log(params.path)
+    // console.log(params.path)
     let file = await this.uploadsService.getFileBuffer(params.path)
 
     return file
@@ -35,11 +36,12 @@ export class UploadsController {
 
   @Get("image_base64")
   @ApiOperation({ summary: "Получение файла с сервера в виде base64 для изображений" })
+  @ApiParam({name: 'path', description: "путь к файлу для сохранения"})
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async getFileImageBase64(@Query() params) {
 
-    console.log(params.path)
+    // console.log(params.path)
     let base64 = await this.uploadsService.getFileImageBase64(params.path)
 
     return base64

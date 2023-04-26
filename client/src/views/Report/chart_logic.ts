@@ -20,7 +20,7 @@ export const useChartStore = defineStore("echarts", () => {
 
             let event = events[i]
             if (event.type != null && event.type.id == Type.INSIDE) inner += 1
-            else outer += 1
+            else if (event.type != null && event.type.id == Type.OUTSIDE) outer += 1
         }
 
 
@@ -62,8 +62,8 @@ export const useChartStore = defineStore("echarts", () => {
     }
 
     async function countTeamsEvents(teams: { name: string, id: number }[], dateStart: Date, dateEnd: Date,
-        level: Level,
-        type: Type, count = 200) {
+        level: number,
+        type: number, count = 200) {
 
         let dataTopTm: number[] = []
         let labelsTopTm: string[] = []

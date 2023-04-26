@@ -72,6 +72,7 @@ watch(
   watch(
   () =>props.team, (value, previousValue) => {
     team.value = props.team
+    responseMsg.value = ""
   })
  
 
@@ -82,9 +83,6 @@ onBeforeMount(async () => {
 })
 
 async function fillForm() {
-
-
-  responseMsg.value = ""
 
   if (team.value != null) {
     let t = team.value

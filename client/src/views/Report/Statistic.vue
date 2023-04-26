@@ -26,6 +26,7 @@ import { Type } from '@/store/enums/enum_event';
 import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from './enums_report';
 import { DirectionName } from '@/store/enums/enum_teams';
 import { EVENT_LEVEL, EVENT_TYPE } from '@/store/constants/constants_class_names';
+import { number } from 'echarts/core';
 
 
 // store
@@ -59,8 +60,8 @@ const dateRange = ref({ start: new Date(new Date().getTime() - 31556952000 * 5),
 const selectedDirection = ref(0)    //все направления
 // const selectedTeam = ref(0)      //все направления
 
-const selectedLevel = ref(0)                         //уровень
-const selectedType = ref(0)                          //тип мероприятия
+const selectedLevel = ref(levels.value[0])                         //уровень
+const selectedType = ref(types.value[0])                          //тип мероприятия
 const selectedTypeReport = ref(TypeReport.DIRECTION) //тип отчета
 const selectedTeam = ref({ name: "Все", id: 0 })
 
@@ -93,29 +94,7 @@ const foundEvents = ref()
 
 
 // { id: number, shortname: string }
-const foundDirections = ref([{ id: 0, shortname: DirectionName.ALL, idDB: 0, idDirectionEvent: Direction.ALL }])           //дата
-
-
-
-// async function fillDropdown(d: Object) {
-
-//   const res = [{ id: 0, name: "Все" }]
-
-//   Object.keys(d).forEach(async (item) => {
-
-//     let num = Number(item)
-
-//     if (!isNaN(num) && num > 0) {
-
-//       let valFromDictionary = (await dictionaryStore.getDictionary(num))
-//       res.push({ id: valFromDictionary.id, name: valFromDictionary.name })
-//     }
-//   });
-
-//   return res
-//   // forIn(d, (v,k)=>{alert(v + " k " + k)})
-
-// }
+const foundDirections = ref([{ id: 0, shortname: "Все", idDB: 0, idDirectionEvent: Direction.ALL }])           //дата
 
 function fillDropdowns(data: any) {
 
@@ -136,11 +115,11 @@ onBeforeMount(async () => {
   let tp = await dictionaryStore.getFromDictionaryByClassID(EVENT_TYPE)
   types.value = fillDropdowns(tp)
 
-    // levels.value = await fillDropdown(Level)
- // types.value = await fillDropdown(Type)
+  // levels.value = await fillDropdown(Level)
+  // types.value = await fillDropdown(Type)
   await getDirections()
   getEvents()
-
+  // levels.value.find(4, 1)
 
 })
 
@@ -150,7 +129,7 @@ watch(() => selectedTeam.value, async () => {
   // alert("eeeeeeeeeeee")
 })
 
-// date in calendar changed
+// date in calendar changed (для календаря)
 watch(() => dateRange.value, () => {
   getEvents()
 })
@@ -192,6 +171,13 @@ async function changeTimeViaButton(timeRange: TimeRange) {
 
   dateRange.value.start = dStart
   dateRange.value.end = dEnd
+
+  getEvents()
+}
+
+async function changeTimeViaCalendar() {
+  alert("htyh")
+  getEvents()
 }
 
 // получить мероприятия коллектива
@@ -220,8 +206,8 @@ async function updateCharts() {
 
         let res = await chartStore.countTeamsEvents(foundTeams.value,
           dateRange.value.start, dateRange.value.end,
-          selectedLevel.value,
-          selectedType.value)
+          selectedLevel.value.id,
+          selectedType.value.id)
 
         labelsTopTeams.value = res.labelsTopTeams
         dataTopTeams.value = res.dataTopTeams
@@ -320,8 +306,8 @@ async function getEventsViaJournalsByTeam(teamId: number) {
 
     let event = await eventStore.fetchEventById(eventId,
       dateRange.value.start, dateRange.value.end,
-      selectedLevel.value,
-      selectedType.value,)
+      selectedLevel.value.id,
+      selectedType.value.id,)
 
 
     if (event ?? false) {
@@ -352,8 +338,8 @@ async function getEventsByDirection() {
 
   let data = await eventStore.getEventsByDirection(direction,
     dateRange.value.start, dateRange.value.end,
-    selectedLevel.value,
-    selectedType.value,)
+    selectedLevel.value.id,
+    selectedType.value.id,)
 
   let events = data[0]
   colorfulBlocksData.value[0].value = data[1]
@@ -402,13 +388,7 @@ function changeTypeReport() {
       
       
 <template>
-  <!-- selectedDirection
-                                                                {{ selectedDirection }}   {{ foundDirections[selectedDirection] }}
-                                                                {{ dateRange }}
-                                                                {{ selectedTeam }}
-                                                                <hr />
-                                                                {{ dataEventsInnerOuter }} -->
-  <!-- menu -->
+
   <div class="row">
     <div class="col-lg-5">
       <div class=" block-content">
@@ -484,14 +464,14 @@ function changeTypeReport() {
                 v-model="selectedTeam"></v-select>
             </div>
           </div>
-
+         
           <!-- level -->
           <div class="col-auto  d-flex my-1">
             <div class="mb-3">
               <label class="form-label">уровень мероприятий</label>
               <select class="form-select" aria-label="Default select example" v-model="selectedLevel"
                 @change="getEvents()">
-                <option v-for="lvl in levels" :value="lvl.id">{{ lvl.name }}</option>
+                <option v-for="lvl in levels" :value="lvl">{{ lvl.name }}</option>
               </select>
             </div>
           </div>
@@ -502,7 +482,7 @@ function changeTypeReport() {
               <label class="form-label">тип мероприятий</label>
               <select class="form-select" aria-label="Default select example" v-model="selectedType"
                 @change="getEvents()">
-                <option v-for="tp in types" :value="tp.id">{{ tp.name }}</option>
+                <option v-for="tp in types" :value="tp">{{ tp.name }}</option>
               </select>
             </div>
           </div>
@@ -512,7 +492,8 @@ function changeTypeReport() {
 
 
 
-
+        <DownloadReport :direction="foundDirections[selectedDirection]" :type-report="selectedTypeReport" 
+        :level="selectedLevel" :levels = "levels" :type-event="selectedType" :types = "types" :date-range="dateRange"/>
 
 
 

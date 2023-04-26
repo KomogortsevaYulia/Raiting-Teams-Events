@@ -1,27 +1,38 @@
 <script setup lang="ts">
 import type { Direction } from '@/store/enums/enum_event';
 import type { TypeReport } from './enums_report';
+import type { DirectionName } from '@/store/enums/enum_teams';
+import { computed, onBeforeMount, ref } from 'vue';
 
 
 const props = defineProps<{
   direction: {
     id: number;
-    shortname: Direction;
+    shortname: string;
     idDB: number;
+    idDirectionEvent: Direction;
   },
-  eventOrTeam: TypeReport,
-  teams: string,
+  typeReport: TypeReport,
+  levels: {
+    id: number;
+    name: string;
+  }[],
   level: {
     id: number;
-    data: string;
+    name: string;
   },
   typeEvent: {
     id: number;
-    data: string;
+    name: string;
   },
+  types: {
+    id: number;
+    name: string;
+  }[],
   dateRange: { start: Date, end: Date }
 }>()
 
+const levelName = ref()
 
 </script>
 
@@ -53,23 +64,23 @@ const props = defineProps<{
             </div>
 
             <div class="row my-3">
-              <div class="col"> вид: </div>
-              <div class="col"> {{ eventOrTeam.data }}</div>
+              <div class="col"> вид отчета: </div>
+              <div class="col"> {{ typeReport }}</div>
             </div>
 
-            <div class="row  my-3">
+            <!-- <div class="row  my-3">
               <div class="col"> колективы:</div>
               <div class="col"> {{ teams}}</div>
-            </div>
+            </div> -->
 
             <div class="row  my-3">
-              <div class="col"> уровень: </div>
-              <div class="col">{{  level.data }}</div>
+              <div class="col"> уровень мероприятия: </div>
+              <div class="col">{{ level.name  }}</div>
             </div>
 
             <div class="row  my-3">
               <div class="col"> тип мероприятия: </div>
-              <div class="col"> {{ typeEvent.data }}</div>
+              <div class="col"> {{ typeEvent.name }}</div>
             </div>
 
             <div class="row  my-3">

@@ -51,23 +51,25 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   @UseInterceptors(FilesInterceptor('files'))
   async update(@Param('id') id: number, @UploadedFiles() files, @Body() updateTeamDto: UpdateTeamDto) {
-    console.log(files)
-    console.log(updateTeamDto)
+    // console.log(files)
+    // console.log(updateTeamDto)
 
+    // устав коллектива
     let ustavPath = updateTeamDto.charterTeam
+    //документ
     let docPath = updateTeamDto.document
 
-    console.log("ustav1 " + ustavPath)
-    console.log("doc1 " + docPath)
+    // console.log("ustav1 " + ustavPath)
+    // console.log("doc1 " + docPath)
 
     if (files.length < 3) {
       for (let f in files) {
-        console.log("have files " + (ustavPath))
-        // console.log(files[f])
+        //console.log("have files " + (ustavPath))
+       
         //оставить только начало файла без расширения
         if (files[f].originalname.split(".").shift() == "ustav") {
 
-          console.log("ustav loaded ")
+          //console.log("ustav loaded ")
           ustavPath = await this.uploadsService.uploadFile(files[f])
         } else if (files[f].originalname.split(".").shift() == "document") {
 
@@ -77,10 +79,10 @@ export class TeamsController {
     }
 
     updateTeamDto.charterTeam = ustavPath
-    console.log("ustav " + ustavPath)
+    //console.log("ustav " + ustavPath)
 
     updateTeamDto.document = docPath
-    console.log("doc " + docPath)
+    //console.log("doc " + docPath)
 
     let team = await this.teamsService.update(id, updateTeamDto);
 
@@ -142,7 +144,7 @@ export class TeamsController {
 
     for (let f in files) {
 
-      console.log(files[f])
+     // console.log(files[f])
       //оставить только начало файла без расширения
       if (files[f].originalname.split(".").shift() == "ustav"
         && ustav == null) {
@@ -157,10 +159,10 @@ export class TeamsController {
 
     // let path = await this.uploadsService.uploadFile(files[0])
     createTeamDto.charterTeam = ustav
-    console.log("ustav " + ustav)
+    //.log("ustav " + ustav)
 
     createTeamDto.document = doc
-    console.log("doc " + doc)
+   // console.log("doc " + doc)
 
     let team = await this.teamsService.create(createTeamDto);
 
