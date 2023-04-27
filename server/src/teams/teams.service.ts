@@ -101,11 +101,11 @@ export class TeamsService {
 
   async userRequisition(user_id: number): Promise<Requisitions[]> {
     const users = await this.requisitionsRepository
-      .createQueryBuilder("requisition")
-      .select(["fullname","date_create", "date_update"])
-      
-      .where("requisition.user_id = :user_id", { user_id })
-      .getMany()
+    .createQueryBuilder("requisition")
+    .select(["requisition.fullname","requisition.date_create", "requisition.date_update","requisition.status"])
+    .where("requisition.user_id = :user_id", { user_id })
+    .getMany()
+
     return users;
   }
   // async  directionsAndUsers() {

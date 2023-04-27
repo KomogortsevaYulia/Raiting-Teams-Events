@@ -216,9 +216,7 @@ const newsList = [
 
                     <h2>Роль: {{ item.function.title }}</h2>
                   </div>
-                  <div class="member-buttons">
-                    <button class="btn">Редактировать</button>
-                  </div>
+                 
 
                 </div>
 
@@ -277,12 +275,13 @@ const newsList = [
 
       <div v-if="(selectedItem === 4)">
         <Ankets />
-        <div v-for="item in req">
+
+          <div v-for="item in req">
             <div class="about">
               <div class="member-card py-2">
                 <div class="row ms-lg-3">
 
-                  <!-- image member -->
+               
                   <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
                     <img class="member-image" src="../assets/icon/user.png" alt="" />
                   </div>
@@ -292,19 +291,19 @@ const newsList = [
 
                       <div class="col">
                         <div class="row ">
-                          <h1>{{ item.requisition.fullname }}</h1>
+                          <h1>{{ item.fullname }}</h1>
                         </div>
                         <div class="row">
-                          <h2>Дата последнего рассмотрения: {{ item.requisition.dateUpdate }}</h2>
+                          <h2>Дата последнего рассмотрения: {{ item.date_update }}</h2>
                         </div>
                         <div class="row">
-                          <h2>Статус: {{ item.requisition.status }}</h2>
+                          <h2>Статус: {{ item.status }}</h2>
                         </div>
 
                         <div class="row d-flex justify-content-end">
                           <div class="member-buttons">
-                            <button class="btn button px-3">Редактировать</button>
-                            <button class="btn button  px-3">Удалить</button>
+                            <button class="btn button px-3">Отклонить</button>
+                            <button class="btn button  px-3">Принять</button>
                           </div>
                         </div>
                       </div>
@@ -312,8 +311,10 @@ const newsList = [
                 </div>
                 </div>
               </div>
+              
             </div>
           </div>
+          
         </div>
       </div>
     </div>
