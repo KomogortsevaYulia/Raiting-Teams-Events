@@ -34,6 +34,7 @@ export const useFileStore = defineStore("file", () => {
         return imageData
     }
 
+
     return {
         loadFile,
         getImageBase64

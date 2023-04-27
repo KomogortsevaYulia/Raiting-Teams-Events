@@ -20,7 +20,7 @@ export const useEventStore = defineStore("events", () => {
 
     const res = await axios.get('api/events', {
       params: {
-        id:id,
+        id: id,
         level: lvl, type: tp,
         dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
       }
@@ -42,6 +42,7 @@ export const useEventStore = defineStore("events", () => {
     let tp = type != 0 ? type : null
     let dr = direction != 0 ? direction : null
 
+
     //need get all directions
     res = await axios.get('api/events/', {
       params: {
@@ -55,6 +56,30 @@ export const useEventStore = defineStore("events", () => {
     return data
   }
 
+
+  async function getReportEventsOfDirection(direction: number = 0,
+    dateStart: Date, dateEnd: Date, level: number = 0, type: number = 0
+  ) {
+
+    let res = null
+
+    let lvl = level != 0 ? level : null
+    let tp = type != 0 ? type : null
+    let dr = direction != 0 ? direction : null
+
+
+    //need get all directions
+    res = await axios.get('api/uploads/excel/events_direction', {
+      params: {
+        direction: dr, level: lvl, type: tp,
+        dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
+      },
+      responseType: "arraybuffer"
+    })
+
+
+    return res
+  }
 
   const menu_items = [
     {
@@ -101,6 +126,7 @@ export const useEventStore = defineStore("events", () => {
     menu_items,
     fetchEvents,
     fetchEventById,
-    getEventsByDirection
+    getEventsByDirection,
+    getReportEventsOfDirection
   }
 })
