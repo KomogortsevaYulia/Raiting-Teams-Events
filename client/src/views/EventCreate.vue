@@ -136,6 +136,7 @@ await axios.post("api/events", {
         </div>
         <div class="margins-edit row d-flex align-items-end">
             <div class="col ps-0">
+                <p class="text-edit">Направление (рейтинг)</p>
                 <select class="col form-select">
                     <option disabled value="">Please select one</option>
                     <option>A</option>
