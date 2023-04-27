@@ -18,11 +18,13 @@ const currentPage = ref(1);
 
 const data = ref()
 const team = ref()
+const req = ref()
 
 onBeforeMount(async () => {
-  // fetchTeams()
-  fetchCurrentTeams();
-  fetchTeam()
+  
+  fetchCurrentTeams(),
+  fetchTeam(),
+  Requisition()
 })
 
 // вытащить коллективы из бд 
@@ -35,7 +37,9 @@ async function fetchTeam() {
 
   team.value = await TeamStore.fetchTeam(idTeam)
 }
-
+async function Requisition() {
+  req.value = await TeamStore.fetchRequisition(idTeam)
+}
 function setCurrentPage(page: number) {
   currentPage.value = page
 }
@@ -273,10 +277,46 @@ const newsList = [
 
       <div v-if="(selectedItem === 4)">
         <Ankets />
-      </div>
+        <div v-for="item in req">
+            <div class="about">
+              <div class="member-card py-2">
+                <div class="row ms-lg-3">
 
+                  <!-- image member -->
+                  <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
+                    <img class="member-image" src="../assets/icon/user.png" alt="" />
+                  </div>
+
+                  <div class="col-lg-10 col-md-12">
+                    <div class="member-info">
+
+                      <div class="col">
+                        <div class="row ">
+                          <h1>{{ item.requisition.fullname }}</h1>
+                        </div>
+                        <div class="row">
+                          <h2>Дата последнего рассмотрения: {{ item.requisition.dateUpdate }}</h2>
+                        </div>
+                        <div class="row">
+                          <h2>Статус: {{ item.requisition.status }}</h2>
+                        </div>
+
+                        <div class="row d-flex justify-content-end">
+                          <div class="member-buttons">
+                            <button class="btn button px-3">Редактировать</button>
+                            <button class="btn button  px-3">Удалить</button>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 </template>
 
 <style lang="scss" scoped>

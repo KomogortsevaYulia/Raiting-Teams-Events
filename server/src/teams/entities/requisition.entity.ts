@@ -1,27 +1,30 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+
 @Entity('requisition')
-export class Requistions{
+export class Requisitions{
     @ApiProperty()
     @PrimaryGeneratedColumn()
-    User_id: number
-
+    user_id: number
 
     @ApiProperty() 
     @Column()
     questionnaire_id: number
 
-    
+    @ApiProperty() 
+    @Column()
+    fullname: string
+
     @ApiProperty() 
     @Column()
     status: string
 
     @ApiProperty() 
     @Column()
-    dateCreate: Date
+    date_create: Date
 
     @ApiProperty() 
     @Column()
-    dateUpdate: Date
+    date_update: Date
 
 }

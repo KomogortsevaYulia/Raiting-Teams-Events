@@ -39,7 +39,13 @@ export const useTeamStore = defineStore("teams", () => {
         console.log(data)
         return data
     }
-
+    async function fetchRequisition(user_id: number): Promise<any> {
+        const res = await axios.get('/api/teams/' + user_id + '/requisition')
+        const data = res.data
+    
+        return data
+        
+    }
 
     async function createTeam(title: String, description: String,
         shortname: String, userId: Number) {
@@ -93,6 +99,7 @@ export const useTeamStore = defineStore("teams", () => {
         setLayout,
         fetchTeamsOfDirection,
         fetchTeam,
+        fetchRequisition,
 
         layout,
         menu_items

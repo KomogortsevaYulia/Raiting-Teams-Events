@@ -15,6 +15,7 @@ import { FormsModule } from './forms/forms.module';
       ...CONNECTION,
       synchronize: false,
       autoLoadEntities: true,
+      logging:  true,
     }),
     UsersModule,
     TeamsModule,
