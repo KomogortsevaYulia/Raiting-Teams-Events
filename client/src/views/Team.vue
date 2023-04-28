@@ -1,45 +1,51 @@
 <script setup lang="ts">
-import WIP from '@/components/WIP.vue';
-import { onBeforeMount, ref } from 'vue';
+import WIP from '@/components/WIP.vue'
+import Participation from '@/components/Participation.vue'
+import { onBeforeMount, ref } from 'vue'
 import TeamsForm from './TeamsForm.vue'
-import Ankets from '@/views/Questionnaire.vue';
+import Ankets from '@/views/Questionnaire.vue'
 
 import { useTeamStore } from "../store/team_store"
-import axios from 'axios';
-import { useRoute } from "vue-router";
+import axios from 'axios'
+import { useRoute } from "vue-router"
 
 const route = useRoute()
 
-const idTeam = Number(route.params.id);
+const idTeam = Number(route.params.id)
 
-const TeamStore = useTeamStore();
-const show = ref(true);
-const currentPage = ref(1);
+const TeamStore = useTeamStore()
+const show = ref(true)
+const currentPage = ref(1)
 
 const data = ref()
 const team = ref()
 const req = ref()
 
+const isEditMode = ref(false)
+const user = ref()
+const func = ref()
+
 onBeforeMount(async () => {
-  
   fetchCurrentTeams(),
-  fetchTeam(),
-  Requisition()
+    fetchTeam(),
+    Requisition(),
+    user.value = {
+      fullname: 'Иванов Иван Иванович',
+      education_group: 'A',
+    },
+    func.value = {
+      title: 'Менеджер',
+    }
 })
 
-// вытащить коллективы из бд 
-// async function fetchTeams() {
-//   data.value = await useTeamStore().fetchTeams()
-// }
-// вытащить коллективы из бд и отобразить их
-
 async function fetchTeam() {
-
   team.value = await TeamStore.fetchTeam(idTeam)
 }
+
 async function Requisition() {
   req.value = await TeamStore.fetchRequisition(idTeam)
 }
+
 function setCurrentPage(page: number) {
   currentPage.value = page
 }
@@ -200,129 +206,52 @@ const newsList = [
       </div>
 
       <div v-if="(selectedItem === 3)">
-
         <div v-for="item in team">
-
-          <div v-if="item.function.title === 'Руководитель'" class="mt-5">
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
-            <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet">
-            <div class="about" style="margin-top: 20px;">
-              <div class="member-card">
-                <!-- <img class="member-image" src="../assets/icon/event1.png" alt="" /> -->
-                <div class="member-info">
-                  <div>
-                    <h1>{{ item.user.fullname }}</h1>
-
-                    <h2>Роль: {{ item.function.title }}</h2>
-                  </div>
-                 
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-
-          <div v-else>
-            <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-                          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
-                          <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet"> -->
-            <div class="about">
-              <div class="member-card py-2">
-                <div class="row ms-lg-3">
-
-                  <!-- image member -->
-                  <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
-                    <img class="member-image" src="../assets/icon/user.png" alt="" />
-                  </div>
-
-                  <div class="col-lg-10 col-md-12">
-                    <div class="member-info">
-
-                      <div class="col">
-                        <div class="row ">
-                          <h1>{{ item.user.fullname }}</h1>
-                        </div>
-                        <div class="row">
-                          <h2>Группа: {{ item.user.education_group }}</h2>
-                        </div>
-                        <div class="row">
-                          <h2>Роль: {{ item.function.title }}</h2>
-                        </div>
-
-                        <div class="row d-flex justify-content-end">
-                          <div class="member-buttons">
-                            <button class="btn button px-3">Редактировать</button>
-                            <button class="btn button  px-3">Удалить</button>
-                          </div>
-                        </div>
-                      </div>
-
-
-
-                    </div>
-                  </div>
-                </div>
-
-
-              </div>
-            </div>
-          </div>
-        </div>
+          <Participation :user=item.user :func=item.function />
+       </div>
       </div>
 
       <div v-if="(selectedItem === 4)">
-        <Ankets />
-
-          <div v-for="item in req">
-            <div class="about">
-              <div class="member-card py-2">
-                <div class="row ms-lg-3">
-
-               
-                  <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
-                    <img class="member-image" src="../assets/icon/user.png" alt="" />
-                  </div>
-
-                  <div class="col-lg-10 col-md-12">
-                    <div class="member-info">
-
-                      <div class="col">
-                        <div class="row ">
-                          <h1>{{ item.fullname }}</h1>
-                        </div>
-                        <div class="row">
-                          <h2>Дата последнего рассмотрения: {{ item.date_update }}</h2>
-                        </div>
-                        <div class="row">
-                          <h2>Статус: {{ item.status }}</h2>
-                        </div>
-
-                        <div class="row d-flex justify-content-end">
-                          <div class="member-buttons">
-                            <button class="btn button px-3">Отклонить</button>
-                            <button class="btn button  px-3">Принять</button>
-                          </div>
+        <Ankets /> 
+        <div v-for="item in req">
+          <div class="about">
+            <div class="member-card py-2">
+              <div class="row ms-lg-3">
+                <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
+                  <img class="member-image" src="../assets/icon/user.png" alt="" />
+                </div>
+                <div class="col-lg-10 col-md-12">
+                  <div class="member-info">
+                    <div class="col">
+                      <div class="row ">
+                        <h1>{{ item.fullname }}</h1>
+                      </div>
+                      <div class="row">
+                        <h2>Дата последнего рассмотрения: {{ item.date_update }}</h2>
+                      </div>
+                      <div class="row">
+                        <h2>Статус: {{ item.status }}</h2>
+                      </div>
+                      <div class="row d-flex justify-content-end">
+                        <div class="member-buttons">
+                          <button class="btn button px-3">Отклонить</button>
+                          <button class="btn button  px-3">Принять</button>
                         </div>
                       </div>
+                    </div>
                   </div>
                 </div>
-                </div>
               </div>
-              
             </div>
           </div>
-          
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
-
 
 .member-card {
   width: 100%;
