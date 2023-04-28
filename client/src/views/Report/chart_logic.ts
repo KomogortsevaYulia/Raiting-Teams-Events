@@ -13,6 +13,8 @@ export const useChartStore = defineStore("echarts", () => {
     // подсчет количества внутренних/внешних мероприятий
     function countEventsInnerOuter(events: any) {
 
+        console.log("vffffffffffevents")
+        console.log(events)
         let inner = 0
         let outer = 0
 
@@ -75,41 +77,17 @@ export const useChartStore = defineStore("echarts", () => {
             if (c >= count) return
             c++
 
-            let countEvents = 0
-            let data = await journalStore.fetchJournals(team.id)
+            let events = await eventStore.getEventsViaJournalsByTeam(team.id, dateStart, dateEnd, type, level)
 
-            //получить всех найденне journal
-            let journals = data[0]
-
-            let arrayData = []
-
-
-            for (let i = 0; i < journals.length; i++) {
-                let journal = journals[i]
-
-
-                let eventId: number = journal.event.id
-
-
-                let event = await eventStore.fetchEventById(eventId,
-                    dateStart, dateEnd,
-                    level,
-                    type)
-
-               
-
-                if (event ?? false) {
-                    arrayData[i] = event
-                    countEvents++
-
-                }
+            console.log("events")
+            console.log(events.data[1])
+            for (let i in events.data[1]) {
+                console.log("Ddddddddddddddddd")
+                console.log(events.data[1][i])
             }
 
-           
-            dataTopTm.push(countEvents)
+            dataTopTm.push(events.data[1])
             labelsTopTm.push(team.name)
-
-            // alert("dataTopTm " + dataTopTm + "  labelsTopTm " + labelsTopTm)
         })
 
 

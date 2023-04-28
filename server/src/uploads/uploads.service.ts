@@ -87,11 +87,11 @@ export class UploadsService {
     );
     res.setHeader(
       'Content-Disposition',
-      'attachment; filename=' + 'my_excel_file.xlsx',
+      'attachment; filename=' + 'report_file.xlsx',
     );
 
     const workbook = new Workbook();
-    const worksheet = workbook.addWorksheet('My Sheet');
+    const worksheet = workbook.addWorksheet('events');
     worksheet.columns = [
       { header: "название", key: "name", width: 25 },
       { header: "уровень", key: "level", width: 15 },

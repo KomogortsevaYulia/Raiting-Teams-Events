@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BeforeInsert, Column, Entity,JoinColumn,ManyToOne,OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserFunction } from "./user_function.entity";
 import * as argon2 from 'argon2';
+import { Journal } from "../../events/entities/journal.entity";
 
 @Entity("users")
 export class User {
@@ -59,6 +60,10 @@ export class User {
 
     @OneToMany((type)=>UserFunction, (user_func)=>user_func.function)
     user_function:UserFunction[]
+
+    @OneToMany((type) => Journal, (journal) => journal.user)
+    @JoinColumn([{ name: "journal_id" }])
+    journal: Journal
 
     @BeforeInsert()
     async hashPassword() {

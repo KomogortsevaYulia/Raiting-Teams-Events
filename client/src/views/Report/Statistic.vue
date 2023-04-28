@@ -14,7 +14,6 @@ import EPie from '@/components/Charts/EPie.vue';
 import EBar from '@/components/Charts/EBar.vue';
 
 import { useTeamStore } from '@/store/team_store';
-import { useJournalStore } from '@/store/journals_store';
 import _, { defaultsDeep, forIn } from 'lodash';
 import { useEventStore } from '@/store/events_store';
 import { useDictionaryStore } from '@/store/dictionary_store';
@@ -31,7 +30,6 @@ import { number } from 'echarts/core';
 
 // store
 const teamStore = useTeamStore();
-const journalStore = useJournalStore();
 const eventStore = useEventStore();
 
 const chartStore = useChartStore();
@@ -126,7 +124,6 @@ onBeforeMount(async () => {
 // если выбран коллектив то получить статистику с мероприятий
 watch(() => selectedTeam.value, async () => {
   getEvents()
-  // alert("eeeeeeeeeeee")
 })
 
 // date in calendar changed (для календаря)
@@ -176,15 +173,17 @@ async function changeTimeViaButton(timeRange: TimeRange) {
 }
 
 async function changeTimeViaCalendar() {
-  alert("htyh")
   getEvents()
 }
 
 // получить мероприятия коллектива
 async function getEventsOfTeam(teamId: number) {
 
+
   const eventsOfTeam = await getEventsViaJournalsByTeam(teamId)
 
+  console.log("eventsOfTeam.data")
+  console.log(eventsOfTeam.data)
   foundEvents.value = eventsOfTeam.data
   colorfulBlocksData.value[0].value = eventsOfTeam.count
 }
@@ -204,13 +203,15 @@ async function updateCharts() {
       case TypeGraphic.TEAMS_EVENTS:
         // let teamsMax = 5
 
-        let res = await chartStore.countTeamsEvents(foundTeams.value,
-          dateRange.value.start, dateRange.value.end,
-          selectedLevel.value.id,
-          selectedType.value.id)
+        if (it.isVisibleChart) {
+          let res = await chartStore.countTeamsEvents(foundTeams.value,
+            dateRange.value.start, dateRange.value.end,
+            selectedLevel.value.id,
+            selectedType.value.id)
 
-        labelsTopTeams.value = res.labelsTopTeams
-        dataTopTeams.value = res.dataTopTeams
+          labelsTopTeams.value = res.labelsTopTeams
+          dataTopTeams.value = res.dataTopTeams
+        }
         break;
       case TypeGraphic.DEFAULT_PARAMETERS:
 
@@ -280,6 +281,7 @@ async function getTeamsOfDirection(directionId: number) {
 
 
   foundTeams.value = arrayData
+
 }
 
 //получит Events via journals-------------------------------------------------
@@ -287,45 +289,13 @@ async function getTeamsOfDirection(directionId: number) {
 
 async function getEventsViaJournalsByTeam(teamId: number) {
 
-  // alert("teamId " + teamId)
-  let data = await journalStore.fetchJournals(teamId)
-  let countAppropriate = 0
-
-  //получить всех найденне journal
-  let journals = data[0]
-
-  let arrayData = []
-
-
-  for (let i = 0; i < journals.length; i++) {
-    let journal = journals[i]
-
-
-    let eventId = journal.event.id
-    // console.log("eventId   " + eventId)
-
-    let event = await eventStore.fetchEventById(eventId,
-      dateRange.value.start, dateRange.value.end,
-      selectedLevel.value.id,
-      selectedType.value.id,)
-
-
-    if (event ?? false) {
-      // console.log("arrayData " + event)
-      arrayData[i] = event
-      countAppropriate++
-
-    }
-
-
-
-    // arrayData[i + 1] = { id: journal.id };
-  }
+  let res = await eventStore.getEventsViaJournalsByTeam(teamId, dateRange.value.start,
+    dateRange.value.end, selectedType.value.id, selectedLevel.value.id)
+  let arrayData = res.data[0]
+  let countAppropriate = res.data[1]
 
   return { data: arrayData, count: countAppropriate }
 
-
-  // console.log("journal" + arrayData[0].id)
 }
 
 
@@ -345,7 +315,8 @@ async function getEventsByDirection() {
   colorfulBlocksData.value[0].value = data[1]
 
   foundEvents.value = events
-  // console.log("evnt " + foundEvents.value[0].level)
+  console.log("evnt dir")
+  console.log(events)
   // console.log("directions " + foundDirections.value[selectedDirection.value].shortname + "   selectedDirection " + selectedDirection.value)
 }
 
@@ -388,7 +359,6 @@ function changeTypeReport() {
       
       
 <template>
-
   <div class="row">
     <div class="col-lg-5">
       <div class=" block-content">
@@ -464,7 +434,7 @@ function changeTypeReport() {
                 v-model="selectedTeam"></v-select>
             </div>
           </div>
-         
+
           <!-- level -->
           <div class="col-auto  d-flex my-1">
             <div class="mb-3">
@@ -492,8 +462,8 @@ function changeTypeReport() {
 
 
 
-        <DownloadReport :direction="foundDirections[selectedDirection]" :type-report="selectedTypeReport" 
-        :level="selectedLevel" :levels = "levels" :type-event="selectedType" :types = "types" :date-range="dateRange"/>
+        <DownloadReport :direction="foundDirections[selectedDirection]" :type-report="selectedTypeReport"
+          :level="selectedLevel" :levels="levels" :type-event="selectedType" :types="types" :date-range="dateRange" />
 
 
 

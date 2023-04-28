@@ -77,29 +77,18 @@ export class UploadsController {
     //return res
   }
 
-  // @Get("excel/events_direction")
-  // async downloadExcel(@Res() res: Response) {
-  //   const workbook = new Workbook();
-  //   const worksheet = workbook.addWorksheet('My Sheet');
-
-  //   // Add some data to the worksheet
-  //   worksheet.addRow(['Name', 'Age']);
-  //   worksheet.addRow(['John Doe', 30]);
-  //   worksheet.addRow(['Jane Doe', 25]);
-
-  //   // Set the headers and disposition
-  //   res.setHeader(
-  //     'Content-Type',
-  //     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  //   );
-  //   res.setHeader(
-  //     'Content-Disposition',
-  //     'attachment; filename=' + 'my_excel_file.xlsx',
-  //   );
-
-  //   // Send the workbook as a response
-  //   await workbook.xlsx.writeFile
-  //   res.end();
-  // }
+    //get excel file about events
+    @Get("excel/events_of_team")
+    @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    @Header('Content-Disposition', 'attachment; filename=data.xlsx')
+    @ApiOperation({ summary: "Получение файла excel по мероприятиям коллектива " })
+    @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+    async getReportEventsOfTeam(@Res() res: Response, @Query() {teamId = null}) {
+   console.log("upload ")
+      let journals = await this.eventsService.findAllJournals(teamId)
+    
+     
+    }
 
 }

@@ -31,6 +31,24 @@ export const useEventStore = defineStore("events", () => {
     return data[0]
   }
 
+  async function getEventsViaJournalsByTeam(teamId: number, dateStart: Date, dateEnd: Date, 
+    type: number = 0, level: number = 0): Promise<any> {
+
+    let lvl = level != 0 ? level : null
+    let tp = type != 0 ? type : null
+
+    const res = await axios.get('api/events/events_of_team/' + teamId, {
+      params: {
+        level: lvl, type: tp,
+        dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
+      }
+    })
+
+    const data = res
+
+    return data
+  }
+
   // найти мероприятия по направлению
   async function getEventsByDirection(direction: number = 0,
     dateStart: Date, dateEnd: Date, level: number = 0, type: number = 0
@@ -127,6 +145,7 @@ export const useEventStore = defineStore("events", () => {
     fetchEvents,
     fetchEventById,
     getEventsByDirection,
-    getReportEventsOfDirection
+    getReportEventsOfDirection,
+    getEventsViaJournalsByTeam
   }
 })

@@ -6,7 +6,7 @@ import { useTeamStore } from '@/store/team_store';
 import { useUserStore } from '@/store/user_store';
 import { faDharmachakra } from '@fortawesome/free-solid-svg-icons';
 import UpdateTeam from './UpdateTeam';
-import { useFileStore } from '@/store/save_file_store';
+import { useFileStore } from '@/store/file_store';
 
 const teamStore = useTeamStore();
 const fileStore = useFileStore();
