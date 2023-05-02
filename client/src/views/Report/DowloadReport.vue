@@ -31,7 +31,8 @@ const props = defineProps<{
     id: number;
     name: string;
   }[],
-  dateRange: { start: Date, end: Date }
+  dateRange: { start: Date, end: Date },
+  team: { name: string, id: number }
 }>()
 
 const resFile = ref()
@@ -42,9 +43,26 @@ async function getReportEventsOfDirection() {
   let res = await eventStore.getReportEventsOfDirection(props.direction.id, props.dateRange.start,
     props.dateRange.end, props.level.id, props.typeEvent.id)
   resFile.value = res.data
+  // console.log(resFile.value)
 }
 
+async function getReportEventsOfTeam() {
+  let res = await eventStore.getReportEventsOfTeam(props.team.id, props.dateRange.start,
+    props.dateRange.end, props.direction.id, props.level.id)
+  resFile.value = res.data
+  // console.log(resFile.value)
+}
 
+async function getReport(){
+
+  if(props.team!=null && props.team.id > 0){
+   await getReportEventsOfTeam()
+  }else{
+  await  getReportEventsOfDirection()
+ }
+ 
+ 
+}
 async function downloadFile() {
   //const byteArray = new Uint8Array(resFile.value);
   const file = new Blob([resFile.value], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -112,7 +130,7 @@ async function downloadFile() {
                </a>
               </div>
               <div class="col-auto d-flex justify-content-end">
-                <button type="button"  @click="getReportEventsOfDirection">
+                <button type="button"  @click="getReport">
                 Сформировать
               </button>
               </div>

@@ -99,6 +99,25 @@ export const useEventStore = defineStore("events", () => {
     return res
   }
 
+
+  async function getReportEventsOfTeam(teamId: number, dateStart: Date, dateEnd: Date, 
+    type: number = 0, level: number = 0) {
+
+    let lvl = level != 0 ? level : null
+    let tp = type != 0 ? type : null
+
+    const res = await axios.get('api/uploads/excel/events_of_team', {
+      params: {
+        teamId:teamId,
+        level: lvl, type: tp,
+        dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
+      },
+      responseType: "arraybuffer"
+    })
+
+    return res
+  }
+
   const menu_items = [
     {
       id: 1, title: 'Формат проведения', menu_types: [
@@ -146,6 +165,7 @@ export const useEventStore = defineStore("events", () => {
     fetchEventById,
     getEventsByDirection,
     getReportEventsOfDirection,
-    getEventsViaJournalsByTeam
+    getEventsViaJournalsByTeam,
+    getReportEventsOfTeam
   }
 })

@@ -90,7 +90,7 @@ export class EventsService {
 
   findAllJournals(team: number = null): Promise<[Journal[], number]> {
 
-    console.log("team journal " + team)
+    // console.log("team journal " + team)
 
     let buildQuery = this.journalsRepository
       .createQueryBuilder("journals")
@@ -131,7 +131,7 @@ export class EventsService {
 
 
   async getEventsViaJournalsByTeam(teamId: number, type: number = null, level: number = null,
-    direction: number = null, dateStart: Date = null, dateEnd: Date = null) {
+    dateStart: Date = null, dateEnd: Date = null):Promise<[Event[], number]> {
 
     
     // alert("teamId " + teamId)
@@ -141,7 +141,7 @@ export class EventsService {
     //получить всех найденне journal
     let journals = data[0]
 
-    let arrayData = []
+    let arrayData:Event[] = []
 
 
     for (let i = 0; i < journals.length; i++) {
@@ -152,7 +152,7 @@ export class EventsService {
     
 // возвращает данные с кауентером
       let event = (await this.findAllEvents(eventId, type, level,
-        direction, dateStart, dateEnd))[0]
+        null, dateStart, dateEnd))[0]
 
 
       if (event !=null && event[0]!=null) {

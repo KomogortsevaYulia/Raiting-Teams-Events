@@ -174,9 +174,12 @@ GET http://localhost:3000/api/general/dictionary/2
 ###
 GET http://localhost:3000/api/uploads/file_buffer?path=./public/media/6b3620e359194339a2bc2409fb8de569.png
 
-# get excel file event direction
+# get excel file event direction REPORT
 ###
 GET http://localhost:3000/api/uploads/excel/events_direction
+
+###
+GET http://localhost:3000/api/uploads/excel/events_of_team?teamId=1
 
 
 

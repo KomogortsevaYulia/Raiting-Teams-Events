@@ -73,22 +73,27 @@ export class UploadsController {
     // получить все мероприятия по заданным параметрам
     let events = await this.eventsService.findAllEvents(null, type, level, direction, dStart, dEnd)
 
-    await this.uploadsService.getReportEventsOfDirection(res, events[0], events[1],  {type:type, level:level, direction:direction, dateStart:dStart, dateEnd:dEnd})
+    await this.uploadsService.getReportEventsOfDirection(res, events[0], events[1], { type: type, level: level, direction: direction, dateStart: dStart, dateEnd: dEnd })
     //return res
   }
 
-    //get excel file about events
-    @Get("excel/events_of_team")
-    @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    @Header('Content-Disposition', 'attachment; filename=data.xlsx')
-    @ApiOperation({ summary: "Получение файла excel по мероприятиям коллектива " })
-    @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
-    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-    async getReportEventsOfTeam(@Res() res: Response, @Query() {teamId = null}) {
-   console.log("upload ")
-      let journals = await this.eventsService.findAllJournals(teamId)
-    
-     
-    }
+  //get excel file about events
+
+  @Get("excel/events_of_team")
+  @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+  @Header('Content-Disposition', 'attachment; filename=data1.xlsx')
+  @ApiOperation({ summary: "Получение файла excel по мероприятиям коллектива " })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async getReportEventsOfTeam(@Res() res: Response, @Query() { teamId = null, type = null, level = null, dateStart = null, dateEnd = null }) {
+
+    let dStart: Date = dateStart == null ? null : (new Date(dateStart))
+    let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
+
+    let events = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dStart, dEnd)
+   
+    await this.uploadsService.getReportEventsOfDirection(res, events[0], events[1], { type: type, level: level,direction: null, dateStart: dStart, dateEnd: dEnd })
+
+  }
 
 }

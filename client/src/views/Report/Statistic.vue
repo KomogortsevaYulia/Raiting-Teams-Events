@@ -182,8 +182,8 @@ async function getEventsOfTeam(teamId: number) {
 
   const eventsOfTeam = await getEventsViaJournalsByTeam(teamId)
 
-  console.log("eventsOfTeam.data")
-  console.log(eventsOfTeam.data)
+  // console.log("eventsOfTeam.data")
+  // console.log(eventsOfTeam.data)
   foundEvents.value = eventsOfTeam.data
   colorfulBlocksData.value[0].value = eventsOfTeam.count
 }
@@ -271,7 +271,7 @@ async function getTeamsOfDirection(directionId: number) {
 
   for (let i = 0; i < teams.length; i++) {
     let team = teams[i]
-    console.log("team " + team.title)
+    // console.log("team " + team.title)
     arrayData[i] = { name: team.title, id: team.id };
   }
 
@@ -315,8 +315,8 @@ async function getEventsByDirection() {
   colorfulBlocksData.value[0].value = data[1]
 
   foundEvents.value = events
-  console.log("evnt dir")
-  console.log(events)
+  // console.log("evnt dir")
+  // console.log(events)
   // console.log("directions " + foundDirections.value[selectedDirection.value].shortname + "   selectedDirection " + selectedDirection.value)
 }
 
@@ -332,8 +332,6 @@ async function changeDirection(direction: any) {
     case TypeReport.TEAM:
       await getTeamsOfDirection(direction.idDB)
       getEvents()
-
-      // getEventsOfTeam(selectedTeam.value.id)
       break
   }
 
@@ -463,7 +461,8 @@ function changeTypeReport() {
 
 
         <DownloadReport :direction="foundDirections[selectedDirection]" :type-report="selectedTypeReport"
-          :level="selectedLevel" :levels="levels" :type-event="selectedType" :types="types" :date-range="dateRange" />
+          :level="selectedLevel" :levels="levels" :type-event="selectedType" :types="types" :date-range="dateRange"
+          :team="selectedTeam" />
 
 
 

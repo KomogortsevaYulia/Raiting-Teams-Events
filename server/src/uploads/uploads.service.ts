@@ -81,6 +81,9 @@ export class UploadsService {
       direction: null, dateStart: null, dateEnd: null
     }) {
 
+      console.log("events")
+      console.log(events)
+
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -110,6 +113,9 @@ export class UploadsService {
 
       let e = events[i]
       let arrData = []
+
+      console.log("e " )
+      console.log(e.id + e.title)
 
       arrData.push(e.title ?? "-", e.level ? e.level.name : "-", e.type ? e.type.name : "-",
         e.format ? e.format.name : "-",

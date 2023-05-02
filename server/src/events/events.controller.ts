@@ -74,20 +74,10 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @Get('events_of_team/:teamId')
   async getEventsViaJournalsByTeam(@Param('teamId') teamId, @Query() { type = null, level = null,
-    direction = null, dateStart = null, dateEnd = null }) {
+    dateStart = null, dateEnd = null }) {
 
-    let res = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, direction, dateStart, dateEnd)
+    let res = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dateStart, dateEnd)
 
     return res
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-  //   return this.eventsService.update(+id, updateEventDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.eventsService.remove(+id);
-  // }
 }
