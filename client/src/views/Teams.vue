@@ -3,10 +3,11 @@
 import Filter from '@/components/WIP.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 import { useTeamStore } from "../store/team_store";
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
+import _ from 'lodash';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -21,6 +22,8 @@ const data = ref()
 const isEditTeam = ref(false)
 const teamEdit = ref()
 
+const findTeamTxt = ref()
+
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
   fetchTeams()
@@ -34,11 +37,22 @@ function editTeam(editT: boolean, team: any) {
 }
 
 
+const fetchTeamsTimer = _.debounce(() => {
+  fetchTeams()
+}, 300)
+
+
+watch(findTeamTxt, () => {
+  fetchTeamsTimer()
+})
+
 
 // вытащить коллективы из бд 
 async function fetchTeams() {
-  data.value = await teamStore.fetchTeams()
+  let txt = findTeamTxt.value
+  data.value = await teamStore.fetchTeamsSearch(txt, txt, txt)
 }
+
 
 const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
 
@@ -77,7 +91,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
         <!-- Инпут с поиском -->
         <div class="cards__search">
-          <input class="search-inp" placeholder="Начните поиск..." />
+          <input class="search-inp" placeholder="Начните поиск..." v-model="findTeamTxt" />
           <input placeholder="Выберите дату" type="date" />
           <div class="search-toggle">
             <Switch_toggle />

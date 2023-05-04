@@ -140,6 +140,19 @@ export const useTeamStore = defineStore("teams", () => {
         return { responseMsg, isOK }
     }
 
+    //fetch teams by
+    async function fetchTeamsSearch(title="", description = "",tags=""): Promise<any> {
+
+        //find by all txt data in table
+        const res = await axios.get('/api/teams',{params:{
+            title:title,
+            description:description,
+            tags:tags
+        }})
+
+        return res.data
+    }
+
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия
     function setLayout(res: any) {
         this.layout = res;
@@ -173,6 +186,7 @@ export const useTeamStore = defineStore("teams", () => {
         fetchTeam,
         updateTeam,
         archiveTeam,
+        fetchTeamsSearch,
 
         layout,
         menu_items
