@@ -73,7 +73,7 @@ export class UploadsController {
     // получить все мероприятия по заданным параметрам
     let events = await this.eventsService.findAllEvents(null, type, level, direction, dStart, dEnd)
 
-    await this.uploadsService.getReportEventsOfDirection(res, events[0], events[1], { type: type, level: level, direction: direction, dateStart: dStart, dateEnd: dEnd })
+    await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level, direction: direction, dateStart: dStart, dateEnd: dEnd })
     //return res
   }
 
@@ -92,7 +92,7 @@ export class UploadsController {
 
     let events = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dStart, dEnd)
    
-    await this.uploadsService.getReportEventsOfDirection(res, events[0], events[1], { type: type, level: level,direction: null, dateStart: dStart, dateEnd: dEnd })
+    await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level,direction: null, dateStart: dStart, dateEnd: dEnd })
 
   }
 

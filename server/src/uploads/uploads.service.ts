@@ -75,7 +75,7 @@ export class UploadsService {
 
 
   // install excel file for events in direction
-  async getReportEventsOfDirection(res: Response, events: Event[], countEvents: number,
+  async getReportEvents(res: Response, events: Event[], countEvents: number,
     params = {
       type: null, level: null,
       direction: null, dateStart: null, dateEnd: null
@@ -94,7 +94,7 @@ export class UploadsService {
     );
 
     const workbook = new Workbook();
-    const worksheet = workbook.addWorksheet('events');
+    const worksheet = workbook.addWorksheet('мероприятия');
     worksheet.columns = [
       { header: "название", key: "name", width: 25 },
       { header: "уровень", key: "level", width: 15 },
