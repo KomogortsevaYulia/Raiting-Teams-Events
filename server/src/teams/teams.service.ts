@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
 import { UsersService } from 'src/users/users.service';
+import { SearchTeamDto } from './dto/search-team.sto';
 
 
 
@@ -71,10 +72,10 @@ export class TeamsService {
   }
 
   // get all teams with leadeaders
-  async findAll(): Promise<Team[]> {
+  async findAll(params: SearchTeamDto): Promise<Team[]> {
     const head = "Руководитель"
 
-    return this.teamsRepository
+    let query = await this.teamsRepository
       .createQueryBuilder("teams")
 
       .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description",
@@ -89,10 +90,52 @@ export class TeamsService {
       .leftJoinAndSelect("user_functions.user", "user")
       // .addSelect("user.title_role")
       .orderBy("teams.id", "DESC")
-      .getMany()
+
+      query = await this.filterTeam(params, query)
+
+      let team = await query.getMany()
+      return team
   }
 
 
+
+   // по умному как то переделать потом!!!
+   async filterTeam(params: SearchTeamDto, q: SelectQueryBuilder<Team>) {
+
+    let query = q
+
+    // let buildSQL = (columnName, value)=>{
+    //   query.andWhere(`LOWER(${columnName}) like :value`, {value: `%${params.title}%`})
+    // }
+
+    //если у нас все параметры то через 'или' все ищем
+    if (params.title && params.description && params.tags) {
+      
+      //делаем все столбцы в нижнем регистре и ищем по всем столбцам через предлог "или"
+      query = query.andWhere(
+        "(LOWER(teams.title) like :title"
+        + " or LOWER(teams.description) like :description"
+        + " or LOWER(teams.tags) like :tags)", {
+        title: `%${params.title}%`,
+        description: `%${params.description}%`,
+        tags: `%${params.tags}%`
+      })
+    } else { //если не все параметры, то ищем через 'и'
+     
+      //if title (если у нас есть тайтл то ищем по нему)
+      query = params.title ? query.andWhere("LOWER(teams.title) like :title", { title: `%${params.title}%` }) : query
+      //if description
+      query = params.description ? query.andWhere("LOWER(teams.description) like :description", { description: `%${params.description}%` }) : query
+      //if description
+      query = params.tags ? query.andWhere("LOWER(teams.tags) like :tags", { tags: `%${params.tags}%` }) : query
+    }
+
+
+    return query
+  }
+
+
+  
   // get all teams of specific direction for statistic
   async findAllTeamsOfDirection(type_team = "teams", id_parent = -1): Promise<[Team[], number]> {
 

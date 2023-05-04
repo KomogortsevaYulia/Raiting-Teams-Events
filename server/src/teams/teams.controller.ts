@@ -8,6 +8,7 @@ import { UsersService } from '../users/users.service';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { SearchTeamDto } from './dto/search-team.sto';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -17,14 +18,26 @@ export class TeamsController {
     private readonly uploadsService: UploadsService) { }
 
 
+  // @Get()
+  // @ApiOperation({ summary: "Получение списка коллективов с их руководителями" })
+  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team] })
+  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  // findAll() {
+  //   return this.teamsService.findAll();
+
+  // }
+
   @Get()
   @ApiOperation({ summary: "Получение списка коллективов с их руководителями" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team] })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team]  })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAll() {
-    return this.teamsService.findAll();
-
+  findAll(
+    @Query() params: SearchTeamDto) {
+    // if(params.tags)
+    // console.log(params)
+    return this.teamsService.findAll(params);
   }
+
 
   @Get('direction')
   @ApiOperation({ summary: "Получение списка коллективов c учетом параметров (направление, вид)" })
