@@ -12,7 +12,21 @@ describe('UploadsService', () => {
     service = module.get<UploadsService>(UploadsService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('get file by path', () => {
+    it('should throw an error', async () => {
+     await expect(service.getFileBuffer("none")).rejects.toThrow();
+    });
+    
   });
+
+  describe('load file ', () => {
+    it('should throw an error', async () => {
+    //const file = new Stream
+     await expect(service.getFileBuffer("none")).rejects.toThrow();
+    });
+    
+  });
+
 });
+
+

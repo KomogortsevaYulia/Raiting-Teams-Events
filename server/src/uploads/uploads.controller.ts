@@ -1,12 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, Redirect, HttpStatus, Query, Header, Headers, Res } from '@nestjs/common';
+import { Controller, Get, Post, UploadedFile, UseInterceptors, Redirect, HttpStatus, Query, Header, Headers, Res, ParseFilePipe, MaxFileSizeValidator, ParseFilePipeBuilder, FileTypeValidator, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EventsService } from 'src/events/events.service';
-import * as ExcelJS from 'exceljs';
-import { createReadStream } from 'fs';
-import { Workbook } from 'exceljs';
 import { Response } from 'express';
+import { UploadFileDto } from './dto/upload-file.dto';
+import { FileSizeValidationPipe } from './validation/file.validation.pipe ';
 
 
 @Controller('uploads')
@@ -20,9 +19,25 @@ export class UploadsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file) {
+  async uploadFile(@UploadedFile(
+    new FileSizeValidationPipe()
+   
+  ) file: Express.Multer.File) {
 
+    // new ParseFilePipeBuilder()
+    // .addFileTypeValidator({
+    //   fileType: 'jpeg',
+    // })
+    // .addMaxSizeValidator({
+    //   maxSize: 1024*1024*20 //10 mb
+    // })
+    // .build({
+    //   errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+    // }),
     // console.log(file)
+   
+    // let u: UploadFileDto = file
+   
     let path = await this.uploadsService.uploadFile(file)
 
     return path

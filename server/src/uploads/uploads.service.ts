@@ -6,13 +6,15 @@ import { Event } from 'src/events/entities/event.entity';
 import * as ExcelJS from 'exceljs';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
+import { UploadFileDto } from './dto/upload-file.dto';
 
 @Injectable()
 export class UploadsService {
 
 
-  async uploadFile(file) {
+  async uploadFile(file:Express.Multer.File) {
 
+    console.log(file)
     const pathStart = "/public/media"
 
     const randomName = Array(32).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
@@ -23,7 +25,7 @@ export class UploadsService {
     stream.write(file.buffer);
     stream.end();
 
-    return path
+     return path
   }
 
 
@@ -81,8 +83,8 @@ export class UploadsService {
       direction: null, dateStart: null, dateEnd: null
     }) {
 
-      console.log("events")
-      console.log(events)
+      // console.log("events")
+      // console.log(events)
 
     res.setHeader(
       'Content-Type',
@@ -114,8 +116,8 @@ export class UploadsService {
       let e = events[i]
       let arrData = []
 
-      console.log("e " )
-      console.log(e.id + e.title)
+      // console.log("e " )
+      // console.log(e.id + e.title)
 
       arrData.push(e.title ?? "-", e.level ? e.level.name : "-", e.type ? e.type.name : "-",
         e.format ? e.format.name : "-",

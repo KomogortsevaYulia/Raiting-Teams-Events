@@ -9,6 +9,7 @@ import { UpdateTeamDto } from './dto/update-team.dto';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { SearchTeamDto } from './dto/search-team.dto';
+import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe ';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -63,8 +64,8 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   @UseInterceptors(FilesInterceptor('files'))
-  async update(@Param('id') id: number, @UploadedFiles() files, @Body() updateTeamDto: UpdateTeamDto) {
-    // console.log(files)
+  async update(@Param('id') id: number, @UploadedFiles(new FileSizeValidationPipe()) files:Express.Multer.File[], @Body() updateTeamDto: UpdateTeamDto) {
+    console.log(files)
     // console.log(updateTeamDto)
 
     // устав коллектива
@@ -75,26 +76,26 @@ export class TeamsController {
     // console.log("ustav1 " + ustavPath)
     // console.log("doc1 " + docPath)
 
-    if (files.length < 3) {
-      for (let f in files) {
-        //console.log("have files " + (ustavPath))
+    // if (files.length < 3) {
+    //   for (let f in files) {
+    //     //console.log("have files " + (ustavPath))
        
-        //оставить только начало файла без расширения
-        if (files[f].originalname.split(".").shift() == "ustav") {
+    //     //оставить только начало файла без расширения
+    //     if (files[f].originalname.split(".").shift() == "ustav") {
 
-          //console.log("ustav loaded ")
-          ustavPath = await this.uploadsService.uploadFile(files[f])
-        } else if (files[f].originalname.split(".").shift() == "document") {
+    //       //console.log("ustav loaded ")
+    //       ustavPath = await this.uploadsService.uploadFile(files[f])
+    //     } else if (files[f].originalname.split(".").shift() == "document") {
 
-          docPath = await this.uploadsService.uploadFile(files[f])
-        }
-      }
-    }
+    //       docPath = await this.uploadsService.uploadFile(files[f])
+    //     }
+    //   }
+    // }
 
-    updateTeamDto.charterTeam = ustavPath
-    //console.log("ustav " + ustavPath)
+    // updateTeamDto.charterTeam = ustavPath
+    // //console.log("ustav " + ustavPath)
 
-    updateTeamDto.document = docPath
+    // updateTeamDto.document = docPath
     //console.log("doc " + docPath)
 
     let team = await this.teamsService.update(id, updateTeamDto);
