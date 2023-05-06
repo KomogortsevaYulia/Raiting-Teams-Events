@@ -32,54 +32,73 @@ export class TeamsService {
     return this.teamsRepository.findOneBy({ id: id });
   }
 
-  update(id: number, updateTeamDto: UpdateTeamDto) {
-    return `This action updates a #${id} team`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} team`;
-  }
 
-    // get all teams with leadeaders
-    async findAll(): Promise<Team[]> {
-      const head = "Руководитель"
-  
-      return this.teamsRepository
-        .createQueryBuilder("teams")
-  
-        .select(["teams.id", "teams.title","teams.tags", "teams.image", "teams.description","teams.short_description", "teams.type_team"])
-        .where("teams.type_team = :type", { type: "teams" })
-        .leftJoin("teams.functions", "functions")
-        .addSelect("functions.title")
-        .andWhere("functions.title = :head", { head: "Руководитель" })
-  
-        .leftJoin("functions.userFunctions", "user_functions")
-        .addSelect("user_functions.id")
-        .leftJoinAndSelect("user_functions.user", "user")
-        .addSelect("user.title_role")
-        .orderBy("teams.id","DESC")
-        .getMany()
-    }
+  async update(id: number, updateTeamDto: UpdateTeamDto) {
+
+    let team = await this.teamsRepository.save({
+      id,
+      ...updateTeamDto
+    })
 
     
+    // удалить прошлого лидера
+    if (updateTeamDto.oldLeaderId != null && updateTeamDto.newLeaderId != null) {
+      await this.usersService.removeLeader(team.id, updateTeamDto.oldLeaderId)
+
+      // назначить нового пользвоателя
+      let newUserFunction = await this.usersService.assignLeader(team, updateTeamDto.newLeaderId)
+
+    }
+  }
+
+
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} team`;
+  // }
+
+  // get all teams with leadeaders
+  async findAll(): Promise<Team[]> {
+    const head = "Руководитель"
+
+    return this.teamsRepository
+      .createQueryBuilder("teams")
+
+      .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description",
+        "teams.short_description", "teams.type_team", "teams.cabinet", "teams.is_archive", "teams.document", "teams.shortname", "teams.charter_team"])
+      .where("teams.type_team = :type", { type: "teams" })
+      .leftJoin("teams.functions", "functions")
+      .addSelect("functions.title")
+      .andWhere("functions.title = :head", { head: head })
+
+      .leftJoin("functions.userFunctions", "user_functions")
+      .addSelect("user_functions.id")
+      .leftJoinAndSelect("user_functions.user", "user")
+      // .addSelect("user.title_role")
+      .orderBy("teams.id", "DESC")
+      .getMany()
+  }
+
+
   // get all teams of specific direction for statistic
-  async findAllTeamsOfDirection(type_team = "teams", id_parent=-1): Promise<[Team[], number]> {
+  async findAllTeamsOfDirection(type_team = "teams", id_parent = -1): Promise<[Team[], number]> {
 
 
     let teams = this.teamsRepository
       .createQueryBuilder("teams")
 
       .select(["teams.id", "teams.title", "teams.image", "teams.description", "teams.type_team",
-      "teams.shortname"])
+        "teams.shortname"])
       .where("teams.type_team = :type", { type: type_team })
 
-      // с учетом направления
-      if(id_parent > 0){
-        teams.andWhere("teams.id_parent = :id_parent ",{ id_parent: id_parent } )
+    // с учетом направления
+    if (id_parent > 0) {
+      teams.andWhere("teams.id_parent = :id_parent ", { id_parent: id_parent })
         .leftJoin("teams.id_parent", "id_parent")
         .addSelect(["id_parent.id", "id_parent.shortname"])
-      }
-      
+    }
+
     return teams.getManyAndCount()
   }
 
@@ -135,34 +154,22 @@ export class TeamsService {
 
     let team = await this.teamsRepository.save({
       ...createTeamDto,
+      charter_team:createTeamDto.charterTeam,
       image: [],
       tags: [],
       type_team: "teams",
       creation_date: new Date()
     })
 
-    await this.assignLeader(team, createTeamDto.userID)
+    await this.usersService.assignLeader(team, createTeamDto.userID)
 
     return team;
   }
 
+  //архивировать или наоборот
+  async changeArchiveTeam(id: number, isArchive: boolean) {
 
-  //назначить руководителя
-  async assignLeader(team: Team, leaderid: number) {
-
-    //создать руководителя
-    let newFunction = await this.usersService.createFunction({
-      title: 'Руководитель',
-      team: team
-    })
-
-    let newUserFunction = await this.usersService.createUserFunction({
-      function: newFunction.id,
-      user: leaderid
-    })
-
-
-    return newUserFunction
+    return await this.teamsRepository.update(id, { is_archive: isArchive })
   }
 
 }
