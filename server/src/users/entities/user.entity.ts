@@ -3,6 +3,7 @@ import { BeforeInsert, Column, Entity,JoinColumn,ManyToOne,OneToMany, OneToOne, 
 import { Role } from "./role.entity";
 import { UserFunction } from "./user_function.entity";
 import * as argon2 from 'argon2';
+import { Requisitions } from "../../teams/entities/requisition.entity";
 
 @Entity("users")
 export class User {
@@ -76,4 +77,9 @@ export class User {
 
     @Column({ nullable: true })
     course: number;
+
+    @OneToMany((type) => Requisitions, (requisitions) => requisitions.id)
+    requisitions: Requisitions[]
+
+
 }
