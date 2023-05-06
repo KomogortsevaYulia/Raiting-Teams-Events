@@ -8,7 +8,7 @@ import { UsersService } from '../users/users.service';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { SearchTeamDto } from './dto/search-team.sto';
+import { SearchTeamDto } from './dto/search-team.dto';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')

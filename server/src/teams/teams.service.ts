@@ -7,7 +7,7 @@ import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
 import { UsersService } from 'src/users/users.service';
-import { SearchTeamDto } from './dto/search-team.sto';
+import { SearchTeamDto } from './dto/search-team.dto';
 
 
 

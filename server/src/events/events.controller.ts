@@ -69,14 +69,14 @@ export class EventsController {
     return this.eventsService.findOne(id);
   }
 
-  @ApiOperation({ summary: "Получение мероприятия коллектива" })
+  @ApiOperation({ summary: "Получение мероприятия коллектива по журналу" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @Get('events_of_team/:teamId')
-  async getEventsViaJournalsByTeam(@Param('teamId') teamId, @Query() { type = null, level = null,
+   getEventsViaJournalsByTeam(@Param('teamId') teamId, @Query() { type = null, level = null,
     dateStart = null, dateEnd = null }) {
 
-    let res = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dateStart, dateEnd)
+    let res =  this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dateStart, dateEnd)
 
     return res
   }

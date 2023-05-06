@@ -132,6 +132,7 @@ watch(() => dateRange.value, () => {
 })
 
 
+// получение мероприятий
 async function getEvents() {
 
   switch (selectedTypeReport.value) {
