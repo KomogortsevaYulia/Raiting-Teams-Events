@@ -38,7 +38,7 @@
                 <div class="teg__container">
                   <div v-for="el in event.tags" class="teg">{{ el }}</div>
                 </div>
-                <div class="card__text">{{ event.description.slice(0, 150) }}</div>
+                <div class="card__text" v-if="event.description">{{ event.description.slice(0, 150) }}</div>
                 <!-- <div class="btn__container">
                   <button class="card__btn">Подать заявку</button>
                 </div> -->
