@@ -5,6 +5,7 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/s
 import { Team } from './entities/team.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
 import { UsersService } from '../users/users.service';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -93,7 +94,7 @@ export class TeamsController {
     // console.log(createTeamDto)
     return this.teamsService.create(createTeamDto);
   }
-
+ 
 
   // @Get('directions')
   // @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })

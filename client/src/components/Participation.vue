@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import { useUserStore } from "@/store/user_store"
+import { update } from "lodash"
 import {ref} from "vue"
+const userStore = useUserStore()
+
+
+
 
 interface User {
+    id:number
     fullname: string
     education_group: string
 }
@@ -19,7 +26,8 @@ async function deleteItem() {
     // TODO:
 }
 
-async function saveChanges() {
+async function saveChanges(fullname:string,education_group:string,title_role:string,id:number) {
+ await userStore.Update(fullname,education_group,title_role,id)
   isEditMode.value = false;
 }
 
@@ -91,7 +99,7 @@ async function cancelEditMode() {
                                         <input v-model="props.func.title" />
                                     </div>
                                     <div class="row d-flex justify-content-end">
-                                        <button class="btn button px-3" @click="saveChanges">Сохранить</button>
+                                        <button class="btn button px-3" @click="saveChanges(props.user.fullname,props.user.education_group,props.func.title,props.user.id)">Сохранить</button>
                                         <button class="btn button px-3" @click="cancelEditMode">Отмена</button>
                                     </div>
                                 </div>

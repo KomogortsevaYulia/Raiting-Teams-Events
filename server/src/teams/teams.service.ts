@@ -128,7 +128,7 @@ export class TeamsService {
 
     return teamsFunctions
   }
-
+  
 
   //создать команду, с учетом, что есь минимум 1 лидер
   async create(createTeamDto: CreateTeamDto): Promise<Team> {
