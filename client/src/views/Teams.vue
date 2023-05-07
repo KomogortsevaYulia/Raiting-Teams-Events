@@ -129,7 +129,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -374,7 +373,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
               border-radius: 5px;
             }
           }
-
           .date {
             text-align: end;
             font-size: 1.6rem;
@@ -385,6 +383,5 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
       }
     }
   }
-
 }
 </style>

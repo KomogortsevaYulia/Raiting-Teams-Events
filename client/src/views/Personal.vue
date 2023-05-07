@@ -27,24 +27,19 @@ async function getInfoUser() {
 
 </script>
 <template>
-  <div class="avatar rounded">
-    <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="me-2 mt-2 " />
-    <img class="icon" width="150" height="150" :src="user.image" alt="icon" style="object-fit: cover;" />
-    <p class="FIO">{{ user.fullname }}</p>
-    <p class="text"> {{ user.institute }}</p>
-    <p>{{ user.course }} курс</p>
-    <p>{{ user.education_group }}</p>
-    <div class="tags">
-      <div class="tag">
-        Волейбол
-      </div>
-      <div class="tag">
-        Спортивные танцы
-      </div>
-      <div class="tag">
-        Спорт
-      </div>
+  <div class="row">
+  <div class="avatar col">
+<!--сделать -->
+    <div class="row-auto ms-5 ">
+      <div class="col"> <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="me-2 mt-2 d-flex" /> </div>
+      <div class="col"> <img class="icon" width="150" height="150" :src="user.image" alt="icon"  /></div>
     </div>
+<div class="row">
+  <p class="FIO row-auto">{{ user.fullname }}</p>
+  <p class="row-auto"> {{ user.institute }}</p>
+  <p class="row-auto">{{ user.course }} курс</p>
+  <p class="row-auto">{{ user.education_group }}</p>
+</div>
     <div class="row">
       <div class="col ps-5 pe-5">
         <h3 class="active">Коллективы</h3>
@@ -106,7 +101,7 @@ async function getInfoUser() {
       </div>
     </div>
   </div>
-
+  </div>
   <!-- <div class="information rounded">
                 <h1 class="ps-3">Достижения</h1>
               </div> -->
@@ -192,7 +187,7 @@ button {
 }
 
 .icon {
-  margin: 2em 1em 2em 5em;
+  //margin: 2em 1em 2em 5em;
   border-radius: 1000px;
   /* Радиус скругления */
 }
