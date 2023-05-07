@@ -59,6 +59,10 @@ export class UsersController {
     let { password, ...res } = user;
     return res;
   }
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
+  }
 
   @ApiOperation({ summary: "Регистрация пользователя" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })

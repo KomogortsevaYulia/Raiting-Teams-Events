@@ -42,7 +42,10 @@ export class UsersService {
     })
 
   }
-
+  async reduction(updateUserDto: UpdateUserDto,id: number){
+    return this.usersRepository.update(id, updateUserDto);
+  }
+  
   async findAllWithLimit(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });
   }

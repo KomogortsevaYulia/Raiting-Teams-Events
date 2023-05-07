@@ -208,7 +208,7 @@ export class TeamsService {
 
     return teamsFunctions
   }
-
+  
 
   //архивировать или наоборот
   async changeArchiveTeam(id: number, isArchive: boolean) {
