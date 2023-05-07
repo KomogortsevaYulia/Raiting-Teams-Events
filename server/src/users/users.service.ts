@@ -14,7 +14,7 @@ import { SECRET } from '../config';
 import { LoginUserDto } from './dto/login-user.dto';
 import * as argon2 from 'argon2';
 import { validate } from 'class-validator';
-import { Team } from 'src/teams/entities/team.entity';
+import { Team } from '../teams/entities/team.entity';
 const jwt = require('jsonwebtoken');
 
 @Injectable()

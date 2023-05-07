@@ -6,7 +6,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { SearchTeamDto } from './dto/search-team.dto';
 
 
@@ -26,8 +26,12 @@ export class TeamsService {
     private readonly usersService: UsersService
   ) { }
 
-  findOne(id: number) {
-    return this.teamsRepository.findOneBy({ id: id });
+  async findOne(id: number) {
+    console.log("enterdddddddddddddd " )
+    let res = await this.teamsRepository.findOneBy({ id: id })
+    console.log("enter" + res)
+
+    return res;
   }
 
 

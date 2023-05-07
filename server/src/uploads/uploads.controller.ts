@@ -2,7 +2,7 @@ import { Controller, Get, Post, UploadedFile, UseInterceptors, Redirect, HttpSta
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { EventsService } from 'src/events/events.service';
+import { EventsService } from '../events/events.service';
 import { Response } from 'express';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { FileSizeValidationPipe } from './validation/file.validation.pipe ';
@@ -23,20 +23,6 @@ export class UploadsController {
     new FileSizeValidationPipe()
    
   ) file: Express.Multer.File) {
-
-    // new ParseFilePipeBuilder()
-    // .addFileTypeValidator({
-    //   fileType: 'jpeg',
-    // })
-    // .addMaxSizeValidator({
-    //   maxSize: 1024*1024*20 //10 mb
-    // })
-    // .build({
-    //   errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
-    // }),
-    // console.log(file)
-   
-    // let u: UploadFileDto = file
    
     let path = await this.uploadsService.uploadFile(file)
 

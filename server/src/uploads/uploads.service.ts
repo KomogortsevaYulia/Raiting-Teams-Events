@@ -12,7 +12,7 @@ import { UploadFileDto } from './dto/upload-file.dto';
 export class UploadsService {
 
 
-  async uploadFile(file:Express.Multer.File) {
+  async uploadFile(file: Express.Multer.File) {
 
     console.log(file)
     const pathStart = "/public/media"
@@ -21,11 +21,17 @@ export class UploadsService {
     const filename = `${randomName}${extname(file.originalname)}`;
     const path = `.${pathStart}/${filename}`;
 
-    const stream = createWriteStream(path);
-    stream.write(file.buffer);
-    stream.end();
 
-     return path
+    if (file.buffer != null) {
+      const stream = createWriteStream(path);
+      stream.write(file.buffer);
+      stream.end();
+    } else {
+      throw new HttpException('Буфер файла пустой', HttpStatus.BAD_REQUEST)
+    }
+
+
+    return path
   }
 
 
@@ -83,8 +89,8 @@ export class UploadsService {
       direction: null, dateStart: null, dateEnd: null
     }) {
 
-      // console.log("events")
-      // console.log(events)
+    // console.log("events")
+    // console.log(events)
 
     res.setHeader(
       'Content-Type',

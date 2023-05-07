@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, Put, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, Put, UploadedFile, UploadedFiles, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -6,10 +6,10 @@ import { Team } from './entities/team.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
 import { UsersService } from '../users/users.service';
 import { UpdateTeamDto } from './dto/update-team.dto';
-import { UploadsService } from 'src/uploads/uploads.service';
+import { UploadsService } from '../uploads/uploads.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { SearchTeamDto } from './dto/search-team.dto';
-import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe ';
+import { FileSizeValidationPipe } from '../uploads/validation/file.validation.pipe ';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -76,26 +76,26 @@ export class TeamsController {
     // console.log("ustav1 " + ustavPath)
     // console.log("doc1 " + docPath)
 
-    // if (files.length < 3) {
-    //   for (let f in files) {
-    //     //console.log("have files " + (ustavPath))
+    if (files.length < 3) {
+      for (let f in files) {
+        //console.log("have files " + (ustavPath))
        
-    //     //оставить только начало файла без расширения
-    //     if (files[f].originalname.split(".").shift() == "ustav") {
+        //оставить только начало файла без расширения
+        if (files[f].originalname.split(".").shift() == "ustav") {
 
-    //       //console.log("ustav loaded ")
-    //       ustavPath = await this.uploadsService.uploadFile(files[f])
-    //     } else if (files[f].originalname.split(".").shift() == "document") {
+          //console.log("ustav loaded ")
+          ustavPath = await this.uploadsService.uploadFile(files[f])
+        } else if (files[f].originalname.split(".").shift() == "document") {
 
-    //       docPath = await this.uploadsService.uploadFile(files[f])
-    //     }
-    //   }
-    // }
+          docPath = await this.uploadsService.uploadFile(files[f])
+        }
+      }
+    }
 
-    // updateTeamDto.charterTeam = ustavPath
-    // //console.log("ustav " + ustavPath)
+    updateTeamDto.charterTeam = ustavPath
+    //console.log("ustav " + ustavPath)
 
-    // updateTeamDto.document = docPath
+    updateTeamDto.document = docPath
     //console.log("doc " + docPath)
 
     let team = await this.teamsService.update(id, updateTeamDto);
@@ -127,6 +127,7 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findOne(@Param('id') id: number) {
+    console.log("enter" + id)
     return this.teamsService.findOne(id);
   }
 
@@ -147,11 +148,12 @@ export class TeamsController {
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  @UsePipes(new ValidationPipe({ transform: true }))
   @UseInterceptors(FilesInterceptor('files'))
   // @UseInterceptors(FileInterceptor('document'))
   async create(@UploadedFiles() files, @Body() createTeamDto: CreateTeamDto) { //, @Body() createTeamDto: CreateTeamDto
     // console.log(files)
-    // console.log(createTeamDto)
+    console.log(createTeamDto)
 
     let ustav = null
     let doc = null
