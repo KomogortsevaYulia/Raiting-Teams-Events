@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { BeforeInsert, Column, Entity,JoinColumn,ManyToOne,OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Role } from "./role.entity";
 import { UserFunction } from "./user_function.entity";
 import * as argon2 from 'argon2';
+import { Requisitions } from "../../teams/entities/requisition.entity";
 
 @Entity("users")
 export class User {
@@ -58,11 +58,6 @@ export class User {
     @Column("simple-array",{ nullable: true })
     permissions: string[]
 
-    @ApiProperty()
-    @ManyToOne(()=>Role, (role)=> role.title)
-    @JoinColumn([{ name: "title_role" }])
-    role_id: number
-
     @OneToMany((type)=>UserFunction, (user_func)=>user_func.function)
     user_function:UserFunction[]
 
@@ -76,4 +71,9 @@ export class User {
 
     @Column({ nullable: true })
     course: number;
+
+    @OneToMany((type) => Requisitions, (requisitions) => requisitions.id)
+    requisitions: Requisitions[]
+
+
 }

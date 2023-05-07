@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus, Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus, Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -127,10 +127,27 @@ export class UsersController {
     return this.usersService.createFunction(createFunctionDto);
   }
 
+  @Put('functions/:id')
+  @ApiOperation({ summary: "Обновить функцию для пользователя" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  updateFunction(@Param("id") idFunction, @Body() createFunctionDto: CreateFunctionDto) {
+    return this.usersService.updateFunction(idFunction, createFunctionDto);
+  }
+
+
 
   // function--------------------------------------------------------------------
 
-
+  @Delete('team/:id_team/leader/:id_leader')
+  @ApiOperation({ summary: "Удалить лидера коллектива" })
+  @ApiParam({ name: "id_team", required: true, description: "ид коллектива" })
+  @ApiParam({ name: "id_leader", required: true, description: "ид лидера" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  removeLeader(@Param('id_leader') idLeader: number,@Param('id_team') idTeam: number) {
+    return this.usersService.removeLeader(idTeam,idLeader)
+  }
 
   //user functions---------------------------------------------------------------
   @Post('userFunctions')

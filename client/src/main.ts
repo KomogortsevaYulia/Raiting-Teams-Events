@@ -13,12 +13,12 @@ import "./assets/style.scss";
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faUser, faCalendarDays, faClose, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faCalendarDays, faClose, faEdit, faArchive, faPencilSquare} from '@fortawesome/free-solid-svg-icons'
 //компонент для выбора юзера из выпадающего списка
 import vSelect from 'vue-select'
 import VCalendar from 'v-calendar';
 import 'v-calendar/style.css';
-library.add(faUser, faCalendarDays, faClose, faEdit)
+library.add(faUser, faCalendarDays, faClose, faEdit, faArchive, faPencilSquare)
 
 const app = createApp(App);
 app.component('v-select', vSelect)

@@ -7,6 +7,8 @@ import { TeamsModule } from './teams/teams.module';
 import { EventsModule } from './events/events.module';
 import CONNECTION from './db.connection';
 import { FormsModule } from './forms/forms.module';
+import { GeneralModule } from './general/general.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -20,9 +22,12 @@ import { FormsModule } from './forms/forms.module';
     UsersModule,
     TeamsModule,
     EventsModule,
-    FormsModule
+    FormsModule,
+    GeneralModule,
+    UploadsModule
   ],
   controllers: [AppController],
   providers: [AppService],
+
 })
 export class AppModule { }
