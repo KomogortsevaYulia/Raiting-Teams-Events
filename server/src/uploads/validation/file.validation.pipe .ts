@@ -13,13 +13,18 @@ export class FileSizeValidationPipe implements PipeTransform<any>{ // extends  F
   // }
 
   transform(value: Express.Multer.File[], metadata: ArgumentMetadata) {
-    // "value" is an object containing the file's attributes and metadata
-    const maxSize = 1024*1024*20;
 
-    value.forEach(element => {
-     
-      if(element.size >= maxSize){
-        throw new  BadRequestException(`Validation failed. Размер файла должен быть < ${maxSize} мб`);
+    const maxSize = 1024*1024*20; //byte
+   
+    value.forEach(file => {
+
+      if(file.size >= maxSize){
+        const originalname = file.originalname ? file.originalname.split(".").shift() : ""
+        const fileSize = Math.round(file.size/ (1024*1024))
+
+        throw new  BadRequestException(
+        `Ошибка при загрузке файла ${originalname}. 
+        Размер файла ${fileSize} мб, файл должен весить < 20 мб`);
       }
     });
    

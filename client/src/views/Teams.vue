@@ -103,9 +103,13 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
           <div v-for="team in data" class="cardEvent">
-            <div class="card__banner">
-              <img :src="team.image" class="d-block" style="width: 100%;object-fit: cover;">
-            </div>
+
+            <router-link :to="'/team/' + team.id" class="w-100">
+              <div class="card__banner">
+                <img v-if="team.image.length>0" :src="team.image" class="d-block" style="width: 100%;object-fit: cover;">
+                <img v-else src="@/assets/icon/empty_photo.jpg" class="d-block" style="width: 100%;object-fit: cover;">
+              </div>
+            </router-link>
 
             <div class="wrapperContent">
               <div class="card__event-name relative">
@@ -113,7 +117,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
                   <div class="col-8"> {{ team.title }} </div>
 
                   <div class="col d-flex justify-content-end align-items-start">
-                    <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive" > (В
+                    <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
                       архиве)</p>
                   </div>
 
@@ -130,13 +134,12 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
               </div>
 
-              <router-link :to="'/team/' + team.id" class="w-100">
-                <div class="navigation-tags">
-                  <div v-for="el in team.tags" class="teg">{{ el }}</div>
-                </div>
-                <p>{{ team.short_description }}</p>
 
-              </router-link>
+              <div class="navigation-tags">
+                <div v-for="el in team.tags" class="teg">{{ el }}</div>
+              </div>
+              <p>{{ team.short_description }}</p>
+
             </div>
 
           </div>
@@ -158,7 +161,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     width: 100%;
 
     a {
-      cursor: pointer;
+      // cursor: pointer;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       font-size: 14px;
       text-decoration: none;
@@ -242,6 +245,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         }
 
         .card__banner {
+          cursor: pointer;
           height: 15rem;
           max-width: 15rem;
           width: 100%;
@@ -255,7 +259,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         }
 
         .cardEvent:hover {
-          cursor: pointer;
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
         }
 
@@ -363,7 +366,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         }
 
         .cardEvent:hover {
-          cursor: pointer;
+        
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
         }
 

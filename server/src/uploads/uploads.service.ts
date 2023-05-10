@@ -3,10 +3,8 @@ import { createReadStream, createWriteStream } from 'fs';
 import { extname } from 'path';
 import * as fs from 'fs';
 import { Event } from 'src/events/entities/event.entity';
-import * as ExcelJS from 'exceljs';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
-import { UploadFileDto } from './dto/upload-file.dto';
 
 @Injectable()
 export class UploadsService {
@@ -135,38 +133,7 @@ export class UploadsService {
       indexRow++
     }
 
-    // Set the headers and disposition
-
-
-    // Send the workbook as a response
     await workbook.xlsx.write(res)
     res.end();
   }
-
-
-
-  // async downloadExcel(res: Response) {
-  //   const workbook = new Workbook();
-  //   const worksheet = workbook.addWorksheet('My Sheet');
-
-  //   // Add some data to the worksheet
-  //   worksheet.addRow(['Name', 'Age']);
-  //   worksheet.addRow(['John Doe', 30]);
-  //   worksheet.addRow(['Jane Doe', 25]);
-
-  //   // Write the workbook to a buffer
-  //   const buffer = await workbook.xlsx.writeBuffer();
-
-  //   // Set the headers and disposition
-  //   res.setHeader(
-  //     'Content-Type',
-  //     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  //   );
-  //   res.setHeader('Content-Disposition', 'attachment; filename=my_excel_file.xlsx');
-
-  //   // Send the buffer as the response body
-  //   res.write(buffer);
-  //   res.end();
-  // }
-
 }

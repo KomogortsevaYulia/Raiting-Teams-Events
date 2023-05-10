@@ -71,7 +71,8 @@ export const useTeamStore = defineStore("teams", () => {
         await axios.post("api/teams", formData, config)
             .catch((err) => {
                 if (err.response) {
-                    responseMsg = err.response.data.message[0]
+                    responseMsg =err.response.data.message
+
                 }
             })
 
@@ -113,7 +114,8 @@ export const useTeamStore = defineStore("teams", () => {
         const team = await axios.put("api/teams/" + uT.id, formData, config)
             .catch((err) => {
                 if (err.response) {
-                    responseMsg = err.response.data.message[0]
+                    responseMsg = err.response.data.message
+                    //    console.log(err.response.data.message)
                 }
             })
 
@@ -141,14 +143,16 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
     //fetch teams by
-    async function fetchTeamsSearch(title="", description = "",tags=""): Promise<any> {
+    async function fetchTeamsSearch(title = "", description = "", tags = ""): Promise<any> {
 
         //find by all txt data in table
-        const res = await axios.get('/api/teams',{params:{
-            title:title,
-            description:description,
-            tags:tags
-        }})
+        const res = await axios.get('/api/teams', {
+            params: {
+                title: title,
+                description: description,
+                tags: tags
+            }
+        })
 
         return res.data
     }

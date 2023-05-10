@@ -188,7 +188,7 @@ async function updateTeam() {
   responseMsg.value = res.responseMsg
 
   if(res.team != null){
-    console.log(res.team.data)
+    // console.log(res.team.data)
     team.value = res.team.data
   }
 
@@ -272,7 +272,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
               Прежде чем создать в системе новый коллектив, нужно
               утвердить его приказом!</p>
 
-            <div v-if="responseMsg" class="alert alert-primary" role="alert">
+            <div v-if="responseMsg" class="alert alert-warning" role="alert">
               {{ responseMsg }}
             </div>
 
@@ -384,7 +384,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
     }
 
     .create-wrapper-img {
-      width: 30%;
+      width: 20%;
       border-radius: 0 1rem 1rem 0;
       background-color: #D9D9D9;
       background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");

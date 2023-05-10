@@ -148,10 +148,9 @@ export class TeamsController {
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
-  @UsePipes(new ValidationPipe({ transform: true }))
   @UseInterceptors(FilesInterceptor('files'))
   // @UseInterceptors(FileInterceptor('document'))
-  async create(@UploadedFiles() files, @Body() createTeamDto: CreateTeamDto) { //, @Body() createTeamDto: CreateTeamDto
+  async create(@UploadedFiles(new FileSizeValidationPipe()) files:Express.Multer.File[], @Body() createTeamDto: CreateTeamDto) { //, @Body() createTeamDto: CreateTeamDto
     // console.log(files)
     console.log(createTeamDto)
 
