@@ -7,12 +7,12 @@ export class UpdateTeamDto {
 
     @IsNotEmpty({ message: 'Поле пустое' })
     @Length(1,100,{
-        message: 'Название, максимальная длина текста 50'
+        message: 'Название коллкетива, максимальная длина текста 100'
     })
     title: string
     
     @Length(1,3000,{
-        message: 'Описание, максимальная длина текста 1000'
+        message: 'Описание, максимальная длина текста 3000'
     })
     description: string
 

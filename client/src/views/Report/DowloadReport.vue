@@ -1,7 +1,6 @@
 <script setup  lang="ts">
 import type { Direction } from '@/store/enums/enum_event';
 import type { TypeReport } from './enums_report';
-import type { DirectionName } from '@/store/enums/enum_teams';
 import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useEventStore } from '@/store/events_store';
 

@@ -9,7 +9,7 @@ export class CreateTeamDto {
     @IsNotEmpty({ message: 'Поле пустое' })
     @IsString()
     @Length(1,100,{
-        message: 'Название, максимальная длина текста 100'
+        message: 'Название коллектива, максимальная длина текста 100'
     })
     title: string
 

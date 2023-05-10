@@ -16,11 +16,11 @@ describe('UploadsService', () => {
 
   describe('get file by path', () => {
 
-    it('should throw an error', async () => {
+    it('должен собщить что файл по пути не найден', async () => {
       await expect(service.getFileBuffer("none")).rejects.toThrow(new HttpException('Путь не найден', HttpStatus.BAD_REQUEST));
     });
 
-    it('should return file by path', async () => {
+    it('должен вернуть файл по указанному пути', async () => {
       await expect(service.getFileBuffer("./public/media/c8fa4705bb127ee6eadcf35b7771043ab.jpg")).resolves.toBeDefined();
     });
 

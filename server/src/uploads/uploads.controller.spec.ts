@@ -1,17 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UploadsController } from './uploads.controller';
 import { UploadsService } from './uploads.service';
-import { Readable } from 'node:stream';
 import { EventsService } from '../events/events.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Journal } from '../events/entities/journal.entity';
-import { Dictionary } from '../general/entities/dictionary.entity';
-import { Team } from '../teams/entities/team.entity';
-import { User } from '../users/entities/user.entity';
-import { DataSource } from 'typeorm';
-import CONNECTION from '../db.connection';
-
-
 
 describe('UploadsController', () => {
   let controller: UploadsController;
