@@ -151,3 +151,11 @@ a {
       border: 0;
     }
   }
+
+
+  .form-check{
+    .form-check-input:checked{
+       background-color: var(--second-color);
+       border-color: var(--second-color);
+    }
+  }

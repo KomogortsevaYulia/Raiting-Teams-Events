@@ -2,7 +2,7 @@ import { User } from "../../users/entities/user.entity"
 import { Entity, PrimaryColumn, ManyToOne, Column, JoinColumn, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { ApiProperty } from "@nestjs/swagger";
 import { Journal } from "./journal.entity";
-import { Direction, Level, Type } from "../enums/enums";
+import { Dictionary } from "../../general/entities/dictionary.entity";
 
 @Entity('events')
 export class Event {
@@ -11,23 +11,7 @@ export class Event {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ApiProperty()
-    @Column({
-        type: "enum",
-        enum: Type,
-        default: null,
-        nullable: true
-    })
-    type: string
-
-    @ApiProperty()
-    @Column({
-        type: "enum",
-        enum: ["Пассивное", "Активное"],
-        default: null,
-        nullable: true
-    })
-    type_participation: string
+  
 
     @ApiProperty()
     @Column()
@@ -82,35 +66,10 @@ export class Event {
     })
     location: string
 
-    @ApiProperty()
-    @Column({
-        type: "enum",
-        enum: Level,
-        default: Level.UNIVERSITY,
-        nullable: true
-    })
-    level: string
-
+   
     @ApiProperty()
     @Column("simple-array", {nullable: true})
     tags: string[]
-
-    @ApiProperty()
-    @Column({
-        type: "enum",
-        enum: ["Очное", "Онлайн", "Смешанное", "Выездное", "Заочное"],
-        default: "Очное",
-        nullable: true
-    })
-    format: string
-
-    @ApiProperty()
-    @Column({
-        type: "enum",
-        enum:Direction,
-        nullable: true
-    })
-    direction: string
 
     @ApiProperty()
     @Column({ nullable: true })
@@ -125,24 +84,64 @@ export class Event {
     @Column({ nullable: true })
     target_audience: string
 
+    
     @ApiProperty()
-    @Column({
-        type: "enum",
-        enum: ["Гражданское", "Патриотическое", "Духовно - нравственное", "Физическое", "Экологическое",
-            "Трудовое", "Культурно - просветительское", "Научно - образовательное", "Другое"],
-        nullable: true
-    })
-    clarifying_direction: string
+    @Column({ nullable: true })
+    status: boolean
 
     @ApiProperty()
-    @Column({
-        type: "enum",
-        enum: ["Конференция", "Образовательное (soft-skills)", "Концерт", "Развлекательное","Соревнование"],
-        nullable: true
-    })
-    character_event: string
+    @Column({ nullable: true })
+    phone: string
+
+    @ApiProperty()
+    @Column({ nullable: true })
+    email: string
+
+    @ApiProperty()
+    @Column("simple-array",{ nullable: true })
+    social_links: string[]
+
+
+
 
     @OneToMany((type)=>Journal, (journal)=>journal.event)
     journal:Journal[]
+
+    
+    @ApiProperty()
+    @ManyToOne(() => Dictionary, (dict) => dict.id)
+    @JoinColumn([{ name: "type_id" }])
+    type: Dictionary
+
+    @ApiProperty()
+    @ManyToOne(() => Dictionary, (dict) => dict.id)
+    @JoinColumn([{ name: "level_id" }])
+    level: Dictionary
+
+    
+    @ApiProperty()
+    @ManyToOne(() => Dictionary, (dict) => dict.id)
+    @JoinColumn([{ name: "direction_id" }])
+    direction: Dictionary
+
+    @ApiProperty()
+    @ManyToOne(() => Dictionary, (dict) => dict.id)
+    @JoinColumn([{ name: "type_participation_id" }])
+    type_participation: Dictionary
+
+    @ApiProperty()
+    @ManyToOne(() => Dictionary, (dict) => dict.id)
+    @JoinColumn([{ name: "format_id" }])
+    format: Dictionary
+
+    @ApiProperty()
+    @ManyToOne(() => Dictionary, (dict) => dict.id)
+    @JoinColumn([{ name: "clarifying_direction_id" }])
+    clarifying_direction: Dictionary
+
+    @ApiProperty()
+    @ManyToOne(() => Dictionary, (dict) => dict.id)
+    @JoinColumn([{ name: "character_event_id" }])
+    character_event: Dictionary
 }
 

@@ -4,6 +4,7 @@
 # compiled output
 /dist
 /node_modules
+/public
 package-lock.json
  
 # Logs

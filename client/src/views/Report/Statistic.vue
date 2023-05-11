@@ -1,354 +1,565 @@
+
+<!-- в БД в teams->direction->shortname должны быть
+   (НИД, КТД, УД, СД, ОД) хардкод, а как по другому определить вид направления? -->
+
 <script setup lang="ts" >
-import { onBeforeMount, onMounted, ref, type Ref } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { DatePicker } from 'v-calendar';
+
 import DownloadReport from './DowloadReport.vue';
+
+// graphics
+import ColorfulBlocks from '@/components/Charts/ColorfulBlocks.vue';
 import EPie from '@/components/Charts/EPie.vue';
 import EBar from '@/components/Charts/EBar.vue';
+
 import { useTeamStore } from '@/store/team_store';
+import _, { defaultsDeep, forIn } from 'lodash';
+import { useEventStore } from '@/store/events_store';
+import { useDictionaryStore } from '@/store/dictionary_store';
+import { Direction, Level } from '@/store/enums/enum_event';
+import { useChartStore } from './chart_logic';
+import { useStatiscticLogicStore } from './statistic_logic';
 
+import { Type } from '@/store/enums/enum_event';
+import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from './enums_report';
+import { DirectionName } from '@/store/enums/enum_teams';
+import { EVENT_LEVEL, EVENT_TYPE } from '@/store/constants/constants_class_names';
+import { number } from 'echarts/core';
+
+
+// store
 const teamStore = useTeamStore();
-// константные значения
+const eventStore = useEventStore();
 
-// direction
-const directions = [{ id: 0, data: 'ВСЕ' }, { id: 1, data: 'НИД' }, { id: 2, data: 'КТД' },
-{ id: 3, data: 'СД' }, { id: 4, data: 'ОД' }, { id: 5, data: 'УД' }]
+const chartStore = useChartStore();
+const statisticLogic = useStatiscticLogicStore();
+const dictionaryStore = useDictionaryStore();
 
-// grdphics
-const typeGraphics = [{ id: 0, data: 'Статистика дат проведения мероприятий' },
-{ id: 1, data: 'Статистика коллективов с количество мероприятий' },
-{ id: 2, data: 'Общие показатели' }]
+
+// graphics and checkboxes
+const typeGraphics = ref([{ id: 0, data: TypeGraphic.EVENTS_STATISTIC, isVisibleChart: true, typeReport: TypeReport.DIRECTION },
+{ id: 1, data: TypeGraphic.TEAMS_EVENTS, isVisibleChart: false, typeReport: TypeReport.TEAM },
+{ id: 2, data: TypeGraphic.DEFAULT_PARAMETERS, isVisibleChart: true, typeReport: TypeReport.DIRECTION }])
 
 // dates
-const dates = [{ id: 0, date: '1н' }, { id: 1, date: '1м' }, { id: 2, date: '1г' }]
+const dates = [{ id: 0, date: '1н', timeRange: TimeRange.WEEK }, { id: 1, date: '1м', timeRange: TimeRange.MONTH }, { id: 2, date: '1г', timeRange: TimeRange.YEAR }]
 
 
 // dropdowns
-const levels = [{ id: 0, data: "Все уровни" }, { id: 1, data: 'вузовский' },
-{ id: 2, data: 'городской' }, { id: 3, data: 'региональный' }]
+const levels = ref([{ id: 0, name: "Все" }])
+const types = ref([{ id: 0, name: "Все" }])
 
-const types = [{ id: 0, data: 'Все типы' }, { id: 1, data: 'внутренние' }, { id: 2, data: 'внешние' }]
+const typeReports = [{ id: 0, data: TypeReport.DIRECTION }, { id: 1, data: TypeReport.TEAM }]
 
-const eventOrTeams = [{ id: 0, data: 'Мероприятия' }, { id: 1, data: 'Коллективы' }]
-
-
-
-const date = ref(1)             //дата
+//start 1 year millis * 5 = 5 years millis  and current year -  5 years
+const dateRange = ref({ start: new Date(new Date().getTime() - 31556952000 * 5), end: new Date() })    //дата
 
 const selectedDirection = ref(0)    //все направления
+// const selectedTeam = ref(0)      //все направления
 
-const selectedLevel = ref(0)    //уровень
-const selectedType = ref(0)     //тип мероприятия
-const selectedEvOrTeam = ref(0) //меропприятие или коллектив
+const selectedLevel = ref(levels.value[0])                         //уровень
+const selectedType = ref(types.value[0])                          //тип мероприятия
+const selectedTypeReport = ref(TypeReport.DIRECTION) //тип отчета
+const selectedTeam = ref({ name: "Все", id: 0 })
 
-//statitstic graphics
-const statisticDateEvent = ref(true)      //Статистика дат проведения мероприятий
-const statisticTeamsAndEvent = ref(true)  //Статистика коллективов с количество мероприятий
-const defaultStatistic = ref(true)        //Общие показатели
-
-
-function changeDate(start: Date = new Date(), end: Date = new Date()) {
-}
-
-
-const datessOfEvents = [
-  { value: 10, name: 'Осень' },
-  { value: 75, name: 'Зима' },
-  { value: 50, name: 'Лето' },
-  { value: 4, name: 'Весна' },
-]
+const eventsSeasons = ref([
+  { value: 0, name: TypeSeason.AUTUMN },
+  { value: 0, name: TypeSeason.WINTER },
+  { value: 0, name: TypeSeason.SPRING },
+  { value: 0, name: TypeSeason.SUMMER },
+])
 // данные для вывода в графики
-const labelsTopTeams = ['Лыжные гонки', 'Хоккей с мячом', 'Волейбол',
-  'Бокс', 'Футбол и мини-футбол',
-]
-const dataTopTeams = [2, 5, 8, 8, 9]
+let labelsTopTeams = ref(['-'])
+let dataTopTeams = ref([0])
+
+// data for graphics---------------------------------------------------
+
+//данные для графика внутренние/внешние мероприятия
+let dataEventsInnerOuter = ref([
+  { value: 0, name: "Внешнее" },
+  { value: 0, name: "Внутреннее" },])
 
 
-const dataEventsTwoType = [
-  { value: 10, name: 'Внешние' },
-  { value: 75, name: 'Внутренние' },]
-
-
-const show = ref(true);
-
-
-
+const colorfulBlocksData = ref([
+  { value: 0, name: "Число мероприятий" },
+  { value: 0, name: "Число коллективов" },])
 
 // dropdowns-----------------------------------------------------------
-const teamSelected = ref({ name: "Все коллективы", id: 0 })
-const foundTeams = ref()
+
+const foundTeams = ref([{ name: "Все", id: 0 }])
+const foundEvents = ref()
+
 
 // { id: number, shortname: string }
-const directionsFromDatabase = ref()           //дата
+const foundDirections = ref([{ id: 0, shortname: "Все", idDB: 0, idDirectionEvent: Direction.ALL }])           //дата
+
+function fillDropdowns(data: any) {
+
+  let res = [{ id: 0, name: "Все" }]
+
+  for (let i = 0; i < data.length; i++) {
+    res.push({ id: data[i].id, name: data[i].name })
+  }
+
+  return res
+}
 
 onBeforeMount(async () => {
 
+  let lev = await dictionaryStore.getFromDictionaryByClassID(EVENT_LEVEL)
+  levels.value = fillDropdowns(lev)
+
+  let tp = await dictionaryStore.getFromDictionaryByClassID(EVENT_TYPE)
+  types.value = fillDropdowns(tp)
+
+  // levels.value = await fillDropdown(Level)
+  // types.value = await fillDropdown(Type)
   await getDirections()
-  getTeams(-1)
+  getEvents()
+  // levels.value.find(4, 1)
+
+})
+
+// если выбран коллектив то получить статистику с мероприятий
+watch(() => selectedTeam.value, async () => {
+  getEvents()
+})
+
+// date in calendar changed (для календаря)
+watch(() => dateRange.value, () => {
+  getEvents()
 })
 
 
-// получить идшники направлений с бд, чтобы по этим идшникам найти коллективвы,
-//которые этим направления принадлежат
+// получение мероприятий
+async function getEvents() {
+
+  switch (selectedTypeReport.value) {
+    case TypeReport.DIRECTION:
+      await getEventsByDirection()
+      break
+    case TypeReport.TEAM:
+      await getEventsOfTeam(selectedTeam.value.id)
+      break
+  }
+
+  updateCharts()
+
+}
+
+async function changeTimeViaButton(timeRange: TimeRange) {
+
+  let dStart = new Date()
+  let dEnd: Date = new Date()
+
+  switch (timeRange) {
+    case TimeRange.WEEK:
+      dStart.setTime(dStart.getTime() - 604800000)//week in millis
+      break;
+    case TimeRange.MONTH:
+      dStart.setTime(dStart.getTime() - 2629800000)//month in millis
+      break;
+    case TimeRange.YEAR:
+      dStart.setFullYear(dStart.getFullYear() - 1)
+      break;
+    case TimeRange.RANGE:
+      break;
+  }
+
+  dateRange.value.start = dStart
+  dateRange.value.end = dEnd
+
+  getEvents()
+}
+
+async function changeTimeViaCalendar() {
+  getEvents()
+}
+
+// получить мероприятия коллектива
+async function getEventsOfTeam(teamId: number) {
+
+
+  const eventsOfTeam = await getEventsViaJournalsByTeam(teamId)
+
+  // console.log("eventsOfTeam.data")
+  // console.log(eventsOfTeam.data)
+  foundEvents.value = eventsOfTeam.data
+  colorfulBlocksData.value[0].value = eventsOfTeam.count
+}
+
+// обновить гарфики
+async function updateCharts() {
+
+  typeGraphics.value.forEach(async (it) => {
+
+    switch (it.data) {
+      case TypeGraphic.EVENTS_STATISTIC:
+        if (it.isVisibleChart) { //если график нужно отобразить
+          dataEventsInnerOuter.value = chartStore.countEventsInnerOuter(foundEvents.value)
+          eventsSeasons.value = chartStore.countEventsBySeason(foundEvents.value)
+        }
+        break;
+      case TypeGraphic.TEAMS_EVENTS:
+        // let teamsMax = 5
+
+        if (it.isVisibleChart) {
+          let res = await chartStore.countTeamsEvents(foundTeams.value,
+            dateRange.value.start, dateRange.value.end,
+            selectedLevel.value.id,
+            selectedType.value.id)
+
+          labelsTopTeams.value = res.labelsTopTeams
+          dataTopTeams.value = res.dataTopTeams
+        }
+        break;
+      case TypeGraphic.DEFAULT_PARAMETERS:
+
+        break;
+    }
+
+  })
+}
+
+
+// получить идшники направлений с бд, чтобы по этим идшникам найти
+// эти направления 
 async function getDirections() {
 
-  let directions = await teamStore.fetchTeamsOfDirection(-1, "direction")
+  let data = await teamStore.fetchTeamsOfDirection(-1, "direction")
 
+  let directions = data[0]
   let arrayData = []
+  arrayData[0] = { id: 0, shortname: DirectionName.ALL, idDB: 0, idDirectionEvent: Direction.ALL }
 
   for (let i = 0; i < directions.length; i++) {
     // console.log("directions " + directions[i].shortname)
     let direction = directions[i]
 
-    arrayData[i] = { id: direction.id, shortname: direction.shortname };
+    let idDirectionEvent = statisticLogic.directionInTeamsConvertToDirectionInEvents(direction.shortname)
+    arrayData[i + 1] = { id: i + 1, shortname: direction.shortname, idDB: direction.id, idDirectionEvent: idDirectionEvent };
   }
 
-  directionsFromDatabase.value = arrayData
+  foundDirections.value = arrayData
 }
 
 
 // проверить какие графики показать, а какие убрать
-function seeGraphics(typeGraphics: any) {
+function seeGraphics(graphic: {
+  id: number;
+  data: TypeGraphic;
+  isVisibleChart: boolean;
+}) {
 
-  // alert(statisticDateEvent.value)
-  switch (typeGraphics.id) {
-    case 0:
-      statisticDateEvent.value = !statisticDateEvent.value
-      break;
-    case 1:
-      statisticTeamsAndEvent.value = !statisticTeamsAndEvent.value
-      break;
-    case 2:
-      defaultStatistic.value = !defaultStatistic.value
-      break;
-  }
+  typeGraphics.value[graphic.id].isVisibleChart = !graphic.isVisibleChart
+
 }
 
 
 // получить всех пользователей и выбрать из них нужных
-async function getTeams(directionId: number) {
+async function getTeamsOfDirection(directionId: number) {
 
-  let limit = 30
   let data = await teamStore.fetchTeamsOfDirection(directionId)
 
   // console.log("selectedDirection.value " + selectedDirection.value+ " " + data)
-  //получить всех найденных юзеров
-  let teams = data
-
-
+  let teams = data[0]
+  colorfulBlocksData.value[1].value = data[1]
   let arrayData = []
 
-  arrayData[0] = { name: "Все коллективы", id: 0 }
-  teamSelected.value = arrayData[0]
+  //arrayData[0] = { name: "Все", id: 0 }
+
 
   for (let i = 0; i < teams.length; i++) {
     let team = teams[i]
-
     // console.log("team " + team.title)
-    arrayData[i + 1] = { name: team.title, id: team.id };
+    arrayData[i] = { name: team.title, id: team.id };
   }
+
+  if (teams.length > 0)
+    selectedTeam.value = arrayData[0]
+  else selectedTeam.value = { name: "Все", id: 0 }
+
+
   foundTeams.value = arrayData
 
 }
 
+//получит Events via journals-------------------------------------------------
 
-function changeDirection(direction: any) {
-  selectedDirection.value = direction.id
 
-  let directionsFD = directionsFromDatabase.value
-  let directionId = -1
+async function getEventsViaJournalsByTeam(teamId: number) {
 
-  for (let i = 0; i < directionsFD.length; i++) {
-    //console.log("short " + directionsFD[i].shortname  + "  direction.data " + direction.data)
-    if (directionsFD[i].shortname == direction.data) {
-      directionId = directionsFD[i].id
-    }
-  }
+  let res = await eventStore.getEventsViaJournalsByTeam(teamId, dateRange.value.start,
+    dateRange.value.end, selectedType.value.id, selectedLevel.value.id)
+  let arrayData = res.data[0]
+  let countAppropriate = res.data[1]
 
-  getTeams(directionId)
+  return { data: arrayData, count: countAppropriate }
 
 }
+
+
+
+// получить мероприятия
+async function getEventsByDirection() {
+
+  let direction = Direction.ALL
+  direction = foundDirections.value[selectedDirection.value].idDirectionEvent
+
+  let data = await eventStore.getEventsByDirection(direction,
+    dateRange.value.start, dateRange.value.end,
+    selectedLevel.value.id,
+    selectedType.value.id,)
+
+  let events = data[0]
+  colorfulBlocksData.value[0].value = data[1]
+
+  foundEvents.value = events
+  // console.log("evnt dir")
+  // console.log(events)
+  // console.log("directions " + foundDirections.value[selectedDirection.value].shortname + "   selectedDirection " + selectedDirection.value)
+}
+
+
+async function changeDirection(direction: any) {
+
+  selectedDirection.value = direction.id
+
+  switch (selectedTypeReport.value) {
+    case TypeReport.DIRECTION:
+      getEvents()
+      break
+    case TypeReport.TEAM:
+      await getTeamsOfDirection(direction.idDB)
+      getEvents()
+      break
+  }
+
+}
+
+
+function changeTypeReport() {
+  const tR = selectedTypeReport.value
+  switch (tR) {
+    case TypeReport.DIRECTION:
+      selectedTeam.value = { name: "Все", id: 0 }
+
+      break
+    case TypeReport.TEAM:
+      getTeamsOfDirection(foundDirections.value[selectedDirection.value].idDB)
+
+      break
+  }
+}
+
 </script>
-
-
-
+      
+      
+      
 <template>
-  <!-- menu -->
-  <div class=" block-content">
+  <div class="row">
+    <div class="col-lg-5">
+      <div class=" block-content">
 
-    <div class="row text-center mb-2">
-      <h6>Период</h6>
-    </div>
+        <div class="row text-center mb-2">
+          <h6>{{ dateRange.start.toDateString() }} - {{ dateRange.end.toDateString() }}</h6>
+        </div>
 
-    <!-- time -->
+        <!-- time -->
 
-    <div class="row">
-      <div class="w-100 justify-content-center d-flex">
-        <div class="date">
-          <button class=" btn-custom-secondary date" v-for="dt in dates" @click="changeDate()">{{ dt.date }}</button>
+        <div class="row">
+          <div class="w-100 justify-content-center d-flex">
+            <div class="date">
+              <button class=" btn-custom-secondary date" v-for="dt in dates" @click="changeTimeViaButton(dt.timeRange)">{{
+                dt.date
+              }}</button>
 
-          <div class="my-dropdown" style="float:center;">
-            <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
-            <div class="dropdown-content">
-              <DatePicker v-model="date" is-range />
+              <div class="my-dropdown" style="float:center;">
+                <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
+                <div class="dropdown-content">
+                  <DatePicker v-model="dateRange" is-range />
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- time -->
+        <!-- time -->
 
 
 
 
-    <!-- выбрать направление -->
-    <div class="row my-4 d-flex justify-content-md-center directions">
+        <!-- выбрать направление -->
+        <div class="row my-4 d-flex justify-content-md-center directions">
 
-      <div v-for="direc in directions" class="col-auto d-flex my-1">
-        <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{ direc.data
-        }}</a>
-      </div>
+          <div v-for="direc in foundDirections" class="col-auto d-flex my-1">
+            <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{
+              direc.shortname
+            }}</a>
+          </div>
 
-    </div>
-    <!-- выбрать направление -->
+        </div>
+        <!-- выбрать направление -->
 
 
 
 
-    <!-- dropdowns select property for event or team -->
-    <div class="row">
-      <!-- date -->
-      <!-- <div class="col-auto  d-flex my-1">
-             events_or_teams
-              <select class="form-select" aria-label="Default select example" v-model="selectedEvOrTeam">
-                <option v-for="et in eventOrTeams" :value="et.id" :selected="et.id == 1">{{ et.data }}</option>
+        <!-- dropdowns select property for event or team -->
+
+        <!-- team statistic or directions statistic -->
+        <div class="row my-4 d-flex ">
+
+          <label class="form-label">Тип отчетности</label>
+          <div class="form-check col-auto mx-2" v-for="drT in typeReports">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" :checked="drT.data == selectedTypeReport"
+              :value="drT.data" v-model="selectedTypeReport" @change="changeTypeReport()">
+            <label class="form-check-label">
+              {{ drT.data }}
+            </label>
+          </div>
+
+        </div>
+
+        <div class="row">
+
+
+          <!-- team -->
+          <div class="col-auto  d-flex my-1" v-if="selectedTypeReport == TypeReport.TEAM">
+            <div class="mb-3">
+              <label class="form-label">коллектив</label>
+              <v-select placeholder="Название коллектива" label="name" :options="foundTeams"
+                v-model="selectedTeam"></v-select>
+            </div>
+          </div>
+
+          <!-- level -->
+          <div class="col-auto  d-flex my-1">
+            <div class="mb-3">
+              <label class="form-label">уровень мероприятий</label>
+              <select class="form-select" aria-label="Default select example" v-model="selectedLevel"
+                @change="getEvents()">
+                <option v-for="lvl in levels" :value="lvl">{{ lvl.name }}</option>
               </select>
-            </div> -->
-      <div class="col-auto  d-flex my-1">
-        <div class="mb-3">
-          <label class="form-label">коллектив</label>
-          <v-select placeholder="Название коллектива" label="name" :options="foundTeams"
-            v-model="teamSelected"></v-select>
-        </div>
-      </div>
-      <!-- level -->
-      <div class="col-auto  d-flex my-1">
-        <div class="mb-3">
-          <label class="form-label">уровень мероприятий</label>
-          <select class="form-select" aria-label="Default select example" v-model="selectedLevel">
-            <option v-for="lvl in levels" :value="lvl.id" :selected="lvl.id == 1">{{ lvl.data }}</option>
-          </select>
-        </div>
-      </div>
-      <!-- types -->
-      <div class="col-auto  d-flex my-1">
-        <div class="mb-3">
-          <label class="form-label">тип мероприятий</label>
-          <select class="form-select" aria-label="Default select example" v-model="selectedType">
-            <option v-for="tp in types" :value="tp.id" :selected="tp.id == 1">{{ tp.data }}</option>
-          </select>
-        </div>
-      </div>
-
-    </div>
-
-    <!--Отчетность  -->
-    <DownloadReport :date="0" :event-or-team="eventOrTeams[selectedEvOrTeam]" :direction="directions[selectedDirection]"
-      :teams="teamSelected.name" :level="levels[selectedLevel]" :type-event="types[selectedType]" />
-
-
-    <!-- Graphics -->
-    <div class="my-4">
-      <p>Отобразить графики</p>
-      <hr>
-    </div>
-
-    <!-- checkboxes -->
-    <div class="row">
-
-      <div class="col-auto d-flex" v-for="g in typeGraphics">
-        <div class="checkbox__block" @change="seeGraphics(g)">
-          <label class="checkbox__container">
-            <input type="checkbox" class="checkbox">
-            <span class="fake"></span>
-            <span class="span__title">{{ g.data }}</span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!--Общие показатели  -->
-    <div v-if="defaultStatistic" class="row mt-4">
-
-      <div class="col" v-for="i in 4">
-        <div :class="['colored-block-' + i]" class="my-2">
-          <div class="row">info</div>
-          <div class="row">info</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="chart-container">
-
-
-
-    <!-- statistic -->
-    <div v-if="show" class="col">
-
-      <!-- Мероприятия -->
-      <div v-if="statisticDateEvent" class="block-content">
-
-        <div class="row d-flex justify-content-center text-center">
-          <h4>Мероприятия</h4>
-          <div class="row mt-4 ">
-            <div class="col-lg-6 col-md-12 chartBorder">
-              <h6>Статистика дат проведения мероприятий</h6>
-              <EPie :data="datessOfEvents" />
-              <!-- <PieChart class="chart" :labels="labelsDatesOfEvents" :data="dataDatesOfEvents"
-                                            title="Статистика дат проведения мероприятий" label-name="число мероприятий" /> -->
             </div>
+          </div>
+          <!-- types -->
+          <div class="col-auto  d-flex my-1">
+            <div class="mb-3">
 
-            <div class="col-lg-6 col-md-12 chartBorder">
-              <h6>Количество внутренних/внешних мероприятий</h6>
-
-              <EPie :data="dataEventsTwoType" />
-              <!-- <PieChart class="chart" :labels="labelsEventsTwoType" :data="dataEventsTwoType"
-                                            title="Количество внутренних/внешних мероприятий" label-name="число мероприятий" /> -->
+              <label class="form-label">тип мероприятий</label>
+              <select class="form-select" aria-label="Default select example" v-model="selectedType"
+                @change="getEvents()">
+                <option v-for="tp in types" :value="tp">{{ tp.name }}</option>
+              </select>
             </div>
           </div>
 
         </div>
+
+
+
+
+        <DownloadReport :direction="foundDirections[selectedDirection]" :type-report="selectedTypeReport"
+          :level="selectedLevel" :levels="levels" :type-event="selectedType" :types="types" :date-range="dateRange"
+          :team="selectedTeam" />
+
+
+
+
+
+        <!-- Graphics -->
+        <div class="my-4">
+          <p>Отобразить графики</p>
+          <hr>
+        </div>
+
+        <!-- checkboxes -->
+        <div class="row">
+
+          <div v-for="g in 
+                        typeGraphics">
+
+            <div class="form-check" v-if="g.typeReport == selectedTypeReport || g.typeReport == TypeReport.DIRECTION"
+              @change="seeGraphics(g)">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" :checked="g.isVisibleChart">
+              <label class="form-check-label" for="flexCheckChecked">
+                {{ g.data }}
+              </label>
+            </div>
+
+          </div>
+        </div>
+
+        <!--Общие показатели  -->
+        <div v-if="typeGraphics[2].isVisibleChart" class="row mt-4">
+
+          <ColorfulBlocks :data="colorfulBlocksData" />
+
+        </div>
       </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="chart-container">
+        <!-- statistic -->
+
+        <!-- Мероприятия -->
+        <div v-if="typeGraphics[0].isVisibleChart" class="block-content">
+
+          <div class="row d-flex justify-content-center text-center">
+            <h4>Мероприятия</h4>
+            <div class="row g-4">
+              <div class="col-12 chartBorder">
+                <h6>Статистика дат проведения мероприятий</h6>
+                <EPie :data="eventsSeasons" />
+              </div>
+
+              <div class="col-12 chartBorder">
+                <h6>Количество внутренних/внешних мероприятий</h6>
+
+                <EPie :data="dataEventsInnerOuter" />
+
+              </div>
+            </div>
+
+          </div>
+        </div>
 
 
-      <!-- Коллективы -->
-      <div v-if="statisticTeamsAndEvent" class="block-content">
 
-        <div class="row d-flex justify-content-center text-center">
-          <h4>Коллективы</h4>
-          <div class="row mt-4 chartBorder">
-            <h6>Топ коллективов с наибольшим числом мероприятий</h6>
 
-            <div class="col">
-              <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
-              <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                            title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+
+
+
+
+
+
+        <!-- Коллективы -->
+        <div v-if="typeGraphics[1].isVisibleChart" class="block-content">
+
+          <div class="row d-flex justify-content-center text-center">
+            <h4>Коллективы</h4>
+            <div class="row mt-4 chartBorder">
+              <h6>Топ коллективов с наибольшим числом мероприятий</h6>
+
+              <div class="col">
+                <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
+                <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
+                                                                                                                                                                                                                              title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
+              </div>
             </div>
           </div>
         </div>
+
       </div>
-
     </div>
-
   </div>
 </template>
-
-
-
+      
+      
+      
 <style lang="scss">
 @import 'v-calendar/dist/style.css';
 @import 'vue-select/dist/vue-select.css';
@@ -485,99 +696,6 @@ function changeDirection(direction: any) {
 
 // чекбоксы--------------------------------------------------------------------------------
 
-.checkbox__container {
-  color: #A1A1A1;
-  padding: 0.2rem 0.5rem;
-  display: flex;
-
-  .checkbox {
-    display: none;
-
-    &:checked+.fake::before {
-      opacity: 1;
-    }
-
-  }
-
-  .span__title {
-    font-size: 1rem;
-    margin-left: 1rem;
-    hyphens: manual;
-
-  }
-
-  .fake {
-    display: inline-block;
-    position: relative;
-    background-image: url(@/assets/icon/checked.svg);
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 0.3rem;
-
-    background-color: #5BD1D7;
-
-    &:hover {
-      cursor: pointer;
-    }
-
-  }
-
-  .fake::before {
-    content: "";
-    position: absolute;
-    display: block;
-    width: 1.5rem;
-    height: 1.5rem;
-    background-color: #CDEEF0;
-
-    border-radius: 0.3rem;
-    transform: (-50%, -50%);
-    opacity: 0;
-    transition: .2s;
-  }
-}
-
-
-
-// accordeon--------------------------------------------------------------------------------
-
-
-// colored-block
-
-.colored-block-1,
-.colored-block-2,
-.colored-block-3,
-.colored-block-4 {
-
-  border-radius: 10px;
-  padding: 20px 80px;
-  min-width: fit-content;
-  min-height: 100px;
-}
-
-.colored-block-1 {
-  background: #CEEAB2;
-  background: linear-gradient(120deg, #CEEAB2 0%, #ABECEC 100%);
-}
-
-.colored-block-2 {
-  background: #FFADAD;
-  background: linear-gradient(120deg, #FFADAD 0%, #E7C756 100%);
-}
-
-.colored-block-3 {
-  background: #A9ADFF;
-  background: linear-gradient(120deg, #A9ADFF 0%, #5BDFDF 100%);
-}
-
-.colored-block-4 {
-  background: #E5ADFF;
-  background: linear-gradient(120deg, #E5ADFF 0%, #718CED 100%);
-}
-
-
-
-
 // global
 
 .form-select,
@@ -620,7 +738,8 @@ function changeDirection(direction: any) {
 
 }
 </style>
-
-
-
-
+      
+      
+      
+      
+      

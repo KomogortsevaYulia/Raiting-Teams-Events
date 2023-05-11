@@ -12,10 +12,13 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     const permissions = ref<Array<Permission>>([])
     const isLogged = ref(false)
 
+    // проверить есть ли у залогиненого юзера данное разрешение
     function can(permission: Permission) {
+        // проверить наличие данного разрешения у пользователя
         return permissions.value.includes(permission)
     }
 
+    // получить нужные данные от юзера
     async function checkLogin() {
         let response = await axios.get("api/users/check-login")
 
@@ -38,6 +41,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
         }
     }
 
+    // отправка данных юзера при входе на проверку на сервер
     async function login({ username, password }: { username: string, password: string }) {
         let response = await axios.post("/api/users/login", {
             "user": {
@@ -56,6 +60,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
         return isLogged;
     }
 
+    // разлогиниться
     async function logout() {
         // @ts-ignore
         await axios.post("/api/users/logout")
