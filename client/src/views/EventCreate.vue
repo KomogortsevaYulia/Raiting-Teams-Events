@@ -8,8 +8,30 @@ const title = ref();
 const description = ref();
 const dateStart = ref()
 const dateEnd= ref()
-const date3 = ref()
-const date4 = ref()
+const dateStartRegistration = ref()
+const dateEndRegistration = ref()
+const eventGoal = ref();
+const eventPlace = ref();
+const level = ref()
+const eventFormat= ref()
+const concreteSphere = ref()
+const eventSphere = ref()
+const teamSize = ref();
+const eventType = ref();
+const control = ref()
+const planeParticipantSize= ref()
+const participantionType = ref()
+const email = ref()
+const phone= ref()
+const socialWeb = ref()
+const tags = ref()
+
+
+
+
+
+
+
 const responseMsg = ref();
 const optionSelect = ref()
 
@@ -91,7 +113,7 @@ await axios.post("api/events", {
                     <p class="text-edit" style="text-align: center;">Дата начала регистрации</p>
                 </div>
                 <div class="row">
-                    <VueDatePicker locale="ru" v-model="date3" placeholder="Start Typing ..." text-input> </VueDatePicker>
+                    <VueDatePicker locale="ru" v-model="dateStartRegistration" placeholder="Start Typing ..." text-input> </VueDatePicker>
                 </div>
             </div>
             <div class="col pe-0">
@@ -99,36 +121,36 @@ await axios.post("api/events", {
                     <p class="text-edit" style="text-align: center;">Дата окончания регистрации</p>
                 </div>
                 <div class="row">
-                    <VueDatePicker locale="ru" v-model="date4" placeholder="Start Typing ..." text-input></VueDatePicker>
+                    <VueDatePicker locale="ru" v-model="dateEndRegistration" placeholder="Start Typing ..." text-input></VueDatePicker>
                 </div>
             </div>
         </div>
         <div class="margins-edit row">
             <p class="text-edit">Цель проведения</p>
-            <input placeholder="edit me" />
+            <input placeholder="edit me"  v-model="eventGoal"/>
         </div>
         <div class="margins-edit row">
             <p class="text-edit">Место проведения</p>
-            <input placeholder="edit me" />
+            <input placeholder="edit me" v-model="eventPlace"/>
         </div>
         <div class="margins-edit row d-flex align-items-end">
             <div class="col ps-0 col">
                 <p class="text-edit">Уровень</p>
-                <select class="col form-select">
+                <select class="col form-select" v-model="level">
                     <option disabled value="">Please select one</option>
                     <option>A</option>
                 </select>
             </div>
             <div class="col ps-md-0">
                 <p class="text-edit">Формат проведения</p>
-                <select class="col form-select">
+                <select class="col form-select" v-model="eventFormat">
                     <option disabled value="">Please select one</option>
                     <option>A</option>
                 </select>
             </div>
             <div class="col ">
                 <p class="text-edit">Уточняющее направление</p>
-                <select class="col pe-0 form-select">
+                <select class="col pe-0 form-select" v-model="concreteSphere">
                     <option disabled value="">Please select one</option>
                     <option>A</option>
                 </select>
@@ -137,7 +159,7 @@ await axios.post("api/events", {
         <div class="margins-edit row d-flex align-items-end">
             <div class="col ps-0">
                 <p class="text-edit">Направление (рейтинг)</p>
-                <select class="col form-select">
+                <select class="col form-select" v-model="eventSphere">
                     <option disabled value="">Please select one</option>
                     <option>A</option>
                 </select>
@@ -146,13 +168,13 @@ await axios.post("api/events", {
                 <div class="row">
                     <p class="text-edit">Размер команды</p>
                 </div>
-                <div class="row"> <input placeholder="edit me" /></div>
+                <div class="row"> <input placeholder="edit me" v-model="teamSize" /></div>
 
 
             </div>
             <div class="col ">
                 <p class="text-edit">Характер мероприятия</p>
-                <select class="col pe-0 form-select">
+                <select class="col pe-0 form-select" v-model="eventType">
                     <option disabled value="">Please select one</option>
                     <option>A</option>
                 </select>
@@ -161,7 +183,7 @@ await axios.post("api/events", {
         <div class="margins-edit row d-flex align-items-end">
             <div class="col ps-0">
                 <p class="text-edit">Контроль</p>
-                <select class="form-select">
+                <select class="form-select" v-model="control">
                     <option disabled value="">Please select one</option>
                     <option>A</option>
                 </select>
@@ -170,15 +192,31 @@ await axios.post("api/events", {
                 <div class="row">
                     <p class="text-edit">Плановое количество участников</p>
                 </div>
-                <div class="row"> <input placeholder="edit me" />
+                <div class="row"> <input placeholder="edit me" v-model="planeParticipantSize"/>
                 </div>
             </div>
             <div class="col">
                 <p class="text-edit">Вид участия</p>
-                <select class="col pe-0 form-select">
+                <select class="col pe-0 form-select" v-model="participantionType">
                     <option disabled value="">Please select one</option>
                     <option>A</option>
                 </select>
+            </div>
+        </div>
+        <div class="margins-edit row d-flex align-items-end">
+            <div class="col">
+                <p class="text-edit">Телефон</p>
+                <div class="row  pe-3"> <input placeholder="edit me" v-model="phone" maxlength="12" x/></div>
+            </div>
+            <div class="col ">
+                <div class="row ">
+                    <p class="text-edit">Почта</p>
+                    <div class="row"> <input placeholder="edit me" v-model="email" /></div>
+                </div>
+            </div>
+            <div class="col pe-4">
+                <p class="text-edit">Ссылка на соц. сети</p>
+                <div class="row ps-3"> <input placeholder="edit me" v-model="socialWeb" /></div>
             </div>
         </div>
         <div class="margins-edit row pb-3">
