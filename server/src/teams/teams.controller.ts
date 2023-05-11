@@ -152,7 +152,7 @@ export class TeamsController {
   // @UseInterceptors(FileInterceptor('document'))
   async create(@UploadedFiles(new FileSizeValidationPipe()) files:Express.Multer.File[], @Body() createTeamDto: CreateTeamDto) { //, @Body() createTeamDto: CreateTeamDto
     // console.log(files)
-    console.log(createTeamDto)
+    // console.log(createTeamDto)
 
     let ustav = null
     let doc = null
@@ -172,12 +172,8 @@ export class TeamsController {
       }
     }
 
-    // let path = await this.uploadsService.uploadFile(files[0])
     createTeamDto.charterTeam = ustav
-    //.log("ustav " + ustav)
-
     createTeamDto.document = doc
-   // console.log("doc " + doc)
 
     let team = await this.teamsService.create(createTeamDto);
 

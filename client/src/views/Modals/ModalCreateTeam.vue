@@ -28,7 +28,7 @@ const cabinet = ref("");
 const charterTeamImg = ref();
 // const document = ref();
 
-const description = ref("");
+const short_description = ref("");
 
 // files
 const charterTeamFile = ref();
@@ -62,11 +62,6 @@ async function onTextChange(e: any) {
 watch(
   () => team.value, (value, previousValue) => {
     fillForm()
-
-    if (team.value != null) {
-
-    }
-
   })
 
   watch(
@@ -82,6 +77,7 @@ onBeforeMount(async () => {
 
 })
 
+// заполнить форму данными
 async function fillForm() {
 
   if (team.value != null) {
@@ -89,17 +85,20 @@ async function fillForm() {
 
     title.value = t.title
     shortname.value = t.shortname
-    description.value = t.description
+    short_description.value = t.short_description
     cabinet.value = t.cabinet
 
-    if (team.value.charter_team != null) {
-      charterTeamImg.value = await fileStore.getImageBase64(team.value.charter_team)
-      // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
+    // загрузить изображение
 
-      const ustavExtention = team.value.charter_team.split(".").pop()
-      charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
+    // if (team.value.charter_team != null) {
+    //   charterTeamImg.value = await fileStore.getImageBase64(team.value.charter_team)
+    //   // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
+
+    //   const ustavExtention = team.value.charter_team.split(".").pop()
+    //   charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
       
-    } else { charterTeamBase64.value = "" }
+    // } else { charterTeamBase64.value = "" }
+
     // console.log(charterTeamBase64.value)
 
 
@@ -114,7 +113,7 @@ async function fillForm() {
 
 
   } else { //если коллектив не задан , то очистить все поля
-    title.value = shortname.value = description.value
+    title.value = shortname.value = short_description.value
       = cabinet.value = ""
     optionSelect.value = null
   }
@@ -152,7 +151,7 @@ async function createTeam() {
   } else { userId = optionSelect.value.id }
 
   //create team
-  responseMsg.value = await teamStore.createTeam(title.value, description.value,
+  responseMsg.value = await teamStore.createTeam(title.value, short_description.value,
     shortname.value, userId, cabinet.value, charterTeamFile.value, documentFile.value)
 
   // console.log(newTeam)
@@ -172,7 +171,7 @@ async function updateTeam() {
   //create team
   const uT = new UpdateTeam()
   uT.cabinet = cabinet.value
-  uT.description = description.value
+  uT.short_description = short_description.value
   uT.id = team.value.id
   uT.oldUserId = oldUserId.value
   uT.newUserId = newUserId
@@ -188,11 +187,8 @@ async function updateTeam() {
   responseMsg.value = res.responseMsg
 
   if(res.team != null){
-    // console.log(res.team.data)
     team.value = res.team.data
   }
-
-  // console.log(newTeam)
 }
 
 
@@ -201,35 +197,26 @@ async function handleFileUpload(event: any, document: boolean) {
   const file = event.target.files[0];
 
   // Get file size
-  const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
-  // Get file extension
-  const fileExtention = file.name.split(".").pop()
-  // Get file name
-  const fileName = file.name.split(".").shift()
-  // Check if file is an image
-  const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
-  // Print to console
-  console.log(fileSize, fileExtention, fileName, isImage);
+  // const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
+  // // Get file extension
+  // const fileExtention = file.name.split(".").pop()
+  // // Get file name
+  // const fileName = file.name.split(".").shift()
+  // // Check if file is an image
+  // const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
+  // // Print to console
+  // console.log(fileSize, fileExtention, fileName, isImage);
 
-  // const formData = new FormData()
-  // formData.append('file', file)
-  // let path = await fileStore.loadFile(formData)
-
-  // const formData = new FormData()
   if (!document)
     charterTeamFile.value = file
   else {
     documentFile.value = file
   }
-
-  // load file
-
 }
 
 
 // архивировать коллектив
 async function archiveTeam(id: number, isArchive: boolean) {
-
 
   let res = await teamStore.archiveTeam(id, isArchive)
   responseMsg.value = res.responseMsg
@@ -240,8 +227,6 @@ async function archiveTeam(id: number, isArchive: boolean) {
 </script>
 
 <template>
-  <!-- team {{ team }}
-  team {{ props.team }} -->
   <!-- Modal -->
   <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -303,8 +288,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
                     <p v-if="isEditTeam && team!=null" > {{ team.document }}</p>
                   </div>
 
-                  <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
-                  <textarea placeholder="Опишите проект" v-model="description" required></textarea>
+                  <textarea placeholder="Опишите проект" v-model="short_description" required></textarea>
                 </div>
 
                 <div class="fuck-off-btn">

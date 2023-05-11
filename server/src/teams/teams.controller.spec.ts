@@ -14,10 +14,10 @@ import { plainToInstance } from 'class-transformer';
 import { ValidationError, validate } from 'class-validator';
 
 // @ts-ignore
-export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
-  findOne: jest.fn(entity => entity),
-  // ...
-}));
+// export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
+//   findOne: jest.fn(entity => entity),
+//   // ...
+// }));
 
 describe('TeamsController', () => {
   let controller: TeamsController;
@@ -63,7 +63,7 @@ describe('TeamsController', () => {
     const createTeamDto: CreateTeamDto = {
       "userID": 5,
       "shortname": "dddd2",
-      "description": "Хотим подняться на гору",
+      "short_description": "Хотим подняться на гору",
       "title": "hddddhh",
       "document": "hddddhh",
       "charterTeam": "dddddd",
@@ -92,7 +92,7 @@ describe('TeamsController', () => {
 
     it('Если описание коллектива превышает 3000 символов, то пользователь получит предупреждение об ошибке', async () => {
 
-      createTeamDto.description = "t".repeat(3001)
+      createTeamDto.short_description = "t".repeat(3001)
       const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto)
       const errors = await validate(ofImportDto)
       // expect(errors.length).not.toBe(0)

@@ -12,7 +12,7 @@ export class UploadsService {
 
   async uploadFile(file: Express.Multer.File) {
 
-    console.log(file)
+    // console.log(file)
     const pathStart = "/public/media"
 
     const randomName = Array(32).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');

@@ -45,14 +45,14 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
 
-    async function createTeam(title: string, description: string,
+    async function createTeam(title: string, short_description: string,
         shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
 
         let responseMsg = "сохранено"
 
         const formData = new FormData();
         formData.append('title', title);
-        formData.append('description', description);
+        formData.append('short_description', short_description);
         formData.append('shortname', shortname);
         formData.append('userID', userId.toString());
         formData.append('cabinet', cabinet);
@@ -87,7 +87,7 @@ export const useTeamStore = defineStore("teams", () => {
 
         const formData = new FormData();
         formData.append('title', uT.title);
-        formData.append('description', uT.description);
+        formData.append('short_description', uT.short_description);
         formData.append('shortname', uT.shortname);
         formData.append('cabinet', uT.cabinet);
         // paths to files

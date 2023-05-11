@@ -104,18 +104,20 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
           <div v-for="team in data" class="cardEvent">
 
-            <router-link :to="'/team/' + team.id" class="w-100">
+            <router-link :to="'/team/' + team.id">
               <div class="card__banner">
-                <img v-if="team.image.length>0" :src="team.image" class="d-block" style="width: 100%;object-fit: cover;">
+                <img v-if="team.image.length > 0" :src="team.image" class="d-block"
+                  style="width: 100%;object-fit: cover;">
                 <img v-else src="@/assets/icon/empty_photo.jpg" class="d-block" style="width: 100%;object-fit: cover;">
               </div>
             </router-link>
 
-            <div class="wrapperContent">
-              <div class="card__event-name relative">
+            <div class="wrapperContent col ">
+              <div class="card__event-name  row">
                 <div class="row">
-                  <div class="col-8"> {{ team.title }} </div>
-
+                  <router-link :to="'/team/' + team.id">
+                    <div class="col-8"> {{ team.title }} </div>
+                  </router-link>
                   <div class="col d-flex justify-content-end align-items-start">
                     <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
                       архиве)</p>
@@ -135,11 +137,14 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
               </div>
 
 
-              <div class="navigation-tags">
-                <div v-for="el in team.tags" class="teg">{{ el }}</div>
+              <div class="row overflow-auto" style="max-height: 100px;">
+                <div class="navigation-tags row g-2">
+                  <div v-for="el in team.tags" class="teg col-auto">{{ el }}</div>
+                </div>
+                <div class="row">
+                  {{ team.short_description }}
+                </div>
               </div>
-              <p>{{ team.short_description }}</p>
-
             </div>
 
           </div>
@@ -294,10 +299,10 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
 
           .navigation-tags {
-            flex-wrap: wrap;
-            padding-bottom: 1rem;
-            display: flex;
-            width: max-content;
+            // flex-wrap: wrap;
+            // padding-bottom: 1rem;
+            // display: flex;
+            // width: max-content;
 
             .teg {
               margin-right: 1rem;
@@ -366,7 +371,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         }
 
         .cardEvent:hover {
-        
+
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
         }
 
