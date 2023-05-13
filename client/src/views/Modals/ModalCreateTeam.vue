@@ -64,12 +64,12 @@ watch(
     fillForm()
   })
 
-  watch(
-  () =>props.team, (value, previousValue) => {
+watch(
+  () => props.team, (value, previousValue) => {
     team.value = props.team
     responseMsg.value = ""
   })
- 
+
 
 onBeforeMount(async () => {
   await getUsers()
@@ -96,7 +96,7 @@ async function fillForm() {
 
     //   const ustavExtention = team.value.charter_team.split(".").pop()
     //   charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
-      
+
     // } else { charterTeamBase64.value = "" }
 
     // console.log(charterTeamBase64.value)
@@ -186,7 +186,7 @@ async function updateTeam() {
   const res = await teamStore.updateTeam(uT)
   responseMsg.value = res.responseMsg
 
-  if(res.team != null){
+  if (res.team != null) {
     team.value = res.team.data
   }
 }
@@ -246,8 +246,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
             <sup v-else-if="team != null" class="text-bg-success"> (действующий)</sup>
 
           </h1>
-          <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal"
-            aria-label="Close"></button>
+          <div class=" btn-close" data-bs-dismiss="modal" aria-label="Close"></div>
         </div>
         <div class="modal-body">
           <!-- Это вся обертка -->
@@ -278,14 +277,14 @@ async function archiveTeam(id: number, isArchive: boolean) {
                   <div class="mb-2">
                     <label for="formFile" class="form-label">загрузить устав</label>
                     <input class="form-control" type="file" id="formFile" @change="(e) => handleFileUpload(e, false)">
-                    <p v-if="isEditTeam && team!=null" > {{ team.charter_team }}</p>  
+                    <p v-if="isEditTeam && team != null"> {{ team.charter_team }}</p>
                     <img v-if="isEditTeam" :src="charterTeamBase64" style="width: 100px; height: 100px;" alt="Устав">
                   </div>
 
                   <div class="mb-2">
                     <label for="formFile1" class="form-label">загрузить документ(ы)</label>
                     <input class="form-control" type="file" id="formFile1" @change="(e) => handleFileUpload(e, true)">
-                    <p v-if="isEditTeam && team!=null" > {{ team.document }}</p>
+                    <p v-if="isEditTeam && team != null"> {{ team.document }}</p>
                   </div>
 
                   <textarea placeholder="Опишите проект" v-model="short_description" required></textarea>
@@ -326,14 +325,24 @@ async function archiveTeam(id: number, isArchive: boolean) {
 <style lang="scss" >
 @import 'vue-select/dist/vue-select.css';
 
+.btn-close {
+  &:hover {
+    border: 1px solid  var(--main-color-hover);
+    transition: 0.3s;
+  }
+}
+
 
 .wrapper-team__create {
+
   .form-team__create {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     border-radius: 15px;
     border: var(--main-border-card);
+
+
 
     .fuck-off-btn {
       display: flex;

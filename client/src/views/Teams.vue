@@ -138,7 +138,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
 
 
               <div class="row overflow-auto" style="max-height: 100px;">
-                <div class="navigation-tags row g-2">
+                <div class="navigation-tags row g-1">
                   <div v-for="el in team.tags" class="teg col-auto">{{ el }}</div>
                 </div>
                 <div class="row">
