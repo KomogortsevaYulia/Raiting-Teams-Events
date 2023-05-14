@@ -63,90 +63,39 @@ export const useChartStore = defineStore("echarts", () => {
 
     async function countTeamsEvents(teams: { name: string, id: number }[], dateStart: Date, dateEnd: Date,
         level: number,
-        type: number, count = 200) {
+        type: number, count = 10) {
 
         let dataTopTm: number[] = []
         let labelsTopTm: string[] = []
 
-        let c = 0 //just counter
-        teams.forEach(async (team) => {
+        let data: { data: number, label: string }[] = []
 
-
-            if (c >= count) return
-            c++
+        // get count events from teams
+        for (let i = 0; i < teams.length; i++) {
+            const team = teams[i]
 
             let events = await eventStore.getEventsViaJournalsByTeam(team.id, dateStart, dateEnd, type, level)
 
-            dataTopTm.push(events.data[1])
-            labelsTopTm.push(team.name)
-        })
+            data.push({ data: events.data[1], label: team.name })
+        }
 
+        // sort data from min to max
+        data.sort(function(a,b){return a.data - b.data})
+
+        // prepare data top count teams for chart
+        for (let i = 1; i < count; i++) {
+
+            let ind = data.length - i
+
+            if (data.length - i > 0) {
+                dataTopTm.push(data[ind].data)
+                labelsTopTm.push(data[ind].label)
+            }else break
+        }
 
         return { dataTopTeams: dataTopTm, labelsTopTeams: labelsTopTm }
     }
 
-
-    // async function countTeamsEvents(teams: { name: string, id: number }[], dateStart: Date, dateEnd: Date,
-    //     level: number,
-    //     type: number, count = 10) {
-
-    //     let capacity = (count > teams.length ? count : teams.length)
-
-    //     let dataTopTm: number[] = new Array(capacity)
-    //     let labelsTopTm: string[] = new Array(capacity)
-    //     let dataLabel: string[] = []
-
-    //     let data: number[] = []
-
-
-    //     let findIndexMax = (arr: number[]) => {
-    //         let max = 0
-    //         let index = 0
-
-    //         console.log(arr[0])
-    //         for (let i = 0; i < arr.length; i++) {
-                
-    //             console.log("arr[i] " + arr[i])
-    //             console.log("max " + max)
-    //             if (arr[i] > max) {
-                
-    //                 max = arr[i]
-    //                 index = i
-    //             }
-    //         }
-
-    //         return index
-    //     }
-    //     // let topLargest = new Array(count).fill({ data: 0, label: "" })
-
-    //     let ind = 0
-    //     teams.forEach(async (team) => {
-
-    //         let events = await eventStore.getEventsViaJournalsByTeam(team.id, dateStart, dateEnd, type, level)
-    //         let countE:number = events.data[1]
-    //         let label:string = team.name
-
-    //         dataLabel[ind] = label
-    //         data[ind] = countE
-    //         ind++
-    //     })
-
-    //     console.log(data.length + " ddddddddddddddddd ")
-
-    //     for (let i = 0; i < count; i++) {
-    //         console.log(data.length + " hngdndfgf ")
-    //         let indexMax = findIndexMax(data)
-    //         dataTopTm[i] = data[indexMax]
-    //         labelsTopTm[i] = dataLabel[i]
-    //         data[indexMax] = -1
-    //     }
-
-    //     // dataTopTm.push(events.data[1])
-    //     // labelsTopTm.push(team.name)
-
-
-    //     return { dataTopTeams: dataTopTm, labelsTopTeams: labelsTopTm }
-    // }
 
     return {
         countEventsInnerOuter,
