@@ -12,18 +12,16 @@ export const useUserStore = defineStore("user", () => {
       }
     });
   }
+  async function reduction(fullname:string,education_group:string,title_role:string,id:number) {
+    await axios.patch("api/users/"+id)
+  }
   async function Update(fullname:string,education_group:string,title_role:string,id:number) {
-    await axios.patch("api/users/"+id,{
-      params:{
-        username:fullname,
-        title_role:title_role,
-        education_group:education_group,
-      }
-    })
+    await axios.patch("api/users/"+id)
   }
    return {
     getUsersByNameEmail,
     Update,
+    reduction,
   }
 });
 

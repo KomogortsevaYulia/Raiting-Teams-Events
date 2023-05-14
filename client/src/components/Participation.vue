@@ -27,7 +27,7 @@ async function deleteItem() {
 }
 
 async function saveChanges(fullname:string,education_group:string,title_role:string,id:number) {
- await userStore.Update(fullname,education_group,title_role,id)
+  await userStore.reduction(fullname,education_group,title_role,id)
   isEditMode.value = false;
 }
 
