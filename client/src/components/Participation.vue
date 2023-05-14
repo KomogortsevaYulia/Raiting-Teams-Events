@@ -87,10 +87,6 @@ async function cancelEditMode() {
 
                                 <div v-if="isEditMode">
                                     <div class="row">
-                                        <label>ФИО:</label>
-                                        <input v-model="props.user.fullname" />
-                                    </div>
-                                    <div class="row">
                                         <label>Группа:</label>
                                         <input v-model="props.user.education_group" />
                                     </div>
