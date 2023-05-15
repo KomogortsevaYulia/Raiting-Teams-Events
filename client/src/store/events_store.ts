@@ -8,7 +8,7 @@ export const useEventStore = defineStore("events", () => {
   async function fetchEvents(): Promise<any> {
     const res = await axios.get('api/events/external')
     const data = res.data
-
+    
     return data
   }
 

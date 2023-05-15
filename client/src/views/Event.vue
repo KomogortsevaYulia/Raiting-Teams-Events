@@ -63,21 +63,21 @@ async function fetchCurrentEvent() {
                     <div class="row">
                         <div class="email d-flex align-items-center  mb-4">
                             <i class="fas fa-envelope fa-xl"></i>
-                            <p class="mb-0 ms-3 fs-5 ">realmail@gmail.com</p>
+                            <p class="mb-0 ms-3 fs-5 ">{{ data.email }}</p>
                         </div>
                         <div class="number d-flex align-items-center mb-4">
                             <i class="fas fa-phone fa-xl"></i>
-                            <p class="mb-0 ms-3 fs-5">+7 (999)-999-99-99</p>
+                            <p  class="mb-0 ms-3 fs-5">{{ data.phone }}</p>
 
                         </div>
                         <div class="user d-flex align-items-center ">
                             <i class="fas fa-paper-plane fa-xl"></i>
-                            <p class="mb-0 ms-3 fs-5">@user</p>
+                            <p v-for="(social_link, index) in data.social_links" :key="index" class="mb-0 ms-3 fs-5">{{social_link}}</p>
 
                         </div>
                         <div class="address d-flex align-items-center">
                             <i class="fas fa-location-dot fa-xl ms-1"></i>
-                            <p class="mb-0 ms-4 fs-5">Точка кипения - г. Иркутск, ул. Лермонтова, 83, пересечение корпуса К и Г - 2 этаж (ауд. К-223) </p>
+                            <p class="mb-0 ms-4 fs-5">{{ data.location }}</p>
                         </div>
 
                     </div>
