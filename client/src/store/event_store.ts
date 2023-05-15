@@ -19,7 +19,11 @@ export const useEventStore = defineStore("events", () => {
     }
 
     async function createEvent(title: String, description: String,
-        dateStart: Date, dateEnd: Date) {
+        dateStart: Date, dateEnd: Date, dateStartRegistration: Date,
+        dateEndRegistration: Date, eventGoal: String, eventPlace: String, level: String,
+        eventFormat: String, concreteSphere: String, eventSphere: String,
+        teamSize: String, eventType: String, control: String, planeParticipantSize: String,
+        participantionType: String, email: String, phone: String, social_links: String[] ) {
 
         let responseMsg = "сохранено"
 
@@ -28,7 +32,23 @@ export const useEventStore = defineStore("events", () => {
             title: title,
             description: description,
             dateStart: dateStart,
-            dateEnd: dateEnd
+            dateEnd: dateEnd,
+            dateStartRegistration: dateStartRegistration,
+            dateEndRegistration: dateEndRegistration,
+            eventGoal: eventGoal,
+            location: location,
+            level: level,
+            format: format,
+            clarifying_direction: clarifying_direction, 
+            character_event: character_event,
+            teamSize: teamSize,
+            eventType: eventType,
+            control: control,
+            count_people: count_people,
+            type_participation: type_participation,
+            email: email,
+            phone: phone,
+            social_links: social_links 
         })
             .catch((err) => {
                 if (err.response) {
