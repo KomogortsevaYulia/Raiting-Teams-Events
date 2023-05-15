@@ -45,8 +45,13 @@ export class UsersService {
     })
 
   }
-  async reduction(updateUserDto: UpdateUserDto,id: number){
-    return this.usersRepository.update(id, updateUserDto);
+  async update(updateUserDto: UpdateUserDto,id: number){
+    console.log(updateUserDto);
+    return this.usersRepository.update(+id, updateUserDto);
+  }
+
+  async addRole(education_group,title_role) {
+    
   }
   
   async findAllWithLimit(limit: number): Promise<User[]> {
@@ -103,9 +108,7 @@ export class UsersService {
   }
 
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);

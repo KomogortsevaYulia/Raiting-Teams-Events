@@ -60,8 +60,9 @@ export class UsersController {
     return res;
   }
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto,@Request() req) {
+    const userData = new CreateUserDto();
+    return this.usersService.update(req.body,+id);
   }
 
   @ApiOperation({ summary: "Регистрация пользователя" })
