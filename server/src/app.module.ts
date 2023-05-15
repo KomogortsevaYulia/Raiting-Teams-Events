@@ -17,7 +17,7 @@ import { UploadsModule } from './uploads/uploads.module';
       ...CONNECTION,
       synchronize: false,
       autoLoadEntities: true,
-      
+      logging:  true,
     }),
     UsersModule,
     TeamsModule,

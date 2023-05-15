@@ -5,9 +5,13 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/s
 import { Team } from './entities/team.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
 import { UsersService } from '../users/users.service';
+
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
+
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -83,6 +87,16 @@ export class TeamsController {
   teamsFunctions(@Param('id') id: number) {
     return this.teamsService.teamsFunctions(id)
   }
+  @Get(':user_id/requisition')
+  @ApiOperation({ summary: "Получение списка заявок на вступление в коллектив" })
+  // @ApiParam({ user_name: "user_id", required: true, description: "Идентификатор коллектива" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async userRequisition(@Param('user_id') user_id: number) {
+    let data = await this.teamsService.userRequisition(user_id)
+    console.log(data)
+    return data
+  }
 
   // @UseInterceptors(FileInterceptor('file'))
   // async uploadFile(@UploadedFile() file) {
@@ -105,7 +119,7 @@ export class TeamsController {
 
     return team
   }
-
+ 
 
 
 

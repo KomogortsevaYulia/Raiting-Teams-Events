@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BeforeInsert, Column, Entity,JoinColumn,ManyToOne,OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserFunction } from "./user_function.entity";
 import * as argon2 from 'argon2';
+import { Requisitions } from "../../teams/entities/requisition.entity";
 
 @Entity("users")
 export class User {
@@ -70,4 +71,9 @@ export class User {
 
     @Column({ nullable: true })
     course: number;
+
+    @OneToMany((type) => Requisitions, (requisitions) => requisitions.id)
+    requisitions: Requisitions[]
+
+
 }
