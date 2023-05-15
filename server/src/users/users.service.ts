@@ -55,32 +55,32 @@ export class UsersService {
   }
 
   // modernize function user if user not exist
-  // @HttpCode(400)
-  // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+  @HttpCode(400)
+  async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
 
-  //   // if(isNaN(id)){
-  //   //   throw new HttpException("такого юзера не существует " + id, 400)
-  //   // }
+    // if(isNaN(id)){
+    //   throw new HttpException("такого юзера не существует " + id, 400)
+    // }
 
-  //   const userExist = await this.usersRepository
-  //     .createQueryBuilder("users")
-  //     .where("users.id = :id", { id })
-  //     .leftJoin("users.user_function", "user_function")
-  //     .addSelect("user_function")
-  //     .leftJoin("user_function.functions", "functions")
-  //     .addSelect("functions")
-  //     .leftJoinAndSelect("functions.team", "teams")
-  //     .addSelect("teams")
-  //     .getOne();
+    const userExist = await this.usersRepository
+      .createQueryBuilder("users")
+      .leftJoin("users.user_function", "user_function")
+      .addSelect("user_function")
+      .leftJoin("user_function.function", "functions")
+      .addSelect("functions")
+      .leftJoinAndSelect("functions.team", "teams")
+      .addSelect("teams")
+        .where("user_function.user = :id", { id })
+      .getOne();
 
-  //   // console.log("userExist " + userExist)
-  //   if (!userExist) {
-  //     throw new HttpException("такого юзера не существует ", 400)
-  //   }
+    // console.log("userExist " + userExist)
+    if (!userExist) {
+      throw new HttpException("такого юзера не существует ", 400)
+    }
+//
+    return userExist
 
-  //   return userExist
-
-  // }
+  }
 
   async login(username: string, pass: string): Promise<any> {
     const user = await this.usersRepository

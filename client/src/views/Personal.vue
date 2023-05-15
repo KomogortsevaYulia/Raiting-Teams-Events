@@ -2,6 +2,8 @@
 import { usePermissionsStore } from '@/store/permissions_store';
 import { ref, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
+import {useUserStore} from "@/store/user_store";
+
 
 const selectedColor = ref('blue');
 const attrs = ref([
@@ -14,16 +16,21 @@ const attrs = ref([
 
 const route = useRoute();
 const username = route.params.username;
+console.log(username);
+
 
 const user = ref()
+const functions = ref()
 onBeforeMount(async () => {
-  getInfoUser()
+  await getInfoUser()
 })
 
 async function getInfoUser() {
   user.value = await usePermissionsStore().fetchUser()
 }
-
+async function getFunction(){
+  functions.value = await useUserStore().getUsersFunction(1)
+}
 
 </script>
 <template>
@@ -31,8 +38,8 @@ async function getInfoUser() {
   <div class="avatar col">
 <!--сделать -->
     <div class="row-auto ms-5 ">
-      <div class="col"> <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="me-2 mt-2 d-flex" /> </div>
-      <div class="col"> <img class="icon" width="150" height="150" :src="user.image" alt="icon"  /></div>
+      <div class="col"> <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="d-flex" /> </div>
+      <div class="col mt-3"> <img class="icon" width="150" height="150" :src="user.image" alt="icon"  /></div>
     </div>
 <div class="row">
   <p class="FIO row-auto">{{ user.fullname }}</p>
@@ -41,11 +48,22 @@ async function getInfoUser() {
   <p class="row-auto">{{ user.education_group }}</p>
 </div>
     <div class="row">
-      <div class="col ps-5 pe-5">
-        <h3 class="active">Коллективы</h3>
-        <p>Народный театр «Предместье»</p>
-        <p>Волейбол юноши</p>
-        <p>Студенческие отряды</p>
+      <h3 class="active">Коллективы</h3>
+<!--      <div class="row">-->
+<!--        <p class="col">Народный театр «Предместье</p>-->
+<!--        <p class="col">Участник</p>-->
+<!--      </div>-->
+<!--      <div class="row">-->
+<!--        <p class="col">Волейбол юноши</p>-->
+<!--        <p class="col">Участник</p>-->
+<!--      </div>-->
+<!--      <div class="row">-->
+<!--        <p class="col">Студенческие отряды</p>-->
+<!--        <p class="col">Участник</p>-->
+<!--      </div>-->
+      <div v-for="(item, index) in functions.value" :key="index" class="row">
+        <p class="col">{{item.}}</p>
+        <p class="col">Народный театр «Предместье</p>
       </div>
     </div>
   </div>
@@ -102,9 +120,6 @@ async function getInfoUser() {
     </div>
   </div>
   </div>
-  <!-- <div class="information rounded">
-                <h1 class="ps-3">Достижения</h1>
-              </div> -->
 </template>
 
 <style lang="scss">
@@ -129,7 +144,6 @@ async function getInfoUser() {
 
 .information {
   width: 800px;
-
   background-color: rgb(255, 255, 255);
 }
 
@@ -150,6 +164,7 @@ async function getInfoUser() {
 button {
   background: none;
   padding: 0em;
+  color: #fd524c;
 }
 
 .avatar {
@@ -187,7 +202,6 @@ button {
 }
 
 .icon {
-  //margin: 2em 1em 2em 5em;
   border-radius: 1000px;
   /* Радиус скругления */
 }
