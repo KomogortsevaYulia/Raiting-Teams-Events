@@ -58,7 +58,7 @@ export class User {
     @Column("simple-array",{ nullable: true })
     permissions: string[]
 
-    @OneToMany((type)=>UserFunction, (user_func)=>user_func.function)
+    @OneToMany((type)=>UserFunction, (user_func)=>user_func.user)
     user_function:UserFunction[]
 
     @BeforeInsert()

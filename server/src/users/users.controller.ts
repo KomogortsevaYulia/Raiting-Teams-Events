@@ -135,8 +135,13 @@ export class UsersController {
     return this.usersService.updateFunction(idFunction, createFunctionDto);
   }
 
-
-
+  @Get('functions/:id')
+  @ApiOperation({ summary: "Получить список коллективов в которых состоит пользователь" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findOneWithFunction(@Param("id") id:number){
+    return this.usersService.findOneWithFunction(id);
+  }
   // function--------------------------------------------------------------------
 
   @Delete('team/:id_team/leader/:id_leader')
