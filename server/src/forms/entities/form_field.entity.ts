@@ -12,4 +12,8 @@ export class FormField {
     @ApiProperty() 
     @Column()
     title: string
+
+    @ApiProperty() 
+    @Column({default:false})
+    required: boolean
 }
