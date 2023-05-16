@@ -12,6 +12,7 @@ import {
   TitleComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
+import { computed } from "vue";
 
 use([
   CanvasRenderer,
@@ -28,47 +29,48 @@ const props = defineProps<{
   data: number[],
 }>()
 
-const options = {
-  xAxis: {
-    type: 'category',
-    data: props.labels
-  },
-  yAxis: {
-    type: 'value'
-  },
-  series: [
-    {
-      data:props.data,
-      type: 'bar',
-      showBackground: true,
-      backgroundStyle: {
-        color: 'rgba(180, 180, 180, 0.2)'
+const options = computed(() => {
+  return {
+    xAxis: {
+      type: 'category',
+      data: props.labels
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        data: props.data,
+        type: 'bar',
+        showBackground: true,
+        backgroundStyle: {
+          color: 'rgba(180, 180, 180, 0.2)'
+        }
       }
-    }
-  ],
-  tooltip : {
-   	trigger: 'axis',
-    axisPointer: {
+    ],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
         type: 'cross',// Indicator type
         label: {
-        	// Horizontal section indicator block color
-            backgroundColor: '#6a7985'
+          // Horizontal section indicator block color
+          backgroundColor: '#6a7985'
         }
+      }
     }
-}
-};
+  };
+})
 
 
 </script>
 
 <template>
   <div class="charts-wrapper">
-  <v-chart class="chart " :option="options" />
+    <v-chart class="chart " :option="options" />
   </div>
 </template>
 
 <style scoped>
-
 .charts-wrapper {
   width: 100%;
   height: 100%;

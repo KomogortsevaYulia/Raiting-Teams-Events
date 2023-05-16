@@ -94,7 +94,7 @@ const itemList = [
   { name: "Участники" },
   { name: "Заявки" }
 ]
-
+///////////////////////////////////////////////////////////
 const selectItem = (i: number) => {
   selectedItem.value = i
 }

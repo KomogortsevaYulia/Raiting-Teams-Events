@@ -12,6 +12,7 @@ import {
   TitleComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
+import { computed } from "vue";
 
 use([
   CanvasRenderer,
@@ -24,56 +25,59 @@ use([
 
 
 const props = defineProps<{
-    data: {
+  data: {
     value: number;
     name: string;
-}[]
+  }[],
+  name:string
 }>()
 
-const options = {
-  tooltip: {
-    trigger: 'item'
-  },
-  legend: {
-    top: '5%',
-    left: 'center'
-  },
-  series: [
-    {
-      name: 'Access From',
-      type: 'pie',
-      radius: ['40%', '70%'],
-      avoidLabelOverlap: false,
-      label: {
-        show: false,
-        position: 'center'
-      },
-      emphasis: {
+// computed 
+const options = computed( () => {
+  return {
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      top: '5%',
+      left: 'center'
+    },
+    series: [
+      {
+        name: props.name,
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
         label: {
-          show: true,
-          fontSize: 40,
-          fontWeight: 'bold'
-        }
-      },
-      labelLine: {
-        show: false
-      },
-      data:props.data
-    }
-  ]
-}
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 40,
+            fontWeight: 'bold'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: props.data
+      }
+    ]
+  }
+})
 
 
 </script>
 
 <template>
   <div class="charts-wrapper">
-  <v-chart class="chart " :option="options" />
+    <v-chart class="chart " :option="options" />
   </div>
 </template>
 
 <style scoped>
-
 .charts-wrapper {
   width: 100%;
   height: 100%;

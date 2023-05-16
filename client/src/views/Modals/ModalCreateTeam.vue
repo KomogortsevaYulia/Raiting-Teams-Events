@@ -1,17 +1,43 @@
 <script setup lang="ts">
 
-import { onBeforeMount, ref } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import _ from 'lodash'
 import { useTeamStore } from '@/store/team_store';
 import { useUserStore } from '@/store/user_store';
+import { faDharmachakra } from '@fortawesome/free-solid-svg-icons';
+import UpdateTeam from './UpdateTeam';
+import { useFileStore } from '@/store/file_store';
+
+const teamStore = useTeamStore();
+const fileStore = useFileStore();
+
+const props = defineProps<{
+  isEditTeam: boolean, //если модальное окно вызвано для редактирования (не создание нового коллектива)
+  team: any
+}>()
+
+const team = ref()
 
 
 // values from form
-const title = ref();
-const shortname = ref();
+const title = ref("");
+const shortname = ref("");
 const userLeader = ref();
-const description = ref();
-const room= ref();
+const cabinet = ref("");
+
+const charterTeamImg = ref();
+// const document = ref();
+
+const description = ref("");
+
+// files
+const charterTeamFile = ref();
+const documentFile = ref();
+
+const charterTeamBase64 = ref()
+
+const oldUserId = ref(-1)
+
 
 // сообщение об ошибках
 const responseMsg = ref();
@@ -33,9 +59,66 @@ async function onTextChange(e: any) {
   func()
 }
 
+watch(
+  () => team.value, (value, previousValue) => {
+    fillForm()
+  })
+
+watch(
+  () => props.team, (value, previousValue) => {
+    team.value = props.team
+    responseMsg.value = ""
+  })
+
+
 onBeforeMount(async () => {
   await getUsers()
+  team.value = props.team
+
 })
+
+// заполнить форму данными
+async function fillForm() {
+
+  if (team.value != null) {
+    let t = team.value
+
+    title.value = t.title
+    shortname.value = t.shortname
+    description.value = t.description
+    cabinet.value = t.cabinet
+
+    // загрузить изображение
+
+    // if (team.value.charter_team != null) {
+    //   charterTeamImg.value = await fileStore.getImageBase64(team.value.charter_team)
+    //   // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
+
+    //   const ustavExtention = team.value.charter_team.split(".").pop()
+    //   charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
+
+    // } else { charterTeamBase64.value = "" }
+
+    // console.log(charterTeamBase64.value)
+
+
+    // alert(t.functions [0].userFunctions[0].id)
+    //если есть руководитель коллектива
+    if (t.functions != null && t.functions[0].userFunctions != null) {
+
+      let uF = t.functions[0].userFunctions[0].user
+      optionSelect.value = { name: uF.fullname, email: uF.email, id: uF.id, data: uF.fullname + " " + uF.email }
+      oldUserId.value = uF.id
+    }
+
+
+  } else { //если коллектив не задан , то очистить все поля
+    title.value = shortname.value = description.value
+      = cabinet.value = ""
+    optionSelect.value = null
+  }
+
+}
 
 // получить всех пользователей и выбрать из них нужных
 async function getUsers() {
@@ -60,7 +143,6 @@ async function getUsers() {
 //создать коллектив
 async function createTeam() {
 
-
   let userId = -1
   //проверить является id числом или нет и выбрана ли опция
   if (!optionSelect.value || isNaN(optionSelect.value.id)) {
@@ -69,41 +151,118 @@ async function createTeam() {
   } else { userId = optionSelect.value.id }
 
   //create team
-  responseMsg.value = await useTeamStore().createTeam(title.value, description.value,
-    shortname.value, userId)
+  responseMsg.value = await teamStore.createTeam(title.value, description.value,
+    shortname.value, userId, cabinet.value, charterTeamFile.value, documentFile.value)
 
   // console.log(newTeam)
 }
+
+
+// обночить коллектив
+async function updateTeam() {
+
+  let newUserId = -1
+  //проверить является id числом или нет и выбрана ли опция
+  if (!optionSelect.value || isNaN(optionSelect.value.id)) {
+    responseMsg.value = "такого пользователя нет " + newUserId
+    return
+  } else { newUserId = optionSelect.value.id }
+
+  //create team
+  const uT = new UpdateTeam()
+  uT.cabinet = cabinet.value
+  uT.description = description.value
+  uT.id = team.value.id
+  uT.oldUserId = oldUserId.value
+  uT.newUserId = newUserId
+  uT.shortname = shortname.value
+  uT.title = title.value
+  uT.documentPath = team.value.document
+  uT.charterPath = team.value.charter_team
+  // files
+  uT.fileUstav = charterTeamFile.value
+  uT.fileDocument = documentFile.value
+
+  const res = await teamStore.updateTeam(uT)
+  responseMsg.value = res.responseMsg
+
+  if (res.team != null) {
+    team.value = res.team.data
+  }
+}
+
+
+async function handleFileUpload(event: any, document: boolean) {
+
+  const file = event.target.files[0];
+
+  // Get file size
+  // const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
+  // // Get file extension
+  // const fileExtention = file.name.split(".").pop()
+  // // Get file name
+  // const fileName = file.name.split(".").shift()
+  // // Check if file is an image
+  // const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
+  // // Print to console
+  // console.log(fileSize, fileExtention, fileName, isImage);
+
+  if (!document)
+    charterTeamFile.value = file
+  else {
+    documentFile.value = file
+  }
+}
+
+
+// архивировать коллектив
+async function archiveTeam(id: number, isArchive: boolean) {
+
+  let res = await teamStore.archiveTeam(id, isArchive)
+  responseMsg.value = res.responseMsg
+
+  if (res.isOK) team.value.is_archive = isArchive
+}
+
 </script>
 
 <template>
-  <!-- Button trigger modal -->
-  <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Создать коллектив
-  </button>
-
   <!-- Modal -->
   <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Создать коллектив</h1>
-          <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">
+
+            <!-- редактирование или создание нвого колелктива -->
+            <b v-if="isEditTeam"> Редактировать коллектив </b>
+            <b v-else>Создать коллектив </b>
+
+            <!-- если коллектив в архиве -->
+            <sup v-if="team != null && team.is_archive != null && team.is_archive" class="text-bg-danger"> (В
+              архиве)</sup>
+            <!-- если он действующий -->
+            <sup v-else-if="team != null" class="text-bg-success"> (действующий)</sup>
+
+          </h1>
+          <div class=" btn-close" data-bs-dismiss="modal" aria-label="Close"></div>
         </div>
         <div class="modal-body">
           <!-- Это вся обертка -->
 
           <div class="wrapper-team__create">
-            <p>Прежде чем создать в системе новый коллектив, нужно
+            <p v-if="isEditTeam">
+              Прежде чем создать в системе новый коллектив, нужно
               утвердить его приказом!</p>
 
-            <div v-if="responseMsg" class="alert alert-primary" role="alert">
+            <div v-if="responseMsg" class="alert alert-warning" role="alert">
               {{ responseMsg }}
             </div>
 
+
             <!-- Форма с полями для создания -->
-            <form class="form-team__create" @submit.prevent="createTeam()">
+            <form class="form-team__create" @submit.prevent="isEditTeam ? updateTeam() : createTeam()">
               <div class="create-filds">
 
                 <div class="filds-area">
@@ -113,15 +272,38 @@ async function createTeam() {
                   <v-select placeholder="ФИО Руководителя или email" class="v-select" label="data" @input="onTextChange"
                     :options="foundUsers" v-model="optionSelect"></v-select>
 
-                    <input type="text" placeholder="Аудитория(кабинет)" v-model="room" required>
+                  <input type="text" placeholder="Аудитория(кабинет)" v-model="cabinet" required>
 
-                  <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
+                  <div class="mb-2">
+                    <label for="formFile" class="form-label">загрузить устав</label>
+                    <input class="form-control" type="file" id="formFile" @change="(e) => handleFileUpload(e, false)">
+                    <p v-if="isEditTeam && team != null"> {{ team.charter_team }}</p>
+                    <img v-if="isEditTeam" :src="charterTeamBase64" style="width: 100px; height: 100px;" alt="Устав">
+                  </div>
+
+                  <div class="mb-2">
+                    <label for="formFile1" class="form-label">загрузить документ(ы)</label>
+                    <input class="form-control" type="file" id="formFile1" @change="(e) => handleFileUpload(e, true)">
+                    <p v-if="isEditTeam && team != null"> {{ team.document }}</p>
+                  </div>
+
                   <textarea placeholder="Опишите проект" v-model="description" required></textarea>
                 </div>
 
                 <div class="fuck-off-btn">
                   <!--  v-on:click="showCreate = false" -->
-                  <button type="submit">Создать коллектив</button>
+                  <div class="row">
+                    <div class="col"> <button type="submit">Сохранить коллектив</button>
+                    </div>
+                    <div class="col-auto" v-if="isEditTeam">
+                      <button type="button" class="btn btn-secondary" @click="archiveTeam(team.id, !team.is_archive)"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="Архивировать коллектив">
+                        <font-awesome-icon icon="archive" />
+                      </button>
+
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
@@ -140,57 +322,67 @@ async function createTeam() {
   </div>
 </template>
 
-<style lang="scss" scoped>
-@import '@/assets/globals.scss';
+<style lang="scss" >
 @import 'vue-select/dist/vue-select.css';
 
+.btn-close {
+  &:hover {
+    border: 1px solid  var(--main-color-hover);
+    transition: 0.3s;
+  }
+}
+
+
 .wrapper-team__create {
-    .form-team__create {
+
+  .form-team__create {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-radius: 15px;
+    border: var(--main-border-card);
+
+
+
+    .fuck-off-btn {
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      border-radius: 15px;
-      border: var(--main-border-card);
+      justify-content: end;
+    }
 
-      .fuck-off-btn {
+    .create-filds {
+      display: block;
+      padding: 2rem;
+      width: 100%;
+
+      .filds-area {
         display: flex;
-        justify-content: end;
-      }
+        flex-direction: column;
 
-      .create-filds {
-        display: block;
-        padding: 2rem;
-        width: 100%;
+        .v-select {
+          padding-bottom: 1rem;
+        }
 
-        .filds-area {
-          display: flex;
-          flex-direction: column;
+        textarea {
+          min-height: 20%;
+          min-width: 100%;
+          max-width: max-content;
+          margin-bottom: 1rem;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
 
-          .v-select{
-            padding-bottom: 1rem;
-          }
-
-          textarea {
-            min-height: 20%;
-            min-width: 70%;
-            max-width: max-content;
-            margin-bottom: 1rem;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-          }
-
-          input {
-            margin-bottom: 1rem;
-          }
+        input {
+          margin-bottom: 1rem;
         }
       }
+    }
 
-      .create-wrapper-img {
-        width: 30%;
-        border-radius: 0 1rem 1rem 0;
-        background-color: #D9D9D9;
-        background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");
-        background-size: cover;
-      }
+    .create-wrapper-img {
+      width: 20%;
+      border-radius: 0 1rem 1rem 0;
+      background-color: #D9D9D9;
+      background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");
+      background-size: cover;
     }
   }
+}
 </style>

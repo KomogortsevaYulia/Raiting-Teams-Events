@@ -35,11 +35,13 @@ const itemLink = [
             </nav>
 
             <nav v-if="can('can view directions')" class="link-item">
+
                 <RouterLink class="link" active-class="active" :to="'/statistic'">
                     <p>Статистика</p>
                 </RouterLink>
-            </nav>
 
+            </nav>
+            
             <nav v-if="can('can view directions')" class="link-item">
                 <RouterLink class="link" active-class="active" :to="'/directions'">
                     <p>Направления</p>
@@ -60,11 +62,13 @@ const itemLink = [
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
+
 // Блок
 .navbar-wrapper {
     display: flex;
     position: relative;
     align-items: center;
+
     // Элемент иконки
     .navbar__item-logo {
         img {
@@ -72,12 +76,15 @@ const itemLink = [
             width: 40px;
         }
     }
+
     // Элементы навигации
     .navbar__item-link {
         margin: 0 auto 0 auto;
         display: flex;
+
         .link-item {
             padding: 1rem;
+
             p {
                 cursor: pointer;
                 height: 2rem;
@@ -87,11 +94,13 @@ const itemLink = [
                 font-weight: 600;
                 margin: 0;
                 font-family: 'Montserrat', sans-serif;
+
                 &:hover {
                     color: var(--main-color);
                 }
             }
         }
+
         .active {
             p {
                 color: var(--main-color);
@@ -99,6 +108,7 @@ const itemLink = [
             }
         }
     }
+
     // Элемент кнопки "Вход"
     .navbar__item-login {
         .login-button {
@@ -106,14 +116,17 @@ const itemLink = [
             border-radius: 10px;
             background-color: var(--main-color);
             color: #fff;
+
             &:hover {
                 background: var(--main-color-hover);
                 transition: 0.3s;
             }
+
             &:focus {
                 outline: none;
                 box-shadow: 0 0 0 2px #ff746f;
             }
+
             &:active {
                 transition: 0.3s;
                 background-color: #fd524c;
