@@ -8,6 +8,7 @@ import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
 import { UsersService } from '../users/users.service';
 import { SearchTeamDto } from './dto/search-team.dto';
+import { Requisitions } from './entities/requisition.entity';
 
 
 
@@ -23,6 +24,8 @@ export class TeamsService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
+    @InjectRepository(Requisitions)
+    private readonly requisitionsRepository: Repository<Requisitions>,
     private readonly usersService: UsersService
   ) { }
 
@@ -175,7 +178,15 @@ export class TeamsService {
     return users;
   }
 
+  async userRequisition(user_id: number): Promise<Requisitions[]> {
+    const users = await this.requisitionsRepository
+    .createQueryBuilder("requisition")
+    .select(["requisition.fullname","requisition.date_create", "requisition.date_update","requisition.status"])
+    .where("requisition.user_id = :user_id", { user_id })
+    .getMany()
 
+    return users;
+  }
   // async  directionsAndUsers() {
 
   //   const directionsUsers = await this.teamsRepository

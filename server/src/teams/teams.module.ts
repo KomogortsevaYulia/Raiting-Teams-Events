@@ -7,10 +7,12 @@ import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
 import { Function } from '../users/entities/function.entity';
 import { UsersService } from '../users/users.service';
-import { UploadsService } from '../uploads/uploads.service';
+import { Requisitions } from './entities/requisition.entity';
+import { Form } from 'src/forms/entities/form.entity';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function])],
+  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions, Form])],
   controllers: [TeamsController],
   providers: [TeamsService, UsersService, UploadsService]
 })
