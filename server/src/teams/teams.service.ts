@@ -181,8 +181,9 @@ export class TeamsService {
   async userRequisition(user_id: number): Promise<Requisitions[]> {
     const users = await this.requisitionsRepository
     .createQueryBuilder("requisition")
-    .select(["requisition.fullname","requisition.date_create", "requisition.date_update","requisition.status"])
-    .where("requisition.user_id = :user_id", { user_id })
+    .select(["requisition.date_create", "requisition.date_update","requisition.status"])
+    .leftJoinAndSelect("requisition.user_id","user")
+    .where("user.id = :user_id", { user_id })
     .getMany()
 
     return users;

@@ -181,5 +181,8 @@ GET http://localhost:3000/api/uploads/excel/events_direction
 ###
 GET http://localhost:3000/api/uploads/excel/events_of_team?teamId=1
 
+###
+GET http://localhost:3000/api/teams/7/requisition
+
 
 
