@@ -39,6 +39,22 @@ export const useTeamStore = defineStore("teams", () => {
         return data
     }
 
+    async function addImage(id: number, formData: FormData) {
+        let responseMsg = "сохранено"
+        
+        const res = await axios.post(`/api/teams/${id}/image`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).catch((err) => {
+            if (err.response) {
+                responseMsg = err.response.data.message[0]
+            }
+        })
+
+        return responseMsg
+    }
+
 
     async function createTeam(title: String, description: String,
         shortname: String, userId: Number) {
@@ -92,6 +108,7 @@ export const useTeamStore = defineStore("teams", () => {
         setLayout,
         fetchTeamsOfDirection,
         fetchTeam,
+        addImage,
 
         layout,
         menu_items

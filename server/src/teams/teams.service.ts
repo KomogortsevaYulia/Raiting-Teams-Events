@@ -154,6 +154,15 @@ export class TeamsService {
     return newUserFunction
   }
 
+  async addImage(id: number, filePath: string): Promise<Team> {
+      let team = await this.findOne(id)
+      team.image.push(filePath)
+
+      return await this.teamsRepository.save({
+        id: team.id,
+        image: team.image
+      })
+  }
 }
 
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import WIP from '@/components/WIP.vue';
-import { onBeforeMount, ref } from 'vue';
-import TeamsForm from './TeamsForm.vue'
+import { onBeforeMount, ref, reactive } from 'vue';
 import Ankets from '@/views/Questionnaire.vue';
 
 import { useTeamStore } from "../store/team_store"
@@ -14,10 +13,12 @@ const idTeam = Number(route.params.id);
 
 const TeamStore = useTeamStore();
 const show = ref(true);
-const currentPage = ref(1);
+const currentPage = ref(0);
 
 const data = ref()
 const team = ref()
+
+const image = ref<File>()
 
 onBeforeMount(async () => {
   // fetchTeams()
@@ -41,20 +42,20 @@ function setCurrentPage(page: number) {
 }
 
 function nextPage() {
-  if (currentPage.value + 1 < 4) {
+  if (currentPage.value + 1 < data.value.image.length) {
     currentPage.value++
   }
   else {
-    currentPage.value = 1
+    currentPage.value = 0
   }
 }
 
 function previousPage() {
-  if (currentPage.value - 1 > 0) {
+  if (currentPage.value - 1 >= 0) {
     currentPage.value--
   }
   else {
-    currentPage.value = 3
+    currentPage.value = data.value.image.length - 1
   }
 }
 
@@ -65,6 +66,22 @@ async function fetchCurrentTeams() {
       data.value = respose.data
     })
 }
+
+function uploadImage(e) {
+  image.value = e.target.files[0]
+}
+
+async function addImage() {
+  let formData = new FormData()
+  formData.append('file', image.value!)
+
+  image.value = undefined
+  
+  await TeamStore.addImage(idTeam, formData)
+  await fetchTeam()
+  await fetchCurrentTeams()
+}
+
 
 ////////////////////////////////////////////
 const selectedItem = ref(0);
@@ -150,26 +167,22 @@ const newsList = [
               {{ data.description }}
             </div>
             <div class="column-right">
-              <div class="image-container">
-                <img v-if="currentPage === 1"
-                  src="https://sun4-12.userapi.com/impg/7cihnmozwdZo5B63fTDkT2T3A7wDFjvi1BSlzQ/n_74trN1o-Y.jpg?size=2560x1707&quality=95&sign=1aa84293a83c6337204aa80f02b53440&type=album">
-                <img v-if="currentPage === 2"
-                  src="https://sun9-58.userapi.com/impg/VXN1cqTuomn5r9s09OBiIJvGlBH-5r3wPDXkHA/Jpe2z5gYSw4.jpg?size=2560x1707&quality=95&sign=3e817f4cc607e03118139bf5b88a4319&type=album">
-                <img v-if="currentPage === 3"
-                  src="https://sun9-54.userapi.com/impg/uU55dZtENJqdqiiJw4aCdVFwmqjhnaXTkDoAwg/-nAHiUtXYOY.jpg?size=2560x1707&quality=95&sign=2b5ab35fb1a53a17615833188fc8d519&type=album">
-                <div class="page-arrows">
-                  <div class="arrow-left" @click="previousPage">
-                    <i class="fa fa-angle-left"></i>
-                  </div>
-                  <div class="page-buttons">
-                    <button @click="setCurrentPage(1)" :class="{ active: currentPage === 1 }"></button>
-                    <button @click="setCurrentPage(2)" :class="{ active: currentPage === 2 }"></button>
-                    <button @click="setCurrentPage(3)" :class="{ active: currentPage === 3 }"></button>
-                  </div>
-                  <div class="arrow-right" @click="nextPage">
-                    <i class="fa fa-angle-right"></i>
-                  </div>
+              <div class="image-container" >
+                <div v-for="(item, index) in data.image" :key="index">
+                  <img :src="item" v-if="currentPage === index"/>
                 </div>
+              </div>
+              <div class="page-arrows" v-iv="data.image.length > 0">
+                <div class="arrow-left" @click="previousPage">
+                  <i class="fa fa-angle-left"></i>
+                </div>
+                <div class="arrow-right" @click="nextPage">
+                  <i class="fa fa-angle-right"></i>
+                </div>
+              </div>
+              <div class="add-container">
+                <input ref="image" class="form-control" type="file" @change="uploadImage">
+                <button @click="addImage()">Добавить изображение</button>
               </div>
             </div>
           </div>
@@ -600,22 +613,39 @@ const newsList = [
       }
 
       .column-right {
-        flex-basis: 40%;
+        max-width: fill-available;
         padding: 0 10px;
+
+        .add-container {
+          margin-top: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+
+          button {
+            margin-top: 10px;
+          }
+        }
+
 
         .image-container {
           display: flex;
           flex-direction: column;
-          align-items: center;
-        }
-
-        img {
+          justify-content: center;
+          width: 300px;
+          height: 200px;
+          background-size: cover;
+          overflow: hidden;
           border-radius: 25px;
-          margin-bottom: 30px;
-          width: 70%;
+          
+          img {
+            max-width:100%;
+            height: auto;
+          }
         }
 
         .page-arrows {
+          padding-top: 15px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -626,8 +656,8 @@ const newsList = [
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 30px;
-          height: 30px;
+          width: 20px;
+          height: 20px;
           margin: 0 10px;
           border-radius: 50%;
           background-color: #ccc;
@@ -649,8 +679,8 @@ const newsList = [
           border: none;
           border-radius: 10px;
           margin: 0 5px;
-          width: 10px;
-          height: 10px;
+          width: 1px;
+          height: 1px;
           background-color: #ccc;
         }
 

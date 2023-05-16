@@ -1,10 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete, HttpStatus, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Team } from './entities/team.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
 import { UsersService } from '../users/users.service';
+import { diskStorage } from 'multer';
+import { extname } from 'path'
+import { existsSync, mkdirSync } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import { HttpException } from '@nestjs/common';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -71,6 +77,36 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   teamsFunctions(@Param('id') id: number) {
     return this.teamsService.teamsFunctions(id)
+  }
+
+  @Post(':id/image')
+  @UseInterceptors(FileInterceptor('file', {
+    fileFilter: (req: any, file: any, cb: any) => {
+        if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+            cb(null, true);
+        } else {
+            cb(new HttpException(`Unsupported file type ${extname(file.originalname)}`, HttpStatus.BAD_REQUEST), false);
+        }
+    },
+    storage: diskStorage({
+      destination: (req: any, file: any, cb: any) => {
+        const uploadPath = '../client/public/team/';
+        if (!existsSync(uploadPath)) {
+            mkdirSync(uploadPath);
+        }
+        cb(null, uploadPath);
+    },
+      filename: (req, file, cb) => {
+        cb(null, `${uuidv4()}${extname(file.originalname)}`)
+      }
+    })
+  }))
+  @ApiOperation({ summary: "Загрузить изображение коллектива" })
+  @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  addImage(@Param('id') id: number, @UploadedFile() file: Express.Multer.File) {
+    return this.teamsService.addImage(id, file.filename);
   }
 
 
