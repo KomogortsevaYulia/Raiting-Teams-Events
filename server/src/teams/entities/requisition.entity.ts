@@ -12,11 +12,11 @@ export class Requisitions {
 
     @ManyToOne(() => User, (user) => user.id)
     @JoinColumn([{ name: "user_id" }])
-    user_id: number
+    user_id: User
 
     @ManyToOne(() => Form, (form) => form.id)
     @JoinColumn([{ name: "form_id" }])
-    form_id: number
+    form_id: Form
 
     @ApiProperty()
     @Column()
