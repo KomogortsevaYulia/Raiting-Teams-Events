@@ -34,10 +34,6 @@ export class EventsService {
   findAllEvents(id: number = null, type: number = null, level: number = null,
     direction: number = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
 
-    //dateStart = new Date()
-    // if (dateStart != null && dateEnd!=null)
-    //   console.log("dateStart: " + (dateStart.toISOString()) + "  dateEnd: " + (dateEnd.toISOString()))
-
     let buildQuery = this.eventsRepository
       .createQueryBuilder("events")
       .leftJoinAndSelect("events.level", "level")
@@ -90,8 +86,6 @@ export class EventsService {
 
   findAllJournals(team: number = null): Promise<[Journal[], number]> {
 
-    // console.log("team journal " + team)
-
     let buildQuery = this.journalsRepository
       .createQueryBuilder("journals")
       .leftJoin("journals.team", "team")
@@ -109,7 +103,6 @@ export class EventsService {
   
   findJournals(team: number = null): Promise<[Journal[], number]> {
 
-   // console.log("team22 " + team)
 
     let buildQuery = this.journalsRepository
       .createQueryBuilder("journals")
@@ -162,12 +155,8 @@ export class EventsService {
       }
     }
 
-    // console.log(teamId)
-    // console.log(arrayData)
     return [ arrayData, countAppropriate ]
 
-
-    // console.log("journal" + arrayData[0].id)
   }
 
 

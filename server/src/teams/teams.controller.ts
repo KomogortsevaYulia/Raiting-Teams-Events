@@ -34,8 +34,6 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAll(
     @Query() params: SearchTeamDto) {
-    // if(params.tags)
-    // console.log(params)
     return this.teamsService.findAll(params);
   }
 
@@ -65,8 +63,7 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   @UseInterceptors(FilesInterceptor('files'))
   async update(@Param('id') id: number, @UploadedFiles(new FileSizeValidationPipe()) files:Express.Multer.File[], @Body() updateTeamDto: UpdateTeamDto) {
-    // console.log(files)
-    // console.log(updateTeamDto)
+
 
     // устав коллектива
     let ustavPath = updateTeamDto.charterTeam
@@ -78,12 +75,10 @@ export class TeamsController {
 
     if (files.length < 3) {
       for (let f in files) {
-        //console.log("have files " + (ustavPath))
        
         //оставить только начало файла без расширения
         if (files[f].originalname.split(".").shift() == "ustav") {
 
-          //console.log("ustav loaded ")
           ustavPath = await this.uploadsService.uploadFile(files[f])
         } else if (files[f].originalname.split(".").shift() == "document") {
 
@@ -93,10 +88,8 @@ export class TeamsController {
     }
 
     updateTeamDto.charterTeam = ustavPath
-    //console.log("ustav " + ustavPath)
 
     updateTeamDto.document = docPath
-    //console.log("doc " + docPath)
 
     let team = await this.teamsService.update(id, updateTeamDto);
 
@@ -158,7 +151,6 @@ export class TeamsController {
 
     for (let f in files) {
 
-     // console.log(files[f])
       //оставить только начало файла без расширения
       if (files[f].originalname.split(".").shift() == "ustav"
         && ustav == null) {

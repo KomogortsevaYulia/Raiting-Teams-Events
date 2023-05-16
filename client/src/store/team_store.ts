@@ -40,7 +40,7 @@ export const useTeamStore = defineStore("teams", () => {
     async function fetchTeam(id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
-        console.log(data)
+        // console.log(data)
         return data
     }
 
