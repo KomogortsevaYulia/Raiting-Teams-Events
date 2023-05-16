@@ -28,11 +28,23 @@ export class EventsService {
       .getMany()
   }
 
+  findTitle(title: string){
+
+    return this.eventsRepository
+    
+      .createQueryBuilder("events")
+      .select(["events.title", "events.images", "events.tags" , "events.description", "events.dateStart"])
+      .where("events.title like :title" , { title: `%${title}%`})
+      .getMany()
+   
+  }
+
 
   // конструктор запроса для получения мероприятия по нужным параметрам
   //если параметр был выбран, то добавляем его в запрос (И)
   findAllEvents(id: number = null, type: number = null, level: number = null,
-    direction: number = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
+    direction: number = null, dateStart: Date = null, dateEnd: Date = null, title: string = null,
+    tags: string[] = null): Promise<[Event[], number]> {
 
     //dateStart = new Date()
     // if (dateStart != null && dateEnd!=null)
@@ -47,6 +59,14 @@ export class EventsService {
     //id 
     buildQuery = id != null ? buildQuery
       .andWhere("events.id = :id", { id: id }) : buildQuery
+
+    //title 
+    buildQuery = title != null ? buildQuery
+      .andWhere("events.title like :title" , { title: `%${title}%`}) : buildQuery
+
+    //tag 
+    buildQuery = tags != null ? buildQuery
+     .andWhere("events.tag = :tag" , { tag: tags}) : buildQuery
 
     // event type
     buildQuery = type != null ? buildQuery
@@ -88,7 +108,20 @@ export class EventsService {
 
   // journals-------------------------------------------------------------------------
 
-  findAllJournals(team: number = null): Promise<[Journal[], number]> {
+
+  getEventUsers(id: number){
+    
+    return this.journalsRepository
+    
+      .createQueryBuilder("journals")
+      .where("journals.event_id = :event_id" , { event_id: id})
+      .andWhere("journals.is_registered = true")
+      .leftJoinAndSelect("journals.user", "user")
+      .getMany()
+   
+  }
+
+  async findAllJournals(event_id: number = null, title: string = null): Promise<[Journal[], number]> {
 
     // console.log("team journal " + team)
 
@@ -99,9 +132,19 @@ export class EventsService {
       .leftJoin("journals.event", "event")
       .addSelect("event.id")
 
+
+      //id 
+    buildQuery = event_id != null ? buildQuery
+
+      .andWhere("journals.event_id = :event_id", { event_id: event_id }) 
+      .andWhere("journals.is_registered = true") : buildQuery
+
+        //title 
+    buildQuery = title != null ? buildQuery
+      .andWhere("events.title like :title" , { title: `%${title}%`}) : buildQuery
    
-    buildQuery = team != null ? buildQuery
-      .where("journals.team_id = :team", { team: team }) : buildQuery
+    // buildQuery = team != null ? buildQuery
+    //   .where("journals.team_id = :team", { team: team }) : buildQuery
 
     return buildQuery.getManyAndCount()
   }
@@ -135,7 +178,7 @@ export class EventsService {
 
     
     // alert("teamId " + teamId)
-    let data = await this.findAllJournals(teamId)
+    let data = await this.findJournals(teamId)
     let countAppropriate = 0
 
     //получить всех найденне journal
