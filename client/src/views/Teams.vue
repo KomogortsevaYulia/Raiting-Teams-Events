@@ -113,36 +113,38 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
             </router-link>
 
             <div class="wrapperContent col ">
-              <div class="card__event-name  row">
-                <div class="row">
+              <!-- <div class="card__event-name"> -->
+              <div class="row mb-2">
+
+                <div class="col ">
                   <router-link :to="'/team/' + team.id">
                     <div class="col-8"> {{ team.title }} </div>
                   </router-link>
-                  <div class="col d-flex justify-content-end align-items-start">
-                    <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
-                      архиве)</p>
-                  </div>
 
-                  <div class="col-auto d-flex justify-content-end align-items-start">
-                    <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal"
-                      data-bs-target="#exampleModal">
-                      <font-awesome-icon class="ic" icon="pencil-square" />
-                    </div>
-                  </div>
-                  <!-- </div>
-                  </div> -->
-
+                  <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
+                    архиве)</p>
                 </div>
+
+                <div class="col-auto d-flex justify-content-end align-items-end">
+                  <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <font-awesome-icon class="ic" icon="pencil-square" />
+                  </div>
+                </div>
+                <!-- </div>
+                  </div> -->
 
               </div>
 
+              <!-- </div> -->
 
-              <div class="row overflow-auto" style="max-height: 100px;">
-                <div class="navigation-tags row g-1">
-                  <div v-for="el in team.tags" class="teg col-auto">{{ el }}</div>
-                </div>
-                <div class="row">
-                  {{ team.short_description }}
+              <div class="row mb-2">
+                <div class="row overflow-auto" style="max-height: 100px;">
+                  <div class="navigation-tags row g-1">
+                    <div v-for="el in team.tags" class="teg col-auto">{{ el }}</div>
+                  </div>
+                  <div class="row">
+                    {{ team.short_description }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -297,7 +299,6 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           padding: 1rem;
           width: 100%;
 
-
           .navigation-tags {
             // flex-wrap: wrap;
             // padding-bottom: 1rem;
@@ -378,7 +379,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .wrapperContent {
           width: 100%;
           padding: 2rem;
-
+          
           p {
             color: #000;
           }
@@ -386,7 +387,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           .navigation-tags {
             margin-top: 0.5rem;
             padding-bottom: 1rem;
-            display: flex;
+           
 
             .teg {
               margin-right: 1rem;

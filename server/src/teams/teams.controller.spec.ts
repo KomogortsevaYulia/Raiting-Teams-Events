@@ -63,7 +63,7 @@ describe('TeamsController', () => {
     const createTeamDto: CreateTeamDto = {
       "userID": 5,
       "shortname": "dddd2",
-      "short_description": "Хотим подняться на гору",
+      "description": "Хотим подняться на гору",
       "title": "hddddhh",
       "document": "hddddhh",
       "charterTeam": "dddddd",
@@ -92,7 +92,7 @@ describe('TeamsController', () => {
 
     it('Если описание коллектива превышает 3000 символов, то пользователь получит предупреждение об ошибке', async () => {
 
-      createTeamDto.short_description = "t".repeat(3001)
+      createTeamDto.description = "t".repeat(3001)
       const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto)
       const errors = await validate(ofImportDto)
       // expect(errors.length).not.toBe(0)

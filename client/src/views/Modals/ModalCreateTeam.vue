@@ -28,7 +28,7 @@ const cabinet = ref("");
 const charterTeamImg = ref();
 // const document = ref();
 
-const short_description = ref("");
+const description = ref("");
 
 // files
 const charterTeamFile = ref();
@@ -85,7 +85,7 @@ async function fillForm() {
 
     title.value = t.title
     shortname.value = t.shortname
-    short_description.value = t.short_description
+    description.value = t.description
     cabinet.value = t.cabinet
 
     // загрузить изображение
@@ -113,7 +113,7 @@ async function fillForm() {
 
 
   } else { //если коллектив не задан , то очистить все поля
-    title.value = shortname.value = short_description.value
+    title.value = shortname.value = description.value
       = cabinet.value = ""
     optionSelect.value = null
   }
@@ -151,7 +151,7 @@ async function createTeam() {
   } else { userId = optionSelect.value.id }
 
   //create team
-  responseMsg.value = await teamStore.createTeam(title.value, short_description.value,
+  responseMsg.value = await teamStore.createTeam(title.value, description.value,
     shortname.value, userId, cabinet.value, charterTeamFile.value, documentFile.value)
 
   // console.log(newTeam)
@@ -171,7 +171,7 @@ async function updateTeam() {
   //create team
   const uT = new UpdateTeam()
   uT.cabinet = cabinet.value
-  uT.short_description = short_description.value
+  uT.description = description.value
   uT.id = team.value.id
   uT.oldUserId = oldUserId.value
   uT.newUserId = newUserId
@@ -287,7 +287,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
                     <p v-if="isEditTeam && team != null"> {{ team.document }}</p>
                   </div>
 
-                  <textarea placeholder="Опишите проект" v-model="short_description" required></textarea>
+                  <textarea placeholder="Опишите проект" v-model="description" required></textarea>
                 </div>
 
                 <div class="fuck-off-btn">

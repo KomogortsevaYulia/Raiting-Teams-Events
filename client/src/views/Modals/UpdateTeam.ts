@@ -3,7 +3,7 @@ export default class UpdateTeam {
     oldUserId = 0
     newUserId = 0
     title = ""
-    short_description = ""
+    description = ""
     shortname = ""
     cabinet = ""
     documentPath = ""

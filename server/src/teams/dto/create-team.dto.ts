@@ -13,10 +13,11 @@ export class CreateTeamDto {
     })
     title: string
 
+    @IsNotEmpty({ message: 'Поле пустое' })
     @Length(1,3000,{
         message: 'Описание, максимальная длина текста 1-3000'
     })
-    short_description: string
+    description: string
 
     @IsNotEmpty({ message: 'Поле пустое' })
     @Length(1,50,{

@@ -513,13 +513,13 @@ function changeTypeReport() {
             <div class="row g-4">
               <div class="col-12 chartBorder">
                 <h6>Статистика дат проведения мероприятий</h6>
-                <EPie :data="eventsSeasons" />
+                <EPie :data="eventsSeasons" name="даты проведения мероприятий" />
               </div>
 
               <div class="col-12 chartBorder">
                 <h6>Количество внутренних/внешних мероприятий</h6>
 
-                <EPie :data="dataEventsInnerOuter" />
+                <EPie :data="dataEventsInnerOuter" name="количество мероприятий" />
 
               </div>
             </div>
