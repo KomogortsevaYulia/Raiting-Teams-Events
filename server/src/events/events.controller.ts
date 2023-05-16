@@ -24,7 +24,6 @@ export class EventsController {
   findAllEvents(@Query() { id = null, type = null, level = null,
     direction = null, dateStart = null, dateEnd = null }) {
 
-    //  console.log('"id ' + id)
     let dStart: Date = dateStart == null ? null : (new Date(dateStart))
     let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
 
@@ -38,7 +37,6 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   create(@Body() createEventDto: CreateEventDto) {
-    // console.log(createTeamDto)
     return this.eventsService.create(createEventDto);
   }
 

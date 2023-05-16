@@ -27,9 +27,7 @@ export class TeamsService {
   ) { }
 
   async findOne(id: number) {
-    console.log("enterdddddddddddddd " )
     let res = await this.teamsRepository.findOneBy({ id: id })
-    console.log("enter" + res)
 
     return res;
   }

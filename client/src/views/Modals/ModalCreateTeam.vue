@@ -62,19 +62,14 @@ async function onTextChange(e: any) {
 watch(
   () => team.value, (value, previousValue) => {
     fillForm()
-
-    if (team.value != null) {
-
-    }
-
   })
 
-  watch(
-  () =>props.team, (value, previousValue) => {
+watch(
+  () => props.team, (value, previousValue) => {
     team.value = props.team
     responseMsg.value = ""
   })
- 
+
 
 onBeforeMount(async () => {
   await getUsers()
@@ -82,6 +77,7 @@ onBeforeMount(async () => {
 
 })
 
+// заполнить форму данными
 async function fillForm() {
 
   if (team.value != null) {
@@ -92,14 +88,17 @@ async function fillForm() {
     description.value = t.description
     cabinet.value = t.cabinet
 
-    if (team.value.charter_team != null) {
-      charterTeamImg.value = await fileStore.getImageBase64(team.value.charter_team)
-      // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
+    // загрузить изображение
 
-      const ustavExtention = team.value.charter_team.split(".").pop()
-      charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
-      
-    } else { charterTeamBase64.value = "" }
+    // if (team.value.charter_team != null) {
+    //   charterTeamImg.value = await fileStore.getImageBase64(team.value.charter_team)
+    //   // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
+
+    //   const ustavExtention = team.value.charter_team.split(".").pop()
+    //   charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
+
+    // } else { charterTeamBase64.value = "" }
+
     // console.log(charterTeamBase64.value)
 
 
@@ -187,12 +186,9 @@ async function updateTeam() {
   const res = await teamStore.updateTeam(uT)
   responseMsg.value = res.responseMsg
 
-  if(res.team != null){
-    // console.log(res.team.data)
+  if (res.team != null) {
     team.value = res.team.data
   }
-
-  // console.log(newTeam)
 }
 
 
@@ -201,35 +197,26 @@ async function handleFileUpload(event: any, document: boolean) {
   const file = event.target.files[0];
 
   // Get file size
-  const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
-  // Get file extension
-  const fileExtention = file.name.split(".").pop()
-  // Get file name
-  const fileName = file.name.split(".").shift()
-  // Check if file is an image
-  const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
-  // Print to console
-  console.log(fileSize, fileExtention, fileName, isImage);
+  // const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
+  // // Get file extension
+  // const fileExtention = file.name.split(".").pop()
+  // // Get file name
+  // const fileName = file.name.split(".").shift()
+  // // Check if file is an image
+  // const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
+  // // Print to console
+  // console.log(fileSize, fileExtention, fileName, isImage);
 
-  // const formData = new FormData()
-  // formData.append('file', file)
-  // let path = await fileStore.loadFile(formData)
-
-  // const formData = new FormData()
   if (!document)
     charterTeamFile.value = file
   else {
     documentFile.value = file
   }
-
-  // load file
-
 }
 
 
 // архивировать коллектив
 async function archiveTeam(id: number, isArchive: boolean) {
-
 
   let res = await teamStore.archiveTeam(id, isArchive)
   responseMsg.value = res.responseMsg
@@ -240,8 +227,6 @@ async function archiveTeam(id: number, isArchive: boolean) {
 </script>
 
 <template>
-  <!-- team {{ team }}
-  team {{ props.team }} -->
   <!-- Modal -->
   <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -261,8 +246,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
             <sup v-else-if="team != null" class="text-bg-success"> (действующий)</sup>
 
           </h1>
-          <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal"
-            aria-label="Close"></button>
+          <div class=" btn-close" data-bs-dismiss="modal" aria-label="Close"></div>
         </div>
         <div class="modal-body">
           <!-- Это вся обертка -->
@@ -293,17 +277,16 @@ async function archiveTeam(id: number, isArchive: boolean) {
                   <div class="mb-2">
                     <label for="formFile" class="form-label">загрузить устав</label>
                     <input class="form-control" type="file" id="formFile" @change="(e) => handleFileUpload(e, false)">
-                    <p v-if="isEditTeam && team!=null" > {{ team.charter_team }}</p>  
+                    <p v-if="isEditTeam && team != null"> {{ team.charter_team }}</p>
                     <img v-if="isEditTeam" :src="charterTeamBase64" style="width: 100px; height: 100px;" alt="Устав">
                   </div>
 
                   <div class="mb-2">
                     <label for="formFile1" class="form-label">загрузить документ(ы)</label>
                     <input class="form-control" type="file" id="formFile1" @change="(e) => handleFileUpload(e, true)">
-                    <p v-if="isEditTeam && team!=null" > {{ team.document }}</p>
+                    <p v-if="isEditTeam && team != null"> {{ team.document }}</p>
                   </div>
 
-                  <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
                   <textarea placeholder="Опишите проект" v-model="description" required></textarea>
                 </div>
 
@@ -342,14 +325,24 @@ async function archiveTeam(id: number, isArchive: boolean) {
 <style lang="scss" >
 @import 'vue-select/dist/vue-select.css';
 
+.btn-close {
+  &:hover {
+    border: 1px solid  var(--main-color-hover);
+    transition: 0.3s;
+  }
+}
+
 
 .wrapper-team__create {
+
   .form-team__create {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     border-radius: 15px;
     border: var(--main-border-card);
+
+
 
     .fuck-off-btn {
       display: flex;

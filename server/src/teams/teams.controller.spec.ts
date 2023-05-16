@@ -14,10 +14,10 @@ import { plainToInstance } from 'class-transformer';
 import { ValidationError, validate } from 'class-validator';
 
 // @ts-ignore
-export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
-  findOne: jest.fn(entity => entity),
-  // ...
-}));
+// export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
+//   findOne: jest.fn(entity => entity),
+//   // ...
+// }));
 
 describe('TeamsController', () => {
   let controller: TeamsController;

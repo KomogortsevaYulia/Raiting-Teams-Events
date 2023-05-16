@@ -395,9 +395,9 @@ function changeTypeReport() {
         <div class="row my-4 d-flex justify-content-md-center directions">
 
           <div v-for="direc in foundDirections" class="col-auto d-flex my-1">
-            <a href="#" @click="changeDirection(direc)" :class="{ active: selectedDirection == direc.id }">{{
+            <div @click="changeDirection(direc)" :class="[{ active: selectedDirection == direc.id}, 'direction']  ">{{
               direc.shortname
-            }}</a>
+            }}</div>
           </div>
 
         </div>
@@ -513,13 +513,13 @@ function changeTypeReport() {
             <div class="row g-4">
               <div class="col-12 chartBorder">
                 <h6>Статистика дат проведения мероприятий</h6>
-                <EPie :data="eventsSeasons" />
+                <EPie :data="eventsSeasons" name="даты проведения мероприятий" />
               </div>
 
               <div class="col-12 chartBorder">
                 <h6>Количество внутренних/внешних мероприятий</h6>
 
-                <EPie :data="dataEventsInnerOuter" />
+                <EPie :data="dataEventsInnerOuter" name="количество мероприятий" />
 
               </div>
             </div>
@@ -634,7 +634,7 @@ function changeTypeReport() {
   background: white;
 
   .directions {
-    a {
+    .direction {
       padding: 5px 30px;
       border: 0.5px solid var(--second-color);
       border-radius: 20px;
@@ -643,6 +643,7 @@ function changeTypeReport() {
         color: white;
         background: var(--second-color);
         opacity: 0.5;
+        transition: 0.3s;
       }
 
     }
@@ -679,6 +680,7 @@ function changeTypeReport() {
     &:hover {
       box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
       background-color: var(--main-color);
+      transition: 0.3s;
     }
   }
 

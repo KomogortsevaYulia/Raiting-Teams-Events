@@ -12,7 +12,6 @@ export class UploadsService {
 
   async uploadFile(file: Express.Multer.File) {
 
-    console.log(file)
     const pathStart = "/public/media"
 
     const randomName = Array(32).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
@@ -34,8 +33,6 @@ export class UploadsService {
 
 
   async getFileBuffer(path: string) {
-
-    // console.log("path " + path)
 
     let buffer: Buffer = null;
     // проверить существование файла
@@ -87,9 +84,6 @@ export class UploadsService {
       direction: null, dateStart: null, dateEnd: null
     }) {
 
-    // console.log("events")
-    // console.log(events)
-
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -119,9 +113,6 @@ export class UploadsService {
 
       let e = events[i]
       let arrData = []
-
-      // console.log("e " )
-      // console.log(e.id + e.title)
 
       arrData.push(e.title ?? "-", e.level ? e.level.name : "-", e.type ? e.type.name : "-",
         e.format ? e.format.name : "-",

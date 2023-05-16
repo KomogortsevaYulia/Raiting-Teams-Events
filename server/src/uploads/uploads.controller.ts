@@ -37,7 +37,6 @@ export class UploadsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async getFileBuffer(@Query() params) {
 
-    // console.log(params.path)
     let file = await this.uploadsService.getFileBuffer(params.path)
 
     return file
@@ -50,7 +49,6 @@ export class UploadsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async getFileImageBase64(@Query() params) {
 
-    // console.log(params.path)
     let base64 = await this.uploadsService.getFileImageBase64(params.path)
 
     return base64
