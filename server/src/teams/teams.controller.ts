@@ -65,7 +65,7 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   @UseInterceptors(FilesInterceptor('files'))
   async update(@Param('id') id: number, @UploadedFiles(new FileSizeValidationPipe()) files:Express.Multer.File[], @Body() updateTeamDto: UpdateTeamDto) {
-    console.log(files)
+    // console.log(files)
     // console.log(updateTeamDto)
 
     // устав коллектива
@@ -127,7 +127,6 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findOne(@Param('id') id: number) {
-    console.log("enter" + id)
     return this.teamsService.findOne(id);
   }
 
