@@ -36,8 +36,19 @@ export class CreateEventDto {
     @Type(() => Number)
     count_people: number
 
+    @IsNumber()
+    @Type(() => Number)
+    team_size: number
 
-    
+
+    @Length(1,1000,{
+    })
+    event_place: string // место проведения
+
+    @Length(1,1000,{
+    })
+    event_goal: string 
+ 
 
 
     @Length(1,1000,{
