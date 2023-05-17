@@ -17,18 +17,39 @@ export class EventsController {
     return this.eventsService.findAllExternal();
   }
 
+  @Get('/journals')
+  @ApiOperation({ summary: "Получение списка внешних мероприятий" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findJournals(@Query() { event_id = null,  title = null}) {
+   
+    return this.eventsService.findAllJournals(event_id, title);
+  }
+
+  @Get('/journals/getEventUsers/:id')
+  @ApiOperation({ summary: "Получение списка внешних мероприятий" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  getEventUsers(@Param('id') id: string) {
+   
+    return this.eventsService.getEventUsers(+id);
+  }
+
+
+
   @Get()
   @ApiOperation({ summary: "Получение списка мероприятий с учетом различных параметров" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAllEvents(@Query() { id = null, type = null, level = null,
-    direction = null, dateStart = null, dateEnd = null }) {
+    direction = null, dateStart = null, dateEnd = null , title = null},
+    tags = null) {
 
     //  console.log('"id ' + id)
     let dStart: Date = dateStart == null ? null : (new Date(dateStart))
     let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
 
-    return this.eventsService.findAllEvents(id, type, level, direction, dStart, dEnd);
+    return this.eventsService.findAllEvents(id, type, level, direction, dStart, dEnd, title, tags);
   }
 
 
