@@ -58,9 +58,9 @@ export class Event {
     @Column("simple-array", {nullable: true})
     images: string[]
 
-    @ApiProperty()
-    @Column("simple-array", {nullable: true})
-    event_place: string // место проведения
+    // @ApiProperty()
+    // @Column("simple-array", {nullable: true})
+    // event_place: string // место проведения
 
     @ApiProperty()
     @Column({
@@ -86,9 +86,9 @@ export class Event {
     count_people: number // плановое кол-во участников
 
 
-    @ApiProperty()
-    @Column('int',{ nullable: true })
-    team_size: number // плановое кол-во участников
+    // @ApiProperty()
+    // @Column('int',{ nullable: true })
+    // team_size: number // плановое кол-во участников
 
     @ApiProperty()
     @Column({ nullable: true })
@@ -107,9 +107,9 @@ export class Event {
     @Column({ nullable: true })
     email: string // почта
 
-    @ApiProperty()
-    @Column({ nullable: true })
-    event_goal: string // почта
+    // @ApiProperty()
+    // @Column({ nullable: true })
+    // event_goal: string // почта
 
     @ApiProperty()
     @Column("simple-array",{ nullable: true })

@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, Put } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
+import { CreateJournalDto } from './dto/create-journal.dto';
+import { UpdateJournalDto } from './dto/update-journal.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Event } from './entities/event.entity';
 
@@ -15,6 +17,14 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAll() {
     return this.eventsService.findAllExternal();
+  }
+
+  @Get('/tags')
+  @ApiOperation({ summary: "Получение списка внешних мероприятий" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findTags(@Query() {tags}) {
+    return this.eventsService.findTags(tags);
   }
 
   @Get('/journals')
@@ -64,6 +74,34 @@ export class EventsController {
     return this.eventsService.create(createEventDto);
   }
 
+  @Post("/journal/add")
+  @ApiOperation({ summary: "Создать новое мероприятие" })
+  @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  createJournal(@Body() createJournal: CreateJournalDto) {
+      console.log(createJournal)
+    return this.eventsService.createJournal(createJournal);
+  }
+
+  @Patch("/journal/isParticipation/")
+  @ApiOperation({ summary: "333" })
+  @ApiBody({ description: "333", required: true })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  async updateJournal(@Query() { user_id, event_id}){
+    return this.eventsService.updateJournal(event_id, user_id);
+  }
+
+
+  @Delete("/journal/deleteUser")
+  @ApiOperation({ summary: "333" })
+  @ApiBody({ description: "333", required: true })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  async deleteJournal(@Query() { user_id, event_id}){
+    return this.eventsService.deleteJournal(event_id, user_id);
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {
