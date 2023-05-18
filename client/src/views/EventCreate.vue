@@ -2,7 +2,9 @@
 import axios from 'axios';
 import { onBeforeMount, ref, computed } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
+import { useEventStore } from '@/store/event_store';
 
+const teamStore = useEventStore();
 
 const title = ref();
 const description = ref();
@@ -26,9 +28,29 @@ const phone= ref()
 const socialWeb = ref()
 const tags = ref()
 
+const foundLevels = ref();
+
+onBeforeMount(async () => {
+    fetchEventLevel();
+})
 
 
 
+
+async function fetchEventLevel() {
+    // я эту хуйню позже перепишу
+    await axios.get('/api/general/dictionary?class_name=уровень+мероприятия')
+        .then((respose: any) => {
+            let levels = respose.data
+            let arrayData = []
+            for (let i = 0; i < (levels).length; i++) {
+                let level = (levels)[i]
+
+                arrayData[i] = { name: levels.name,  data: `${level.name}` };
+            } 
+            foundLevels.value = arrayData
+        })
+}
 
 
 
@@ -92,7 +114,7 @@ await axios.post("api/events", {
                 </div>
                 <div class="row">
                     <VueDatePicker locale="ru" v-model="dateStart" placeholder="Start Typing ..." text-input
-                        :enable-time-picker="false"></VueDatePicker>
+                        ></VueDatePicker>
                 </div>
 
 
@@ -103,7 +125,7 @@ await axios.post("api/events", {
                 </div>
                 <div class="row">
                     <VueDatePicker locale="ru" v-model="dateEnd" placeholder="Start Typing ..." text-input
-                        :enable-time-picker="false"></VueDatePicker>
+                        ></VueDatePicker>
                 </div>
 
 
@@ -136,23 +158,24 @@ await axios.post("api/events", {
         <div class="margins-edit row d-flex align-items-end">
             <div class="col ps-0 col">
                 <p class="text-edit">Уровень</p>
-                <select class="col form-select" v-model="level">
+                <select class="col form-select" label="data"  v-model="level" :option.value="foundLevels">
                     <option disabled value="">Please select one</option>
-                    <option>A</option>
+                    <option>Вузовский</option>
                 </select>
+               
             </div>
             <div class="col ps-md-0">
                 <p class="text-edit">Формат проведения</p>
                 <select class="col form-select" v-model="eventFormat">
                     <option disabled value="">Please select one</option>
-                    <option>A</option>
+                    <option>Очное</option>
                 </select>
             </div>
             <div class="col ">
                 <p class="text-edit">Уточняющее направление</p>
                 <select class="col pe-0 form-select" v-model="concreteSphere">
                     <option disabled value="">Please select one</option>
-                    <option>A</option>
+                    <option>Физическое</option>
                 </select>
             </div>
         </div>
@@ -161,22 +184,21 @@ await axios.post("api/events", {
                 <p class="text-edit">Направление (рейтинг)</p>
                 <select class="col form-select" v-model="eventSphere">
                     <option disabled value="">Please select one</option>
-                    <option>A</option>
+                    <option>СД</option>
                 </select>
             </div>
             <div class="col">
                 <div class="row">
                     <p class="text-edit">Размер команды</p>
                 </div>
-                <div class="row"> <input placeholder="edit me" v-model="teamSize" /></div>
-
-
+                <div class="row"> <input placeholder="edit me" v-model="teamSize" />
+                </div>
             </div>
             <div class="col ">
                 <p class="text-edit">Характер мероприятия</p>
                 <select class="col pe-0 form-select" v-model="eventType">
                     <option disabled value="">Please select one</option>
-                    <option>A</option>
+                    <option>Соревнование</option>
                 </select>
             </div>
         </div>
@@ -185,7 +207,7 @@ await axios.post("api/events", {
                 <p class="text-edit">Контроль</p>
                 <select class="form-select" v-model="control">
                     <option disabled value="">Please select one</option>
-                    <option>A</option>
+                    <option>Аносов С.С.</option>
                 </select>
             </div>
             <div class="col">
@@ -199,7 +221,7 @@ await axios.post("api/events", {
                 <p class="text-edit">Вид участия</p>
                 <select class="col pe-0 form-select" v-model="participantionType">
                     <option disabled value="">Please select one</option>
-                    <option>A</option>
+                    <option>Активное</option>
                 </select>
             </div>
         </div>
@@ -211,7 +233,7 @@ await axios.post("api/events", {
             <div class="col ">
                 <div class="row ">
                     <p class="text-edit">Почта</p>
-                    <div class="row"> <input placeholder="edit me" v-model="email" /></div>
+                    <div class="row pe-0 ps-0 ms-0 "> <input placeholder="edit me" v-model="email" /></div>
                 </div>
             </div>
             <div class="col pe-4">

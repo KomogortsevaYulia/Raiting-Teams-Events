@@ -6,6 +6,15 @@ import axios from "axios";
 export const useEventStore = defineStore("events", () => {
     const layout = ref(true)
 
+
+    async function getEventLevel() {
+        const res = await axios.get('/api/general/dictionary?class_name=уровень+мероприятия')
+        const data = res.data
+
+        return data
+      
+      }
+
     function CreateTeamsTest() {
         console.log('Это сработало!');
     }
