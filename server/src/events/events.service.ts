@@ -3,9 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { CreateJournalDto } from './dto/create-journal.dto';
+import { UpdateJournalDto } from './dto/update-journal.dto';
 import { Event } from './entities/event.entity'
 import { Type } from './enums/enums';
 import { Journal } from './entities/journal.entity';
+import { fail } from 'assert';
 
 @Injectable()
 export class EventsService {
@@ -38,6 +41,20 @@ export class EventsService {
       .getMany()
    
   }
+
+  findTags(tags: string){
+
+    return this.eventsRepository
+    
+      .createQueryBuilder("events")
+      .select(["events.title", "events.images", "events.tags" , "events.description", "events.dateStart"])
+      .where("events.tags like :tags" , { tags: `%${tags}%`})
+      .getMany()
+   
+  }
+
+
+
 
 
   // конструктор запроса для получения мероприятия по нужным параметрам
@@ -214,6 +231,20 @@ export class EventsService {
   }
 
 
+  async createJournal(createJournalDto: CreateJournalDto): Promise<Journal> {
+
+    let journal = await this.journalsRepository.save({
+      ...createJournalDto,
+      // image: [],
+      // tags: [],
+      // type_team: "teams",
+      // creation_date: new Date()
+    })
+    console.log(journal)
+    return journal;
+  }
+
+
   async create(createEventDto: CreateEventDto): Promise<Event> {
 
     let event = await this.eventsRepository.save({
@@ -224,10 +255,34 @@ export class EventsService {
       // creation_date: new Date()
     })
 
-
+   
     return event;
   }
 
+  async updateJournal( event_id: number, user_id: number) {
+
+    
+   return await this.journalsRepository
+    .createQueryBuilder("journals")
+    .update()
+    .set({ is_registered: false})
+    .where("journals.event_id = :event_id", {event_id: event_id})
+    .andWhere("journals.user_id = :user_id", {user_id: user_id})
+    .execute()
+    
+  }
+
+
+  async deleteJournal(event_id: number, user_id: number) {
+
+    return await this.journalsRepository
+      .createQueryBuilder("journals")
+      .delete()
+      .where("journals.event_id = :event_id", {event_id: event_id})
+      .andWhere("journals.user_id = :user_id", {user_id: user_id})
+      .execute()
+
+  } 
 }
 
 
