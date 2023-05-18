@@ -178,16 +178,20 @@ export class TeamsService {
     return users;
   }
 
-  async userRequisition(user_id: number): Promise<Requisitions[]> {
+  async userRequisition(team_id: number): Promise<Requisitions[]> {
+    
+    team_id  = 6
     const users = await this.requisitionsRepository
     .createQueryBuilder("requisition")
     .select(["requisition.date_create", "requisition.date_update","requisition.status"])
-    .leftJoinAndSelect("requisition.user_id","user")
-    .where("user.id = :user_id", { user_id })
+    .leftJoinAndSelect("requisition.form_id","form")
+    .leftJoinAndSelect("requisition.user_id","user_id")
+    .where("form.team_id = :team_id", { team_id })
     .getMany()
 
     return users;
   }
+
   // async  directionsAndUsers() {
 
   //   const directionsUsers = await this.teamsRepository
