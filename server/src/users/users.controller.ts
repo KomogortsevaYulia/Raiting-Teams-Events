@@ -31,13 +31,13 @@ export class UsersController {
     let email: string = params.email
 
     // console.log(" email " + params.fullname) 
-    let users
+    let users:User[] = null
     if (fullname || email) {
       // console.log("name")
-      users = this.usersService.findByName(limit, fullname, email);
+      users = await this.usersService.findByName(limit, fullname, email);
     } else {
       // console.log("findAll")
-      users = this.usersService.findAllWithLimit(limit);
+      users =await this.usersService.findAllWithLimit(limit);
     }
     return users
   }

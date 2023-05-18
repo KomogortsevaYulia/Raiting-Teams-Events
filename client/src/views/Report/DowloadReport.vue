@@ -1,27 +1,72 @@
-<script setup lang="ts">
+<script setup  lang="ts">
 import type { Direction } from '@/store/enums/enum_event';
 import type { TypeReport } from './enums_report';
+import { computed, onBeforeMount, ref, watch } from 'vue';
+import { useEventStore } from '@/store/events_store';
 
+const eventStore = useEventStore();
 
 const props = defineProps<{
   direction: {
     id: number;
-    shortname: Direction;
+    shortname: string;
     idDB: number;
+    idDirectionEvent: Direction;
   },
-  eventOrTeam: TypeReport,
-  teams: string,
+  typeReport: TypeReport,
+  levels: {
+    id: number;
+    name: string;
+  }[],
   level: {
     id: number;
-    data: string;
+    name: string;
   },
   typeEvent: {
     id: number;
-    data: string;
+    name: string;
   },
-  dateRange: { start: Date, end: Date }
+  types: {
+    id: number;
+    name: string;
+  }[],
+  dateRange: { start: Date, end: Date },
+  team: { name: string, id: number }
 }>()
 
+const resFile = ref()
+const fileURL = ref()
+
+
+async function getReportEventsOfDirection() {
+  let res = await eventStore.getReportEventsOfDirection(props.direction.id, props.dateRange.start,
+    props.dateRange.end, props.level.id, props.typeEvent.id)
+  resFile.value = res.data
+  // console.log(resFile.value)
+}
+
+async function getReportEventsOfTeam() {
+  let res = await eventStore.getReportEventsOfTeam(props.team.id, props.dateRange.start,
+    props.dateRange.end, props.direction.id, props.level.id)
+  resFile.value = res.data
+  // console.log(resFile.value)
+}
+
+async function getReport(){
+
+  if(props.team!=null && props.team.id > 0){
+   await getReportEventsOfTeam()
+  }else{
+  await  getReportEventsOfDirection()
+ }
+ 
+ 
+}
+async function downloadFile() {
+  //const byteArray = new Uint8Array(resFile.value);
+  const file = new Blob([resFile.value], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  fileURL.value = URL.createObjectURL(file);
+}
 
 </script>
 
@@ -53,23 +98,23 @@ const props = defineProps<{
             </div>
 
             <div class="row my-3">
-              <div class="col"> вид: </div>
-              <div class="col"> {{ eventOrTeam.data }}</div>
+              <div class="col"> вид отчета: </div>
+              <div class="col"> {{ typeReport }}</div>
             </div>
 
-            <div class="row  my-3">
+            <!-- <div class="row  my-3">
               <div class="col"> колективы:</div>
               <div class="col"> {{ teams}}</div>
-            </div>
+            </div> -->
 
             <div class="row  my-3">
-              <div class="col"> уровень: </div>
-              <div class="col">{{  level.data }}</div>
+              <div class="col"> уровень мероприятия: </div>
+              <div class="col">{{ level.name  }}</div>
             </div>
 
             <div class="row  my-3">
               <div class="col"> тип мероприятия: </div>
-              <div class="col"> {{ typeEvent.data }}</div>
+              <div class="col"> {{ typeEvent.name }}</div>
             </div>
 
             <div class="row  my-3">
@@ -77,10 +122,18 @@ const props = defineProps<{
               <div class="col"> {{ dateRange.start.toLocaleDateString() }} - {{ dateRange.end.toLocaleDateString() }}</div>
             </div>
 
-            <div class="row mt-4 mx-3 d-flex  justify-content-end">
-              <button type="button" class="btn-custom-primary">
-                Скачать
+            <div class="row g-2 mt-4 mx-3 d-flex  justify-content-end ">
+              <div class="col d-flex justify-content-end">
+                <a v-if="resFile" :href="fileURL" download="reportEvents.xlsx">
+               <button @click="downloadFile()"> <font-awesome-icon icon="file-download" /></button>
+               </a>
+              </div>
+              <div class="col-auto d-flex justify-content-end">
+                <button type="button"  @click="getReport">
+                Сформировать
               </button>
+              </div>
+             
             </div>
 
 

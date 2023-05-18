@@ -38,7 +38,14 @@ onBeforeMount(async () => {
     }
 })
 
+// вытащить коллективы из бд 
+// async function fetchTeams() {
+//   data.value = await useTeamStore().fetchTeams()
+// }
+// вытащить коллективы из бд и отобразить их
+
 async function fetchTeam() {
+
   team.value = await TeamStore.fetchTeam(idTeam)
 }
 
@@ -212,7 +219,7 @@ const newsList = [
       </div>
 
       <div v-if="(selectedItem === 4)">
-        <Ankets /> 
+        <Ankets />
         <div v-for="item in req">
           <div class="about">
             <div class="member-card py-2">
@@ -252,6 +259,7 @@ const newsList = [
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
+
 
 .member-card {
   width: 100%;

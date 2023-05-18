@@ -6,7 +6,7 @@ import { useTeamStore } from '@/store/team_store';
 import { useUserStore } from '@/store/user_store';
 import { faDharmachakra } from '@fortawesome/free-solid-svg-icons';
 import UpdateTeam from './UpdateTeam';
-import { useFileStore } from '@/store/save_file_store';
+import { useFileStore } from '@/store/file_store';
 
 const teamStore = useTeamStore();
 const fileStore = useFileStore();
@@ -16,20 +16,25 @@ const props = defineProps<{
   team: any
 }>()
 
+const team = ref()
+
+
 // values from form
 const title = ref("");
 const shortname = ref("");
 const userLeader = ref();
 const cabinet = ref("");
 
-const charterTeam = ref();
-const document = ref();
+const charterTeamImg = ref();
+// const document = ref();
 
 const description = ref("");
 
 // files
 const charterTeamFile = ref();
 const documentFile = ref();
+
+const charterTeamBase64 = ref()
 
 const oldUserId = ref(-1)
 
@@ -55,40 +60,57 @@ async function onTextChange(e: any) {
 }
 
 watch(
-  () => props.team, (value, previousValue) => {
+  () => team.value, (value, previousValue) => {
     fillForm()
-
-    if (props.team != null) {
-
-    }
-
   })
+
+watch(
+  () => props.team, (value, previousValue) => {
+    team.value = props.team
+    responseMsg.value = ""
+  })
+
 
 onBeforeMount(async () => {
   await getUsers()
+  team.value = props.team
 
 })
 
+// заполнить форму данными
 async function fillForm() {
 
-  
-  responseMsg.value = ""
-
-  if (props.team != null) {
-    let t = props.team
+  if (team.value != null) {
+    let t = team.value
 
     title.value = t.title
     shortname.value = t.shortname
     description.value = t.description
     cabinet.value = t.cabinet
 
+    // загрузить изображение
+
+    // if (team.value.charter_team != null) {
+    //   charterTeamImg.value = await fileStore.getImageBase64(team.value.charter_team)
+    //   // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
+
+    //   const ustavExtention = team.value.charter_team.split(".").pop()
+    //   charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
+
+    // } else { charterTeamBase64.value = "" }
+
+    // console.log(charterTeamBase64.value)
+
+
     // alert(t.functions [0].userFunctions[0].id)
     //если есть руководитель коллектива
     if (t.functions != null && t.functions[0].userFunctions != null) {
+
       let uF = t.functions[0].userFunctions[0].user
       optionSelect.value = { name: uF.fullname, email: uF.email, id: uF.id, data: uF.fullname + " " + uF.email }
       oldUserId.value = uF.id
     }
+
 
   } else { //если коллектив не задан , то очистить все поля
     title.value = shortname.value = description.value
@@ -135,6 +157,7 @@ async function createTeam() {
   // console.log(newTeam)
 }
 
+
 // обночить коллектив
 async function updateTeam() {
 
@@ -149,15 +172,23 @@ async function updateTeam() {
   const uT = new UpdateTeam()
   uT.cabinet = cabinet.value
   uT.description = description.value
-  uT.id = props.team.id
+  uT.id = team.value.id
   uT.oldUserId = oldUserId.value
   uT.newUserId = newUserId
   uT.shortname = shortname.value
   uT.title = title.value
+  uT.documentPath = team.value.document
+  uT.charterPath = team.value.charter_team
+  // files
+  uT.fileUstav = charterTeamFile.value
+  uT.fileDocument = documentFile.value
 
-  responseMsg.value = await teamStore.updateTeam(uT)
+  const res = await teamStore.updateTeam(uT)
+  responseMsg.value = res.responseMsg
 
-  // console.log(newTeam)
+  if (res.team != null) {
+    team.value = res.team.data
+  }
 }
 
 
@@ -166,40 +197,31 @@ async function handleFileUpload(event: any, document: boolean) {
   const file = event.target.files[0];
 
   // Get file size
-  const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
-  // Get file extension
-  const fileExtention = file.name.split(".").pop()
-  // Get file name
-  const fileName = file.name.split(".").shift()
-  // Check if file is an image
-  const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
-  // Print to console
-  console.log(fileSize, fileExtention, fileName, isImage);
+  // const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
+  // // Get file extension
+  // const fileExtention = file.name.split(".").pop()
+  // // Get file name
+  // const fileName = file.name.split(".").shift()
+  // // Check if file is an image
+  // const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
+  // // Print to console
+  // console.log(fileSize, fileExtention, fileName, isImage);
 
-  // const formData = new FormData()
-  // formData.append('file', file)
-  // let path = await fileStore.loadFile(formData)
-
-  // const formData = new FormData()
   if (!document)
     charterTeamFile.value = file
   else {
     documentFile.value = file
   }
-
-  // load file
-
 }
 
 
 // архивировать коллектив
 async function archiveTeam(id: number, isArchive: boolean) {
 
-
   let res = await teamStore.archiveTeam(id, isArchive)
   responseMsg.value = res.responseMsg
 
-  if (res.isOK) props.team.is_archive = isArchive
+  if (res.isOK) team.value.is_archive = isArchive
 }
 
 </script>
@@ -224,8 +246,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
             <sup v-else-if="team != null" class="text-bg-success"> (действующий)</sup>
 
           </h1>
-          <button type="button" class=" btn-custom-secondary btn-close" data-bs-dismiss="modal"
-            aria-label="Close"></button>
+          <div class=" btn-close" data-bs-dismiss="modal" aria-label="Close"></div>
         </div>
         <div class="modal-body">
           <!-- Это вся обертка -->
@@ -235,7 +256,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
               Прежде чем создать в системе новый коллектив, нужно
               утвердить его приказом!</p>
 
-            <div v-if="responseMsg" class="alert alert-primary" role="alert">
+            <div v-if="responseMsg" class="alert alert-warning" role="alert">
               {{ responseMsg }}
             </div>
 
@@ -255,15 +276,17 @@ async function archiveTeam(id: number, isArchive: boolean) {
 
                   <div class="mb-2">
                     <label for="formFile" class="form-label">загрузить устав</label>
-                    <input class="form-control" type="file" id="formFile" @change="(e)=>handleFileUpload(e, false)">
+                    <input class="form-control" type="file" id="formFile" @change="(e) => handleFileUpload(e, false)">
+                    <p v-if="isEditTeam && team != null"> {{ team.charter_team }}</p>
+                    <img v-if="isEditTeam" :src="charterTeamBase64" style="width: 100px; height: 100px;" alt="Устав">
                   </div>
 
                   <div class="mb-2">
                     <label for="formFile1" class="form-label">загрузить документ(ы)</label>
-                    <input class="form-control" type="file" id="formFile1"  @change="(e)=>handleFileUpload(e, true)">
+                    <input class="form-control" type="file" id="formFile1" @change="(e) => handleFileUpload(e, true)">
+                    <p v-if="isEditTeam && team != null"> {{ team.document }}</p>
                   </div>
 
-                  <!-- <input type="text" placeholder="ФИО руководителя" v-model="userLeader" required> -->
                   <textarea placeholder="Опишите проект" v-model="description" required></textarea>
                 </div>
 
@@ -302,14 +325,24 @@ async function archiveTeam(id: number, isArchive: boolean) {
 <style lang="scss" >
 @import 'vue-select/dist/vue-select.css';
 
+.btn-close {
+  &:hover {
+    border: 1px solid  var(--main-color-hover);
+    transition: 0.3s;
+  }
+}
+
 
 .wrapper-team__create {
+
   .form-team__create {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     border-radius: 15px;
     border: var(--main-border-card);
+
+
 
     .fuck-off-btn {
       display: flex;
@@ -344,7 +377,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
     }
 
     .create-wrapper-img {
-      width: 30%;
+      width: 20%;
       border-radius: 0 1rem 1rem 0;
       background-color: #D9D9D9;
       background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");

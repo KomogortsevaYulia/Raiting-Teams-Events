@@ -33,6 +33,10 @@ backup.sql файл в папке server
 ## Running the app
 
 
+## Документация
+Swagger - документированые api-шки, http://localhost:3000/documentation
+
+
 
 ```bash
 # watch mode

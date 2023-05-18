@@ -20,7 +20,7 @@ export const useChartStore = defineStore("echarts", () => {
 
             let event = events[i]
             if (event.type != null && event.type.id == Type.INSIDE) inner += 1
-            else outer += 1
+            else if (event.type != null && event.type.id == Type.OUTSIDE) outer += 1
         }
 
 
@@ -62,59 +62,40 @@ export const useChartStore = defineStore("echarts", () => {
     }
 
     async function countTeamsEvents(teams: { name: string, id: number }[], dateStart: Date, dateEnd: Date,
-        level: Level,
-        type: Type, count = 200) {
+        level: number,
+        type: number, count = 10) {
 
         let dataTopTm: number[] = []
         let labelsTopTm: string[] = []
 
-        let c = 0 //just counter
-        teams.forEach(async (team) => {
+        let data: { data: number, label: string }[] = []
 
+        // get count events from teams
+        for (let i = 0; i < teams.length; i++) {
+            const team = teams[i]
 
-            if (c >= count) return
-            c++
+            let events = await eventStore.getEventsViaJournalsByTeam(team.id, dateStart, dateEnd, type, level)
 
-            let countEvents = 0
-            let data = await journalStore.fetchJournals(team.id)
+            data.push({ data: events.data[1], label: team.name })
+        }
 
-            //получить всех найденне journal
-            let journals = data[0]
+        // sort data from min to max
+        data.sort(function(a,b){return a.data - b.data})
 
-            let arrayData = []
+        // prepare data top count teams for chart
+        for (let i = 1; i < count; i++) {
 
+            let ind = data.length - i
 
-            for (let i = 0; i < journals.length; i++) {
-                let journal = journals[i]
-
-
-                let eventId: number = journal.event.id
-
-
-                let event = await eventStore.fetchEventById(eventId,
-                    dateStart, dateEnd,
-                    level,
-                    type)
-
-               
-
-                if (event ?? false) {
-                    arrayData[i] = event
-                    countEvents++
-
-                }
-            }
-
-           
-            dataTopTm.push(countEvents)
-            labelsTopTm.push(team.name)
-
-            // alert("dataTopTm " + dataTopTm + "  labelsTopTm " + labelsTopTm)
-        })
-
+            if (data.length - i > 0) {
+                dataTopTm.push(data[ind].data)
+                labelsTopTm.push(data[ind].label)
+            }else break
+        }
 
         return { dataTopTeams: dataTopTm, labelsTopTeams: labelsTopTm }
     }
+
 
     return {
         countEventsInnerOuter,

@@ -40,6 +40,7 @@ export class EventsController {
   }
 
 
+
   @Post()
   @ApiOperation({ summary: "Создать новое мероприятие" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })

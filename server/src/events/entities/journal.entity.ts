@@ -61,18 +61,15 @@ export class Journal {
 
     @ManyToOne((type) => Event, (event) => event.id)
     @JoinColumn([{ name: "event_id" }])
-    @Column({nullable:true})
-    event: number
+    event: Event
     
     @ManyToOne((type) => Team, (team) => team.id)
     @JoinColumn([{ name: "team_id" }])
-    @Column({nullable:true})
-    team: number
+    team: Team
 
     @ManyToOne((type) => User, (user) => user.id)
     @JoinColumn([{ name: "user_id" }])
-    @Column({nullable:true})
-    user: number
+    user: User
 
     @ApiProperty()
     @Column({nullable:true})
