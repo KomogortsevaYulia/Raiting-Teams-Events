@@ -24,7 +24,7 @@ export const useUserStore = defineStore("user", () => {
     }
 
     async function getUsersFunction(id: number) {
-        return await axios.get("api/users/" + id)
+        return await axios.get("/api/users/functions/" + id)
     }
 
     return {

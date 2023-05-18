@@ -164,4 +164,13 @@ export class UsersController {
   }
   //user functions---------------------------------------------------------------
 
+
+  //user events---------------------------------------------------------------
+  @Get('event/:id')
+  @ApiOperation({ summary: "Получить список мероприятий на которые зарегистрировался пользователь" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  getEvents(@Param("id") id:number){
+    return
+  }
 }

@@ -1,95 +1,86 @@
 <script setup lang="ts">
-import { usePermissionsStore } from '@/store/permissions_store';
-import { ref, onBeforeMount } from 'vue';
-import { useRoute } from 'vue-router';
+import {usePermissionsStore} from '@/store/permissions_store';
+import {ref, onBeforeMount} from 'vue';
+import {useRoute} from 'vue-router';
 import {useUserStore} from "@/store/user_store";
+import {useJournalStore} from "@/store/journals_store"
+import {forEach} from "lodash";
 
 
 const selectedColor = ref('blue');
-const attrs = ref([
-  {
-    key: 'test',
-    highlight: true,
-    dates: { start: new Date(2019, 3, 15), end: new Date(2019, 3, 19) },
-  }
-]);
+
 
 const route = useRoute();
 const username = route.params.username;
-console.log(username);
 
 
 const user = ref()
 const functions = ref()
+const dateEvent = ref()
+let dates
 onBeforeMount(async () => {
-  await getInfoUser()
-})
-
-async function getInfoUser() {
   user.value = await usePermissionsStore().fetchUser()
+  functions.value = await useUserStore().getUsersFunction(3)
+  dateEvent.value = await useJournalStore().fetchJournalsByUserId(3)
+  attrs.value[0].dates = dateEvent.value[0].map((x:any)=>x.dateParticipation)
+})
+const attrs = ref([
+  {
+    highlight: {
+      color: 'purple',
+      fillMode: 'solid',
+      contentClass: 'italic',
+    },
+    dates: null,
 }
-async function getFunction(){
-  functions.value = await useUserStore().getUsersFunction(1)
-}
-
+]);
 </script>
 <template>
   <div class="row">
-  <div class="avatar col">
-<!--сделать -->
-    <div class="row-auto ms-5 ">
-      <div class="col"> <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="d-flex" /> </div>
-      <div class="col mt-3"> <img class="icon" width="150" height="150" :src="user.image" alt="icon"  /></div>
-    </div>
-<div class="row">
-  <p class="FIO row-auto">{{ user.fullname }}</p>
-  <p class="row-auto"> {{ user.institute }}</p>
-  <p class="row-auto">{{ user.course }} курс</p>
-  <p class="row-auto">{{ user.education_group }}</p>
-</div>
-    <div class="row">
-      <h3 class="active">Коллективы</h3>
-<!--      <div class="row">-->
-<!--        <p class="col">Народный театр «Предместье</p>-->
-<!--        <p class="col">Участник</p>-->
-<!--      </div>-->
-<!--      <div class="row">-->
-<!--        <p class="col">Волейбол юноши</p>-->
-<!--        <p class="col">Участник</p>-->
-<!--      </div>-->
-<!--      <div class="row">-->
-<!--        <p class="col">Студенческие отряды</p>-->
-<!--        <p class="col">Участник</p>-->
-<!--      </div>-->
-      <div v-for="(item, index) in functions.value" :key="index" class="row">
-        <p class="col">{{item.}}</p>
-        <p class="col">Народный театр «Предместье</p>
+    <div class="avatar col">
+      <div class="row-auto ms-5 ">
+        <div class="col">
+          <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right" class="d-flex"/>
+        </div>
+        <div class="col mt-3"><img class="icon" width="150" height="150" :src=user.image alt="icon"/></div>
+      </div>
+      <div class="row">
+        <p class="FIO row-auto">{{ user.fullname }}</p>
+        <p class="row-auto"> {{ user.institute }}</p>
+        <p class="row-auto">{{ user.course }} курс</p>
+        <p class="row-auto">{{ user.education_group }}</p>
+      </div>
+      <div class="row">
+        <h3 class="active">Коллективы</h3>
+        <div class="row d-flex" v-for="(item, index) in functions.data" :key="index">
+          <p class="col d-flex justify-content-center align-items-center">{{ item.function.team.title }}</p>
+          <p class="col d-flex justify-content-center align-items-center">{{ item.function.title }}</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="col">
-    <div class="row">
-      <div class="information rounded pb-2 p-3">
-        <h2 class="ps-3">Расписание</h2>
-        <VCalendar expanded />
+    <div class="col">
+      <div class="row">
+        <div class="information rounded pb-2 p-3">
+          <h2 class="ps-3">Расписание</h2>
+          <VCalendar :attributes='attrs' expanded/>
+        </div>
       </div>
-    </div>
-    <div class="row mt-3">
-      <div class="information rounded">
-        <h2 class="p-3">Достижения</h2>
-        <table class="table">
-          <thead>
+      <div class="row mt-3">
+        <div class="information rounded">
+          <h2 class="p-3">Достижения</h2>
+          <table class="table">
+            <thead>
             <tr>
               <th scope="col">№</th>
               <th scope="col">Название</th>
               <th scope="col">Дата</th>
-            <th scope="col">Мероприятие</th>
-            <th scope="col">Направление</th>
-            <th scope="col">Учитывается в рейтинге</th>
-          </tr>
-          </thead>
-          <tbody>
+              <th scope="col">Мероприятие</th>
+              <th scope="col">Направление</th>
+              <th scope="col">Учитывается в рейтинге</th>
+            </tr>
+            </thead>
+            <tbody>
             <tr>
               <th scope="row">1</th>
               <td>Диплом за 1 место в Аниме-квизе</td>
@@ -114,11 +105,11 @@ async function getFunction(){
               <td>ОД</td>
               <td>Нет</td>
             </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -159,6 +150,9 @@ async function getFunction(){
 
 .vc-header .vc-title {
   color: #fd524c;
+}
+.vc-highlight-content-solid{
+  color: black;
 }
 
 button {
