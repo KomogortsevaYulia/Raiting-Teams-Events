@@ -49,7 +49,7 @@ export class EventsService {
       .createQueryBuilder("events")
       .select(["events.title", "events.images", "events.tags" , "events.description", "events.dateStart"])
       .where("events.tags like :tags" , { tags: `%${tags}%`})
-      .getMany()
+
    
   }
 
@@ -156,9 +156,9 @@ export class EventsService {
       .andWhere("journals.event_id = :event_id", { event_id: event_id }) 
       .andWhere("journals.is_registered = true") : buildQuery
 
-        //title 
-    buildQuery = title != null ? buildQuery
-      .andWhere("events.title like :title" , { title: `%${title}%`}) : buildQuery
+    //     //title 
+    // buildQuery = title != null ? buildQuery
+    //   .andWhere("events.title like :title" , { title: `%${title}%`}) : buildQuery
    
     // buildQuery = team != null ? buildQuery
     //   .where("journals.team_id = :team", { team: team }) : buildQuery
@@ -265,7 +265,7 @@ export class EventsService {
    return await this.journalsRepository
     .createQueryBuilder("journals")
     .update()
-    .set({ is_registered: false})
+    .set({ is_registered: true})
     .where("journals.event_id = :event_id", {event_id: event_id})
     .andWhere("journals.user_id = :user_id", {user_id: user_id})
     .execute()

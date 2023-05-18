@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import {IsDate, IsNotEmpty, IsNumber, Length } from 'class-validator'
+import {IsDate, IsDateString, IsNotEmpty, IsNumber, Length } from 'class-validator'
 import { Dictionary } from 'src/general/entities/dictionary.entity'
 export class CreateEventDto {
     @IsNotEmpty({ message: 'Поле пустое' })
@@ -12,17 +12,17 @@ export class CreateEventDto {
     })
     description: string
     
-    @IsDate()
+    @IsDateString()
     dateStart: Date
 
-    @IsDate()
+    @IsDateString()
     dateEnd: Date
     // functions:Function[]
 
-    @IsDate()
+    @IsDateString()
     dateStartRegistration: Date
     
-    @IsDate()
+    @IsDateString()
     dateEndRegistration: Date
 
   

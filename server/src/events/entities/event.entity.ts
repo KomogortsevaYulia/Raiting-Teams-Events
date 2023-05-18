@@ -7,6 +7,8 @@ import { Dictionary } from "../../general/entities/dictionary.entity";
 @Entity('events')
 export class Event {
 
+    //26 энтити
+
     @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number
@@ -58,18 +60,18 @@ export class Event {
     @Column("simple-array", {nullable: true})
     images: string[]
 
-    // @ApiProperty()
-    // @Column("simple-array", {nullable: true})
-    // event_place: string // место проведения
-
     @ApiProperty()
-    @Column({
-        type: "enum",
-        enum: ["Коворгинг Г-2", "Конференц-зал Технопарк", "Коворкинг Студотрядов", "Актовый зал", "Спортзал"],
-        default: null,
-        nullable: true
-    })
-    location: string // целевая аудитория
+    @Column({nullable: true})
+    event_place: string // место проведения
+
+    // @ApiProperty()
+    // @Column({
+    //     type: "enum",
+    //     enum: ["Коворгинг Г-2", "Конференц-зал Технопарк", "Коворкинг Студотрядов", "Актовый зал", "Спортзал"],
+    //     default: null,
+    //     nullable: true
+    // })
+    // location: string // целевая аудитория
 
    
     @ApiProperty()
@@ -86,13 +88,13 @@ export class Event {
     count_people: number // плановое кол-во участников
 
 
-    // @ApiProperty()
-    // @Column('int',{ nullable: true })
-    // team_size: number // плановое кол-во участников
-
     @ApiProperty()
-    @Column({ nullable: true })
-    target_audience: string // целевая аудитория 
+    @Column('int',{ nullable: true })
+    team_size: number // плановое кол-во участников
+
+    // @ApiProperty()
+    // @Column({ nullable: true })
+    // target_audience: string // целевая аудитория 
 
     
     @ApiProperty()
@@ -107,9 +109,9 @@ export class Event {
     @Column({ nullable: true })
     email: string // почта
 
-    // @ApiProperty()
-    // @Column({ nullable: true })
-    // event_goal: string // почта
+    @ApiProperty()
+    @Column({ nullable: true })
+    event_goal: string // почта
 
     @ApiProperty()
     @Column("simple-array",{ nullable: true })
@@ -119,7 +121,7 @@ export class Event {
 
 
     @OneToMany((type)=>Journal, (journal)=>journal.event)
-    journal:Journal[] // журнал
+    45:Journal[] // журнал
 
     
     @ApiProperty()
