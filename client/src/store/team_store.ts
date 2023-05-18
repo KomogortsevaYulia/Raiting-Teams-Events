@@ -40,34 +40,21 @@ export const useTeamStore = defineStore("teams", () => {
     async function fetchTeam(id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
-        console.log(data)
+        // console.log(data)
         return data
     }
     async function fetchRequisition(user_id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + user_id + '/requisition')
         const data = res.data
-    
+
         return data
-        
+
     }
 
     async function createTeam(title: string, description: string,
-        shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
+                              shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
 
         let responseMsg = "сохранено"
-
-
-
-        // const data = {
-
-        //     title: title,
-        //     description: description,
-        //     shortname: shortname,
-        //     userID: userId,
-        //     fileUstav: fileUstav
-        // }
-
-        // alert( fileUstav.name.split(".").shift())
 
         const formData = new FormData();
         formData.append('title', title);
@@ -75,12 +62,9 @@ export const useTeamStore = defineStore("teams", () => {
         formData.append('shortname', shortname);
         formData.append('userID', userId.toString());
         formData.append('cabinet', cabinet);
-        formData.append('file', fileUstav);
-        // formData.append('document', fileDocument);
 
-
-
-
+        formData.append('files', fileUstav, `ustav.${fileUstav.name.split(".").pop()}`);
+        formData.append('files', fileDocument, `document.${fileDocument.name.split(".").pop()}`);
 
         const config = {
             headers: {
@@ -88,15 +72,13 @@ export const useTeamStore = defineStore("teams", () => {
             }
         }
 
-        // const res = await axios.post('api/uploads', formData, config);
-
-        // alert("res " + res.data)
 
         //create team
         await axios.post("api/teams", formData, config)
             .catch((err) => {
                 if (err.response) {
-                    responseMsg = err.response.data.message[0]
+                    responseMsg =err.response.data.message
+
                 }
             })
 
@@ -109,23 +91,41 @@ export const useTeamStore = defineStore("teams", () => {
 
         let responseMsg = "сохранено"
 
-        await axios.put("api/teams/" + uT.id, {
-            title: uT.title,
-            description: uT.description,
-            shortname: uT.shortname,
-            cabinet: uT.cabinet,
-            oldLeaderId: uT.oldUserId,
-            newLeaderId: uT.newUserId,
-            document: "dcf",
-            charterTeam: "заглушка",
-        })
+        const formData = new FormData();
+        formData.append('title', uT.title);
+        formData.append('description', uT.description);
+        formData.append('shortname', uT.shortname);
+        formData.append('cabinet', uT.cabinet);
+        // paths to files
+        if (uT.charterPath.length > 0)
+            formData.append('charterTeam', uT.charterPath);
+        if (uT.documentPath.length > 0)
+            formData.append('document', uT.documentPath);
+
+        formData.append('oldLeaderId', uT.oldUserId.toString());
+        formData.append('newLeaderId', uT.newUserId.toString());
+
+        if (uT.fileUstav != null)
+            formData.append('files', uT.fileUstav, `ustav.${uT.fileUstav.name.split(".").pop()}`);
+
+        if (uT.fileDocument != null)
+            formData.append('files', uT.fileDocument, `document.${uT.fileDocument.name.split(".").pop()}`);
+
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+
+        const team = await axios.put("api/teams/" + uT.id, formData, config)
             .catch((err) => {
                 if (err.response) {
-                    responseMsg = err.response.data.message[0]
+                    responseMsg = err.response.data.message
+                    //    console.log(err.response.data.message)
                 }
             })
 
-        return responseMsg
+        return { team, responseMsg }
 
 
     }
@@ -148,9 +148,24 @@ export const useTeamStore = defineStore("teams", () => {
         return { responseMsg, isOK }
     }
 
+    //fetch teams by
+    async function fetchTeamsSearch(title = "", description = "", tags = ""): Promise<any> {
+
+        //find by all txt data in table
+        const res = await axios.get('/api/teams', {
+            params: {
+                title: title,
+                description: description,
+                tags: tags
+            }
+        })
+
+        return res.data
+    }
+
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия
     function setLayout(res: any) {
-        this.layout = res;
+         this.layout = res;
     }
 
     const menu_items = [
@@ -182,6 +197,7 @@ export const useTeamStore = defineStore("teams", () => {
         updateTeam,
         archiveTeam,
         fetchRequisition,
+        fetchTeamsSearch,
 
         layout,
         menu_items
