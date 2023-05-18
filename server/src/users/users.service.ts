@@ -61,27 +61,25 @@ export class UsersService {
   @HttpCode(400)
   async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
 
-    // if(isNaN(id)){
-    //   throw new HttpException("такого юзера не существует " + id, 400)
-    // }
+    if(isNaN(id)){
+      throw new HttpException("такого юзера не существует " + id, 400)
+    }
 
-    const userExist = await this.usersRepository
-      .createQueryBuilder("users")
-      .leftJoin("users.user_function", "user_function")
-      .addSelect("user_function")
+    const userExist = await this.userFunctionsRepository
+      .createQueryBuilder("user_function")
       .leftJoin("user_function.function", "functions")
       .addSelect("functions")
       .leftJoinAndSelect("functions.team", "teams")
       .addSelect("teams")
         .where("user_function.user = :id", { id })
-      .getOne();
+      .getMany();
 
-    // console.log("userExist " + userExist)
     if (!userExist) {
       throw new HttpException("такого юзера не существует ", 400)
     }
-//
     return userExist
+  }
+  async getEvents(id:number){
 
   }
 

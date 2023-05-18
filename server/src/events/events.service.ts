@@ -103,9 +103,19 @@ export class EventsService {
 
     return buildQuery.getManyAndCount()
   }
+  async findAllJournalByUserId(id: number) {
+    let buildQuery = this.journalsRepository
+        .createQueryBuilder("journals")
+        .leftJoin("journals.team", "team")
+        .addSelect("team")
+        .leftJoin("journals.event", "event")
+        .addSelect("event")
+    buildQuery = id !=null ? buildQuery
+        .andWhere("journals.user_id = :id", { id:id}) : buildQuery
+    return buildQuery.getManyAndCount()
+  }
 
   // journals-------------------------------------------------------------------------
-
 
 
   async create(createEventDto: CreateEventDto): Promise<Event> {

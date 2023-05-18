@@ -40,7 +40,6 @@ export class EventsController {
   }
 
 
-
   @Post()
   @ApiOperation({ summary: "Создать новое мероприятие" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
@@ -68,6 +67,14 @@ export class EventsController {
   findAllJournals(@Query() params) {
     return this.eventsService.findAllJournals(params.team_id);
   }
+  @Get('journal/user/:id')
+  @ApiOperation({ summary: "Получение списка мероприятий из журнала по id пользователя" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findAllJournalsByUserId(@Param("id") id:number){
+    return this.eventsService.findAllJournalByUserId(id)
+  }
+
 
   @ApiOperation({ summary: "Получение мероприятия" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
