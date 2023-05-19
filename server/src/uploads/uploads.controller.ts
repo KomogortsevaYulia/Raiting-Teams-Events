@@ -11,8 +11,8 @@ import { FileSizeValidationPipe } from './validation/file.validation.pipe ';
 @Controller('uploads')
 export class UploadsController {
   constructor(
-      private readonly uploadsService: UploadsService,
-      private readonly eventsService: EventsService) { }
+    private readonly uploadsService: UploadsService,
+    private readonly eventsService: EventsService) { }
 
   @Post()
   @ApiOperation({ summary: "Сохранение файла на сервере" })
@@ -20,10 +20,10 @@ export class UploadsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile(
-      new FileSizeValidationPipe()
-
+    new FileSizeValidationPipe()
+   
   ) file: Express.Multer.File) {
-
+   
     let path = await this.uploadsService.uploadFile(file)
 
     return path
@@ -90,7 +90,7 @@ export class UploadsController {
     let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
 
     let events = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dStart, dEnd)
-
+   
     await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level,direction: null, dateStart: dStart, dateEnd: dEnd })
 
   }
