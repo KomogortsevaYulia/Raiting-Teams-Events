@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import WIP from '@/components/WIP.vue'
 import Participation from '@/components/Participation.vue'
-import { onBeforeMount, ref, reactive } from 'vue'
+import { onBeforeMount, ref } from 'vue'
+import TeamsForm from './TeamsForm.vue'
 import Ankets from '@/views/Questionnaire.vue'
 
 import { useTeamStore } from "../store/team_store"
@@ -14,7 +15,7 @@ const idTeam = Number(route.params.id)
 
 const TeamStore = useTeamStore()
 const show = ref(true)
-const currentPage = ref(0)
+const currentPage = ref(1)
 
 const data = ref()
 const team = ref()
@@ -23,8 +24,6 @@ const req = ref()
 const isEditMode = ref(false)
 const user = ref()
 const func = ref()
-
-const image = ref<File>()
 
 onBeforeMount(async () => {
   fetchCurrentTeams(),
@@ -39,7 +38,14 @@ onBeforeMount(async () => {
     }
 })
 
+// вытащить коллективы из бд 
+// async function fetchTeams() {
+//   data.value = await useTeamStore().fetchTeams()
+// }
+// вытащить коллективы из бд и отобразить их
+
 async function fetchTeam() {
+
   team.value = await TeamStore.fetchTeam(idTeam)
 }
 
@@ -52,20 +58,20 @@ function setCurrentPage(page: number) {
 }
 
 function nextPage() {
-  if (currentPage.value + 1 < data.value.image.length) {
+  if (currentPage.value + 1 < 4) {
     currentPage.value++
   }
   else {
-    currentPage.value = 0
+    currentPage.value = 1
   }
 }
 
 function previousPage() {
-  if (currentPage.value - 1 >= 0) {
+  if (currentPage.value - 1 > 0) {
     currentPage.value--
   }
   else {
-    currentPage.value = data.value.image.length - 1
+    currentPage.value = 3
   }
 }
 
@@ -76,22 +82,6 @@ async function fetchCurrentTeams() {
       data.value = respose.data
     })
 }
-
-function uploadImage(e:any) {
-  image.value = e.target.files[0]
-}
-
-async function addImage() {
-  let formData = new FormData()
-  formData.append('file', image.value!)
-
-  image.value = undefined
-  
-  await TeamStore.addImage(idTeam, formData)
-  await fetchTeam()
-  await fetchCurrentTeams()
-}
-
 
 ////////////////////////////////////////////
 const selectedItem = ref(0);
@@ -177,22 +167,26 @@ const newsList = [
               {{ data.description }}
             </div>
             <div class="column-right">
-              <div class="image-container" >
-                <div v-for="(item, index) in data.image" :key="index">
-                  <img :src="item" v-if="currentPage === index"/>
+              <div class="image-container">
+                <img v-if="currentPage === 1"
+                  src="https://sun4-12.userapi.com/impg/7cihnmozwdZo5B63fTDkT2T3A7wDFjvi1BSlzQ/n_74trN1o-Y.jpg?size=2560x1707&quality=95&sign=1aa84293a83c6337204aa80f02b53440&type=album">
+                <img v-if="currentPage === 2"
+                  src="https://sun9-58.userapi.com/impg/VXN1cqTuomn5r9s09OBiIJvGlBH-5r3wPDXkHA/Jpe2z5gYSw4.jpg?size=2560x1707&quality=95&sign=3e817f4cc607e03118139bf5b88a4319&type=album">
+                <img v-if="currentPage === 3"
+                  src="https://sun9-54.userapi.com/impg/uU55dZtENJqdqiiJw4aCdVFwmqjhnaXTkDoAwg/-nAHiUtXYOY.jpg?size=2560x1707&quality=95&sign=2b5ab35fb1a53a17615833188fc8d519&type=album">
+                <div class="page-arrows">
+                  <div class="arrow-left" @click="previousPage">
+                    <i class="fa fa-angle-left"></i>
+                  </div>
+                  <div class="page-buttons">
+                    <button @click="setCurrentPage(1)" :class="{ active: currentPage === 1 }"></button>
+                    <button @click="setCurrentPage(2)" :class="{ active: currentPage === 2 }"></button>
+                    <button @click="setCurrentPage(3)" :class="{ active: currentPage === 3 }"></button>
+                  </div>
+                  <div class="arrow-right" @click="nextPage">
+                    <i class="fa fa-angle-right"></i>
+                  </div>
                 </div>
-              </div>
-              <div class="page-arrows" v-iv="data.image.length > 0">
-                <div class="arrow-left" @click="previousPage">
-                  <i class="fa fa-angle-left"></i>
-                </div>
-                <div class="arrow-right" @click="nextPage">
-                  <i class="fa fa-angle-right"></i>
-                </div>
-              </div>
-              <div class="add-container">
-                <input ref="image" class="form-control" type="file" @change="uploadImage">
-                <button @click="addImage()">Добавить изображение</button>
               </div>
             </div>
           </div>
@@ -225,7 +219,7 @@ const newsList = [
       </div>
 
       <div v-if="(selectedItem === 4)">
-        <Ankets /> 
+        <Ankets />
         <div v-for="item in req">
           <div class="about">
             <div class="member-card py-2">
@@ -265,6 +259,7 @@ const newsList = [
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
+
 
 .member-card {
   width: 100%;
@@ -583,39 +578,22 @@ const newsList = [
       }
 
       .column-right {
-        max-width: fill-available;
+        flex-basis: 40%;
         padding: 0 10px;
-
-        .add-container {
-          margin-top: 20px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-
-          button {
-            margin-top: 10px;
-          }
-        }
-
 
         .image-container {
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          width: 300px;
-          height: 200px;
-          background-size: cover;
-          overflow: hidden;
+          align-items: center;
+        }
+
+        img {
           border-radius: 25px;
-          
-          img {
-            max-width:100%;
-            height: auto;
-          }
+          margin-bottom: 30px;
+          width: 70%;
         }
 
         .page-arrows {
-          padding-top: 15px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -626,8 +604,8 @@ const newsList = [
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 20px;
-          height: 20px;
+          width: 30px;
+          height: 30px;
           margin: 0 10px;
           border-radius: 50%;
           background-color: #ccc;
@@ -649,8 +627,8 @@ const newsList = [
           border: none;
           border-radius: 10px;
           margin: 0 5px;
-          width: 1px;
-          height: 1px;
+          width: 10px;
+          height: 10px;
           background-color: #ccc;
         }
 

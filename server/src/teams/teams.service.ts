@@ -2,12 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
-import { UsersService } from '../users/users.service';
-import { SearchTeamDto } from './dto/search-team.dto';
+import { UsersService } from 'src/users/users.service';
 import { Requisitions } from './entities/requisition.entity';
 
 
@@ -29,23 +28,20 @@ export class TeamsService {
     private readonly usersService: UsersService
   ) { }
 
-  async findOne(id: number) {
-    let res = await this.teamsRepository.findOneBy({ id: id })
-
-    return res;
+  findOne(id: number) {
+    return this.teamsRepository.findOneBy({ id: id });
   }
 
 
-// Обновить коллектив
+
   async update(id: number, updateTeamDto: UpdateTeamDto) {
 
     let team = await this.teamsRepository.save({
       id,
-      ...updateTeamDto,
-      charter_team: updateTeamDto.charterTeam,
+      ...updateTeamDto
     })
 
-
+    
     // удалить прошлого лидера
     if (updateTeamDto.oldLeaderId != null && updateTeamDto.newLeaderId != null) {
       await this.usersService.removeLeader(team.id, updateTeamDto.oldLeaderId)
@@ -54,33 +50,19 @@ export class TeamsService {
       let newUserFunction = await this.usersService.assignLeader(team, updateTeamDto.newLeaderId)
 
     }
-
-    return team
   }
 
 
-  //создать коллектив, с учетом, что есь минимум 1 лидер
-  async create(createTeamDto: CreateTeamDto): Promise<Team> {
 
-    let team = await this.teamsRepository.save({
-      ...createTeamDto,
-      charter_team: createTeamDto.charterTeam,
-      image: [],
-      tags: [],
-      type_team: "teams",
-      creation_date: new Date()
-    })
-
-    await this.usersService.assignLeader(team, createTeamDto.userID)
-
-    return team;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} team`;
+  // }
 
   // get all teams with leadeaders
-  async findAll(params: SearchTeamDto): Promise<Team[]> {
+  async findAll(): Promise<Team[]> {
     const head = "Руководитель"
 
-    let query = await this.teamsRepository
+    return this.teamsRepository
       .createQueryBuilder("teams")
 
       .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description",
@@ -95,52 +77,10 @@ export class TeamsService {
       .leftJoinAndSelect("user_functions.user", "user")
       // .addSelect("user.title_role")
       .orderBy("teams.id", "DESC")
-
-      query = await this.filterTeam(params, query)
-
-      let team = await query.getMany()
-      return team
+      .getMany()
   }
 
 
-
-   // по умному как то переделать потом!!!
-   async filterTeam(params: SearchTeamDto, q: SelectQueryBuilder<Team>) {
-
-    let query = q
-
-    // let buildSQL = (columnName, value)=>{
-    //   query.andWhere(`LOWER(${columnName}) like :value`, {value: `%${params.title}%`})
-    // }
-
-    //если у нас все параметры то через 'или' все ищем
-    if (params.title && params.description && params.tags) {
-      
-      //делаем все столбцы в нижнем регистре и ищем по всем столбцам через предлог "или"
-      query = query.andWhere(
-        "(LOWER(teams.title) like :title"
-        + " or LOWER(teams.description) like :description"
-        + " or LOWER(teams.tags) like :tags)", {
-        title: `%${params.title}%`,
-        description: `%${params.description}%`,
-        tags: `%${params.tags}%`
-      })
-    } else { //если не все параметры, то ищем через 'и'
-     
-      //if title (если у нас есть тайтл то ищем по нему)
-      query = params.title ? query.andWhere("LOWER(teams.title) like :title", { title: `%${params.title}%` }) : query
-      //if description
-      query = params.description ? query.andWhere("LOWER(teams.description) like :description", { description: `%${params.description}%` }) : query
-      //if description
-      query = params.tags ? query.andWhere("LOWER(teams.tags) like :tags", { tags: `%${params.tags}%` }) : query
-    }
-
-
-    return query
-  }
-
-
-  
   // get all teams of specific direction for statistic
   async findAllTeamsOfDirection(type_team = "teams", id_parent = -1): Promise<[Team[], number]> {
 
@@ -181,9 +121,8 @@ export class TeamsService {
   async userRequisition(user_id: number): Promise<Requisitions[]> {
     const users = await this.requisitionsRepository
     .createQueryBuilder("requisition")
-    .select(["requisition.date_create", "requisition.date_update","requisition.status"])
-    .leftJoinAndSelect("requisition.user_id","user")
-    .where("user.id = :user_id", { user_id })
+    .select(["requisition.fullname","requisition.date_create", "requisition.date_update","requisition.status"])
+    .where("requisition.user_id = :user_id", { user_id })
     .getMany()
 
     return users;
@@ -210,21 +149,29 @@ export class TeamsService {
   }
   
 
+  //создать команду, с учетом, что есь минимум 1 лидер
+  async create(createTeamDto: CreateTeamDto): Promise<Team> {
+
+    let team = await this.teamsRepository.save({
+      ...createTeamDto,
+      charter_team:createTeamDto.charterTeam,
+      image: [],
+      tags: [],
+      type_team: "teams",
+      creation_date: new Date()
+    })
+
+    await this.usersService.assignLeader(team, createTeamDto.userID)
+
+    return team;
+  }
+
   //архивировать или наоборот
   async changeArchiveTeam(id: number, isArchive: boolean) {
 
     return await this.teamsRepository.update(id, { is_archive: isArchive })
   }
 
-  async addImage(id: number, filePath: string): Promise<Team> {
-      let team = await this.findOne(id)
-      team.image.push(filePath)
-
-      return await this.teamsRepository.save({
-        id: team.id,
-        image: team.image
-      })
-  }
 }
 
 

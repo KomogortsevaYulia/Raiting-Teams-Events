@@ -37,23 +37,6 @@ export const useTeamStore = defineStore("teams", () => {
                 // Умные действия
             })
     }
-
-    async function addImage(id: number, formData: FormData) {
-        let responseMsg = "сохранено"
-        
-        const res = await axios.post(`/api/teams/${id}/image`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }).catch((err) => {
-            if (err.response) {
-                responseMsg = err.response.data.message[0]
-            }
-        })
-
-        return responseMsg
-    }
-    
     async function fetchTeam(id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
@@ -63,29 +46,13 @@ export const useTeamStore = defineStore("teams", () => {
     async function fetchRequisition(user_id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + user_id + '/requisition')
         const data = res.data
-    
+
         return data
-            async function addImage(id: number, formData: FormData) {
-        let responseMsg = "сохранено"
-        
-        const res = await axios.post(`/api/teams/${id}/image`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }).catch((err) => {
-            if (err.response) {
-                responseMsg = err.response.data.message[0]
-            }
-        })
-
-        return responseMsg
-    }
-
 
     }
 
     async function createTeam(title: string, description: string,
-        shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
+                              shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
 
         let responseMsg = "сохранено"
 
@@ -198,7 +165,7 @@ export const useTeamStore = defineStore("teams", () => {
 
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия
     function setLayout(res: any) {
-        this.layout = res;
+         this.layout = res;
     }
 
     const menu_items = [
@@ -231,7 +198,6 @@ export const useTeamStore = defineStore("teams", () => {
         archiveTeam,
         fetchRequisition,
         fetchTeamsSearch,
-        addImage,
 
         layout,
         menu_items
