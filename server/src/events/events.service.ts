@@ -103,6 +103,7 @@ export class EventsService {
 
     return buildQuery.getManyAndCount()
   }
+
   async findAllJournalByUserId(id: number) {
     let buildQuery = this.journalsRepository
         .createQueryBuilder("journals")
@@ -116,6 +117,65 @@ export class EventsService {
   }
 
   // journals-------------------------------------------------------------------------
+
+  
+  findJournals(team: number = null): Promise<[Journal[], number]> {
+
+
+    let buildQuery = this.journalsRepository
+      .createQueryBuilder("journals")
+      .leftJoin("journals.team", "team")
+      .addSelect("team.id")
+      .leftJoin("journals.event", "event")
+      .addSelect("event.id")
+
+   
+    buildQuery = team != null ? buildQuery
+      .where("journals.team_id = :team", { team: team }) : buildQuery
+
+    return buildQuery.getManyAndCount()
+  }
+
+
+  // journals-------------------------------------------------------------------------
+
+
+
+  async getEventsViaJournalsByTeam(teamId: number, type: number = null, level: number = null,
+    dateStart: Date = null, dateEnd: Date = null):Promise<[Event[], number]> {
+
+    
+    // alert("teamId " + teamId)
+    let data = await this.findAllJournals(teamId)
+    let countAppropriate = 0
+
+    //получить всех найденне journal
+    let journals = data[0]
+
+    let arrayData:Event[] = []
+
+
+    for (let i = 0; i < journals.length; i++) {
+      let journal = journals[i]
+
+
+      let eventId = journal.event.id
+    
+// возвращает данные с кауентером
+      let event = (await this.findAllEvents(eventId, type, level,
+        null, dateStart, dateEnd))[0]
+
+
+      if (event !=null && event[0]!=null) {
+      //  предполагается несколько данных, но мы знаем, что у нас один будет
+        arrayData.push(event[0])
+        countAppropriate++
+      }
+    }
+
+    return [ arrayData, countAppropriate ]
+
+  }
 
 
   async create(createEventDto: CreateEventDto): Promise<Event> {
