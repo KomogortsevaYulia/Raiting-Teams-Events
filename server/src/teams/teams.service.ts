@@ -24,8 +24,6 @@ export class TeamsService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
-    @InjectRepository(Requisitions)
-    private readonly requisitionsRepository: Repository<Requisitions>,
     private readonly usersService: UsersService
   ) { }
 

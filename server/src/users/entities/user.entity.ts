@@ -76,9 +76,4 @@ export class User {
 
     @Column({ nullable: true })
     course: number;
-
-    @OneToMany((type) => Requisitions, (requisitions) => requisitions.id)
-    requisitions: Requisitions[]
-
-
 }

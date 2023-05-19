@@ -4,7 +4,8 @@ import { IsNull, Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity'
-import { Type } from './enums/enums';
+import { Level, Type } from './enums/enums';
+import { Direction } from 'readline';
 import { Journal } from './entities/journal.entity';
 
 @Injectable()
@@ -16,10 +17,10 @@ export class EventsService {
     private readonly journalsRepository: Repository<Journal>,
   ) { }
 
-
+ 
 
   findAllExternal(): Promise<Event[]> {
-
+  
     return this.eventsRepository
       .createQueryBuilder("events")
       .orderBy("events.dateStart")
@@ -31,8 +32,12 @@ export class EventsService {
 
   // конструктор запроса для получения мероприятия по нужным параметрам
   //если параметр был выбран, то добавляем его в запрос (И)
-  findAllEvents(id: number = null, type: number = null, level: number = null,
-    direction: number = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
+  findAllEvents(id: number = null, type: Type = null, level: Level = Level.UNIVERSITY,
+    direction: Direction = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
+
+    //dateStart = new Date()
+    // if (dateStart != null && dateEnd!=null)
+    //   console.log("dateStart: " + (dateStart.toISOString()) + "  dateEnd: " + (dateEnd.toISOString()))
 
     let buildQuery = this.eventsRepository
       .createQueryBuilder("events")
@@ -41,7 +46,7 @@ export class EventsService {
       .leftJoinAndSelect("events.direction", "direction")
 
     //id 
-    buildQuery = id != null ? buildQuery
+    buildQuery = id  != null ? buildQuery
       .andWhere("events.id = :id", { id: id }) : buildQuery
 
     // event type
@@ -68,7 +73,7 @@ export class EventsService {
   }
 
   findOne(id: number) {
-    return this.eventsRepository.findOne({ where: { id: id }, relations: { level: true, type: true, direction: true } });
+    return this.eventsRepository.findOne({ where: {id: id},relations:{level:true, type:true, direction:true} });
   }
 
   update(id: number, updateEventDto: UpdateEventDto) {
@@ -93,12 +98,25 @@ export class EventsService {
       .leftJoin("journals.event", "event")
       .addSelect("event.id")
 
-   
-    buildQuery = team != null ? buildQuery
-      .where("journals.team_id = :team", { team: team }) : buildQuery
+    buildQuery = team !=null ? buildQuery
+      .andWhere("journals.team_id = :team", { team: team }) : buildQuery
 
     return buildQuery.getManyAndCount()
   }
+
+  async findAllJournalByUserId(id: number) {
+    let buildQuery = this.journalsRepository
+        .createQueryBuilder("journals")
+        .leftJoin("journals.team", "team")
+        .addSelect("team")
+        .leftJoin("journals.event", "event")
+        .addSelect("event")
+    buildQuery = id !=null ? buildQuery
+        .andWhere("journals.user_id = :id", { id:id}) : buildQuery
+    return buildQuery.getManyAndCount()
+  }
+
+  // journals-------------------------------------------------------------------------
 
   
   findJournals(team: number = null): Promise<[Journal[], number]> {

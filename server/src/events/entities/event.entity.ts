@@ -3,6 +3,7 @@ import { Entity, PrimaryColumn, ManyToOne, Column, JoinColumn, PrimaryGeneratedC
 import { ApiProperty } from "@nestjs/swagger";
 import { Journal } from "./journal.entity";
 import { Dictionary } from "../../general/entities/dictionary.entity";
+import { Achievement } from "../../users/entities/achievement.entity";
 
 @Entity('events')
 export class Event {
@@ -106,6 +107,9 @@ export class Event {
 
     @OneToMany((type)=>Journal, (journal)=>journal.event)
     journal:Journal[]
+
+    @OneToMany((type)=>Achievement, (achievement)=>achievement.event)
+    achievement: Achievement
 
     
     @ApiProperty()

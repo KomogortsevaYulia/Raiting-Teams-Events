@@ -136,16 +136,6 @@ export class TeamsController {
   teamsFunctions(@Param('id') id: number) {
     return this.teamsService.teamsFunctions(id)
   }
-  @Get(':user_id/requisition')
-  @ApiOperation({ summary: "Получение списка заявок на вступление в коллектив" })
-  // @ApiParam({ user_name: "user_id", required: true, description: "Идентификатор коллектива" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async userRequisition(@Param('user_id') user_id: number) {
-    let data = await this.teamsService.userRequisition(user_id)
-    console.log(data)
-    return data
-  }
 
   @Post()
   @ApiOperation({ summary: "Создать новый коллектив (ответственный по направлению)" })
