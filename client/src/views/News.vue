@@ -1,6 +1,6 @@
 <template>
-  <router-link :to="'/event-create'"   v-if="can('can view directions')"> 
-   
+  <router-link :to="'/event-create'" v-if="can('can view directions')">
+
     <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Создать мероприятие
     </button>
@@ -27,7 +27,7 @@
           <input class="date__search" placeholder="Выберите дату" type="date" />
           <Switch_toggle />
         </div>
-        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data.length  > 0">
+        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data.length > 0">
           <div class="card" v-for="event in data" :key="event.id">
             <div class="card__banner">
               <img :src="event.images" class="d-block" style="width: 100%;object-fit: cover;">
@@ -38,10 +38,13 @@
                 <div class="teg__container">
                   <div v-for="el in event.tags" class="teg">{{ el }}</div>
                 </div>
-                <div class="card__text" v-if="event.description">{{ event.description.slice(0, 150) }}</div>
-                <!-- <div class="btn__container">
+                <div class="card__text">
+                  <p v-if="event.description!=null"> {{ event.description.slice(0, 150) }} </p>
+                  <p v-else> {{ event.description }}</p>
+                  <!-- <div class="btn__container">
                   <button class="card__btn">Подать заявку</button>
                 </div> -->
+                </div>
               </div>
             </router-link>
           </div>

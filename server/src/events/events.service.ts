@@ -32,7 +32,7 @@ export class EventsService {
   // конструктор запроса для получения мероприятия по нужным параметрам
   //если параметр был выбран, то добавляем его в запрос (И)
   findAllEvents(id: number = null, type: number = null, level: number = null,
-                direction: number = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
+    direction: number = null, dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
 
     let buildQuery = this.eventsRepository
         .createQueryBuilder("events")
@@ -40,9 +40,9 @@ export class EventsService {
         .leftJoinAndSelect("events.type", "type")
         .leftJoinAndSelect("events.direction", "direction")
 
-    //id
+    //id 
     buildQuery = id != null ? buildQuery
-        .andWhere("events.id = :id", { id: id }) : buildQuery
+      .andWhere("events.id = :id", { id: id }) : buildQuery
 
     // event type
     buildQuery = type != null ? buildQuery
@@ -93,50 +93,40 @@ export class EventsService {
         .leftJoin("journals.event", "event")
         .addSelect("event.id")
 
-
+   
     buildQuery = team != null ? buildQuery
-        .where("journals.team_id = :team", { team: team }) : buildQuery
+      .where("journals.team_id = :team", { team: team }) : buildQuery
 
     return buildQuery.getManyAndCount()
   }
 
-
+  
   findJournals(team: number = null): Promise<[Journal[], number]> {
 
 
     let buildQuery = this.journalsRepository
-        .createQueryBuilder("journals")
-        .leftJoin("journals.team", "team")
-        .addSelect("team.id")
-        .leftJoin("journals.event", "event")
-        .addSelect("event.id")
+      .createQueryBuilder("journals")
+      .leftJoin("journals.team", "team")
+      .addSelect("team.id")
+      .leftJoin("journals.event", "event")
+      .addSelect("event.id")
 
-
+   
     buildQuery = team != null ? buildQuery
-        .where("journals.team_id = :team", { team: team }) : buildQuery
+      .where("journals.team_id = :team", { team: team }) : buildQuery
 
     return buildQuery.getManyAndCount()
   }
 
-  async findAllJournalByUserId(id: number) {
-    let buildQuery = this.journalsRepository
-        .createQueryBuilder("journals")
-        .leftJoin("journals.team", "team")
-        .addSelect("team")
-        .leftJoin("journals.event", "event")
-        .addSelect("event")
-    buildQuery = id !=null ? buildQuery
-        .andWhere("journals.user_id = :id", { id:id}) : buildQuery
-    return buildQuery.getManyAndCount()
-  }
+
   // journals-------------------------------------------------------------------------
 
 
 
   async getEventsViaJournalsByTeam(teamId: number, type: number = null, level: number = null,
-                                   dateStart: Date = null, dateEnd: Date = null):Promise<[Event[], number]> {
+    dateStart: Date = null, dateEnd: Date = null):Promise<[Event[], number]> {
 
-
+    
     // alert("teamId " + teamId)
     let data = await this.findAllJournals(teamId)
     let countAppropriate = 0
@@ -152,14 +142,14 @@ export class EventsService {
 
 
       let eventId = journal.event.id
-
+    
 // возвращает данные с кауентером
       let event = (await this.findAllEvents(eventId, type, level,
-          null, dateStart, dateEnd))[0]
+        null, dateStart, dateEnd))[0]
 
 
       if (event !=null && event[0]!=null) {
-        //  предполагается несколько данных, но мы знаем, что у нас один будет
+      //  предполагается несколько данных, но мы знаем, что у нас один будет
         arrayData.push(event[0])
         countAppropriate++
       }
