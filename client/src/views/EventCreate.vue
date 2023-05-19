@@ -12,20 +12,20 @@ const dateStart = ref()
 const dateEnd= ref()
 const dateStartRegistration = ref()
 const dateEndRegistration = ref()
-const eventGoal = ref();
-const eventPlace = ref();
+const event_goal = ref();
+const event_place = ref();
 const level = ref()
-const eventFormat= ref()
-const concreteSphere = ref()
-const eventSphere = ref()
-const teamSize = ref();
-const eventType = ref();
+const eventformat= ref()
+const clarifying_direction = ref()
+const character_event = ref()
+const team_size = ref();
+const direction = ref();
 const control = ref()
-const planeParticipantSize= ref()
-const participantionType = ref()
+const count_people= ref()
+const type_participation = ref()
 const email = ref()
 const phone= ref()
-const socialWeb = ref()
+const social_links = ref()
 const tags = ref()
 
 const foundLevels = ref();
@@ -80,10 +80,32 @@ responseMsg.value = "сохранено";
 
 //create team
 await axios.post("api/events", {
+    status: false,
     title: title.value,
     description:  description.value,
     dateStart: new Date(dateStart.value) ,
-    dateEnd: new Date(dateEnd.value)
+    dateEnd: new Date(dateEnd.value),
+    dateStartRegistration: new Date(dateStartRegistration.value)  ,
+    dateEndRegistration: new Date(dateEndRegistration.value),
+    plan: "ddd",
+    event_goal: event_goal.value,
+    event_place: event_place.value,
+    level: level.value,
+    format: eventformat.value,
+    clarifying_direction: clarifying_direction.value,
+    character_event: character_event.value,
+    team_size: team_size.value,
+    direction: direction.value,
+    control: control.value,
+    count_people: count_people.value,
+    type_participation: type_participation.value,
+    email: email.value,
+    phone: phone.value,
+    social_links: social_links.value,
+    tags: tags.value,
+    type: 4
+
+
 })
     .catch((err) => {
         if (err.response) {
@@ -149,11 +171,11 @@ await axios.post("api/events", {
         </div>
         <div class="margins-edit row">
             <p class="text-edit">Цель проведения</p>
-            <input placeholder="edit me"  v-model="eventGoal"/>
+            <input placeholder="edit me"  v-model="event_goal"/>
         </div>
         <div class="margins-edit row">
             <p class="text-edit">Место проведения</p>
-            <input placeholder="edit me" v-model="eventPlace"/>
+            <input placeholder="edit me" v-model="event_place"/>
         </div>
         <div class="margins-edit row d-flex align-items-end">
             <div class="col ps-0 col">
@@ -166,14 +188,14 @@ await axios.post("api/events", {
             </div>
             <div class="col ps-md-0">
                 <p class="text-edit">Формат проведения</p>
-                <select class="col form-select" v-model="eventFormat">
+                <select class="col form-select" v-model="eventformat">
                     <option disabled value="">Please select one</option>
                     <option>Очное</option>
                 </select>
             </div>
             <div class="col ">
                 <p class="text-edit">Уточняющее направление</p>
-                <select class="col pe-0 form-select" v-model="concreteSphere">
+                <select class="col pe-0 form-select" v-model="clarifying_direction">
                     <option disabled value="">Please select one</option>
                     <option>Физическое</option>
                 </select>
@@ -182,7 +204,7 @@ await axios.post("api/events", {
         <div class="margins-edit row d-flex align-items-end">
             <div class="col ps-0">
                 <p class="text-edit">Направление (рейтинг)</p>
-                <select class="col form-select" v-model="eventSphere">
+                <select class="col form-select" v-model="direction">
                     <option disabled value="">Please select one</option>
                     <option>СД</option>
                 </select>
@@ -191,12 +213,12 @@ await axios.post("api/events", {
                 <div class="row">
                     <p class="text-edit">Размер команды</p>
                 </div>
-                <div class="row"> <input placeholder="edit me" v-model="teamSize" />
+                <div class="row"> <input placeholder="edit me" v-model="team_size" />
                 </div>
             </div>
             <div class="col ">
                 <p class="text-edit">Характер мероприятия</p>
-                <select class="col pe-0 form-select" v-model="eventType">
+                <select class="col pe-0 form-select" v-model="character_event">
                     <option disabled value="">Please select one</option>
                     <option>Соревнование</option>
                 </select>
@@ -214,12 +236,12 @@ await axios.post("api/events", {
                 <div class="row">
                     <p class="text-edit">Плановое количество участников</p>
                 </div>
-                <div class="row"> <input placeholder="edit me" v-model="planeParticipantSize"/>
+                <div class="row"> <input placeholder="edit me" v-model="count_people"/>
                 </div>
             </div>
             <div class="col">
                 <p class="text-edit">Вид участия</p>
-                <select class="col pe-0 form-select" v-model="participantionType">
+                <select class="col pe-0 form-select" v-model="type_participation">
                     <option disabled value="">Please select one</option>
                     <option>Активное</option>
                 </select>
@@ -238,15 +260,16 @@ await axios.post("api/events", {
             </div>
             <div class="col pe-4">
                 <p class="text-edit">Ссылка на соц. сети</p>
-                <div class="row ps-3"> <input placeholder="edit me" v-model="socialWeb" /></div>
+                <div class="row ps-3"> <input placeholder="edit me" v-model="social_links" /></div>
             </div>
         </div>
         <div class="margins-edit row pb-3">
             <p class="text-edit">Теги</p>
-            <input placeholder="edit me" />
+            <input placeholder="edit me"  v-model="tags" />
         </div>
         <div class="d-flex justify-content-end pb-3">
             <button type="button" class="button " @submit.prevent="" v-on:click="createEvent()">Создать</button>
+            {{ responseMsg }}
         </div>
     </div>
 </template>

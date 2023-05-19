@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import {IsDate, IsDateString, IsNotEmpty, IsNumber, Length } from 'class-validator'
+import {IsBoolean, IsDate, IsDateString, IsNotEmpty, IsNumber, IsOptional, Length } from 'class-validator'
 import { Dictionary } from 'src/general/entities/dictionary.entity'
 export class CreateEventDto {
     @IsNotEmpty({ message: 'Поле пустое' })
@@ -26,10 +26,8 @@ export class CreateEventDto {
     dateEndRegistration: Date
 
   
-    @Length(1,1000,{
-    })
-    location: string
-
+    @IsBoolean()
+    status: boolean // статус
   
 
     @IsNumber()
@@ -40,6 +38,11 @@ export class CreateEventDto {
     @Type(() => Number)
     team_size: number
 
+    @Length(1,1000,{
+        message: 'Описание, максимальная длина текста 1000'
+    })
+    tags: string[]
+
 
     @Length(1,1000,{
     })
@@ -49,7 +52,9 @@ export class CreateEventDto {
     })
     event_goal: string 
  
-
+    @IsOptional()
+    @IsNotEmpty({ message: 'Ссылка на документ пустая' })
+    plan:string
 
     @Length(1,1000,{
     })
@@ -74,7 +79,9 @@ export class CreateEventDto {
     })
     level: Dictionary
 
-   
+    @Length(1,1000,{
+    })
+    type: Dictionary
 
     @Length(1,1000,{
     })

@@ -121,7 +121,7 @@ export class Event {
 
 
     @OneToMany((type)=>Journal, (journal)=>journal.event)
-    45:Journal[] // журнал
+    journal:Journal[] // журнал
 
     
     @ApiProperty()
