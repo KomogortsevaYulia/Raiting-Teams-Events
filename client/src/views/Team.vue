@@ -140,7 +140,7 @@ const newsList = [
         <div class="text-area">
           <div class="container">
             <p>{{ data.title }}</p>
-            <ModalQuestionnaire/>
+            <ModalQuestionnaire v-model="data.title"/>
           </div>
         </div>
       </div>
