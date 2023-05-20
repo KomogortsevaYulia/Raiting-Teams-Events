@@ -217,6 +217,7 @@ const newsList = [
       </div>
 
       <div v-if="(selectedItem == 5)">
+        <div>РАБОТАЕТ</div>
         <div v-for="item in req">
           <div class="about">
             <div class="member-card py-2">
