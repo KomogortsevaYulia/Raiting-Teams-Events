@@ -31,13 +31,14 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
 
-    async function fetchCreateTeams() {
-        await axios.get('/api')
-            .then((respose: any) => {
-                // Умные действия
-            })
-    }
+    // async function fetchCreateTeams() {
+    //     await axios.get('/api')
+    //         .then((respose: any) => {
+    //             // Умные действия
+    //         })
+    // }
 
+    // добавить изображение в систему
     async function addImage(id: number, formData: FormData) {
         let responseMsg = "сохранено"
         
@@ -54,12 +55,15 @@ export const useTeamStore = defineStore("teams", () => {
         return responseMsg
     }
     
+    // получить коллективы
     async function fetchTeam(id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
         // console.log(data)
         return data
     }
+
+    // получить заявки
     async function fetchRequisition(user_id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + user_id + '/requisition')
         const data = res.data
@@ -68,6 +72,7 @@ export const useTeamStore = defineStore("teams", () => {
 
     }
 
+    // создать колелктив
     async function createTeam(title: string, description: string,
                               shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
 
@@ -165,7 +170,7 @@ export const useTeamStore = defineStore("teams", () => {
         return { responseMsg, isOK }
     }
 
-    //fetch teams by
+    //поиск коллектива
     async function fetchTeamsSearch(title = "", description = "", tags = ""): Promise<any> {
 
         //find by all txt data in table
@@ -205,7 +210,7 @@ export const useTeamStore = defineStore("teams", () => {
 
     return {
         CreateTeamsTest,
-        fetchCreateTeams,
+        // fetchCreateTeams,
         fetchTeams,
         createTeam,
         setLayout,

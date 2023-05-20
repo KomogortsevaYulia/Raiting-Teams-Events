@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 
 export const useFileStore = defineStore("file", () => {
 
+    // загрузить файл на сервер
     async function loadFile(formData: FormData) {
 
         const res = await axios.post('api/uploads', formData, {
@@ -15,6 +16,7 @@ export const useFileStore = defineStore("file", () => {
         return res.data
     }
 
+    // получить изображения с сервера для отображения в имадже элементе
     async function getImageBase64(path: string) {
 
         let imageData = null
@@ -22,15 +24,11 @@ export const useFileStore = defineStore("file", () => {
         const res = await axios.get('api/uploads/image_base64', { params: { path: path } })
             .then(response => {
                 imageData = response.data
-                // const imageUrl = URL.createObjectURL(response.data);
-                // imageData = imageUrl
-                // console.log(imageUrl)
             })
             .catch(error => {
                 console.error(error);
             });
 
-        // console.log(res.data.path); // This will log the path to the uploaded file on the server
         return imageData
     }
 

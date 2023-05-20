@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const useUserStore = defineStore("user", () => {
 
+  // получить пользователей по емеил или имени
   async function getUsersByNameEmail(limit: Number, fullname: String, email: String) {
     return await axios.get("api/users", {
       params: {

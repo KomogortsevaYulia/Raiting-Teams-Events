@@ -42,22 +42,6 @@ export class UploadsService {
       throw new HttpException('Путь не найден', HttpStatus.BAD_REQUEST)
     }
 
-
-    // let res: Promise<unknown> = null
-    // if (fs.existsSync(path)) {
-    //   res = new Promise((resolve, reject) => {
-    //     fs.readFile(path, (err, data) => {
-    //       if (err) {
-    //         reject(err);
-    //       } else {
-    //         resolve(data.toString());
-    //       }
-    //     });
-    //   });
-    // } else {
-    //   throw new HttpException('Путь не найден', HttpStatus.BAD_REQUEST)
-    // }
-
     return buffer
   }
 

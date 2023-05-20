@@ -7,10 +7,12 @@ export const useMainStore = defineStore("mainStore", () => {
     // Хранилище с 
     const permissionsStore = usePermissionsStore();
 
+    // проверить логин
     async function checkLogin() {
         permissionsStore.checkLogin()
     }
 
+    // залогиниться
     async function login(data: { username: string, password: string }) {
         permissionsStore.login(data);
     }

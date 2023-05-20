@@ -182,9 +182,6 @@ async function getEventsOfTeam(teamId: number) {
 
 
   const eventsOfTeam = await getEventsViaJournalsByTeam(teamId)
-
-  // console.log("eventsOfTeam.data")
-  // console.log(eventsOfTeam.data)
   foundEvents.value = eventsOfTeam.data
   colorfulBlocksData.value[0].value = eventsOfTeam.count
 }
@@ -267,12 +264,8 @@ async function getTeamsOfDirection(directionId: number) {
   colorfulBlocksData.value[1].value = data[1]
   let arrayData = []
 
-  //arrayData[0] = { name: "Все", id: 0 }
-
-
   for (let i = 0; i < teams.length; i++) {
     let team = teams[i]
-    // console.log("team " + team.title)
     arrayData[i] = { name: team.title, id: team.id };
   }
 

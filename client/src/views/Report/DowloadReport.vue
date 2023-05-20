@@ -62,6 +62,7 @@ async function getReport(){
  
  
 }
+
 async function downloadFile() {
   //const byteArray = new Uint8Array(resFile.value);
   const file = new Blob([resFile.value], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });

@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { Direction } from "./enums/enum_event";
-import { DirectionName } from "./enums/enum_teams";
 
 export const useEventStore = defineStore("events", () => {
 
+  // получить меропряития
   async function fetchEvents(): Promise<any> {
     const res = await axios.get('api/events/external')
     const data = res.data
@@ -12,6 +11,7 @@ export const useEventStore = defineStore("events", () => {
     return data
   }
 
+  // получить мероприятие по ид
   async function fetchEventById(id: number, dateStart: Date, dateEnd: Date, level: number = 0, type: number = 0
   ): Promise<any> {
 
@@ -31,6 +31,7 @@ export const useEventStore = defineStore("events", () => {
     return data[0]
   }
 
+  // получить журналы по ид коллектива
   async function getEventsViaJournalsByTeam(teamId: number, dateStart: Date, dateEnd: Date, 
     type: number = 0, level: number = 0): Promise<any> {
 
@@ -75,6 +76,7 @@ export const useEventStore = defineStore("events", () => {
   }
 
 
+  // получить отчет  по мероприятиям по направлению
   async function getReportEventsOfDirection(direction: number = 0,
     dateStart: Date, dateEnd: Date, level: number = 0, type: number = 0
   ) {
@@ -100,6 +102,7 @@ export const useEventStore = defineStore("events", () => {
   }
 
 
+  // получить отчет по мероприятиям коллектива
   async function getReportEventsOfTeam(teamId: number, dateStart: Date, dateEnd: Date, 
     type: number = 0, level: number = 0) {
 

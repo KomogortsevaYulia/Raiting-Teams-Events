@@ -10,8 +10,7 @@ export function MaxFileSize(maxSize: number, validationOptions?: ValidationOptio
       options: validationOptions,
       validator: {
         validate(value: any, args: ValidationArguments) {
-            console.log("dfj")
-            console.log(value)
+          
           if (!value) {
             return true; // skip validation if value is not provided
           }

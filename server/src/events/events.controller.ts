@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Event } from './entities/event.entity';
 
 @ApiTags('events')  // <---- Отдельная секция в Swagger для всех методов контроллера
@@ -47,6 +47,10 @@ export class EventsController {
   // }
 
   @Get('/external/:id')
+  @ApiOperation({ summary: "Получение внешнего мероприятия по ид" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
+  @ApiParam({name:"id", description:"id мероприятия"})
   findOne(@Param('id') id: string) {
     return this.eventsService.findOne(+id);
   }

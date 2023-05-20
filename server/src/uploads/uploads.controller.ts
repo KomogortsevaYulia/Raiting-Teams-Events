@@ -4,7 +4,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EventsService } from '../events/events.service';
 import { Response } from 'express';
-import { UploadFileDto } from './dto/upload-file.dto';
 import { FileSizeValidationPipe } from './validation/file.validation.pipe ';
 
 
@@ -75,8 +74,6 @@ export class UploadsController {
     await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level, direction: direction, dateStart: dStart, dateEnd: dEnd })
     //return res
   }
-
-  //get excel file about events
 
   @Get("excel/events_of_team")
   @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

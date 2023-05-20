@@ -4,6 +4,8 @@ import { defineStore } from "pinia"
 
 export const useStatiscticLogicStore = defineStore("statisticLogic", () => {
 
+    // в связи с тем, что в коллективах направления написаны в виде строки
+    //надо соотнести направления в коллективе с направлениями в мероприятиях
    function directionInTeamsConvertToDirectionInEvents (direction: string){
     
         let directionInEvent = Direction.ALL
