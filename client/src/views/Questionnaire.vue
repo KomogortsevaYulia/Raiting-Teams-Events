@@ -1,3 +1,17 @@
+<script lang="ts" setup>
+  import { ref } from "vue";
+    
+      const inputs = ref([{ value: "", required: true }]);
+
+      const addInput = () => {
+        inputs.value.push({ value: "", required: true });
+      };
+
+      const removeInput = (index: number) => {
+        inputs.value.splice(index, 1);
+      };
+</script>
+
 <template>
   <div class="form">
     <div class="wrapper-question" v-for="(input, index) in inputs" :key="index">
@@ -15,41 +29,12 @@
         </div>
     </div>
     <button class="add-btn" @click="addInput">Добавить вопрос</button>
-    <button class="save-btn" v-if="inputs.length" @click="openModal">Сохранить</button>
-    <modal-create-questionnaire
-      v-if="modalOpen"
-      :inputs="inputs"
-      @close="closeModal"
-    ></modal-create-questionnaire>
+
+    <button class="save-btn">Сохранить</button>
   </div>
 </template>
 
-<script lang="ts" setup>
-  import { ref } from "vue";
-  import ModalCreateQuestionnaire from "./ModalCreateQuestionnaire.vue";
-    
-      const inputs = ref([{ value: "", required: false }]);
-      const modalOpen = ref(false);
-
-      const addInput = () => {
-        inputs.value.push({ value: "", required: false });
-      };
-
-      const removeInput = (index: number) => {
-        inputs.value.splice(index, 1);
-      };
-
-      const openModal = () => {
-        modalOpen.value = true;
-      };
-
-      const closeModal = () => {
-        modalOpen.value = false;
-      };
-</script>
-
 <style lang="scss">
-
 .form {
   display: block;
   padding: 50px;

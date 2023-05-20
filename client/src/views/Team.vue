@@ -2,6 +2,7 @@
 import WIP from '@/components/WIP.vue';
 import { onBeforeMount, ref, reactive } from 'vue';
 import Ankets from '@/views/Questionnaire.vue';
+import ModalQuestionnaire from "./Modals/ModalQuestionnaire.vue";
 
 import { useTeamStore } from "../store/team_store"
 import axios from 'axios';
@@ -139,7 +140,7 @@ const newsList = [
         <div class="text-area">
           <div class="container">
             <p>{{ data.title }}</p>
-            <button>Подать заявку</button>
+            <ModalQuestionnaire/>
           </div>
         </div>
       </div>
