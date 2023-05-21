@@ -1,30 +1,50 @@
 <script lang="ts" setup>
-  import { ref } from "vue";
+import { onBeforeMount, ref } from 'vue';
+import { useFormStore } from "@/store/form_store"
+import { useRoute } from "vue-router";
+
+const route = useRoute()
+
+const idTeam = Number(route.params.id);
+
+const formStore = useFormStore()
+
+const data = ref()
+
+onBeforeMount(async () => {
+  fetchFormFields()
+})
+
+async function fetchFormFields() {
+  data.value = await formStore.fetchFormFields(idTeam)
+}
     
       const inputs = ref([{ value: "", required: true }]);
 
-      const addInput = () => {
-        inputs.value.push({ value: "", required: true });
-      };
+  const addInput = () => {
+    data.value.push({ title: '', required: true });
+  };
 
-      const removeInput = (index: number) => {
-        inputs.value.splice(index, 1);
-      };
+  const removeInput = (index: number) => {
+    if (data.value[index]) {
+      data.value.splice(index, 1);
+    }
+  };
 </script>
 
 <template>
   <div class="form">
-    <div class="wrapper-question" v-for="(input, index) in inputs" :key="index">
+    <div class="wrapper-question" v-for="(form, index) in data">
         <div class="question-label">
-          <div class="num-question">Вопрос {{ index+1 }}</div>
+          <div class="num-question">Вопрос {{ index + 1 }}</div>
           <label class="checkbox-label">
-            <input type="checkbox" v-model="input.required" />
+            <input type="checkbox" v-model="form.required" />
             <div class="checkbox-custom"></div>
             <span class="checkbox-text">Обязательный</span>
         </label>
         </div>
         <div class="wrap-input">
-          <textarea class="input-question" v-model="input.value" />
+          <textarea class="input-question" v-model="form.title" />
           <button class="remove-btn" @click="removeInput(index)">Удалить</button>
         </div>
     </div>

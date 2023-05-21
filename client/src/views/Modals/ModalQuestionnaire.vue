@@ -1,11 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
+import { useFormStore } from "@/store/form_store"
+import { useRoute } from "vue-router";
+
+const route = useRoute()
+
+const idTeam = Number(route.params.id);
+
+const formStore = useFormStore()
+
+const data = ref()
 
 defineProps({
   modelValue: {
     type: String,
   }
 });
+
+onBeforeMount(async () => {
+  fetchFormFields()
+})
+
+async function fetchFormFields() {
+  data.value = await formStore.fetchFormFields(idTeam)
+}
   //  export default {
   //   name: "ModalQuestionnaire",
   //   props: {
@@ -38,9 +56,9 @@ defineProps({
     <div class="modal-content">
         <div class="modal-title" id="exampleModalLabel">Заполните анкету</div>
         <div class="modal-subtitle" :value="modelValue">{{ modelValue }}</div>
-        <div class="wrapper-questions">
+        <div v-for="form in data" class="wrapper-questions">
           <div class="wrapper-one-question">
-            <div class="question-label">Question</div>
+            <div class="question-label">{{ form.title }}</div>
             <textarea class="input-answer" />
           </div>
         </div>
