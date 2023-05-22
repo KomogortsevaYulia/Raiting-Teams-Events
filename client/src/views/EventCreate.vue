@@ -227,10 +227,10 @@ await axios.post("api/events", {
         <div class="margins-edit row d-flex align-items-end">
             <div class="col ps-0">
                 <p class="text-edit">Контроль</p>
-                <select class="form-select" v-model="control">
-                    <option disabled value="">Please select one</option>
-                    <option>Аносов С.С.</option>
-                </select>
+                <v-select class="form-select" v-model="control">
+                    <!-- <option disabled value="">Please select one</option>
+                    <option>Аносов С.С.</option> -->
+                </v-select>
             </div>
             <div class="col">
                 <div class="row">
@@ -276,6 +276,7 @@ await axios.post("api/events", {
 
 <style lang="scss">
 @import '@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss';
+@import 'vue-select/dist/vue-select.css';
 
 .eventInfo {
 

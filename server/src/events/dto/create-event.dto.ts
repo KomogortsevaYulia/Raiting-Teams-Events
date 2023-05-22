@@ -79,8 +79,8 @@ export class CreateEventDto {
     })
     level: Dictionary
 
-    @Length(1,1000,{
-    })
+    @IsNumber()
+    @Type(() => Number)
     type: Dictionary
 
     @Length(1,1000,{
