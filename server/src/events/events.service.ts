@@ -133,7 +133,12 @@ export class EventsService {
       .createQueryBuilder("journals")
       .where("journals.event_id = :event_id" , { event_id: id})
       .andWhere("journals.is_registered = true")
-      .leftJoinAndSelect("journals.user", "user")
+      .leftJoin("journals.user", "users")
+      .addSelect("users.id")
+      .leftJoin("journals.team", "teams")
+      .addSelect("teams.id")
+      .leftJoin("journals.event", "events")
+      .addSelect(["events.title", "events.id"])
       .getMany()
    
   }
@@ -144,6 +149,10 @@ export class EventsService {
 
     let buildQuery = this.journalsRepository
       .createQueryBuilder("journals")
+      .leftJoin("journals.user", "users")
+      .addSelect("users.id")
+      .leftJoin("journals.team", "teams")
+      .addSelect("teams.id")
       .leftJoin("journals.event", "events")
       .addSelect(["events.title", "events.id"])
       // .where("events.title like :title", {title: `%${title}%`})
