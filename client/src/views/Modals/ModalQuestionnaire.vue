@@ -24,6 +24,10 @@ onBeforeMount(async () => {
 async function fetchFormFields() {
   data.value = await formStore.fetchFormFields(idTeam)
 }
+
+async function checkRequired() {
+  
+}
   //  export default {
   //   name: "ModalQuestionnaire",
   //   props: {
@@ -58,7 +62,7 @@ async function fetchFormFields() {
         <div class="modal-subtitle" :value="modelValue">{{ modelValue }}</div>
         <div v-for="form in data" class="wrapper-questions">
           <div class="wrapper-one-question">
-            <div class="question-label">{{ form.title }}</div>
+            <div class="question-label">{{ form.title }}{{ form.required ? '*' : '' }}</div>
             <textarea class="input-answer" />
           </div>
         </div>

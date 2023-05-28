@@ -1,15 +1,21 @@
 <script lang="ts" setup>
+import axios from 'axios';
 import { onBeforeMount, ref } from 'vue';
 import { useFormStore } from "@/store/form_store"
 import { useRoute } from "vue-router";
+import { fi } from 'date-fns/locale';
 
 const route = useRoute()
 
-const idTeam = Number(route.params.id);
+const idTeam = Number(route.params.id)
+
+let idForm: number 
 
 const formStore = useFormStore()
 
 const data = ref()
+
+const responseMsg = ref()
 
 onBeforeMount(async () => {
   fetchFormFields()
@@ -17,19 +23,94 @@ onBeforeMount(async () => {
 
 async function fetchFormFields() {
   data.value = await formStore.fetchFormFields(idTeam)
+  idForm = await formStore.fetchFormId(idTeam)
+  //console.log(idForm)
 }
-    
-      const inputs = ref([{ value: "", required: true }]);
+
 
   const addInput = () => {
+    if (!data.value) {
+      data.value = []; // Initialize data.value as an empty array
+    }
     data.value.push({ title: '', required: true });
   };
+
+  const submit = async () => {
+    const promises = [];
+
+    for (let i = data.value.length - 1; i >= 0; i--) {
+      const form = data.value[i];
+      if (!form.title.trim()) {
+        removeInput(i);
+      } else {
+        const promise = createFormFields(form.title, form.required);
+        promises.push(promise);
+      }
+    }
+
+    const results = await Promise.all(promises);
+    const idFields = results.filter((result) => result !== null).join("\n");
+    if(idForm == undefined){
+      createForm(idTeam, idFields)
+    }else{
+      updateForm(idForm, idFields)
+    }
+    //console.log(idFields);
+};
+
 
   const removeInput = (index: number) => {
     if (data.value[index]) {
       data.value.splice(index, 1);
     }
   };
+
+async function createFormFields(title: string, required: boolean) {
+  responseMsg.value = "сохранено";
+  
+  try {
+    const response = await axios.post("/api/forms/field", {
+      title: title,
+      required: required,
+    });
+    const strId: string = response.data.id.toString()
+    //console.log(response.data.id)
+    return strId
+  } catch (error: any) {
+    if (error.response) {
+      responseMsg.value = error.response.data.message
+    }
+    return null;
+  }
+}
+
+async function createForm(idTeam: number, fields_id: string,) {
+
+  responseMsg.value = "сохранено";
+
+  await axios.post("/api/forms", {
+      fields_id: fields_id,
+      team_id: idTeam,
+  })
+      .catch((err) => {
+          if (err.response) {
+              responseMsg.value = err.response.data.message
+          }
+      })
+ }
+
+ async function updateForm(id: number, fields_id: string,) {
+
+responseMsg.value = "сохранено";
+await axios.put("/api/forms/" + id, {
+    fields_id: fields_id,
+})
+    .catch((err) => {
+        if (err.response) {
+            responseMsg.value = err.response.data.message
+        }
+    })
+}
 </script>
 
 <template>
@@ -50,7 +131,7 @@ async function fetchFormFields() {
     </div>
     <button class="add-btn" @click="addInput">Добавить вопрос</button>
 
-    <button class="save-btn">Сохранить</button>
+    <button class="save-btn" @click="submit">Сохранить</button>
   </div>
 </template>
 

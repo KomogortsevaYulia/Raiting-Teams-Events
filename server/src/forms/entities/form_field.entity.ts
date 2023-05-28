@@ -1,6 +1,6 @@
 
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("form_fields")
 export class FormField {
