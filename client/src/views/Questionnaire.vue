@@ -84,7 +84,7 @@ async function createFormFields(title: string, required: boolean) {
   }
 }
 
-async function createForm(idTeam: number, fields_id: string,) {
+async function createForm(idTeam: number, fields_id: string) {
 
   responseMsg.value = "сохранено";
 
@@ -99,7 +99,7 @@ async function createForm(idTeam: number, fields_id: string,) {
       })
  }
 
- async function updateForm(id: number, fields_id: string,) {
+ async function updateForm(id: number, fields_id: string) {
 
 responseMsg.value = "сохранено";
 await axios.put("/api/forms/" + id, {

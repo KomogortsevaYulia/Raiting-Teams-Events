@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, Put } from '@nestjs/common';
 import { FormsService } from './forms.service';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiParam,ApiTags } from "@nestjs/swagger";
 import { createFormDto } from './dto/create-form.dto';
 import { createFormFieldsDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
@@ -48,14 +48,4 @@ export class FormsController {
   findOnIdForm(@Param('team_id') team_id: number) {
     return this.formsService.findOnIdForm(team_id);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateFormDto: UpdateFormDto) {
-  //   return this.formsService.update(+id, updateFormDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.formsService.remove(+id);
-  // }
 }
