@@ -13,13 +13,13 @@ export class GeneralController {
   // dictionary------------------------------------------------------------------------------
 
 
-  @Get("dictionary")
+  @Get("/dictionary")
   findAll(@Query() {class_name = null,  class_id = null}) {
     return this.generalService.findAll(class_name, class_id);
   }
   
 
-  @Get('dictionary/:id')
+  @Get('/dictionary/:id')
   findOne(@Param('id') id: string) {
     return this.generalService.findOne(+id);
   }
