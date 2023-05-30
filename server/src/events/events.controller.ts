@@ -78,4 +78,12 @@ export class EventsController {
 
     return res
   }
+
+  @Get('journal/user/:id')
+  @ApiOperation({ summary: "Получение списка мероприятий из журнала по id пользователя" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findAllJournalsByUserId(@Param("id") id:number){
+    return this.eventsService.findAllJournalByUserId(id)
+  }
 }

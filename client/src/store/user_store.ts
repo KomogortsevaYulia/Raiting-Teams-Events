@@ -19,10 +19,15 @@ export const useUserStore = defineStore("user", () => {
       title_role,
     })
   }
+
+  async function getUsersFunction(id: number) {
+    return await axios.get("/api/users/functions/" + id)
+}
+
    return {
     getUsersByNameEmail,
     update,
-    
+    getUsersFunction
   }
 });
 
