@@ -9,6 +9,7 @@ import CONNECTION from './db.connection';
 import { FormsModule } from './forms/forms.module';
 import { GeneralModule } from './general/general.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { FunctionsModule } from './functions/functions.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { UploadsModule } from './uploads/uploads.module';
     EventsModule,
     FormsModule,
     GeneralModule,
-    UploadsModule
+    UploadsModule,
+    FunctionsModule
   ],
   controllers: [AppController],
   providers: [AppService],
