@@ -3,7 +3,6 @@ import { Team } from "../../teams/entities/team.entity"
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { FormField } from "./form_field.entity"
 import { ApiProperty } from "@nestjs/swagger"
-import { Requisitions } from "../../teams/entities/requisition.entity"
 
 @Entity("forms")
 export class Form {
@@ -21,14 +20,11 @@ export class Form {
 
     @ApiProperty()
     @Column("simple-array")
-    fields_id:number []
+    fields_id: string
 
     @ApiProperty()
     @ManyToOne(()=>Team, (team)=> team.id)
     @JoinColumn([{ name: "team_id" }])
     team_id:number
-
-    @OneToMany((type) => Requisitions, (requisitions) => requisitions.id)
-    requisitions: Requisitions[]
 }
 

@@ -42,8 +42,13 @@ export class UsersService {
     })
 
   }
-  async reduction(updateUserDto: UpdateUserDto,id: number){
-    return this.usersRepository.update(id, updateUserDto);
+  async update(updateUserDto: UpdateUserDto,id: number){
+    console.log(updateUserDto);
+    return this.usersRepository.update(+id, updateUserDto);
+  }
+
+  async addRole(education_group,title_role) {
+    
   }
   
   async findAllWithLimit(limit: number): Promise<User[]> {
@@ -55,30 +60,32 @@ export class UsersService {
   }
 
   // modernize function user if user not exist
-  @HttpCode(400)
-  async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+  // @HttpCode(400)
+  // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
 
-    if(isNaN(id)){
-      throw new HttpException("такого юзера не существует " + id, 400)
-    }
+  //   // if(isNaN(id)){
+  //   //   throw new HttpException("такого юзера не существует " + id, 400)
+  //   // }
 
-    const userExist = await this.userFunctionsRepository
-      .createQueryBuilder("user_function")
-      .leftJoin("user_function.function", "functions")
-      .addSelect("functions")
-      .leftJoinAndSelect("functions.team", "teams")
-      .addSelect("teams")
-        .where("user_function.user = :id", { id })
-      .getMany();
+  //   const userExist = await this.usersRepository
+  //     .createQueryBuilder("users")
+  //     .where("users.id = :id", { id })
+  //     .leftJoin("users.user_function", "user_function")
+  //     .addSelect("user_function")
+  //     .leftJoin("user_function.functions", "functions")
+  //     .addSelect("functions")
+  //     .leftJoinAndSelect("functions.team", "teams")
+  //     .addSelect("teams")
+  //     .getOne();
 
-    if (!userExist) {
-      throw new HttpException("такого юзера не существует ", 400)
-    }
-    return userExist
-  }
-  async getEvents(id:number){
+  //   // console.log("userExist " + userExist)
+  //   if (!userExist) {
+  //     throw new HttpException("такого юзера не существует ", 400)
+  //   }
 
-  }
+  //   return userExist
+
+  // }
 
   async login(username: string, pass: string): Promise<any> {
     const user = await this.usersRepository
@@ -98,9 +105,7 @@ export class UsersService {
   }
 
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);

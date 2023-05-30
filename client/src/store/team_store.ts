@@ -37,6 +37,23 @@ export const useTeamStore = defineStore("teams", () => {
                 // Умные действия
             })
     }
+
+    async function addImage(id: number, formData: FormData) {
+        let responseMsg = "сохранено"
+        
+        const res = await axios.post(`/api/teams/${id}/image`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).catch((err) => {
+            if (err.response) {
+                responseMsg = err.response.data.message[0]
+            }
+        })
+
+        return responseMsg
+    }
+    
     async function fetchTeam(id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
@@ -198,6 +215,7 @@ export const useTeamStore = defineStore("teams", () => {
         archiveTeam,
         fetchRequisition,
         fetchTeamsSearch,
+        addImage,
 
         layout,
         menu_items
