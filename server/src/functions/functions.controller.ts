@@ -22,11 +22,11 @@ export class FunctionsController {
     return this.functionsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updateFunctionDto: UpdateFunctionDto) {
+  // @Patch(':id')
+  // update(@Param('id') id: number, @Body() updateFunctionDto: UpdateFunctionDto) {
     
-    return this.functionsService.update(updateFunctionDto,+id);
-  }
+  //   return this.functionsService.update(updateFunctionDto,+id);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

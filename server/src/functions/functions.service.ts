@@ -28,10 +28,10 @@ export class FunctionsService {
     return `This action returns a #${id} function`;
   }
 
-  async update(updateFunctionDto: UpdateFunctionDto,id: number){
-    console.log(updateFunctionDto);
-    return this.functionsRepository.update(updateFunctionDto,+id);
-  }
+  // async update(updateFunctionDto: UpdateFunctionDto,id: number){
+  //   console.log(updateFunctionDto);
+  //   return this.functionsRepository.update(updateFunctionDto,+id);
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} function`;
