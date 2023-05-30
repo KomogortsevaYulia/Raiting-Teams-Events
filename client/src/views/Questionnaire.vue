@@ -135,7 +135,7 @@ await axios.put("/api/forms/" + id, {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .form {
   display: block;
   padding: 50px;

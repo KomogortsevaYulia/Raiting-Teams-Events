@@ -109,7 +109,6 @@ async function fetchCurrentEvent() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/assets/globals.scss';
 
 .header__info{
     margin-left: 4rem;

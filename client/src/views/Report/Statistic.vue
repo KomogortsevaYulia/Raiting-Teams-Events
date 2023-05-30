@@ -560,9 +560,7 @@ function changeTypeReport() {
       
       
       
-<style lang="scss">
-@import 'v-calendar/dist/style.css';
-@import 'vue-select/dist/vue-select.css';
+<style lang="scss" scoped>
 
 // dropdown for calendar----------------------------------------------------------------------
 .dropbtn {

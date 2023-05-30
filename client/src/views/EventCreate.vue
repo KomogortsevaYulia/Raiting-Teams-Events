@@ -190,8 +190,7 @@ await axios.post("api/events", {
     </div>
 </template>
 
-<style lang="scss">
-@import '@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss';
+<style lang="scss" scoped>
 
 .eventInfo {
 

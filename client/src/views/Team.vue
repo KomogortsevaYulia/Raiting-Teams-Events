@@ -294,8 +294,6 @@ const newsList = [
 </template>
 
 <style lang="scss" scoped>
-@import '@/assets/globals.scss';
-
 
 .member-card {
   width: 100%;
