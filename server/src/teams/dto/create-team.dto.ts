@@ -9,18 +9,19 @@ export class CreateTeamDto {
     @IsNotEmpty({ message: 'Поле пустое' })
     @IsString()
     @Length(1,100,{
-        message: 'Название, максимальная длина текста 100'
+        message: 'Название коллектива, максимальная длина текста 1-100'
     })
     title: string
 
+    @IsNotEmpty({ message: 'Поле пустое' })
     @Length(1,3000,{
-        message: 'Описание, максимальная длина текста 3000'
+        message: 'Описание, максимальная длина текста 1-3000'
     })
     description: string
 
     @IsNotEmpty({ message: 'Поле пустое' })
     @Length(1,50,{
-        message: 'Краткое название, максимальная длина текста 50'
+        message: 'Краткое название, максимальная длина текста 1-50'
     })
     shortname:string
 
@@ -30,13 +31,13 @@ export class CreateTeamDto {
 
     @IsOptional()
     @Length(1,50, {
-        message: 'Кабинет, максимальная длина текста 50'
+        message: 'Кабинет, максимальная длина текста 1-50'
     })
     cabinet:string
 
-    // @IsOptional()
-    // @IsNotEmpty({ message: 'Ссылка на документ пустая' })
-    // document:string
+    @IsOptional()
+    @IsNotEmpty({ message: 'Ссылка на документ пустая' })
+    document:string
 
     @IsOptional()
     @IsNotEmpty({ message: 'Ссылка на устав пустая' })

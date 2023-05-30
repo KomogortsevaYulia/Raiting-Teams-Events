@@ -16,11 +16,19 @@ GET http://localhost:3000/api/events?id=20
 ###
 GET http://localhost:3000/api/events/5
 
+### events_of_team
+GET http://localhost:3000/api/events/events_of_team/7?level=1
+###
+GET http://localhost:3000/api/events?direction=5
+
+
 
 
 ###
 # journals
 GET http://localhost:3000/api/events/journal
+###
+GET http://localhost:3000/api/events/external
 
 
 
@@ -37,7 +45,7 @@ GET http://localhost:3000/api/teams/?id_parent=2
 
 ###
 # select head user and teams
-GET http://localhost:3000/api/teams
+GET http://localhost:3000/api/teams/1
 
 ###
 PUT  http://localhost:3000/api/teams/37/change_archive HTTP/1.1
@@ -53,7 +61,7 @@ POST http://localhost:3000/api/teams HTTP/1.1
 content-type: application/json
 
 {
-    "userID":5,
+    "userID":null,
     "shortname": "dddd2",
     "description": "Хотим подняться на гору",
     "title":"hddddhh",
@@ -164,14 +172,14 @@ GET http://localhost:3000/api/general/dictionary/2
 
 # FILE
 ###
-GET http://localhost:3000/api/uploads HTTP/1.1
-content-type: application/json
+GET http://localhost:3000/api/uploads/file_buffer?path=./public/media/6b3620e359194339a2bc2409fb8de569.png
 
-{
-    "path":"public/media/b077f410998f48df3627e5698d1ccb9f6.png"
-  
-}
+# get excel file event direction REPORT
+###
+GET http://localhost:3000/api/uploads/excel/events_direction
 
+###
+GET http://localhost:3000/api/uploads/excel/events_of_team?teamId=1
 
 
 

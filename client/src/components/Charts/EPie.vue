@@ -28,7 +28,8 @@ const props = defineProps<{
   data: {
     value: number;
     name: string;
-  }[]
+  }[],
+  name:string
 }>()
 
 // computed 
@@ -43,7 +44,7 @@ const options = computed( () => {
     },
     series: [
       {
-        name: 'Access From',
+        name: props.name,
         type: 'pie',
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,

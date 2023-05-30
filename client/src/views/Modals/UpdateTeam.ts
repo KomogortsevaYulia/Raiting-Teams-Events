@@ -6,4 +6,9 @@ export default class UpdateTeam {
     description = ""
     shortname = ""
     cabinet = ""
+    documentPath = ""
+    charterPath = ""
+
+    fileUstav: any
+    fileDocument: any
 }

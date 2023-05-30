@@ -18,7 +18,7 @@ import { FunctionsModule } from './functions/functions.module';
       ...CONNECTION,
       synchronize: false,
       autoLoadEntities: true,
-      logging:  true,
+      
     }),
     UsersModule,
     TeamsModule,

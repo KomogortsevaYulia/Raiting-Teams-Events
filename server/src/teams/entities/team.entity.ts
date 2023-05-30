@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Function } from "../../users/entities/function.entity";
+import { Journal } from "../../events/entities/journal.entity";
 
 @Entity("teams")
 export class Team {
@@ -67,4 +68,11 @@ export class Team {
     @OneToMany((type)=>Function, (func)=>func.team)
     @JoinColumn([{ name: "func_id" }])
     functions:Function[]
+
+    
+    @OneToMany((type) => Journal, (journal) => journal.team)
+    @JoinColumn([{ name: "journal_id" }])
+    journal: Journal[]
+
+
 }

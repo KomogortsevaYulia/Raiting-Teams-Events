@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger"
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { User } from "./user.entity"
 import { Dictionary } from "../../general/entities/dictionary.entity"
+import { Event } from "../../events/entities/event.entity"
 
 @Entity('achievements')
 export class Achievement {
@@ -43,6 +44,10 @@ export class Achievement {
     comment: string
 
     @ApiProperty()
+    @Column({default:false})
+    need_in_rating: boolean
+
+    @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "direction_id" }])
     direction: Dictionary
@@ -62,4 +67,9 @@ export class Achievement {
     @ManyToOne(() => User, (user) => user.id)
     @JoinColumn([{ name: "user_id" }])
     user: User
+
+    @ApiProperty()
+    @ManyToOne(() => Event, (event) => event.id)
+    @JoinColumn([{ name: "event_id" }])
+    event: Event
 }
