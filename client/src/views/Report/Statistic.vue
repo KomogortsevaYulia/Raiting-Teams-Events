@@ -21,11 +21,9 @@ import { Direction, Level } from '@/store/enums/enum_event';
 import { useChartStore } from './chart_logic';
 import { useStatiscticLogicStore } from './statistic_logic';
 
-import { Type } from '@/store/enums/enum_event';
 import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from './enums_report';
 import { DirectionName } from '@/store/enums/enum_teams';
 import { EVENT_LEVEL, EVENT_TYPE } from '@/store/constants/constants_class_names';
-import { number } from 'echarts/core';
 
 
 // store
@@ -562,6 +560,7 @@ function changeTypeReport() {
       
 <style lang="scss" scoped>
 
+
 // dropdown for calendar----------------------------------------------------------------------
 .dropbtn {
   // background-color: #04AA6D;
@@ -586,6 +585,8 @@ function changeTypeReport() {
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   border-radius: 20px;
+
+ 
 }
 
 
