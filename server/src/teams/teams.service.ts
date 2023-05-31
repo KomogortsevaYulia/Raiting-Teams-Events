@@ -25,8 +25,8 @@ export class TeamsService {
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
     private readonly usersService: UsersService,
-    @InjectRepository(Requisitions)
-    private readonly requisitionsRepository: Repository<Requisitions>,
+    // @InjectRepository(Requisitions)
+    // private readonly requisitionsRepository: Repository<Requisitions>,
   ) { }
 
   async findOne(id: number) {
@@ -178,19 +178,19 @@ export class TeamsService {
     return users;
   }
 
-  async userRequisition(team_id: number): Promise<Requisitions[]> {
+  // async userRequisition(team_id: number): Promise<Requisitions[]> {
     
-    team_id  = 6
-    const users = await this.requisitionsRepository
-    .createQueryBuilder("requisition")
-    .select(["requisition.date_create", "requisition.date_update","requisition.status"])
-    .leftJoinAndSelect("requisition.form_id","form")
-    .leftJoinAndSelect("requisition.user_id","user_id")
-    .where("form.team_id = :team_id", { team_id })
-    .getMany()
+  //   team_id  = 6
+  //   const users = await this.requisitionsRepository
+  //   .createQueryBuilder("requisition")
+  //   .select(["requisition.date_create", "requisition.date_update","requisition.status"])
+  //   .leftJoinAndSelect("requisition.form_id","form")
+  //   .leftJoinAndSelect("requisition.user_id","user_id")
+  //   .where("form.team_id = :team_id", { team_id })
+  //   .getMany()
 
-    return users;
-  }
+  //   return users;
+  // }
 
   // async  directionsAndUsers() {
 
