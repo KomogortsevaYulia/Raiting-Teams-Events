@@ -24,7 +24,9 @@ export class TeamsService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    @InjectRepository(Requisitions)
+    private readonly requisitionsRepository: Repository<Requisitions>,
   ) { }
 
   async findOne(id: number) {

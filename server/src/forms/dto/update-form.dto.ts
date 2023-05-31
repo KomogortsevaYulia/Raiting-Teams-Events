@@ -1,4 +1,9 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateFormDto } from './create-form.dto';
+import { createFormDto } from './create-form.dto';
+import { IsNotEmpty, IsOptional } from 'class-validator'
 
-export class UpdateFormDto extends PartialType(CreateFormDto) {}
+export class UpdateFormDto {
+    @IsOptional()
+    @IsNotEmpty({ message: 'Поле пустое' })
+    fields_id:string
+}

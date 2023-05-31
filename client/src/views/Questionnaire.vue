@@ -1,55 +1,141 @@
+<script lang="ts" setup>
+import axios from 'axios';
+import { onBeforeMount, ref } from 'vue';
+import { useFormStore } from "@/store/form_store"
+import { useRoute } from "vue-router";
+import { fi } from 'date-fns/locale';
+
+const route = useRoute()
+
+const idTeam = Number(route.params.id)
+
+let idForm: number 
+
+const formStore = useFormStore()
+
+const data = ref()
+
+const responseMsg = ref()
+
+onBeforeMount(async () => {
+  fetchFormFields()
+})
+
+async function fetchFormFields() {
+  data.value = await formStore.fetchFormFields(idTeam)
+  idForm = await formStore.fetchFormId(idTeam)
+  //console.log(idForm)
+}
+
+
+  const addInput = () => {
+    if (!data.value) {
+      data.value = []; // Initialize data.value as an empty array
+    }
+    data.value.push({ title: '', required: true });
+  };
+
+  const submit = async () => {
+    const promises = [];
+
+    for (let i = data.value.length - 1; i >= 0; i--) {
+      const form = data.value[i];
+      if (!form.title.trim()) {
+        removeInput(i);
+      } else {
+        const promise = createFormFields(form.title, form.required);
+        promises.push(promise);
+      }
+    }
+
+    const results = await Promise.all(promises);
+    const idFields = results.filter((result) => result !== null).join("\n");
+    if(idForm == undefined){
+      createForm(idTeam, idFields)
+    }else{
+      updateForm(idForm, idFields)
+    }
+    //console.log(idFields);
+};
+
+
+  const removeInput = (index: number) => {
+    if (data.value[index]) {
+      data.value.splice(index, 1);
+    }
+  };
+
+async function createFormFields(title: string, required: boolean) {
+  responseMsg.value = "сохранено";
+  
+  try {
+    const response = await axios.post("/api/forms/field", {
+      title: title,
+      required: required,
+    });
+    const strId: string = response.data.id.toString()
+    //console.log(response.data.id)
+    return strId
+  } catch (error: any) {
+    if (error.response) {
+      responseMsg.value = error.response.data.message
+    }
+    return null;
+  }
+}
+
+async function createForm(idTeam: number, fields_id: string) {
+
+  responseMsg.value = "сохранено";
+
+  await axios.post("/api/forms", {
+      fields_id: fields_id,
+      team_id: idTeam,
+  })
+      .catch((err) => {
+          if (err.response) {
+              responseMsg.value = err.response.data.message
+          }
+      })
+ }
+
+ async function updateForm(id: number, fields_id: string) {
+
+responseMsg.value = "сохранено";
+await axios.put("/api/forms/" + id, {
+    fields_id: fields_id,
+})
+    .catch((err) => {
+        if (err.response) {
+            responseMsg.value = err.response.data.message
+        }
+    })
+}
+</script>
+
 <template>
   <div class="form">
-    <div class="wrapper-question" v-for="(input, index) in inputs" :key="index">
+    <div class="wrapper-question" v-for="(form, index) in data">
         <div class="question-label">
-          <div class="num-question">Вопрос {{ index+1 }}</div>
+          <div class="num-question">Вопрос {{ index + 1 }}</div>
           <label class="checkbox-label">
-            <input type="checkbox" v-model="input.required" />
+            <input type="checkbox" v-model="form.required" />
             <div class="checkbox-custom"></div>
             <span class="checkbox-text">Обязательный</span>
         </label>
         </div>
         <div class="wrap-input">
-          <textarea class="input-question" v-model="input.value" />
+          <textarea class="input-question" v-model="form.title" />
           <button class="remove-btn" @click="removeInput(index)">Удалить</button>
         </div>
     </div>
     <button class="add-btn" @click="addInput">Добавить вопрос</button>
-    <button class="save-btn" v-if="inputs.length" @click="openModal">Сохранить</button>
-    <modal-create-questionnaire
-      v-if="modalOpen"
-      :inputs="inputs"
-      @close="closeModal"
-    ></modal-create-questionnaire>
+
+    <button class="save-btn" @click="submit">Сохранить</button>
   </div>
 </template>
 
-<script lang="ts" setup>
-  import { ref } from "vue";
-  import ModalCreateQuestionnaire from "./ModalCreateQuestionnaire.vue";
-    
-      const inputs = ref([{ value: "", required: false }]);
-      const modalOpen = ref(false);
-
-      const addInput = () => {
-        inputs.value.push({ value: "", required: false });
-      };
-
-      const removeInput = (index: number) => {
-        inputs.value.splice(index, 1);
-      };
-
-      const openModal = () => {
-        modalOpen.value = true;
-      };
-
-      const closeModal = () => {
-        modalOpen.value = false;
-      };
-</script>
-
-<style lang="scss">
-
+<style lang="scss" scoped>
 .form {
   display: block;
   padding: 50px;

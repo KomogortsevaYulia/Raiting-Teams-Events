@@ -322,8 +322,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
   </div>
 </template>
 
-<style lang="scss" >
-@import 'vue-select/dist/vue-select.css';
+<style lang="scss" scoped>
 
 .btn-close {
   &:hover {

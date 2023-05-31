@@ -20,7 +20,7 @@ export class Form {
 
     @ApiProperty()
     @Column("simple-array")
-    fields_id:number []
+    fields_id: string
 
     @ApiProperty()
     @ManyToOne(()=>Team, (team)=> team.id)

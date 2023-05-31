@@ -17,7 +17,7 @@ import { faUser, faCalendarDays, faClose, faEdit, faArchive, faPencilSquare, faF
 //компонент для выбора юзера из выпадающего списка
 import vSelect from 'vue-select'
 import VCalendar from 'v-calendar';
-import 'v-calendar/style.css';
+
 library.add(faUser, faCalendarDays, faClose, faEdit, faArchive, faPencilSquare, faFileDownload)
 
 const app = createApp(App);

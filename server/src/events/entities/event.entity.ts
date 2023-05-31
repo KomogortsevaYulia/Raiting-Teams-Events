@@ -8,6 +8,8 @@ import { Achievement } from "../../users/entities/achievement.entity";
 @Entity('events')
 export class Event {
 
+    //26 энтити
+
     @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number
@@ -52,61 +54,75 @@ export class Event {
 
     @ApiProperty()
     @Column( {nullable: true})
-    plan: string
+    plan: string // план меропиятия
+
 
     @ApiProperty()
     @Column("simple-array", {nullable: true})
     images: string[]
 
     @ApiProperty()
-    @Column({
-        type: "enum",
-        enum: ["Коворгинг Г-2", "Конференц-зал Технопарк", "Коворкинг Студотрядов", "Актовый зал", "Спортзал"],
-        default: null,
-        nullable: true
-    })
-    location: string
+    @Column({nullable: true})
+    event_place: string // место проведения
+
+    // @ApiProperty()
+    // @Column({
+    //     type: "enum",
+    //     enum: ["Коворгинг Г-2", "Конференц-зал Технопарк", "Коворкинг Студотрядов", "Актовый зал", "Спортзал"],
+    //     default: null,
+    //     nullable: true
+    // })
+    // location: string // целевая аудитория
 
    
     @ApiProperty()
     @Column("simple-array", {nullable: true})
-    tags: string[]
+    tags: string[] // теги 
 
     @ApiProperty()
     @Column({ nullable: true })
-    control: string
+    control: string // контроль
 
     //плановое кол-во участников
     @ApiProperty()
     @Column('int',{ nullable: true })
-    count_people: number
+    count_people: number // плановое кол-во участников
+
 
     @ApiProperty()
-    @Column({ nullable: true })
-    target_audience: string
+    @Column('int',{ nullable: true })
+    team_size: number // плановое кол-во участников
+
+    // @ApiProperty()
+    // @Column({ nullable: true })
+    // target_audience: string // целевая аудитория 
 
     
     @ApiProperty()
     @Column({ nullable: true })
-    status: boolean
+    status: boolean // статус
 
     @ApiProperty()
     @Column({ nullable: true })
-    phone: string
+    phone: string // телефон
 
     @ApiProperty()
     @Column({ nullable: true })
-    email: string
+    email: string // почта
+
+    @ApiProperty()
+    @Column({ nullable: true })
+    event_goal: string // почта
 
     @ApiProperty()
     @Column("simple-array",{ nullable: true })
-    social_links: string[]
+    social_links: string[] //соц сети
 
 
 
 
     @OneToMany((type)=>Journal, (journal)=>journal.event)
-    journal:Journal[]
+    journal:Journal[] // журнал
 
     @OneToMany((type)=>Achievement, (achievement)=>achievement.event)
     achievement: Achievement
@@ -115,37 +131,37 @@ export class Event {
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "type_id" }])
-    type: Dictionary
+    type: Dictionary // тип (внеш, внут)
 
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "level_id" }])
-    level: Dictionary
+    level: Dictionary // уровень (вуз, межрег)
 
     
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "direction_id" }])
-    direction: Dictionary
+    direction: Dictionary // направление
 
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "type_participation_id" }])
-    type_participation: Dictionary
+    type_participation: Dictionary // вид участия
 
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "format_id" }])
-    format: Dictionary
+    format: Dictionary // формат проведения
 
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "clarifying_direction_id" }])
-    clarifying_direction: Dictionary
+    clarifying_direction: Dictionary // уточнающее направление
 
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "character_event_id" }])
-    character_event: Dictionary
+    character_event: Dictionary // характер мероприятия
 }
 

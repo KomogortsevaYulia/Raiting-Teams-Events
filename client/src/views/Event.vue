@@ -3,9 +3,13 @@ import axios from 'axios';
 import { onBeforeMount, ref } from 'vue';
 
 import { useRoute } from "vue-router";
-
+import moment from 'moment';
 const route = useRoute()
 const data = ref()
+const dateStart = ref()
+const dateEnd = ref()
+const dateStartRegistration = ref()
+const dateEndRegistration = ref()
 
 onBeforeMount(async () => {
     fetchCurrentEvent();
@@ -16,7 +20,11 @@ async function fetchCurrentEvent() {
     await axios.get('/api/events/external/' + route.params.id)
         .then((respose: any) => {
             data.value = respose.data
-        })
+            dateStart.value =  moment(data.value.dateStart).format('DD-MM-YYYY, HH:mm');
+            dateEnd.value =  moment(data.value.dateEnd).format('DD-MM-YYYY, HH:mm');;
+            dateStartRegistration.value =  moment(data.value.dateStartRegistration).format('DD-MM-YYYY, HH:mm');;
+            dateEndRegistration.value =  moment(data.value.dateEndRegistration).format('DD-MM-YYYY, HH:mm');;
+        }) 
 }
 </script>
 
@@ -47,46 +55,51 @@ async function fetchCurrentEvent() {
                         {{ item }}
                     </div>
                 </div>
-                <div class="rating">
-                    <span class="star" data-value="1">&#9733;</span>
-                    <span class="star" data-value="2">&#9733;</span>
-                    <span class="star" data-value="3">&#9733;</span>
-                    <span class="star" data-value="4">&#9733;</span>
-                    <span class="star" data-value="5">&#9733;</span>
-                    <p>
-                        Нет оценок
-                    </p>
-                </div>
+        
             </div>
             <div class="line ">
 
             </div>
             <div class="row ">
                 <div class="wrapperContent col align-items-center ps-0">
-                    <div class="row mb-5">
+                    <div class="row mb-2">
                         <h2>О мероприятии</h2>
                         <p class="event__description">
                             {{ data.description }}
                         </p>
                     </div>
+                    <div class="row ">
+                        <h2>Дата начала/окончания мероприятия</h2>
+                        <p class="event__description">
+                            {{ dateStart }} — {{ dateEnd }}
+                        </p>
+                    </div>
+                
+                    <div class="row ">
+                        <h2>Дата начала/окончания регистрации</h2>
+                        <p class="event__description">
+                            {{ dateStartRegistration  }} — {{ dateEndRegistration  }}
+                        </p>
+                    </div>
+                  
                     <div class="row">
                         <div class="email d-flex align-items-center  mb-4">
                             <i class="fas fa-envelope fa-xl"></i>
-                            <p class="mb-0 ms-3 fs-5 ">realmail@gmail.com</p>
+                            <p class="mb-0 ms-3 fs-5 ">{{ data.email }}</p>
                         </div>
                         <div class="number d-flex align-items-center mb-4">
                             <i class="fas fa-phone fa-xl"></i>
-                            <p class="mb-0 ms-3 fs-5">+7 (999)-999-99-99</p>
+                            <p  class="mb-0 ms-3 fs-5">{{ data.phone }}</p>
 
                         </div>
                         <div class="user d-flex align-items-center ">
-                            <i class="fas fa-paper-plane fa-xl"></i>
-                            <p class="mb-0 ms-3 fs-5">@user</p>
+                            <i class=" fa-brands fa-vk fa-xl me-2"></i>
+                            <p v-for="(social_link, index) in data.social_links" :key="index" class="mb-0 ms-3 fs-5">{{social_link}}</p>
 
                         </div>
                         <div class="address d-flex align-items-center">
                             <i class="fas fa-location-dot fa-xl ms-1"></i>
-                            <p class="mb-0 ms-4 fs-5">Точка кипения - г. Иркутск, ул. Лермонтова, 83, пересечение корпуса К и Г - 2 этаж (ауд. К-223) </p>
+                            <p class="mb-0 ms-4 fs-5">{{ data.event_place }}</p>
                         </div>
 
                     </div>
@@ -98,7 +111,7 @@ async function fetchCurrentEvent() {
 
                 <div class="down">
                     <button type="button" class="button ">Подать заявку</button>
-                    <p class="date">01.04.2021</p>
+                    <p class="date">14.03.2023</p>
                 </div>
             </div>
 
@@ -109,7 +122,6 @@ async function fetchCurrentEvent() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/assets/globals.scss';
 
 .header__info{
     margin-left: 4rem;
@@ -134,7 +146,7 @@ async function fetchCurrentEvent() {
     margin-right: -50vw;
 
     .wrapper-team__top-panel {
-        background-image: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 10%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%), url('https://kartinkin.net/uploads/posts/2022-03/1646221438_8-kartinkin-net-p-pole-chudes-kartinki-8.jpg');
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 10%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%), url('https://kartinkin.net/uploads/posts/2022-03/1646938402_7-kartinkin-net-p-armrestling-kartinki-7.jpg');
         background-size: 100% auto;
         background-color: rgba(0, 0, 0, 0.5);
         background-position: center;

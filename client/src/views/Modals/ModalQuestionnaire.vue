@@ -1,0 +1,162 @@
+<script setup lang="ts">
+import { onBeforeMount, ref } from 'vue';
+import { useFormStore } from "@/store/form_store"
+import { useRoute } from "vue-router";
+
+const route = useRoute()
+
+const idTeam = Number(route.params.id);
+
+const formStore = useFormStore()
+
+const data = ref()
+
+defineProps({
+  modelValue: {
+    type: String,
+  }
+});
+
+onBeforeMount(async () => {
+  fetchFormFields()
+})
+
+async function fetchFormFields() {
+  data.value = await formStore.fetchFormFields(idTeam)
+}
+
+async function checkRequired() {
+  
+}
+  //  export default {
+  //   name: "ModalQuestionnaire",
+  //   props: {
+  //     inputs: {
+  //       type: Array,
+  //       required: true,
+  //     },
+  //   },
+  //   data() {
+  //     return {
+  //       formValues: [],
+  //     };
+  //   },
+  //   methods: {
+  //     onSubmit() {
+  //       const requiredFields = this.inputs.filter((input) => input.required);
+  //       const hasEmptyFields = requiredFields.some((field, index) => !this.formValues[index]);
+  //     },
+  //   },
+  //  };
+</script>
+
+<template>
+  <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Подать заявку
+  </button>
+  <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-title" id="exampleModalLabel">Заполните анкету</div>
+        <div class="modal-subtitle" :value="modelValue">{{ modelValue }}</div>
+        <div v-for="form in data" class="wrapper-questions">
+          <div class="wrapper-one-question">
+            <div class="question-label">{{ form.title }}{{ form.required ? '*' : '' }}</div>
+            <textarea class="input-answer" />
+          </div>
+        </div>
+        <div class="wrap-button">
+          <button type="button" class="close-btn" data-bs-dismiss="modal">Закрыть</button>
+          <button class="send-btn">Отправить ответы</button>
+        </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<style lang="scss" scoped>
+.modal{
+  background-color: rgba(0, 0, 0, 0.8);
+  .modal-dialog {
+    width: 100%;
+    max-width: 900px;
+  .modal-content {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    padding: 40px 55px 40px 55px;
+    box-sizing: border-box;
+    .modal-title {
+      font-family: 'Montserrat';
+      font-weight: 400;
+      font-size: 36px;
+      color: #348498;
+    } 
+    .modal-subtitle {
+      font-family: 'Montserrat';
+      font-weight: 400;
+      font-size: 20px;
+      color: rgba(0, 0, 0, 0.8);
+      margin-top: 6px;
+    } 
+    .wrapper-questions{
+      margin-top: 16px;
+
+      .question-label{
+        margin-top: 40px;
+        font-family: 'Montserrat';
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 24px;
+        color: rgba(0, 0, 0, 0.8);
+      }
+      .input-answer{
+        margin-top: 6px;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
+        border-radius: 5px;
+        width: 100%;
+        resize: none;
+        font-family: 'Montserrat';
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 17px;
+
+        color: rgba(0, 0, 0, 0.8);
+      }
+    }
+    .wrap-button{
+      align-items:end;
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      .close-btn{
+        background: #FF502F;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        width: 225px;
+        height: 55px;
+      }
+      .send-btn{
+        font-family: 'Montserrat';
+        font-weight: 400;
+        font-size: 20px;
+        width: 290px;
+        height: 80px;
+
+        color: #FFFFFF;
+        background: #348498;
+        border-radius: 10px;
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #348498;
+        }
+      }
+    }
+  }
+}
+}
+</style>

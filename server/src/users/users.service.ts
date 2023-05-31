@@ -42,7 +42,15 @@ export class UsersService {
     })
 
   }
+  async update(updateUserDto: UpdateUserDto,id: number){
+    console.log(updateUserDto);
+    return this.usersRepository.update(+id, updateUserDto);
+  }
 
+  async addRole(education_group,title_role) {
+    
+  }
+  
   async findAllWithLimit(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });
   }
@@ -97,9 +105,7 @@ export class UsersService {
   }
 
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
@@ -184,6 +190,29 @@ export class UsersService {
   }
 
 
+  // modernize function user if user not exist
+  @HttpCode(400)
+  async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+
+    if(isNaN(id)){
+      throw new HttpException("такого юзера не существует " + id, 400)
+    }
+
+    const userExist = await this.userFunctionsRepository
+      .createQueryBuilder("user_function")
+      .leftJoin("user_function.function", "functions")
+      .addSelect("functions")
+      .leftJoinAndSelect("functions.team", "teams")
+      .addSelect("teams")
+        .where("user_function.user = :id", { id })
+      .getMany();
+
+    if (!userExist) {
+      throw new HttpException("такого юзера не существует ", 400)
+    }
+    return userExist
+  }
+  
   // function--------------------------------------------------------------------
 
    //удалить руководителя

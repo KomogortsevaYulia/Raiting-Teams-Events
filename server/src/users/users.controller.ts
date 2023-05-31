@@ -59,6 +59,11 @@ export class UsersController {
     let { password, ...res } = user;
     return res;
   }
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto,@Request() req) {
+    const userData = new CreateUserDto();
+    return this.usersService.update(req.body,+id);
+  }
 
   @ApiOperation({ summary: "Регистрация пользователя" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
@@ -132,7 +137,14 @@ export class UsersController {
   }
 
 
-
+  @Get('functions/:id')
+  @ApiOperation({ summary: "Получить список коллективов в которых состоит пользователь" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findOneWithFunction(@Param("id") id:number){
+    return this.usersService.findOneWithFunction(id);
+  }
+  
   // function--------------------------------------------------------------------
 
   @Delete('team/:id_team/leader/:id_leader')
