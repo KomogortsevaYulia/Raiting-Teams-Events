@@ -4,6 +4,7 @@ import { ApiOperation, ApiParam,ApiTags } from "@nestjs/swagger";
 import { createFormDto } from './dto/create-form.dto';
 import { createFormFieldsDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
+import { UpdateFieldDto } from './dto/update-field';
 
 @ApiTags('forms')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('forms')
@@ -18,11 +19,11 @@ export class FormsController {
   }
 
   
-  @Put(':id')
-  @ApiOperation({ summary: "Обновить анекту" })
-  update(@Param("id") idForm, @Body() updateFormDto: UpdateFormDto) {
-    return this.formsService.updateForm(idForm, updateFormDto);
-  }
+  // @Put(':id')
+  // @ApiOperation({ summary: "Обновить анекту" })
+  // update(@Param("id") idForm, @Body() updateFormDto: UpdateFormDto) {
+  //   return this.formsService.updateForm(idForm, updateFormDto);
+  // }
   
   @Post('field')
   @UsePipes(new ValidationPipe)
@@ -48,4 +49,12 @@ export class FormsController {
   findOnIdForm(@Param('team_id') team_id: number) {
     return this.formsService.findOnIdForm(team_id);
   }
+
+  @Put("field/:id")
+  @ApiOperation({ summary: "Обновить поле" })
+  updateFormField(@Param("id") field_id, @Body() updateFieldDto: UpdateFieldDto) {
+    console.log(updateFieldDto)
+    return this.formsService.updateFormField(field_id, updateFieldDto);
+  }
+
 }

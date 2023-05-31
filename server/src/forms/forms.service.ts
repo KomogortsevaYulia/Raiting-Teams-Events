@@ -7,7 +7,8 @@ import { createFormFieldsDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { Form } from './entities/form.entity';
 import { FormField } from './entities/form_field.entity';
-import { UserForms } from './entities/user_forms.entity';
+import { RequisitionFields } from './entities/requisition_fields.entity';
+import { UpdateFieldDto } from './dto/update-field';
 
 @Injectable()
 export class FormsService {
@@ -16,8 +17,8 @@ export class FormsService {
     private readonly formRepository: Repository<Form>,
     @InjectRepository(FormField)  // user //,
     private readonly formFieldsRepository: Repository<FormField>,
-    @InjectRepository(UserForms)  
-    private readonly userFormRepository: Repository<UserForms>
+    @InjectRepository(RequisitionFields)  
+    private readonly userFormRepository: Repository<RequisitionFields>
   ) { }
 
   findAll() {
@@ -36,25 +37,29 @@ export class FormsService {
 
   async findOnFormFields(team_id: number) {
 
+    let archive = false
     let res_forms = await this.formRepository
       .createQueryBuilder("form")
       .where("team_id = :team_id", {team_id: team_id})
+      .leftJoinAndSelect("form.form_field", "form_field")
+      .andWhere("form_field.archive = :archive", {archive:archive})
       .getOne()
-    let res_form_str = res_forms.fields_id[0].toString()
-    let fieldsIds = res_form_str
-    .split('\n')
-    .map(value => {
-      let parsedValue = parseInt(value, 10);
-      return isNaN(parsedValue) ? null : parsedValue;
-    });
-    let res_fields_form = await this.formFieldsRepository
-      .createQueryBuilder("form_fields")
-      .where("id = any(:ids)", {ids:fieldsIds})
-      .getMany()
-    return res_fields_form;
+
+    // let res_form_str = res_forms.fields_id[0].toString()
+    // let fieldsIds = res_form_str
+    // .split('\n')
+    // .map(value => {
+    //   let parsedValue = parseInt(value, 10);
+    //   return isNaN(parsedValue) ? null : parsedValue;
+    // });
+    // let res_fields_form = await this.formFieldsRepository
+    //   .createQueryBuilder("form_fields")
+    //   .where("id = any(:ids)", {ids:fieldsIds})
+    //   .getMany()
+    return res_forms;
   }
 
-  async createFormUser(createUserFormDto: createUserFormDto): Promise<UserForms> {
+  async createFormUser(createUserFormDto: createUserFormDto): Promise<RequisitionFields> {
 
     let userForm = await this.userFormRepository.save({
       // ...createUserFormDto,
@@ -72,31 +77,31 @@ export class FormsService {
     let form = await this.formRepository.save({
       ...createFormDto,
       date: new Date(),
-      fields_id: createFormDto.fields_id,
-      description: "qwe",
-      team_id: createFormDto.team_id
+      description: "description",
     })
 
     return form;
   }
 
-  async updateForm(id: number, UpdateFormDto: UpdateFormDto) {
-     return await this.formRepository.update(id, UpdateFormDto)
-    }
+  // async updateForm(id: number, UpdateFormDto: UpdateFormDto) {
+  //    return await this.formRepository.update(id, UpdateFormDto)
+  //   }
 
   async createFormField(createFormFieldsDto: createFormFieldsDto) {
 
     let field = await this.formFieldsRepository.save({
-      ...createFormFieldsDto,
-      title: createFormFieldsDto.title,
-      required: createFormFieldsDto.required
+      ...createFormFieldsDto
     })
 
     return field;
   }
 
-  update(id: number, updateFormDto: UpdateFormDto) {
-    return `This action updates a #${id} form`;
+  async updateFormField(field_id:number, updateFieldDto: UpdateFieldDto) {
+ 
+    return await this.formFieldsRepository.update(field_id,{
+      ...updateFieldDto,
+     
+    })
   }
 
   remove(id: number) {

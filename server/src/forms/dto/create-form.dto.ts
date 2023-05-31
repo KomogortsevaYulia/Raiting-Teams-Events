@@ -17,9 +17,9 @@ export class createUserFormDto{
 }
 
 export class createFormDto{
-    @IsOptional()
-    @IsNotEmpty({ message: 'Поле пустое' })
-    fields_id:string
+    // @IsOptional()
+    // @IsNotEmpty({ message: 'Поле пустое' })
+    // fields_id:string
 
     @IsNumber()
     @Type(() => Number)
@@ -27,6 +27,11 @@ export class createFormDto{
 }
 
 export class createFormFieldsDto{
+
+    @IsNumber()
+    @Type(() => Number)
+    form_id:number
+
     @IsString()
     @IsNotEmpty({ message: 'Поле пустое' })
     title:string

@@ -5,5 +5,5 @@ import { IsNotEmpty, IsOptional } from 'class-validator'
 export class UpdateFormDto {
     @IsOptional()
     @IsNotEmpty({ message: 'Поле пустое' })
-    fields_id:string
+    form_id:number
 }

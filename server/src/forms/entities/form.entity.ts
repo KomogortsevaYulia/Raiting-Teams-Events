@@ -18,13 +18,17 @@ export class Form {
     @Column()
     description: string
 
-    @ApiProperty()
-    @Column("simple-array")
-    fields_id: string
+    // @ApiProperty()
+    // @Column("simple-array")
+    // fields_id: string
 
     @ApiProperty()
     @ManyToOne(()=>Team, (team)=> team.id)
     @JoinColumn([{ name: "team_id" }])
     team_id:number
+
+    @OneToMany((type) => FormField, (formField) => formField.form_id)
+    @JoinColumn([{ name: "form_field_id" }])
+    form_field: FormField[]
 }
 

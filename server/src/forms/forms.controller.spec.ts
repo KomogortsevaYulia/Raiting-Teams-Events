@@ -6,7 +6,7 @@ import { createFormFieldsDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { Form } from './entities/form.entity';
 import { FormField } from './entities/form_field.entity';
-import { UserForms } from './entities/user_forms.entity';
+import { RequisitionFields } from './entities/requisition_fields.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('FormsController', () => {
@@ -27,7 +27,7 @@ describe('FormsController', () => {
           useValue: {},
         },
         {
-          provide: getRepositoryToken(UserForms),
+          provide: getRepositoryToken(RequisitionFields),
           useValue: {},
         },
       ],

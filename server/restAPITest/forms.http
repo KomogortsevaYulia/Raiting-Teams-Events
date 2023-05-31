@@ -1,0 +1,38 @@
+### CREATE FIELD
+POST http://localhost:3000/api/forms/field HTTP/1.1
+content-type: application/json
+
+{
+    "form_id":8,
+    "title":"title23",
+    "required":false
+   
+}
+
+### CREATE ANKETA
+POST http://localhost:3000/api/forms HTTP/1.1
+content-type: application/json
+
+{
+    "team_id":6
+   
+}
+
+### Получение списка вопросов анкеты по id коллектива
+GET http://localhost:3000/api/forms/6
+
+###
+# Получение id анкеты по id коллектива
+GET http://localhost:3000/api/forms/id/6
+
+###
+# Обновить поле
+put http://localhost:3000/api/forms/field/30 HTTP/1.1
+content-type: application/json
+
+{
+    "archive":true
+   
+}
+
+
