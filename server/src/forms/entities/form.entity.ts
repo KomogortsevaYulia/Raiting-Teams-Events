@@ -27,7 +27,7 @@ export class Form {
     @JoinColumn([{ name: "team_id" }])
     team_id:number
 
-    @OneToMany((type) => FormField, (formField) => formField.form_id)
+    @OneToMany((type) => FormField, (formField) => formField.form)
     @JoinColumn([{ name: "form_field_id" }])
     form_field: FormField[]
 }

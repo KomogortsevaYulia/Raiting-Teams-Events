@@ -25,6 +25,6 @@ export class FormField {
     @ApiProperty()
     @ManyToOne(()=>Form, (form)=> form.id)
     @JoinColumn([{ name: "form_id" }])
-    form_id:number
+    form:Form
     
 }

@@ -13,11 +13,7 @@ export class Requisitions {
 
     @ManyToOne(() => User, (user) => user.id)
     @JoinColumn([{ name: "user_id" }])
-    user_id: User
-
-    @ManyToOne(() => Form, (form) => form.id)
-    @JoinColumn([{ name: "form_id" }])
-    form_id: Form
+    user: User
 
     @ApiProperty()
     @Column()
@@ -40,11 +36,7 @@ export class Requisitions {
     @Column()
     date_update: Date
 
-    @ManyToOne(()=>Requisitions, (requisition)=> requisition.id)
-    @JoinColumn([{ name: "requisition_id" }])
-    requisition:Requisitions
-
     @OneToMany((type) => RequisitionFields, (requisitionFields) => requisitionFields.requisition)
     @JoinColumn([{ name: "requisition_fields_id" }])
-    requisitionFields: RequisitionFields[]
+    requisition_fields: RequisitionFields[]
 }

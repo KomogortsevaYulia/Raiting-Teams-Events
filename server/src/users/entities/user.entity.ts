@@ -66,6 +66,10 @@ export class User {
     @JoinColumn([{ name: "journal_id" }])
     journal: Journal
 
+    @OneToMany((type) => Requisitions, (requisition) => requisition.user)
+    @JoinColumn([{ name: "requisition_id" }])
+    requisition: Requisitions
+
     @BeforeInsert()
     async hashPassword() {
         this.password = await argon2.hash(this.password);

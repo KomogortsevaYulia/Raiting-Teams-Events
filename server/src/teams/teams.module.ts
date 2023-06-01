@@ -8,9 +8,10 @@ import { UserFunction } from '../users/entities/user_function.entity';
 import { Function } from '../users/entities/function.entity';
 import { UsersService } from '../users/users.service';
 import { UploadsService } from '../uploads/uploads.service';
+import { Requisitions } from './entities/requisition.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function])],
+  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions])],
   controllers: [TeamsController],
   providers: [TeamsService, UsersService, UploadsService]
 })

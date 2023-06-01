@@ -2,8 +2,8 @@
 import WIP from '@/components/WIP.vue'
 import Participation from '@/components/Participation.vue'
 import { onBeforeMount, ref } from 'vue'
-import TeamsForm from './TeamsForm.vue'
 import Ankets from '@/views/Questionnaire.vue'
+import ModalQuestionnaire from "./Modals/ModalQuestionnaire.vue";
 
 import { useTeamStore } from "../store/team_store"
 import axios from 'axios'
@@ -127,13 +127,13 @@ const newsList = [
   <!-- Это вся обертка -->
   <div class="wrapper-team">
 
-    <!-- Обертка карточек коллективов -->
-    <div class="full-width">
+   <!-- Обертка карточек коллективов -->
+   <div class="full-width">
       <div class="wrapper-team__top-panel">
         <div class="text-area">
           <div class="container">
             <p>{{ data.title }}</p>
-            <button>Подать заявку</button>
+            <ModalQuestionnaire v-model="data.title"/>
           </div>
         </div>
       </div>
