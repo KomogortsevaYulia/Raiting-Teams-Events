@@ -40,7 +40,7 @@ export class Achievement {
     date_status_changed: string
 
     @ApiProperty()
-    @Column()
+    @Column({nullable:true})
     comment: string
 
     @ApiProperty()

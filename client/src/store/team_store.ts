@@ -113,9 +113,9 @@ export const useTeamStore = defineStore("teams", () => {
         formData.append('shortname', uT.shortname);
         formData.append('cabinet', uT.cabinet);
         // paths to files
-        if (uT.charterPath.length > 0)
+        if (uT.charterPath !=null && uT.charterPath.length > 0)
             formData.append('charterTeam', uT.charterPath);
-        if (uT.documentPath.length > 0)
+        if (uT.documentPath !=null && uT.documentPath.length > 0)
             formData.append('document', uT.documentPath);
 
         formData.append('oldLeaderId', uT.oldUserId.toString());

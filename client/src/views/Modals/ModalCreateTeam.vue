@@ -104,11 +104,13 @@ async function fillForm() {
 
     // alert(t.functions [0].userFunctions[0].id)
     //если есть руководитель коллектива
-    if (t.functions != null && t.functions[0].userFunctions != null) {
+    if (t.functions != null &&  t.functions[0] && t.functions[0].userFunctions) {
 
       let uF = t.functions[0].userFunctions[0].user
       optionSelect.value = { name: uF.fullname, email: uF.email, id: uF.id, data: uF.fullname + " " + uF.email }
       oldUserId.value = uF.id
+    }else{
+      optionSelect.value = null
     }
 
 
@@ -272,7 +274,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
                   <v-select placeholder="ФИО Руководителя или email" class="v-select" label="data" @input="onTextChange"
                     :options="foundUsers" v-model="optionSelect"></v-select>
 
-                  <input type="text" placeholder="Аудитория(кабинет)" v-model="cabinet" required>
+                  <input type="text" placeholder="Аудитория(кабинет)" v-model="cabinet">
 
                   <div class="mb-2">
                     <label for="formFile" class="form-label">загрузить устав</label>

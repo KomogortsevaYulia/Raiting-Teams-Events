@@ -45,7 +45,7 @@ GET http://localhost:3000/api/teams/?id_parent=2
 
 ###
 # select head user and teams
-GET http://localhost:3000/api/teams/1
+GET http://localhost:3000/api/teams
 
 ###
 PUT  http://localhost:3000/api/teams/37/change_archive HTTP/1.1

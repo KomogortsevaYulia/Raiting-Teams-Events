@@ -27,4 +27,7 @@
   <img src="https://icons-for-free.com/iconfiles/png/512/Swagger-1324888766897607015.png" title="CSS3" alt="CSS" width="70" height="70"/>&nbsp;
 </div>
 
+## База знаний
+https://github.com/KomogortsevaYulia/knowledge_base_rating
+
 ## Проект находится в стадии реализации
