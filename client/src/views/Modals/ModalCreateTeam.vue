@@ -1,15 +1,12 @@
 <script setup lang="ts">
 
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import _ from 'lodash'
 import { useTeamStore } from '@/store/team_store';
 import { useUserStore } from '@/store/user_store';
-import { faDharmachakra } from '@fortawesome/free-solid-svg-icons';
 import UpdateTeam from './UpdateTeam';
-import { useFileStore } from '@/store/file_store';
 
 const teamStore = useTeamStore();
-const fileStore = useFileStore();
 
 const props = defineProps<{
   isEditTeam: boolean, //если модальное окно вызвано для редактирования (не создание нового коллектива)
@@ -104,12 +101,12 @@ async function fillForm() {
 
     // alert(t.functions [0].userFunctions[0].id)
     //если есть руководитель коллектива
-    if (t.functions != null &&  t.functions[0] && t.functions[0].userFunctions) {
+    if (t.functions != null && t.functions[0] && t.functions[0].userFunctions) {
 
       let uF = t.functions[0].userFunctions[0].user
       optionSelect.value = { name: uF.fullname, email: uF.email, id: uF.id, data: uF.fullname + " " + uF.email }
       oldUserId.value = uF.id
-    }else{
+    } else {
       optionSelect.value = null
     }
 
@@ -254,14 +251,16 @@ async function archiveTeam(id: number, isArchive: boolean) {
           <!-- Это вся обертка -->
 
           <div class="wrapper-team__create">
-            <p v-if="isEditTeam">
+
+            <div v-if="!isEditTeam" class="alert alert-primary" role="alert">
               Прежде чем создать в системе новый коллектив, нужно
-              утвердить его приказом!</p>
+              утвердить его приказом!
+            </div>
+
 
             <div v-if="responseMsg" class="alert alert-warning" role="alert">
               {{ responseMsg }}
             </div>
-
 
             <!-- Форма с полями для создания -->
             <form class="form-team__create" @submit.prevent="isEditTeam ? updateTeam() : createTeam()">
@@ -309,9 +308,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
                 </div>
 
               </div>
-              <div class="create-wrapper-img">
 
-              </div>
 
 
             </form>
@@ -325,10 +322,9 @@ async function archiveTeam(id: number, isArchive: boolean) {
 </template>
 
 <style lang="scss" scoped>
-
 .btn-close {
   &:hover {
-    border: 1px solid  var(--main-color-hover);
+    border: 1px solid var(--main-color-hover);
     transition: 0.3s;
   }
 }
@@ -375,14 +371,6 @@ async function archiveTeam(id: number, isArchive: boolean) {
           margin-bottom: 1rem;
         }
       }
-    }
-
-    .create-wrapper-img {
-      width: 20%;
-      border-radius: 0 1rem 1rem 0;
-      background-color: #D9D9D9;
-      background-image: url("https://i.playground.ru/p/9z2ux3Z5fFnMpL4gqI1gHw.jpeg");
-      background-size: cover;
     }
   }
 }

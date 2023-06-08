@@ -14,7 +14,7 @@ onBeforeMount(() => {
   <header class="mw-100">
     <Navbar />
   </header>
-  <div class="container mt-4">
+  <div class="container">
     <RouterView />
   </div>
 </template>
@@ -27,5 +27,6 @@ header {
 
 .container {
   margin-inline: 0;
+  margin-top: 5.5rem;
 }
 </style>

@@ -15,58 +15,74 @@ const itemLink = [
     { name: "Коллективы", path: "/teams" },
     // { name: "Статистика", path: "/statistic" },
 ]
+
+
 </script>
 
 <template>
-    <div class="navbar-wrapper container">
-        <!-- Иконка политеха -->
-        <nav class="navbar__item-logo">
-            <RouterLink to="/">
-                <img src="@/assets/icon/logo.svg" alt="logo" class="logo">
-            </RouterLink>
-        </nav>
-
-        <!-- Здесь перебираем элементы из массива менюшек -->
-        <div class="navbar__item-link">
-            <nav v-for="item in itemLink" class="link-item">
-                <RouterLink class="link" active-class="active" :to="item.path">
-                    <p>{{ item.name }}</p>
+    <nav class="navbar navbar-wrapper navbar-expand-md fixed-top p-1">
+        <div class="container-fluid mx-lg-6 mx-md-5">
+            <!-- Иконка политеха -->
+            <div class="navbar__item-logo">
+                <RouterLink to="/">
+                    <img src="@/assets/icon/logo.svg" alt="logo" class="logo">
                 </RouterLink>
-            </nav>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Переключатель навигации">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <!-- Здесь перебираем элементы из массива менюшек -->
+                <div class="navbar__item-link row">
+                    <div v-for="item in itemLink" class="link-item col-auto">
+                        <RouterLink class="link" active-class="active" :to="item.path">
+                            <p>{{ item.name }}</p>
+                        </RouterLink>
+                    </div>
 
-            <nav v-if="can('can view directions')" class="link-item">
+                    <div v-if="can('can view directions')" class="link-item col-auto">
 
-                <RouterLink class="link" active-class="active" :to="'/statistic'">
-                    <p>Статистика</p>
-                </RouterLink>
+                        <RouterLink class="link" active-class="active" :to="'/statistic'">
+                            <p>Статистика</p>
+                        </RouterLink>
 
-            </nav>
-            
-            <nav v-if="can('can view directions')" class="link-item">
-                <RouterLink class="link" active-class="active" :to="'/directions'">
-                    <p>Направления</p>
-                </RouterLink>
-            </nav>
+                    </div>
+
+                    <div v-if="can('can view directions')" class="link-item col-auto">
+                        <RouterLink class="link" active-class="active" :to="'/directions'">
+                            <p>Направления</p>
+                        </RouterLink>
+                    </div>
+                </div>
+
+                <!-- Кнопка вход + Личный кабинет-->
+                <div class="navbar__item-login">
+                    <User_Profile v-if="permissions_store.isLogged" />
+                    <RouterLink v-if="!permissions_store.isLogged" to="/login">
+                        <button class="login-button">Войти</button>
+                    </RouterLink>
+                </div>
+            </div>
         </div>
+    </nav>
 
-        <!-- Кнопка вход + Личный кабинет-->
-        <div class="navbar__item-login">
-            <User_Profile v-if="permissions_store.isLogged" />
-            <RouterLink v-if="!permissions_store.isLogged" to="/login">
-                <button class="login-button">Войти</button>
-            </RouterLink>
-        </div>
 
-    </div>
 </template>
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
 
+.navbar-toggler{
+    background: none;
+    &:hover{
+        background: none;
+    }
+}
 // Блок
 .navbar-wrapper {
-    display: flex;
-    position: relative;
+    background-color: white;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     align-items: center;
 
     // Элемент иконки
@@ -89,7 +105,7 @@ const itemLink = [
                 cursor: pointer;
                 height: 2rem;
                 color: #348498;
-                transition: 0.3s ease;
+                transition: 0.2s ease;
                 font-size: 14px;
                 font-weight: 600;
                 margin: 0;

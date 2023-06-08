@@ -10,8 +10,6 @@ import DownloadReport from './DowloadReport.vue';
 
 // graphics
 import ColorfulBlocks from '@/components/Charts/ColorfulBlocks.vue';
-import EPie from '@/components/Charts/EPie.vue';
-import EBar from '@/components/Charts/EBar.vue';
 
 import { useTeamStore } from '@/store/team_store';
 import _, { defaultsDeep, forIn } from 'lodash';
@@ -24,6 +22,7 @@ import { useStatiscticLogicStore } from './statistic_logic';
 import { TimeRange, TypeGraphic, TypeReport, TypeSeason } from './enums_report';
 import { DirectionName } from '@/store/enums/enum_teams';
 import { EVENT_LEVEL, EVENT_TYPE } from '@/store/constants/constants_class_names';
+import Graphics from './Graphics.vue';
 
 
 // store--------------------------------------------------------------
@@ -51,7 +50,7 @@ const typeGraphics = ref([{ id: 0, data: TypeGraphic.EVENTS_STATISTIC, isVisible
 { id: 2, data: TypeGraphic.DEFAULT_PARAMETERS, isVisibleChart: true, typeReport: TypeReport.DIRECTION }])
 
 // даты
-const dates = [{ id: 0, date: '1н', timeRange: TimeRange.WEEK }, 
+const dates = [{ id: 0, date: '1н', timeRange: TimeRange.WEEK },
 { id: 1, date: '1м', timeRange: TimeRange.MONTH }, { id: 2, date: '1г', timeRange: TimeRange.YEAR }]
 
 //типы отчетов
@@ -69,20 +68,23 @@ const selectedParams = ref({
 
 
 // data for graphics---------------------------------------------------
-const eventsSeasons = ref([
-  { value: 0, name: TypeSeason.AUTUMN },
-  { value: 0, name: TypeSeason.WINTER },
-  { value: 0, name: TypeSeason.SPRING },
-  { value: 0, name: TypeSeason.SUMMER },
-])
 
-let labelsTopTeams = ref(['-'])
-let dataTopTeams = ref([0])
+let graphics = ref({
+  // оп коллективов
+  topTeams: { labelsTopTeams: ['-'], dataTopTeams: [0] },
+  //данные для графика внутренние/внешние мероприятия
+  dataEventsInnerOuter: [
+    { value: 0, name: "Внешнее" },
+    { value: 0, name: "Внутреннее" },],
+  // сезонность проведения мероприятий
+  eventsSeasons: [
+    { value: 0, name: TypeSeason.AUTUMN },
+    { value: 0, name: TypeSeason.WINTER },
+    { value: 0, name: TypeSeason.SPRING },
+    { value: 0, name: TypeSeason.SUMMER },
+  ]
+})
 
-//данные для графика внутренние/внешние мероприятия
-let dataEventsInnerOuter = ref([
-  { value: 0, name: "Внешнее" },
-  { value: 0, name: "Внутреннее" },])
 
 
 const colorfulBlocksData = ref([
@@ -169,10 +171,6 @@ async function changeTimeViaButton(timeRange: TimeRange) {
   getEvents()
 }
 
-async function changeTimeViaCalendar() {
-  getEvents()
-}
-
 // получить мероприятия коллектива
 async function getEventsOfTeam(teamId: number) {
 
@@ -193,8 +191,8 @@ async function updateCharts() {
     switch (it.data) {
       case TypeGraphic.EVENTS_STATISTIC:
         if (it.isVisibleChart) { //если график нужно отобразить
-          dataEventsInnerOuter.value = chartStore.countEventsInnerOuter(foundEvents.value)
-          eventsSeasons.value = chartStore.countEventsBySeason(foundEvents.value)
+          graphics.value.dataEventsInnerOuter = chartStore.countEventsInnerOuter(foundEvents.value)
+          graphics.value.eventsSeasons = chartStore.countEventsBySeason(foundEvents.value)
         }
         break;
       case TypeGraphic.TEAMS_EVENTS:
@@ -206,8 +204,8 @@ async function updateCharts() {
             selectedParams.value.selectedLevel.id,
             selectedParams.value.selectedType.id)
 
-          labelsTopTeams.value = res.labelsTopTeams
-          dataTopTeams.value = res.dataTopTeams
+          graphics.value.topTeams.labelsTopTeams = res.labelsTopTeams
+          graphics.value.topTeams.dataTopTeams = res.dataTopTeams
         }
         break;
       case TypeGraphic.DEFAULT_PARAMETERS:
@@ -249,7 +247,6 @@ function seeGraphics(graphic: {
 }) {
 
   typeGraphics.value[graphic.id].isVisibleChart = !graphic.isVisibleChart
-
 }
 
 
@@ -263,12 +260,8 @@ async function getTeamsOfDirection(directionId: number) {
   colorfulBlocksData.value[1].value = data[1]
   let arrayData = []
 
-  //arrayData[0] = { name: "Все", id: 0 }
-
-
   for (let i = 0; i < teams.length; i++) {
     let team = teams[i]
-    // console.log("team " + team.title)
     arrayData[i] = { name: team.title, id: team.id };
   }
 
@@ -276,9 +269,7 @@ async function getTeamsOfDirection(directionId: number) {
     selectedParams.value.selectedTeam = arrayData[0]
   else selectedParams.value.selectedTeam = { name: "Все", id: 0 }
 
-
   foundTeams.value = arrayData
-
 }
 
 //получит Events via journals-------------------------------------------------
@@ -292,7 +283,6 @@ async function getEventsViaJournalsByTeam(teamId: number) {
   let countAppropriate = res.data[1]
 
   return { data: arrayData, count: countAppropriate }
-
 }
 
 
@@ -458,13 +448,23 @@ function changeTypeReport() {
         </div>
 
 
+
+        <!--Отчетность  -->
+        <div class="my-4">
+          <p>Отчетность</p>
+          <hr>
+        </div>
+        
         <!-- скачать отчетность -->
-        <DownloadReport :direction="foundDirections[selectedParams.selectedDirection]" :type-report="selectedParams.selectedTypeReport"
-          :level="selectedParams.selectedLevel" :type-event="selectedParams.selectedType" :date-range="selectedParams.dateRange"
+        <DownloadReport :direction="foundDirections[selectedParams.selectedDirection]"
+          :type-report="selectedParams.selectedTypeReport" :level="selectedParams.selectedLevel"
+          :type-event="selectedParams.selectedType" :date-range="selectedParams.dateRange"
           :team="selectedParams.selectedTeam" />
 
 
-        <!-- Graphics -->
+
+
+
         <div class="my-4">
           <p>Отобразить графики</p>
           <hr>
@@ -497,60 +497,17 @@ function changeTypeReport() {
       </div>
     </div>
 
+
+
+
+
+    <!-- Graphics -->
     <div class="col-lg-7">
-      <div class="chart-container">
-        <!-- statistic -->
-
-        <!-- Мероприятия -->
-        <div v-if="typeGraphics[0].isVisibleChart" class="block-content">
-
-          <div class="row d-flex justify-content-center text-center">
-            <h4>Мероприятия</h4>
-            <div class="row g-4">
-              <div class="col-12 chartBorder">
-                <h6>Статистика дат проведения мероприятий</h6>
-                <EPie :data="eventsSeasons" name="даты проведения мероприятий" />
-              </div>
-
-              <div class="col-12 chartBorder">
-                <h6>Количество внутренних/внешних мероприятий</h6>
-
-                <EPie :data="dataEventsInnerOuter" name="количество мероприятий" />
-
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-
-
-
-
-
-
-
-
-
-        <!-- Коллективы -->
-        <div v-if="typeGraphics[1].isVisibleChart" class="block-content">
-
-          <div class="row d-flex justify-content-center text-center">
-            <h4>Коллективы</h4>
-            <div class="row mt-4 chartBorder">
-              <h6>Топ коллективов с наибольшим числом мероприятий</h6>
-
-              <div class="col">
-                <EBar :labels="labelsTopTeams" :data="dataTopTeams" />
-                <!-- <EBar class="chart" :labels="labelsTopTeams" :data="dataTopTeams"
-                                                                                                                                                                                                                              title="Топ коллективов с наибольшим числом мероприятий" label-name="число мероприятий" /> -->
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+      <Graphics :typeGraphics="typeGraphics" :graphics="graphics" />
     </div>
+    <!-- Graphics -->
+
+
   </div>
 </template>
       
@@ -600,24 +557,6 @@ function changeTypeReport() {
   width: fit-content;
   padding: 5px;
   min-width: 150px;
-}
-
-
-// statistic-----------------------------------------------------------------------------
-
-.chart-container {
-  width: 100%;
-  margin: auto;
-
-  .block-content {
-    padding: 80px;
-  }
-}
-
-.chart {
-  margin: 15px;
-  display: flex;
-  width: 100%;
 }
 
 // блоки с содержимым-------------------------------------------------------------------
@@ -684,56 +623,10 @@ function changeTypeReport() {
       background: white;
       color: black;
     }
-
   }
-
-
-
 }
 
 // чекбоксы--------------------------------------------------------------------------------
-
-// global
-
-.form-select,
-.accordion-heade {
-  border: 1px solid var(--second-color);
-  border-radius: 0.25rem;
-  line-height: 1.5;
-  box-shadow: none;
-
-  &:focus {
-    box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
-    outline: 0;
-    border: 0;
-  }
-
-}
-
-.accordion-header {
-
-
-  .accordion-button {
-
-    &:focus,
-    &:hover {
-      color: black;
-      background: white;
-      box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
-      outline: 0;
-      border: 0;
-    }
-  }
-}
-
-
-
-.chartBorder {
-  border: var(--main-border-card);
-  border-radius: 5px;
-  padding: 20px;
-
-}
 </style>
       
       

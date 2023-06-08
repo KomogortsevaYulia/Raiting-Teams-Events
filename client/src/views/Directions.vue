@@ -23,6 +23,8 @@ itemList.forEach((item, index) => {
 </script>
 
 <template>
+
+  
     <div class="wrapper-team wrapper-content">
         <!-- Навигация -->
         <div class="wrapper-team__navigation">

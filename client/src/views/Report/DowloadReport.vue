@@ -78,12 +78,6 @@ async function downloadFile() {
 
 <template lang="">
 
-    <!--Отчетность  -->
-   <div class="my-4">
-      <p>Отчетность</p>
-      <hr>
-    </div>
-
     <div class="accordion" id="accordionExample">
       <div class="accordion-item">
 

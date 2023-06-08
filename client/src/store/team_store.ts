@@ -79,8 +79,14 @@ export const useTeamStore = defineStore("teams", () => {
         formData.append('userID', userId.toString());
         formData.append('cabinet', cabinet);
 
-        formData.append('files', fileUstav, `ustav.${fileUstav.name.split(".").pop()}`);
-        formData.append('files', fileDocument, `document.${fileDocument.name.split(".").pop()}`);
+        if(fileUstav && fileDocument){
+            formData.append('files', fileUstav, `ustav.${fileUstav.name.split(".").pop()}`);
+            formData.append('files', fileDocument, `document.${fileDocument.name.split(".").pop()}`);
+        }else{
+            responseMsg = `вы забыли добавить файлы`
+            return responseMsg
+        }
+          
 
         const config = {
             headers: {
