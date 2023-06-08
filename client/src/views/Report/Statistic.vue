@@ -26,13 +26,23 @@ import { DirectionName } from '@/store/enums/enum_teams';
 import { EVENT_LEVEL, EVENT_TYPE } from '@/store/constants/constants_class_names';
 
 
-// store
+// store--------------------------------------------------------------
 const teamStore = useTeamStore();
 const eventStore = useEventStore();
 
 const chartStore = useChartStore();
 const statisticLogic = useStatiscticLogicStore();
 const dictionaryStore = useDictionaryStore();
+// store--------------------------------------------------------------
+
+
+// dropdowns-----------------------------------------------------------
+const levels = ref([{ id: 0, name: "Все" }])
+const types = ref([{ id: 0, name: "Все" }])
+
+const foundTeams = ref([{ name: "Все", id: 0 }])
+const foundEvents = ref()
+// dropdowns-----------------------------------------------------------
 
 
 // graphics and checkboxes
@@ -40,38 +50,34 @@ const typeGraphics = ref([{ id: 0, data: TypeGraphic.EVENTS_STATISTIC, isVisible
 { id: 1, data: TypeGraphic.TEAMS_EVENTS, isVisibleChart: false, typeReport: TypeReport.TEAM },
 { id: 2, data: TypeGraphic.DEFAULT_PARAMETERS, isVisibleChart: true, typeReport: TypeReport.DIRECTION }])
 
-// dates
-const dates = [{ id: 0, date: '1н', timeRange: TimeRange.WEEK }, { id: 1, date: '1м', timeRange: TimeRange.MONTH }, { id: 2, date: '1г', timeRange: TimeRange.YEAR }]
+// даты
+const dates = [{ id: 0, date: '1н', timeRange: TimeRange.WEEK }, 
+{ id: 1, date: '1м', timeRange: TimeRange.MONTH }, { id: 2, date: '1г', timeRange: TimeRange.YEAR }]
 
-
-// dropdowns
-const levels = ref([{ id: 0, name: "Все" }])
-const types = ref([{ id: 0, name: "Все" }])
-
+//типы отчетов
 const typeReports = [{ id: 0, data: TypeReport.DIRECTION }, { id: 1, data: TypeReport.TEAM }]
 
-//start 1 year millis * 5 = 5 years millis  and current year -  5 years
-const dateRange = ref({ start: new Date(new Date().getTime() - 31556952000 * 5), end: new Date() })    //дата
+// выбранные параметры
+const selectedParams = ref({
+  dateRange: { start: new Date(new Date().getTime() - 31556952000 * 5), end: new Date() }, //дата
+  selectedDirection: 0,                     //все направления
+  selectedLevel: levels.value[0],           //уровень
+  selectedType: types.value[0],             //тип мероприятия
+  selectedTypeReport: TypeReport.DIRECTION, //тип отчета
+  selectedTeam: { name: "Все", id: 0 }      //выбранный коллектив
+})
 
-const selectedDirection = ref(0)    //все направления
-// const selectedTeam = ref(0)      //все направления
 
-const selectedLevel = ref(levels.value[0])                         //уровень
-const selectedType = ref(types.value[0])                          //тип мероприятия
-const selectedTypeReport = ref(TypeReport.DIRECTION) //тип отчета
-const selectedTeam = ref({ name: "Все", id: 0 })
-
+// data for graphics---------------------------------------------------
 const eventsSeasons = ref([
   { value: 0, name: TypeSeason.AUTUMN },
   { value: 0, name: TypeSeason.WINTER },
   { value: 0, name: TypeSeason.SPRING },
   { value: 0, name: TypeSeason.SUMMER },
 ])
-// данные для вывода в графики
+
 let labelsTopTeams = ref(['-'])
 let dataTopTeams = ref([0])
-
-// data for graphics---------------------------------------------------
 
 //данные для графика внутренние/внешние мероприятия
 let dataEventsInnerOuter = ref([
@@ -82,16 +88,12 @@ let dataEventsInnerOuter = ref([
 const colorfulBlocksData = ref([
   { value: 0, name: "Число мероприятий" },
   { value: 0, name: "Число коллективов" },])
+// data for graphics---------------------------------------------------
 
-// dropdowns-----------------------------------------------------------
-
-const foundTeams = ref([{ name: "Все", id: 0 }])
-const foundEvents = ref()
-
-
-// { id: number, shortname: string }
+// найденные направления из системы
 const foundDirections = ref([{ id: 0, shortname: "Все", idDB: 0, idDirectionEvent: Direction.ALL }])           //дата
 
+// заполнить выпадающие списки
 function fillDropdowns(data: any) {
 
   let res = [{ id: 0, name: "Все" }]
@@ -111,21 +113,17 @@ onBeforeMount(async () => {
   let tp = await dictionaryStore.getFromDictionaryByClassID(EVENT_TYPE)
   types.value = fillDropdowns(tp)
 
-  // levels.value = await fillDropdown(Level)
-  // types.value = await fillDropdown(Type)
   await getDirections()
   getEvents()
-  // levels.value.find(4, 1)
-
 })
 
 // если выбран коллектив то получить статистику с мероприятий
-watch(() => selectedTeam.value, async () => {
+watch(() => selectedParams.value.selectedTeam, async () => {
   getEvents()
 })
 
 // date in calendar changed (для календаря)
-watch(() => dateRange.value, () => {
+watch(() => selectedParams.value.dateRange, () => {
   getEvents()
 })
 
@@ -133,12 +131,12 @@ watch(() => dateRange.value, () => {
 // получение мероприятий
 async function getEvents() {
 
-  switch (selectedTypeReport.value) {
+  switch (selectedParams.value.selectedTypeReport) {
     case TypeReport.DIRECTION:
       await getEventsByDirection()
       break
     case TypeReport.TEAM:
-      await getEventsOfTeam(selectedTeam.value.id)
+      await getEventsOfTeam(selectedParams.value.selectedTeam.id)
       break
   }
 
@@ -165,8 +163,8 @@ async function changeTimeViaButton(timeRange: TimeRange) {
       break;
   }
 
-  dateRange.value.start = dStart
-  dateRange.value.end = dEnd
+  selectedParams.value.dateRange.start = dStart
+  selectedParams.value.dateRange.end = dEnd
 
   getEvents()
 }
@@ -204,9 +202,9 @@ async function updateCharts() {
 
         if (it.isVisibleChart) {
           let res = await chartStore.countTeamsEvents(foundTeams.value,
-            dateRange.value.start, dateRange.value.end,
-            selectedLevel.value.id,
-            selectedType.value.id)
+            selectedParams.value.dateRange.start, selectedParams.value.dateRange.end,
+            selectedParams.value.selectedLevel.id,
+            selectedParams.value.selectedType.id)
 
           labelsTopTeams.value = res.labelsTopTeams
           dataTopTeams.value = res.dataTopTeams
@@ -275,8 +273,8 @@ async function getTeamsOfDirection(directionId: number) {
   }
 
   if (teams.length > 0)
-    selectedTeam.value = arrayData[0]
-  else selectedTeam.value = { name: "Все", id: 0 }
+    selectedParams.value.selectedTeam = arrayData[0]
+  else selectedParams.value.selectedTeam = { name: "Все", id: 0 }
 
 
   foundTeams.value = arrayData
@@ -288,8 +286,8 @@ async function getTeamsOfDirection(directionId: number) {
 
 async function getEventsViaJournalsByTeam(teamId: number) {
 
-  let res = await eventStore.getEventsViaJournalsByTeam(teamId, dateRange.value.start,
-    dateRange.value.end, selectedType.value.id, selectedLevel.value.id)
+  let res = await eventStore.getEventsViaJournalsByTeam(teamId, selectedParams.value.dateRange.start,
+    selectedParams.value.dateRange.end, selectedParams.value.selectedType.id, selectedParams.value.selectedLevel.id)
   let arrayData = res.data[0]
   let countAppropriate = res.data[1]
 
@@ -303,12 +301,12 @@ async function getEventsViaJournalsByTeam(teamId: number) {
 async function getEventsByDirection() {
 
   let direction = Direction.ALL
-  direction = foundDirections.value[selectedDirection.value].idDirectionEvent
+  direction = foundDirections.value[selectedParams.value.selectedDirection].idDirectionEvent
 
   let data = await eventStore.getEventsByDirection(direction,
-    dateRange.value.start, dateRange.value.end,
-    selectedLevel.value.id,
-    selectedType.value.id,)
+    selectedParams.value.dateRange.start, selectedParams.value.dateRange.end,
+    selectedParams.value.selectedLevel.id,
+    selectedParams.value.selectedType.id,)
 
   let events = data[0]
   colorfulBlocksData.value[0].value = data[1]
@@ -322,9 +320,9 @@ async function getEventsByDirection() {
 
 async function changeDirection(direction: any) {
 
-  selectedDirection.value = direction.id
+  selectedParams.value.selectedDirection = direction.id
 
-  switch (selectedTypeReport.value) {
+  switch (selectedParams.value.selectedTypeReport) {
     case TypeReport.DIRECTION:
       getEvents()
       break
@@ -338,14 +336,14 @@ async function changeDirection(direction: any) {
 
 
 function changeTypeReport() {
-  const tR = selectedTypeReport.value
+  const tR = selectedParams.value.selectedTypeReport
   switch (tR) {
     case TypeReport.DIRECTION:
-      selectedTeam.value = { name: "Все", id: 0 }
+      selectedParams.value.selectedTeam = { name: "Все", id: 0 }
 
       break
     case TypeReport.TEAM:
-      getTeamsOfDirection(foundDirections.value[selectedDirection.value].idDB)
+      getTeamsOfDirection(foundDirections.value[selectedParams.value.selectedDirection].idDB)
 
       break
   }
@@ -361,7 +359,7 @@ function changeTypeReport() {
       <div class=" block-content">
 
         <div class="row text-center mb-2">
-          <h6>{{ dateRange.start.toDateString() }} - {{ dateRange.end.toDateString() }}</h6>
+          <h6>{{ selectedParams.dateRange.start.toDateString() }} - {{ selectedParams.dateRange.end.toDateString() }}</h6>
         </div>
 
         <!-- time -->
@@ -376,7 +374,7 @@ function changeTypeReport() {
               <div class="my-dropdown" style="float:center;">
                 <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
                 <div class="dropdown-content">
-                  <DatePicker v-model="dateRange" is-range />
+                  <DatePicker v-model="selectedParams.dateRange" is-range />
                 </div>
               </div>
             </div>
@@ -393,9 +391,10 @@ function changeTypeReport() {
         <div class="row my-4 d-flex justify-content-md-center directions">
 
           <div v-for="direc in foundDirections" class="col-auto d-flex my-1">
-            <div @click="changeDirection(direc)" :class="[{ active: selectedDirection == direc.id}, 'direction']  ">{{
-              direc.shortname
-            }}</div>
+            <div @click="changeDirection(direc)"
+              :class="[{ active: selectedParams.selectedDirection == direc.id }, 'direction']">{{
+                direc.shortname
+              }}</div>
           </div>
 
         </div>
@@ -411,8 +410,9 @@ function changeTypeReport() {
 
           <label class="form-label">Тип отчетности</label>
           <div class="form-check col-auto mx-2" v-for="drT in typeReports">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" :checked="drT.data == selectedTypeReport"
-              :value="drT.data" v-model="selectedTypeReport" @change="changeTypeReport()">
+            <input class="form-check-input" type="radio" name="flexRadioDefault"
+              :checked="drT.data == selectedParams.selectedTypeReport" :value="drT.data"
+              v-model="selectedParams.selectedTypeReport" @change="changeTypeReport()">
             <label class="form-check-label">
               {{ drT.data }}
             </label>
@@ -424,11 +424,11 @@ function changeTypeReport() {
 
 
           <!-- team -->
-          <div class="col-auto  d-flex my-1" v-if="selectedTypeReport == TypeReport.TEAM">
+          <div class="col-auto  d-flex my-1" v-if="selectedParams.selectedTypeReport == TypeReport.TEAM">
             <div class="mb-3">
               <label class="form-label">коллектив</label>
               <v-select placeholder="Название коллектива" label="name" :options="foundTeams"
-                v-model="selectedTeam"></v-select>
+                v-model="selectedParams.selectedTeam"></v-select>
             </div>
           </div>
 
@@ -436,18 +436,19 @@ function changeTypeReport() {
           <div class="col-auto  d-flex my-1">
             <div class="mb-3">
               <label class="form-label">уровень мероприятий</label>
-              <select class="form-select" aria-label="Default select example" v-model="selectedLevel"
+              <select class="form-select" aria-label="Default select example" v-model="selectedParams.selectedLevel"
                 @change="getEvents()">
                 <option v-for="lvl in levels" :value="lvl">{{ lvl.name }}</option>
               </select>
             </div>
           </div>
+
           <!-- types -->
           <div class="col-auto  d-flex my-1">
             <div class="mb-3">
 
               <label class="form-label">тип мероприятий</label>
-              <select class="form-select" aria-label="Default select example" v-model="selectedType"
+              <select class="form-select" aria-label="Default select example" v-model="selectedParams.selectedType"
                 @change="getEvents()">
                 <option v-for="tp in types" :value="tp">{{ tp.name }}</option>
               </select>
@@ -457,14 +458,10 @@ function changeTypeReport() {
         </div>
 
 
-
-
-        <DownloadReport :direction="foundDirections[selectedDirection]" :type-report="selectedTypeReport"
-          :level="selectedLevel" :levels="levels" :type-event="selectedType" :types="types" :date-range="dateRange"
-          :team="selectedTeam" />
-
-
-
+        <!-- скачать отчетность -->
+        <DownloadReport :direction="foundDirections[selectedParams.selectedDirection]" :type-report="selectedParams.selectedTypeReport"
+          :level="selectedParams.selectedLevel" :type-event="selectedParams.selectedType" :date-range="selectedParams.dateRange"
+          :team="selectedParams.selectedTeam" />
 
 
         <!-- Graphics -->
@@ -479,7 +476,8 @@ function changeTypeReport() {
           <div v-for="g in 
                         typeGraphics">
 
-            <div class="form-check" v-if="g.typeReport == selectedTypeReport || g.typeReport == TypeReport.DIRECTION"
+            <div class="form-check"
+              v-if="g.typeReport == selectedParams.selectedTypeReport || g.typeReport == TypeReport.DIRECTION"
               @change="seeGraphics(g)">
               <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" :checked="g.isVisibleChart">
               <label class="form-check-label" for="flexCheckChecked">
@@ -559,8 +557,6 @@ function changeTypeReport() {
       
       
 <style lang="scss" scoped>
-
-
 // dropdown for calendar----------------------------------------------------------------------
 .dropbtn {
   // background-color: #04AA6D;
@@ -586,7 +582,7 @@ function changeTypeReport() {
   z-index: 1;
   border-radius: 20px;
 
- 
+
 }
 
 

@@ -1,13 +1,10 @@
-import { Level, Type } from "@/store/enums/enum_event";
+import { Type } from "@/store/enums/enum_event";
 import { TypeSeason } from "@/views/Report/enums_report";
 import { useEventStore } from "@/store/events_store";
-import { useJournalStore } from "@/store/journals_store";
-import type { number } from "echarts/core";
 import { defineStore } from "pinia";
 
 export const useChartStore = defineStore("echarts", () => {
 
-    const journalStore = useJournalStore();
     const eventStore = useEventStore();
 
     // подсчет количества внутренних/внешних мероприятий
@@ -32,8 +29,6 @@ export const useChartStore = defineStore("echarts", () => {
 
     // подсчет количества внутренних/внешних мероприятий
     function countEventsBySeason(events: any) {
-
-
 
         let spring = 0
         let summer = 0
@@ -87,7 +82,7 @@ export const useChartStore = defineStore("echarts", () => {
 
             let ind = data.length - i
 
-            if (data.length - i > 0) {
+            if (data.length - i >= 0) {
                 dataTopTm.push(data[ind].data)
                 labelsTopTm.push(data[ind].label)
             }else break

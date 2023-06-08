@@ -1,7 +1,7 @@
 <script setup  lang="ts">
 import type { Direction } from '@/store/enums/enum_event';
 import type { TypeReport } from './enums_report';
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useEventStore } from '@/store/events_store';
 
 const eventStore = useEventStore();
@@ -14,10 +14,6 @@ const props = defineProps<{
     idDirectionEvent: Direction;
   },
   typeReport: TypeReport,
-  levels: {
-    id: number;
-    name: string;
-  }[],
   level: {
     id: number;
     name: string;
@@ -26,44 +22,53 @@ const props = defineProps<{
     id: number;
     name: string;
   },
-  types: {
-    id: number;
-    name: string;
-  }[],
   dateRange: { start: Date, end: Date },
   team: { name: string, id: number }
 }>()
 
-const resFile = ref()
-const fileURL = ref()
+const resFile = ref() // файл
+const fileURL = ref() //путь к файлу для загрузки
 
+const loading = ref(false) //файл формируется
 
+// получить отчет по направлению
 async function getReportEventsOfDirection() {
+  setLoading(true)
   let res = await eventStore.getReportEventsOfDirection(props.direction.id, props.dateRange.start,
     props.dateRange.end, props.level.id, props.typeEvent.id)
   resFile.value = res.data
-  // console.log(resFile.value)
+  setLoading(false)
 }
 
+// в процессе загрузки
+function setLoading(load:boolean){
+  loading.value = load
+}
+
+// получить очтет по коллективу
 async function getReportEventsOfTeam() {
+  setLoading(true)
+
   let res = await eventStore.getReportEventsOfTeam(props.team.id, props.dateRange.start,
-    props.dateRange.end, props.direction.id, props.level.id)
+    props.dateRange.end, props.typeEvent.id, props.level.id)
   resFile.value = res.data
-  // console.log(resFile.value)
+  loading.value = true
+  setLoading(false)
+
 }
 
-async function getReport(){
+// сформировать соостветствующий очтет
+async function getReport() {
 
-  if(props.team!=null && props.team.id > 0){
-   await getReportEventsOfTeam()
-  }else{
-  await  getReportEventsOfDirection()
- }
- 
- 
+  if (props.team != null && props.team.id > 0) {
+    await getReportEventsOfTeam()
+  } else {
+    await getReportEventsOfDirection()
+  }
 }
+
+// скачать файл
 async function downloadFile() {
-  //const byteArray = new Uint8Array(resFile.value);
   const file = new Blob([resFile.value], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   fileURL.value = URL.createObjectURL(file);
 }
@@ -92,44 +97,48 @@ async function downloadFile() {
         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
           data-bs-parent="#accordionExample">
           <div class="accordion-body m-4">
+
+            <div v-if="team.id>0" class="row mb-3">
+              <div class="col text-bg-light"> {{team.name}}</div>
+            </div>
+
             <div class="row">
-              <div class="col"> направление: </div>
+              <div class="col fw-bold"> направление: </div>
               <div class="col">{{direction.shortname}}</div>
             </div>
 
-            <div class="row my-3">
-              <div class="col"> вид отчета: </div>
+            <div class="row my-3 ">
+              <div class="col fw-bold"> вид отчета: </div>
               <div class="col"> {{ typeReport }}</div>
             </div>
 
-            <!-- <div class="row  my-3">
-              <div class="col"> колективы:</div>
-              <div class="col"> {{ teams}}</div>
-            </div> -->
-
             <div class="row  my-3">
-              <div class="col"> уровень мероприятия: </div>
+              <div class="col fw-bold"> уровень мероприятия: </div>
               <div class="col">{{ level.name  }}</div>
             </div>
 
             <div class="row  my-3">
-              <div class="col"> тип мероприятия: </div>
+              <div class="col fw-bold"> тип мероприятия: </div>
               <div class="col"> {{ typeEvent.name }}</div>
             </div>
 
             <div class="row  my-3">
-              <div class="col"> дата:</div>
+              <div class="col fw-bold"> дата:</div>
               <div class="col"> {{ dateRange.start.toLocaleDateString() }} - {{ dateRange.end.toLocaleDateString() }}</div>
             </div>
 
             <div class="row g-2 mt-4 mx-3 d-flex  justify-content-end ">
-              <div class="col d-flex justify-content-end">
-                <a v-if="resFile" :href="fileURL" download="reportEvents.xlsx">
+              <div class="col d-flex justify-content-end align-items-center">
+                
+               <a v-if="!loading" :href="fileURL" download="reportEvents.xlsx">
                <button @click="downloadFile()"> <font-awesome-icon icon="file-download" /></button>
                </a>
+               <font-awesome-icon v-else icon="circle-notch" class="fas fa-spin fa-xl loading" />
+   
+               
               </div>
               <div class="col-auto d-flex justify-content-end">
-                <button type="button"  @click="getReport">
+                <button type="button"  @click="getReport()">
                 Сформировать
               </button>
               </div>
@@ -144,5 +153,4 @@ async function downloadFile() {
     </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

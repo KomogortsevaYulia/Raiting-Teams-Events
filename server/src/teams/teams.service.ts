@@ -232,6 +232,3 @@ export class TeamsService {
       })
   }
 }
-
-
-

@@ -86,13 +86,14 @@ export class UploadsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async getReportEventsOfTeam(@Res() res: Response, @Query() { teamId = null, type = null, level = null, dateStart = null, dateEnd = null }) {
 
+   
     let dStart: Date = dateStart == null ? null : (new Date(dateStart))
     let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
-
+    
     let events = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dStart, dEnd)
    
     await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level,direction: null, dateStart: dStart, dateEnd: dEnd })
-
+   
   }
 
 }
