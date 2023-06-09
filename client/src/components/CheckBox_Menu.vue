@@ -1,9 +1,10 @@
 <template>
+  
   <div class="checkbox__nav">
         <div class="checkbox__block" v-for="menu_item in props.menu_items" :key="menu_item.id">
           <div class="checkbox__title">{{ menu_item.title }}</div>
           <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id" :class="{ 'hidden': menu_item.hidden && menu_type.id > 4}">
-            <input type="checkbox" class="checkbox">
+            <input type="checkbox" class="checkbox" v-model="menu_type.checked" v-bind="menu_type.id">
             <span class="fake"></span>
             <span class="span__title">{{ menu_type.title }}</span>
           </label>    
@@ -13,15 +14,18 @@
             <div class="btn__img" :class="{'closed': menu_item.hidden}"></div>
           </div>
         </div>
-        <button class="apply__btn">Применить</button>
+        <button class="apply__btn" @click="handleEventSetFilters()">Применить</button>
         <button class="refuse__btn">Сбросить</button>
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
-    menu_items:{}
-})
+
+const props = defineProps<{
+    menu_items:{},
+    handleEventSetFilters:Function //обработчик отправки фильтров
+}>()
+
 
 </script>
 
@@ -113,7 +117,7 @@ const props = defineProps({
       
     }
     .apply__btn{
-      background-color: #FF502F;
+      background-color: var(--main-color);
       color: #fff;
       height: 3rem;
       width: 100%;
@@ -121,8 +125,8 @@ const props = defineProps({
       margin-top: 1rem;
     }
     .refuse__btn{
-      border: 1px solid #FF502F;
-      color: #FF502F;
+      border: 1px solid  var(--main-color);
+      color:  var(--main-color);
       background: #fff;
       height: 3rem;
       width: 100%;

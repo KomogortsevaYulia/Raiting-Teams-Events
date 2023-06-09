@@ -3,11 +3,12 @@
 import Filter from '@/components/WIP.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
-import { onBeforeMount, ref, watch } from 'vue';
+import { onBeforeMount, ref, watch, type Ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 import { useTeamStore } from "../store/team_store";
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import _ from 'lodash';
+import { DirectionName } from '@/store/enums/enum_teams';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -24,9 +25,27 @@ const teamEdit = ref()
 
 const findTeamTxt = ref()
 
+const filters = ref({
+  directions: [0],
+  is_archive: menu_items[2].menu_types[0].checked,
+  is_active: menu_items[2].menu_types[1].checked,
+
+})
+
+// const directions: Ref<number[]> = ref([])
+// const is_active = ref(true)
+// const is_archive = ref(false)
+
+
+// найденные направления из системы
+const foundDirections = ref([{ id: 0, shortname: "-", idDB: 0 }])           //дата
+
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
-  fetchTeams()
+
+  await getDirections()
+  await handleEventSetFilters()
+
 })
 
 
@@ -50,16 +69,116 @@ watch(findTeamTxt, () => {
 // вытащить коллективы из бд 
 async function fetchTeams() {
   let txt = findTeamTxt.value
-  data.value = await teamStore.fetchTeamsSearch(txt, txt, txt)
+  data.value = await teamStore.fetchTeamsSearch(txt, filters.value)
 }
 
 
-const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
+async function handleEventSetFilters() {
+
+  menu_items.forEach((el) => {
+    // el.menu_types.forEach((elType) => {
+    switch (el.id) {
+      case 1:
+
+        break
+      case 2:
+        let directions: number[] = []
+        // пройтись по элементам меню
+        el.menu_types.forEach((elType) => {
+
+          // пройтись по направлениям
+          foundDirections.value.forEach((direction) => {
+            let dir = -1
+
+            if (elType.checked) {
+              switch (elType.id) {
+                case 1:
+                  dir = direction.shortname == DirectionName.NID ? direction.idDB : -1
+                  break
+                case 2:
+                  dir = direction.shortname == DirectionName.UD ? direction.idDB : -1
+                  break
+                case 3:
+                  dir = direction.shortname == DirectionName.OD ? direction.idDB : -1
+                  break
+                case 4:
+                  dir = direction.shortname == DirectionName.SD ? direction.idDB : -1
+                  break
+                case 5:
+                  dir = direction.shortname == DirectionName.KTD ? direction.idDB : -1
+                  break
+              }
+            }
+
+            // alert(dir)
+            if (dir > 0)
+              directions.push(dir)
+          })
+
+        })
+
+        // задать выбранные направления
+        filters.value.directions = directions
+        break
+      case 3:
+        filters.value.is_archive = el.menu_types[0].checked
+        filters.value.is_active = el.menu_types[1].checked
+        break
+    }
+  })
+
+  await fetchTeams()
+}
+// [
+//   {
+//     id: 1, title: 'Набор', hidden: true, menu_types: [
+//       { id: 1, title: 'Набор открыт', checked: false },
+//       { id: 2, title: 'Набор закрыт', checked: false },
+//     ]
+//   },
+//   {
+//     id: 2, title: 'Вид деятельности', hidden: true, menu_types: [
+//       { id: 1, title: 'Научная деятельность', checked: false },
+//       { id: 2, title: 'Учебная деятельность', checked: false },
+//       { id: 3, title: 'Общественная деятельность', checked: false },
+//       { id: 4, title: 'Спортивная деятельность', checked: false },
+//       { id: 5, title: 'Культурно-творческая деятельность', checked: false },
+//     ]
+//   },
+//   {
+//     id: 3, title: 'Тип коллектива', hidden: true, menu_types: [
+//       { id: 1, title: 'Архивный', checked: false },
+//       { id: 2, title: 'Действующий', checked: true },
+//     ]
+//   },
+// ]
+
+// получить идшники направлений с бд, чтобы по этим идшникам найти
+// эти направления 
+async function getDirections() {
+
+  let data = await teamStore.fetchTeamsOfDirection(-1, "direction")
+
+  let directions = data[0]
+  let arrayData = []
+
+  for (let i = 0; i < directions.length; i++) {
+    // console.log("directions " + directions[i].shortname)
+    let direction = directions[i]
+
+    arrayData[i + 1] = { id: i + 1, shortname: direction.shortname, idDB: direction.id };
+  }
+
+  foundDirections.value = arrayData
+}
+
+//const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
 
 
 </script>
 
 <template>
+
   <!-- Это вся обертка -->
   <div class="wrapper-team">
 
@@ -83,8 +202,12 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
     <!-- Обертка карточек коллективов -->
     <div v-if="show" class="wrapper-team__content">
 
+
+
       <!-- Фильтр -->
-      <CheckBox_Menu :menu_items="menu_items" />
+      <CheckBox_Menu :menu_items="menu_items" :handleEventSetFilters="handleEventSetFilters" />
+
+
 
       <!-- Обертка контента с карточками -->
       <div class="content-cards">
@@ -379,7 +502,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
         .wrapperContent {
           width: 100%;
           padding: 2rem;
-          
+
           p {
             color: #000;
           }
@@ -387,7 +510,7 @@ const itemLink = [{ name: "Новости", path: "/news" }, { name: "Колле
           .navigation-tags {
             margin-top: 0.5rem;
             padding-bottom: 1rem;
-           
+
 
             .teg {
               margin-right: 1rem;

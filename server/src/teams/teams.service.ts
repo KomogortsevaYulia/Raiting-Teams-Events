@@ -36,7 +36,7 @@ export class TeamsService {
   }
 
 
-// Обновить коллектив
+  // Обновить коллектив
   async update(id: number, updateTeamDto: UpdateTeamDto) {
 
     let team = await this.teamsRepository.save({
@@ -96,37 +96,34 @@ export class TeamsService {
       // .addSelect("user.title_role")
       .orderBy("teams.id", "DESC")
 
-      query = await this.filterTeam(params, query)
+    query = await this.filterTeam(params, query)
 
-      let team = await query.getMany()
-      return team
+    let team = await query.getMany()
+    return team
   }
 
 
 
-   // по умному как то переделать потом!!!
-   async filterTeam(params: SearchTeamDto, q: SelectQueryBuilder<Team>) {
+  // отфильтровать колелктивы
+  async filterTeam(params: SearchTeamDto, q: SelectQueryBuilder<Team>) {
 
+    console.log(params)
     let query = q
-
-    // let buildSQL = (columnName, value)=>{
-    //   query.andWhere(`LOWER(${columnName}) like :value`, {value: `%${params.title}%`})
-    // }
 
     //если у нас все параметры то через 'или' все ищем
     if (params.title && params.description && params.tags) {
-      
+
       //делаем все столбцы в нижнем регистре и ищем по всем столбцам через предлог "или"
       query = query.andWhere(
-        "(LOWER(teams.title) like :title"
-        + " or LOWER(teams.description) like :description"
-        + " or LOWER(teams.tags) like :tags)", {
+        `(LOWER(teams.title) like :title 
+         or LOWER(teams.description) like :description 
+         or LOWER(teams.tags) like :tags)`, {
         title: `%${params.title}%`,
         description: `%${params.description}%`,
         tags: `%${params.tags}%`
       })
     } else { //если не все параметры, то ищем через 'и'
-     
+
       //if title (если у нас есть тайтл то ищем по нему)
       query = params.title ? query.andWhere("LOWER(teams.title) like :title", { title: `%${params.title}%` }) : query
       //if description
@@ -135,12 +132,19 @@ export class TeamsService {
       query = params.tags ? query.andWhere("LOWER(teams.tags) like :tags", { tags: `%${params.tags}%` }) : query
     }
 
+    //отфильтровать по направлению
+    query = params.directions ? query.andWhere("teams.id_parent in (:...id_parents)", { id_parents: params.directions }) : query
+
+    if (params.is_archive != null) {
+      //отфильтровать по типу коллектива
+      query = query.andWhere("teams.is_archive = :is_archive", { is_archive: params.is_archive })
+    }
 
     return query
   }
 
 
-  
+
   // get all teams of specific direction for statistic
   async findAllTeamsOfDirection(type_team = "teams", id_parent = -1): Promise<[Team[], number]> {
 
@@ -180,16 +184,16 @@ export class TeamsService {
   }
 
   async userRequisition(team_id: number): Promise<Requisitions[]> {
-    
+
     const users = await this.requisitionsRepository
-    .createQueryBuilder("requisition")
-    .select(["requisition.date_create", "requisition.date_update","requisition.status"])
-    .leftJoinAndSelect("requisition.user","user")
-    .leftJoinAndSelect("requisition.requisition_fields","rf")
-    .leftJoinAndSelect("rf.field","field")
-    .leftJoinAndSelect("field.form","form")
-    .where("form.team_id = :team_id", { team_id })
-    .getMany()
+      .createQueryBuilder("requisition")
+      .select(["requisition.date_create", "requisition.date_update", "requisition.status"])
+      .leftJoinAndSelect("requisition.user", "user")
+      .leftJoinAndSelect("requisition.requisition_fields", "rf")
+      .leftJoinAndSelect("rf.field", "field")
+      .leftJoinAndSelect("field.form", "form")
+      .where("form.team_id = :team_id", { team_id })
+      .getMany()
 
     return users;
   }
@@ -223,12 +227,12 @@ export class TeamsService {
   }
 
   async addImage(id: number, filePath: string): Promise<Team> {
-      let team = await this.findOne(id)
-      team.image.push(filePath)
+    let team = await this.findOne(id)
+    team.image.push(filePath)
 
-      return await this.teamsRepository.save({
-        id: team.id,
-        image: team.image
-      })
+    return await this.teamsRepository.save({
+      id: team.id,
+      image: team.image
+    })
   }
 }

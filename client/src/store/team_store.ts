@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 // import type { Permission } from "@/types";
 import axios from "axios";
 import type UpdateTeam from "@/views/Modals/UpdateTeam";
+import { number } from "echarts";
 
 export const useTeamStore = defineStore("teams", () => {
     const layout = ref(true)
@@ -40,7 +41,7 @@ export const useTeamStore = defineStore("teams", () => {
 
     async function addImage(id: number, formData: FormData) {
         let responseMsg = "сохранено"
-        
+
         const res = await axios.post(`/api/teams/${id}/image`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -53,7 +54,7 @@ export const useTeamStore = defineStore("teams", () => {
 
         return responseMsg
     }
-    
+
     async function fetchTeam(id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
@@ -68,7 +69,7 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
     async function createTeam(title: string, description: string,
-                              shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
+        shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
 
         let responseMsg = "сохранено"
 
@@ -79,14 +80,14 @@ export const useTeamStore = defineStore("teams", () => {
         formData.append('userID', userId.toString());
         formData.append('cabinet', cabinet);
 
-        if(fileUstav && fileDocument){
+        if (fileUstav && fileDocument) {
             formData.append('files', fileUstav, `ustav.${fileUstav.name.split(".").pop()}`);
             formData.append('files', fileDocument, `document.${fileDocument.name.split(".").pop()}`);
-        }else{
+        } else {
             responseMsg = `вы забыли добавить файлы`
             return responseMsg
         }
-          
+
 
         const config = {
             headers: {
@@ -99,7 +100,7 @@ export const useTeamStore = defineStore("teams", () => {
         await axios.post("api/teams", formData, config)
             .catch((err) => {
                 if (err.response) {
-                    responseMsg =err.response.data.message
+                    responseMsg = err.response.data.message
 
                 }
             })
@@ -119,9 +120,9 @@ export const useTeamStore = defineStore("teams", () => {
         formData.append('shortname', uT.shortname);
         formData.append('cabinet', uT.cabinet);
         // paths to files
-        if (uT.charterPath !=null && uT.charterPath.length > 0)
+        if (uT.charterPath != null && uT.charterPath.length > 0)
             formData.append('charterTeam', uT.charterPath);
-        if (uT.documentPath !=null && uT.documentPath.length > 0)
+        if (uT.documentPath != null && uT.documentPath.length > 0)
             formData.append('document', uT.documentPath);
 
         formData.append('oldLeaderId', uT.oldUserId.toString());
@@ -170,16 +171,34 @@ export const useTeamStore = defineStore("teams", () => {
         return { responseMsg, isOK }
     }
 
+
     //fetch teams by
-    async function fetchTeamsSearch(title = "", description = "", tags = ""): Promise<any> {
+    async function fetchTeamsSearch(txt = "", filters: {
+        directions: number[],
+        is_archive: boolean,
+        is_active: boolean,
+    }): Promise<any> {
+
+        let is_archive = undefined
+    
+        if (filters.is_archive && !filters.is_active) {
+            is_archive = true
+        } else if (filters.is_active && !filters.is_archive) {
+            is_archive = false
+        }
+
+
+        let params = {
+            title: txt,
+            description: txt,
+            tags: txt,
+            is_archive: is_archive,
+            directions: filters.directions
+        }
 
         //find by all txt data in table
         const res = await axios.get('/api/teams', {
-            params: {
-                title: title,
-                description: description,
-                tags: tags
-            }
+            params: params
         })
 
         return res.data
@@ -187,23 +206,29 @@ export const useTeamStore = defineStore("teams", () => {
 
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия
     function setLayout(res: any) {
-         this.layout = res;
+        this.layout = res;
     }
 
     const menu_items = [
         {
             id: 1, title: 'Набор', hidden: true, menu_types: [
-                { id: 1, title: 'Набор открыт' },
-                { id: 2, title: 'Набор закрыт' },
+                { id: 1, title: 'Набор открыт', checked: false },
+                { id: 2, title: 'Набор закрыт', checked: false },
             ]
         },
         {
             id: 2, title: 'Вид деятельности', hidden: true, menu_types: [
-                { id: 1, title: 'Научная деятельность' },
-                { id: 2, title: 'Учебная деятельность' },
-                { id: 3, title: 'Научная деятельность' },
-                { id: 4, title: 'Спортивная деятельность' },
-                { id: 5, title: 'Культурно-творческая деятельность' },
+                { id: 1, title: 'Научная деятельность', checked: true },
+                { id: 2, title: 'Учебная деятельность', checked: true },
+                { id: 3, title: 'Общественная деятельность', checked: true },
+                { id: 4, title: 'Спортивная деятельность', checked: true },
+                { id: 5, title: 'Культурно-творческая деятельность', checked: true },
+            ]
+        },
+        {
+            id: 3, title: 'Тип коллектива', hidden: true, menu_types: [
+                { id: 1, title: 'Архивный', checked: false },
+                { id: 2, title: 'Действующий', checked: true },
             ]
         },
     ]
