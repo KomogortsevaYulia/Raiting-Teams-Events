@@ -37,7 +37,7 @@ const filters = ref({
 const loading = ref(false)
 
 //pagination ---------------------------------------------------------------------
-const limit = 3 //сколько колелктивов отображается на странице
+const limit = 5 //сколько колелктивов отображается на странице
 const offset = ref(0) //сколько коллективов пропустить прежде чем отобрад+зить
 
 const maxPages = ref(1)
@@ -222,8 +222,6 @@ async function handleEventChangePage(currentPage: number) {
         </div>
         <!--  {{ data }}-->
 
-
-        <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
           <div v-if="!loading" v-for="team in data" class="cardEvent  justify-content-center">
@@ -279,11 +277,16 @@ async function handleEventChangePage(currentPage: number) {
 
         </div>
 
+        <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
 
       </div>
+      
     </div>
 
+    
   </div>
+
+  
 </template>
 
 <style lang="scss" scoped>

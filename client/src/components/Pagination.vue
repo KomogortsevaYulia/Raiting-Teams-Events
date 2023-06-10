@@ -1,42 +1,44 @@
 <template>
-   current {{ current }}
+    <!-- current {{ current }}
    maxPage {{ maxPage }}
    startPage {{ startPage }}
-   endPage {{ endPage }}
-    <nav aria-label="Pagination">
-        <ul class="pagination">
-            <!-- prev page -->
-            <li class="page-item">
-                <a class="page-link" @click="changePage(current - 1)" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <!-- start page -->
-            <li v-if="startPage >= 2" class="page-item">
-                <a class="page-link" href="#" @click="changePage(1)">1</a>
-            </li>
-            <li v-if="startPage >= 2" class="page-item">
-                <a class="page-link">...</a>
-            </li>
-            <!-- pages -->
-            <li v-for="index in range(startPage, endPage)" :key="index" class="page-item" @click="changePage(index)">
-                <a :class="[{ 'active-page': current == index }, 'page-link']" href="#">{{ index }}</a>
-            </li>
-            <!-- end page -->
-            <li v-if="endPage < maxPage" class="page-item">
-                <a class="page-link">...</a>
-            </li>
-            <li v-if="endPage < maxPage" class="page-item">
-                <a class="page-link" href="#" @click="changePage(maxPage)">{{ maxPage }}</a>
-            </li>
-            <!-- nest page -->
-            <li class="page-item">
-                <a class="page-link" @click="changePage(current + 1)" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+   endPage {{ endPage }} -->
+    <div class="my-4">
+        <nav aria-label="Pagination">
+            <ul class="pagination">
+                <!-- prev page -->
+                <li class="page-item">
+                    <a class="page-link" @click="changePage(current - 1)" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <!-- start page -->
+                <li v-if="startPage >= 2" class="page-item">
+                    <a class="page-link" href="#" @click="changePage(1)">1</a>
+                </li>
+                <li v-if="startPage >= 2" class="page-item">
+                    <a class="page-link">...</a>
+                </li>
+                <!-- pages -->
+                <li v-for="index in range(startPage, endPage)" :key="index" class="page-item" @click="changePage(index)">
+                    <a :class="[{ 'active-page': current == index }, 'page-link']" href="#">{{ index }}</a>
+                </li>
+                <!-- end page -->
+                <li v-if="endPage < maxPage" class="page-item">
+                    <a class="page-link">...</a>
+                </li>
+                <li v-if="endPage < maxPage" class="page-item">
+                    <a class="page-link" href="#" @click="changePage(maxPage)">{{ maxPage }}</a>
+                </li>
+                <!-- nest page -->
+                <li class="page-item">
+                    <a class="page-link" @click="changePage(current + 1)" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -56,15 +58,6 @@ const endPage = ref(1)
 
 watch(() => props.maxPage, async (prev) => {
     changePage(1)
-})
-
-onBeforeMount(() => {
-    // if (props.maxPage >= props.visiblePages) {
-    //     endPage.value = props.visiblePages
-    // } else {
-    //     endPage.value = props.maxPage
-    // }
-    // changePage(1)
 })
 
 function changePage(goToPage: number) {
@@ -102,10 +95,25 @@ function range(from: number, to: number) {
 </script>
 
 <style lang="scss" scoped>
-.active-page {
-    background-color: var(--main-color-hover);
-    box-shadow: var(--main-color-hover) 0px 3px 8px;
-    border: none;
+.pagination {
+    .active-page {
+        background-color: var(--main-color-hover);
+        box-shadow: var(--main-color-hover) 0px 3px 8px;
+        border: none;
+
+    }
+
+
+    .page-link{
+        color: black;
+        &:active{
+            background-color: var(--main-color-hover);
+        }
+        &:focus{
+            box-shadow: none;
+            border: 1px solid var(--main-color-hover);
+        }
+    }
 
 }
 </style>
