@@ -76,9 +76,12 @@ export class TeamsService {
     return team;
   }
 
+
+
   // get all teams with leadeaders
-  async findAll(params: SearchTeamDto): Promise<Team[]> {
+  async findAll(params: SearchTeamDto): Promise<[Team[], number]> {
     const head = "Руководитель"
+    console.log(params)
 
     let query = await this.teamsRepository
       .createQueryBuilder("teams")
@@ -97,8 +100,11 @@ export class TeamsService {
       .orderBy("teams.id", "DESC")
 
     query = await this.filterTeam(params, query)
+    query = query
+      .take(params.limit) // Set the limit
+      .skip(params.offset) // Set the offset
 
-    let team = await query.getMany()
+    let team = await query.getManyAndCount()
     return team
   }
 
@@ -107,7 +113,6 @@ export class TeamsService {
   // отфильтровать колелктивы
   async filterTeam(params: SearchTeamDto, q: SelectQueryBuilder<Team>) {
 
-    console.log(params)
     let query = q
 
     //если у нас все параметры то через 'или' все ищем

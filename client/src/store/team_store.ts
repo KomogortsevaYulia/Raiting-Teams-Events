@@ -177,10 +177,10 @@ export const useTeamStore = defineStore("teams", () => {
         directions: number[],
         is_archive: boolean,
         is_active: boolean,
-    }): Promise<any> {
+    }, limit = 5, offset = 0): Promise<any> {
 
         let is_archive = undefined
-    
+
         if (filters.is_archive && !filters.is_active) {
             is_archive = true
         } else if (filters.is_active && !filters.is_archive) {
@@ -193,7 +193,9 @@ export const useTeamStore = defineStore("teams", () => {
             description: txt,
             tags: txt,
             is_archive: is_archive,
-            directions: filters.directions
+            directions: filters.directions,
+            limit: limit,
+            offset: offset
         }
 
         //find by all txt data in table
@@ -206,7 +208,7 @@ export const useTeamStore = defineStore("teams", () => {
 
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия
     function setLayout(res: any) {
-        this.layout = res;
+        layout.value = res;
     }
 
     const menu_items = [

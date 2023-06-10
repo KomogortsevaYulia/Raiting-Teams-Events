@@ -9,12 +9,13 @@ import { useTeamStore } from "../store/team_store";
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import _ from 'lodash';
 import { DirectionName } from '@/store/enums/enum_teams';
+import Pagination from '@/components/Pagination.vue';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
 
 const can = permissions_store.can;
-const menu_items = teamStore.menu_items;
+const menu_items = ref(_.cloneDeep(teamStore.menu_items));
 
 const show = ref(true);
 const data = ref()
@@ -27,14 +28,21 @@ const findTeamTxt = ref()
 
 const filters = ref({
   directions: [0],
-  is_archive: menu_items[2].menu_types[0].checked,
-  is_active: menu_items[2].menu_types[1].checked,
+  is_archive: menu_items.value[2].menu_types[0].checked,
+  is_active: menu_items.value[2].menu_types[1].checked,
 
 })
 
-// const directions: Ref<number[]> = ref([])
-// const is_active = ref(true)
-// const is_archive = ref(false)
+// загрузка
+const loading = ref(false)
+
+//pagination ---------------------------------------------------------------------
+const limit = 3 //сколько колелктивов отображается на странице
+const offset = ref(0) //сколько коллективов пропустить прежде чем отобрад+зить
+
+const maxPages = ref(1)
+const visiblePages = 7
+//pagination ---------------------------------------------------------------------
 
 
 // найденные направления из системы
@@ -68,14 +76,23 @@ watch(findTeamTxt, () => {
 
 // вытащить коллективы из бд 
 async function fetchTeams() {
+  loading.value = true
+
   let txt = findTeamTxt.value
-  data.value = await teamStore.fetchTeamsSearch(txt, filters.value)
+  let d = await teamStore.fetchTeamsSearch(txt, filters.value, limit, offset.value)
+
+  data.value = d[0]
+
+  const teamsCount = d[1]
+  maxPages.value = teamsCount >= limit ? Math.ceil(teamsCount / limit) : 1
+
+  loading.value = false
 }
 
 
 async function handleEventSetFilters() {
 
-  menu_items.forEach((el) => {
+  menu_items.value.forEach((el) => {
     // el.menu_types.forEach((elType) => {
     switch (el.id) {
       case 1:
@@ -110,7 +127,6 @@ async function handleEventSetFilters() {
               }
             }
 
-            // alert(dir)
             if (dir > 0)
               directions.push(dir)
           })
@@ -129,29 +145,11 @@ async function handleEventSetFilters() {
 
   await fetchTeams()
 }
-// [
-//   {
-//     id: 1, title: 'Набор', hidden: true, menu_types: [
-//       { id: 1, title: 'Набор открыт', checked: false },
-//       { id: 2, title: 'Набор закрыт', checked: false },
-//     ]
-//   },
-//   {
-//     id: 2, title: 'Вид деятельности', hidden: true, menu_types: [
-//       { id: 1, title: 'Научная деятельность', checked: false },
-//       { id: 2, title: 'Учебная деятельность', checked: false },
-//       { id: 3, title: 'Общественная деятельность', checked: false },
-//       { id: 4, title: 'Спортивная деятельность', checked: false },
-//       { id: 5, title: 'Культурно-творческая деятельность', checked: false },
-//     ]
-//   },
-//   {
-//     id: 3, title: 'Тип коллектива', hidden: true, menu_types: [
-//       { id: 1, title: 'Архивный', checked: false },
-//       { id: 2, title: 'Действующий', checked: true },
-//     ]
-//   },
-// ]
+
+// сбросить фильтры
+function handleEventResetFilters() {
+  menu_items.value = _.cloneDeep(teamStore.menu_items)
+}
 
 // получить идшники направлений с бд, чтобы по этим идшникам найти
 // эти направления 
@@ -163,7 +161,6 @@ async function getDirections() {
   let arrayData = []
 
   for (let i = 0; i < directions.length; i++) {
-    // console.log("directions " + directions[i].shortname)
     let direction = directions[i]
 
     arrayData[i + 1] = { id: i + 1, shortname: direction.shortname, idDB: direction.id };
@@ -172,17 +169,19 @@ async function getDirections() {
   foundDirections.value = arrayData
 }
 
+
+async function handleEventChangePage(currentPage: number) {
+  offset.value = (currentPage - 1) * limit
+
+  await fetchTeams()
+}
+
 //const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
-
-
 </script>
 
 <template>
-
   <!-- Это вся обертка -->
   <div class="wrapper-team">
-
-
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <!-- <div v-if="can('can create teams')" class="mt-4"> -->
@@ -205,7 +204,8 @@ async function getDirections() {
 
 
       <!-- Фильтр -->
-      <CheckBox_Menu :menu_items="menu_items" :handleEventSetFilters="handleEventSetFilters" />
+      <CheckBox_Menu :menu_items="menu_items" :handleEventSetFilters="handleEventSetFilters"
+        :handleEventResetFilters="handleEventResetFilters" />
 
 
 
@@ -223,11 +223,12 @@ async function getDirections() {
         <!--  {{ data }}-->
 
 
+        <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
-          <div v-for="team in data" class="cardEvent">
+          <div v-if="!loading" v-for="team in data" class="cardEvent  justify-content-center">
 
-            <router-link :to="'/team/' + team.id">
+            <router-link class="col-auto p-0" :to="'/team/' + team.id">
               <div class="card__banner">
                 <img v-if="team.image.length > 0" :src="team.image" class="d-block"
                   style="width: 100%;object-fit: cover;">
@@ -235,13 +236,13 @@ async function getDirections() {
               </div>
             </router-link>
 
-            <div class="wrapperContent col ">
+            <div class="wrapperContent col p-lg-4 px-md-4">
               <!-- <div class="card__event-name"> -->
               <div class="row mb-2">
 
                 <div class="col ">
                   <router-link :to="'/team/' + team.id">
-                    <div class="col-8"> {{ team.title }} </div>
+                    <div class=""> {{ team.title }} </div>
                   </router-link>
 
                   <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
@@ -273,7 +274,12 @@ async function getDirections() {
             </div>
 
           </div>
+
+          <font-awesome-icon v-else icon="circle-notch" class="fas fa-spin fa-xl m-5 loading" />
+
         </div>
+
+
       </div>
     </div>
 
@@ -419,7 +425,7 @@ async function getDirections() {
         }
 
         .wrapperContent {
-          padding: 1rem;
+
           width: 100%;
 
           .navigation-tags {
@@ -450,6 +456,9 @@ async function getDirections() {
         }
 
       }
+
+
+
 
       .wrapper-list {
         padding-top: 2rem;
@@ -501,7 +510,7 @@ async function getDirections() {
 
         .wrapperContent {
           width: 100%;
-          padding: 2rem;
+
 
           p {
             color: #000;
@@ -530,6 +539,16 @@ async function getDirections() {
 
       }
     }
+  }
+
+}
+
+@media (max-width: 992px) {
+
+
+  .cardEvent {
+    height: 25rem !important;
+
   }
 
 }

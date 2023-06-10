@@ -124,7 +124,7 @@ async function downloadFile() {
             <div class="row g-2 mt-4 mx-3 d-flex  justify-content-end ">
               <div class="col d-flex justify-content-end align-items-center">
                 
-               <a v-if="!loading" :href="fileURL" download="reportEvents.xlsx">
+               <a v-if="!loading && resFile" :href="fileURL" download="reportEvents.xlsx">
                <button @click="downloadFile()"> <font-awesome-icon icon="file-download" /></button>
                </a>
                <font-awesome-icon v-else icon="circle-notch" class="fas fa-spin fa-xl loading" />

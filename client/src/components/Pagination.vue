@@ -1,0 +1,111 @@
+<template>
+   current {{ current }}
+   maxPage {{ maxPage }}
+   startPage {{ startPage }}
+   endPage {{ endPage }}
+    <nav aria-label="Pagination">
+        <ul class="pagination">
+            <!-- prev page -->
+            <li class="page-item">
+                <a class="page-link" @click="changePage(current - 1)" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <!-- start page -->
+            <li v-if="startPage >= 2" class="page-item">
+                <a class="page-link" href="#" @click="changePage(1)">1</a>
+            </li>
+            <li v-if="startPage >= 2" class="page-item">
+                <a class="page-link">...</a>
+            </li>
+            <!-- pages -->
+            <li v-for="index in range(startPage, endPage)" :key="index" class="page-item" @click="changePage(index)">
+                <a :class="[{ 'active-page': current == index }, 'page-link']" href="#">{{ index }}</a>
+            </li>
+            <!-- end page -->
+            <li v-if="endPage < maxPage" class="page-item">
+                <a class="page-link">...</a>
+            </li>
+            <li v-if="endPage < maxPage" class="page-item">
+                <a class="page-link" href="#" @click="changePage(maxPage)">{{ maxPage }}</a>
+            </li>
+            <!-- nest page -->
+            <li class="page-item">
+                <a class="page-link" @click="changePage(current + 1)" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</template>
+
+<script setup lang="ts">
+import { onBeforeMount, ref, watch } from 'vue';
+
+const props = defineProps<{
+    visiblePages: number,
+    maxPage: number,
+    handleEventChangePage: Function,
+}>()
+
+const current = ref(1)
+
+const startPage = ref(1)
+const endPage = ref(1)
+
+
+watch(() => props.maxPage, async (prev) => {
+    changePage(1)
+})
+
+onBeforeMount(() => {
+    // if (props.maxPage >= props.visiblePages) {
+    //     endPage.value = props.visiblePages
+    // } else {
+    //     endPage.value = props.maxPage
+    // }
+    // changePage(1)
+})
+
+function changePage(goToPage: number) {
+    if (goToPage <= props.maxPage && goToPage >= 1)
+        current.value = goToPage
+
+    setEndStartPages()
+    // передать обработку смены страницы выше
+    props.handleEventChangePage(current.value)
+}
+
+function setEndStartPages() {
+    // start page
+    const halfPages = Math.floor(props.visiblePages / 2)
+    if (current.value <= halfPages) {
+        startPage.value = 1
+    } else {
+        startPage.value = current.value - halfPages
+    }
+
+    // end page
+    if (halfPages + current.value <= props.maxPage) {
+        endPage.value = halfPages + current.value
+    } else {
+        endPage.value = props.maxPage
+    }
+}
+
+
+function range(from: number, to: number) {
+    return Array.from({ length: to - from + 1 }, (_, index) => from + index);
+}
+
+
+</script>
+
+<style lang="scss" scoped>
+.active-page {
+    background-color: var(--main-color-hover);
+    box-shadow: var(--main-color-hover) 0px 3px 8px;
+    border: none;
+
+}
+</style>

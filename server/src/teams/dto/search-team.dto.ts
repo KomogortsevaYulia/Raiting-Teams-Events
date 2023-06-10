@@ -28,12 +28,10 @@ export class SearchTeamDto {
     // @Transform(({ value }) =>value.split(","))
     directions: number[];
 
-    @IsOptional()
     @IsNumber()
     @Type(() => Number)
     limit: number;
 
-    @IsOptional()
     @IsNumber()
     @Type(() => Number)
     offset: number;
