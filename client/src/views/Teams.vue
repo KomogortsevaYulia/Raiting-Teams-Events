@@ -370,10 +370,12 @@ async function handleEventChangePage(currentPage: number) {
       }
 
       .wrapper-grid {
+        padding-top: 1rem;
         display: flex;
         flex-wrap: wrap;
 
         .cardEvent {
+          border-radius: 5px;
           overflow: hidden;
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
@@ -488,9 +490,10 @@ async function handleEventChangePage(currentPage: number) {
 
 
       .wrapper-list {
-        padding-top: 2rem;
 
         .cardEvent {
+          margin: 1rem 0;
+          border-radius: 5px;
           overflow: hidden;
           width: 100%;
           background-color: #fff;
