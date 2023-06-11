@@ -224,9 +224,9 @@ async function handleEventChangePage(currentPage: number) {
 
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
-          <div v-if="!loading" v-for="team in data" class="cardEvent  justify-content-center">
+          <div v-if="!loading" v-for="team in data" class="cardEvent row  justify-content-center">
 
-            <router-link class="col-auto p-0" :to="'/team/' + team.id">
+            <router-link class=" col-lg-auto p-0 col-md-auto d-flex justify-content-center" :to="'/team/' + team.id">
               <div class="card__banner">
                 <img v-if="team.image.length > 0" :src="team.image" class="d-block"
                   style="width: 100%;object-fit: cover;">
@@ -234,38 +234,45 @@ async function handleEventChangePage(currentPage: number) {
               </div>
             </router-link>
 
-            <div class="wrapperContent col p-lg-4 px-md-4">
-              <!-- <div class="card__event-name"> -->
-              <div class="row mb-2">
+            <div class=" col-lg col-md-auto p-4 overflow-hidden">
+              <div class="wrapperContent">
+                <!-- <div class="card__event-name"> -->
+                <div class="row mb-2">
 
-                <div class="col ">
-                  <router-link :to="'/team/' + team.id">
-                    <div class=""> {{ team.title }} </div>
-                  </router-link>
+                  <!-- team title -->
+                  <div class="col p-0">
+                    <router-link :to="'/team/' + team.id">
+                      <div v-if="team.title && team.title.length > 50" class="cardTitle">
+                      {{ team.title.slice(0, 50)}} ... </div>
+                      <div v-else class="cardTitle"> {{ team.title }}</div>
+                    </router-link>
 
-                  <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
-                    архиве)</p>
-                </div>
+                    <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
+                      архиве)</p>
+                  </div>
 
-                <div class="col-auto d-flex justify-content-end align-items-end">
-                  <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <font-awesome-icon class="ic" icon="pencil-square" />
+                  <div class="col-auto d-flex justify-content-end align-items-end">
+                    <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal"
+                      data-bs-target="#exampleModal">
+                      <font-awesome-icon class="ic" icon="pencil-square" />
+                    </div>
                   </div>
                 </div>
                 <!-- </div>
                   </div> -->
 
-              </div>
 
-              <!-- </div> -->
 
-              <div class="row mb-2">
-                <div class="row overflow-auto" style="max-height: 100px;">
-                  <div class="navigation-tags row g-1">
-                    <div v-for="el in team.tags" class="teg col-auto">{{ el }}</div>
-                  </div>
-                  <div class="row">
-                    {{ team.short_description }}
+                <!-- </div> -->
+
+                <div class="row mb-2">
+                  <div class="row" style="max-height: 100px;">
+                    <div class="navigation-tags row g-1">
+                      <div v-for="el in team.tags" class="teg col-auto">{{ el }}</div>
+                    </div>
+                    <div class="row">
+                      {{ team.short_description }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -280,13 +287,11 @@ async function handleEventChangePage(currentPage: number) {
         <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
 
       </div>
-      
+
     </div>
 
-    
-  </div>
 
-  
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -324,6 +329,7 @@ async function handleEventChangePage(currentPage: number) {
       border-bottom: var(--main-border-bottom);
     }
   }
+
 
   .wrapper-team__content {
     display: flex;
@@ -368,6 +374,7 @@ async function handleEventChangePage(currentPage: number) {
         flex-wrap: wrap;
 
         .cardEvent {
+          overflow: hidden;
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
           height: 350px auto;
@@ -377,6 +384,19 @@ async function handleEventChangePage(currentPage: number) {
           border-radius: 5px;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           transition: all .5s;
+
+          .cardTitle {
+            color: #373737;
+            font-size: 1.2rem;
+
+            &:hover {
+              color: var(--main-color-hover);
+            }
+
+            &:active {
+              color: var(--main-color);
+            }
+          }
 
           a {
             color: #000;
@@ -399,7 +419,10 @@ async function handleEventChangePage(currentPage: number) {
 
         .cardEvent:hover {
           box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+
         }
+
+
 
         .imgEvent {
           position: relative;
@@ -429,6 +452,7 @@ async function handleEventChangePage(currentPage: number) {
 
         .wrapperContent {
 
+          margin: 10px;
           width: 100%;
 
           .navigation-tags {
@@ -467,6 +491,7 @@ async function handleEventChangePage(currentPage: number) {
         padding-top: 2rem;
 
         .cardEvent {
+          overflow: hidden;
           width: 100%;
           background-color: #fff;
           height: 15rem;
@@ -476,6 +501,19 @@ async function handleEventChangePage(currentPage: number) {
           display: flex;
           flex-direction: row;
           transition: all .5s;
+
+          .cardTitle {
+            color: #373737;
+            font-size: 1.2rem;
+
+            &:hover {
+              color: var(--main-color-hover);
+            }
+
+            &:active {
+              color: var(--main-color);
+            }
+          }
 
           .card__banner {
             height: 100%;
@@ -514,7 +552,6 @@ async function handleEventChangePage(currentPage: number) {
         .wrapperContent {
           width: 100%;
 
-
           p {
             color: #000;
           }
@@ -552,6 +589,11 @@ async function handleEventChangePage(currentPage: number) {
   .cardEvent {
     height: 25rem !important;
 
+  }
+
+  .card__banner {
+    max-width: 100% !important;
+    max-height: 15rem !important;
   }
 
 }

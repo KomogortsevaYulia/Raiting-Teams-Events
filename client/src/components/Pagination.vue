@@ -61,11 +61,12 @@ watch(() => props.maxPage, async (prev) => {
 })
 
 function changePage(goToPage: number) {
+
     if (goToPage <= props.maxPage && goToPage >= 1)
         current.value = goToPage
 
     setEndStartPages()
-    // передать обработку смены страницы выше
+    // передать обработку смены страницы выше  
     props.handleEventChangePage(current.value)
 }
 
@@ -104,12 +105,14 @@ function range(from: number, to: number) {
     }
 
 
-    .page-link{
+    .page-link {
         color: black;
-        &:active{
+
+        &:active {
             background-color: var(--main-color-hover);
         }
-        &:focus{
+
+        &:focus {
             box-shadow: none;
             border: 1px solid var(--main-color-hover);
         }

@@ -81,7 +81,7 @@ export class TeamsService {
   // get all teams with leadeaders
   async findAll(params: SearchTeamDto): Promise<[Team[], number]> {
     const head = "Руководитель"
-    console.log(params)
+    // console.log(params)
 
     let query = await this.teamsRepository
       .createQueryBuilder("teams")
