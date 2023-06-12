@@ -39,7 +39,7 @@
                   <div v-for="el in event.tags" class="teg">{{ el }}</div>
                 </div>
                 <div class="card__text">
-                  <p v-if="event.description!=null"> {{ event.description.slice(0, 150) }} </p>
+                  <p v-if="event.description != null"> {{ event.description.slice(0, 150) }} </p>
                   <p v-else> {{ event.description }}</p>
                   <!-- <div class="btn__container">
                   <button class="card__btn">Подать заявку</button>
@@ -49,10 +49,11 @@
             </router-link>
           </div>
         </div>
-        <div>
-          Постов нет
-        </div>
+
+        <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
+
       </div>
+
     </div>
   </div>
 </template>
@@ -64,18 +65,50 @@ import { useEventStore } from "@/store/events_store";
 import { useTeamStore } from "../store/team_store";
 import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
+import Pagination from '@/components/Pagination.vue';
+
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
 const menu_items = eventStore.menu_items;
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
 const data = ref()
+
+// загрузка
+const loading = ref(false)
+
+//pagination ---------------------------------------------------------------------
+const limit = 5 //сколько колелктивов отображается на странице
+const offset = ref(0) //сколько коллективов пропустить прежде чем отобрад+зить
+
+const maxPages = ref(1)
+const visiblePages = 7
+//pagination ---------------------------------------------------------------------
+
+
 onBeforeMount(async () => {
-  fetchEvents()
+  await fetchEvents()
 })
+
 async function fetchEvents() {
-  data.value = await eventStore.fetchEvents()
+
+  loading.value = true
+
+  let d = await eventStore.fetchEvents(limit, offset.value)
+  data.value = d[0]
+
+  const eventsCount = d[1]
+  maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1
+  loading.value = false
+
 }
+
+async function handleEventChangePage(currentPage: number) {
+  offset.value = (currentPage - 1) * limit
+
+  await fetchEvents()
+}
+
 </script>
 
 <style lang="scss" scoped>

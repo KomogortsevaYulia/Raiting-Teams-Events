@@ -19,7 +19,7 @@ export const useEventStore = defineStore("events", () => {
         console.log('Это сработало!');
     }
 
-    // Вывести все коллективвы с руководителсями
+  
    async function fetchEvents():Promise<any> {
         const res = await axios.get('/api/events')
         const data = res.data

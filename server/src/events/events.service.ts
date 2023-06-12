@@ -10,6 +10,7 @@ import { Level, Type } from './enums/enums';
 import { Direction } from 'readline';
 import { Journal } from './entities/journal.entity';
 import { fail } from 'assert';
+import { SearchEvent } from './entities/search_event.entity';
 
 @Injectable()
 export class EventsService {
@@ -20,10 +21,10 @@ export class EventsService {
     private readonly journalsRepository: Repository<Journal>,
   ) { }
 
- 
+
 
   findAllExternal(): Promise<Event[]> {
-  
+
     return this.eventsRepository
       .createQueryBuilder("events")
       .orderBy("events.dateStart")
@@ -32,41 +33,33 @@ export class EventsService {
       .getMany()
   }
 
-  findTitle(title: string){
+  findTitle(title: string) {
 
     return this.eventsRepository
-    
+
       .createQueryBuilder("events")
-      .select(["events.title", "events.images", "events.tags" , "events.description", "events.dateStart"])
-      .where("events.title like :title" , { title: `%${title}%`})
+      .select(["events.title", "events.images", "events.tags", "events.description", "events.dateStart"])
+      .where("events.title like :title", { title: `%${title}%` })
       .getMany()
-   
+
   }
 
-  findTags(tags: string){
+  findTags(tags: string) {
 
     return this.eventsRepository
-    
+
       .createQueryBuilder("events")
-      .select(["events.title", "events.images", "events.tags" , "events.description", "events.dateStart"])
-      .where("events.tags like :tags" , { tags: `%${tags}%`})
+      .select(["events.title", "events.images", "events.tags", "events.description", "events.dateStart"])
+      .where("events.tags like :tags", { tags: `%${tags}%` })
 
-   
+
   }
-
-
 
 
 
   // конструктор запроса для получения мероприятия по нужным параметрам
   //если параметр был выбран, то добавляем его в запрос (И)
-  findAllEvents(id: number = null, type: number = null, level: number = null,
-    direction: number = null, dateStart: Date = null, dateEnd: Date = null, title: string = null,
-    tags: string[] = null): Promise<[Event[], number]> {
-
-    //dateStart = new Date()
-    // if (dateStart != null && dateEnd!=null)
-    //   console.log("dateStart: " + (dateStart.toISOString()) + "  dateEnd: " + (dateEnd.toISOString()))
+  findAllEvents(searchEvent: SearchEvent): Promise<[Event[], number]> {
 
     let buildQuery = this.eventsRepository
       .createQueryBuilder("events")
@@ -74,43 +67,50 @@ export class EventsService {
       .leftJoinAndSelect("events.type", "type")
       .leftJoinAndSelect("events.direction", "direction")
 
+    // limit
+    buildQuery = searchEvent.limit != null ? buildQuery.take(searchEvent.limit) : buildQuery
+
+    // offset
+    buildQuery = searchEvent.offset != null ? buildQuery.skip(searchEvent.offset) : buildQuery
+
+
     //id 
-    buildQuery = id  != null ? buildQuery
-      .andWhere("events.id = :id", { id: id }) : buildQuery
+    buildQuery = searchEvent.id != null ? buildQuery
+      .andWhere("events.id = :id", { id: searchEvent.id }) : buildQuery
 
     //title 
-    buildQuery = title != null ? buildQuery
-      .andWhere("events.title like :title" , { title: `%${title}%`}) : buildQuery
+    buildQuery = searchEvent.title != null ? buildQuery
+      .andWhere("events.title like :title", { title: `%${searchEvent.title}%` }) : buildQuery
 
     //tag 
-    buildQuery = tags != null ? buildQuery
-     .andWhere("events.tag = :tag" , { tag: tags}) : buildQuery
+    buildQuery = searchEvent.tags != null ? buildQuery
+      .andWhere("events.tag = :tag", { tag: searchEvent.tags }) : buildQuery
 
     // event type
-    buildQuery = type != null ? buildQuery
-      .andWhere("events.type = :type", { type: type }) : buildQuery
+    buildQuery = searchEvent.type != null ? buildQuery
+      .andWhere("events.type = :type", { type: searchEvent.type }) : buildQuery
 
     // event level
-    buildQuery = level != null ? buildQuery
-      .andWhere("events.level = :level", { level: level }) : buildQuery
+    buildQuery = searchEvent.level != null ? buildQuery
+      .andWhere("events.level = :level", { level: searchEvent.level }) : buildQuery
 
     // event direction
-    buildQuery = direction != null ? buildQuery
-      .andWhere("events.direction = :direction", { direction: direction }) : buildQuery
+    buildQuery = searchEvent.direction != null ? buildQuery
+      .andWhere("events.direction = :direction", { direction: searchEvent.direction }) : buildQuery
 
     // event dateStart
-    buildQuery = dateStart != null ? buildQuery
-      .andWhere("events.dateStart >= :dateStart", { dateStart: dateStart }) : buildQuery
+    buildQuery = searchEvent.dateStart != null ? buildQuery
+      .andWhere("events.dateStart >= :dateStart", { dateStart: searchEvent.dateStart }) : buildQuery
 
     // event dateEnd
-    buildQuery = dateEnd != null ? buildQuery
-      .andWhere("events.dateEnd <= :dateEnd", { dateEnd: dateEnd }) : buildQuery
+    buildQuery = searchEvent.dateEnd != null ? buildQuery
+      .andWhere("events.dateEnd <= :dateEnd", { dateEnd: searchEvent.dateEnd }) : buildQuery
 
     return buildQuery.getManyAndCount()
   }
 
   findOne(id: number) {
-    return this.eventsRepository.findOne({ where: {id: id},relations:{level:true, type:true, direction:true} });
+    return this.eventsRepository.findOne({ where: { id: id }, relations: { level: true, type: true, direction: true } });
   }
 
   update(id: number, updateEventDto: UpdateEventDto) {
@@ -127,12 +127,12 @@ export class EventsService {
   // journals-------------------------------------------------------------------------
 
 
-  getEventUsers(id: number){
-    
+  getEventUsers(id: number) {
+
     return this.journalsRepository
-    
+
       .createQueryBuilder("journals")
-      .where("journals.event_id = :event_id" , { event_id: id})
+      .where("journals.event_id = :event_id", { event_id: id })
       .andWhere("journals.is_registered = true")
       .leftJoin("journals.user", "users")
       .addSelect("users.id")
@@ -141,7 +141,7 @@ export class EventsService {
       .leftJoin("journals.event", "events")
       .addSelect(["events.title", "events.id"])
       .getMany()
-   
+
   }
 
   async findAllJournals(event_id: number = null, title: string = null): Promise<[Journal[], number]> {
@@ -154,27 +154,27 @@ export class EventsService {
       .addSelect("teams.id")
       .leftJoin("journals.event", "events")
       .addSelect(["events.title", "events.id"])
-      // .where("events.title like :title", {title: `%${title}%`})
-    
+    // .where("events.title like :title", {title: `%${title}%`})
 
-      buildQuery = title != null ? buildQuery
 
-      .where("events.title like :title", { title: `%${title}%` }) 
+    buildQuery = title != null ? buildQuery
+
+      .where("events.title like :title", { title: `%${title}%` })
       .andWhere("journals.is_registered = true") : buildQuery
-    
 
 
 
-      //id 
+
+    //id 
     buildQuery = event_id != null ? buildQuery
 
-      .andWhere("journals.event_id = :event_id", { event_id: event_id }) 
+      .andWhere("journals.event_id = :event_id", { event_id: event_id })
       .andWhere("journals.is_registered = true") : buildQuery
 
     //     //title 
     // buildQuery = title != null ? buildQuery
     //   .andWhere("events.title like :title" , { title: `%${title}%`}) : buildQuery
-   
+
     // buildQuery = team != null ? buildQuery
     //   .where("journals.team_id = :team", { team: team }) : buildQuery
 
@@ -183,19 +183,19 @@ export class EventsService {
 
   async findAllJournalByUserId(id: number) {
     let buildQuery = this.journalsRepository
-        .createQueryBuilder("journals")
-        .leftJoin("journals.team", "team")
-        .addSelect("team")
-        .leftJoin("journals.event", "event")
-        .addSelect("event")
-    buildQuery = id !=null ? buildQuery
-        .andWhere("journals.user_id = :id", { id:id}) : buildQuery
+      .createQueryBuilder("journals")
+      .leftJoin("journals.team", "team")
+      .addSelect("team")
+      .leftJoin("journals.event", "event")
+      .addSelect("event")
+    buildQuery = id != null ? buildQuery
+      .andWhere("journals.user_id = :id", { id: id }) : buildQuery
     return buildQuery.getManyAndCount()
   }
 
   // journals-------------------------------------------------------------------------
 
-  
+
   findJournals(team: number = null): Promise<[Journal[], number]> {
 
 
@@ -206,7 +206,7 @@ export class EventsService {
       .leftJoin("journals.event", "event")
       .addSelect("event.id")
 
-   
+
     buildQuery = team != null ? buildQuery
       .where("journals.team_id = :team", { team: team }) : buildQuery
 
@@ -219,9 +219,9 @@ export class EventsService {
 
 
   async getEventsViaJournalsByTeam(teamId: number, type: number = null, level: number = null,
-    dateStart: Date = null, dateEnd: Date = null):Promise<[Event[], number]> {
+    dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
 
-    
+
     // alert("teamId " + teamId)
     let data = await this.findJournals(teamId)
     let countAppropriate = 0
@@ -229,7 +229,7 @@ export class EventsService {
     //получить всех найденне journal
     let journals = data[0]
 
-    let arrayData:Event[] = []
+    let arrayData: Event[] = []
 
 
     for (let i = 0; i < journals.length; i++) {
@@ -237,20 +237,25 @@ export class EventsService {
 
 
       let eventId = journal.event.id
-    
-// возвращает данные с кауентером
-      let event = (await this.findAllEvents(eventId, type, level,
-        null, dateStart, dateEnd))[0]
+
+      let searchEvent = new SearchEvent()
+      searchEvent.id = eventId
+      searchEvent.type = type
+      searchEvent.level = level
+      searchEvent.dateStart = dateStart
+      searchEvent.dateEnd = dateEnd
+      // возвращает данные с кауентером
+      let event = (await this.findAllEvents(searchEvent))[0]
 
 
-      if (event !=null && event[0]!=null) {
-      //  предполагается несколько данных, но мы знаем, что у нас один будет
+      if (event != null && event[0] != null) {
+        //  предполагается несколько данных, но мы знаем, что у нас один будет
         arrayData.push(event[0])
         countAppropriate++
       }
     }
 
-    return [ arrayData, countAppropriate ]
+    return [arrayData, countAppropriate]
 
   }
 
@@ -279,21 +284,21 @@ export class EventsService {
       // creation_date: new Date()
     })
 
-   
+
     return event;
   }
 
-  async updateJournal( event_id: number, user_id: number) {
+  async updateJournal(event_id: number, user_id: number) {
 
-    
-   return await this.journalsRepository
-    .createQueryBuilder("journals")
-    .update()
-    .set({ is_registered: true})
-    .where("journals.event_id = :event_id", {event_id: event_id})
-    .andWhere("journals.user_id = :user_id", {user_id: user_id})
-    .execute()
-    
+
+    return await this.journalsRepository
+      .createQueryBuilder("journals")
+      .update()
+      .set({ is_registered: true })
+      .where("journals.event_id = :event_id", { event_id: event_id })
+      .andWhere("journals.user_id = :user_id", { user_id: user_id })
+      .execute()
+
   }
 
 
@@ -302,11 +307,11 @@ export class EventsService {
     return await this.journalsRepository
       .createQueryBuilder("journals")
       .delete()
-      .where("journals.event_id = :event_id", {event_id: event_id})
-      .andWhere("journals.user_id = :user_id", {user_id: user_id})
+      .where("journals.event_id = :event_id", { event_id: event_id })
+      .andWhere("journals.user_id = :user_id", { user_id: user_id })
       .execute()
 
-  } 
+  }
 }
 
 

@@ -6,6 +6,7 @@ import { EventsService } from '../events/events.service';
 import { Response } from 'express';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { FileSizeValidationPipe } from './validation/file.validation.pipe ';
+import { SearchEvent } from 'src/events/entities/search_event.entity';
 
 
 @Controller('uploads')
@@ -70,7 +71,14 @@ export class UploadsController {
     let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
 
     // получить все мероприятия по заданным параметрам
-    let events = await this.eventsService.findAllEvents(null, type, level, direction, dStart, dEnd)
+    let searchEvent =new SearchEvent()
+      searchEvent.type = type
+      searchEvent.level = level
+      searchEvent.dateStart = dateStart
+      searchEvent.dateEnd = dateEnd
+      searchEvent.direction = direction
+
+    let events = await this.eventsService.findAllEvents(searchEvent)
 
     await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level, direction: direction, dateStart: dStart, dateEnd: dEnd })
     //return res

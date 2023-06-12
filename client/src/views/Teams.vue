@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-import Filter from '@/components/WIP.vue';
 import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import { onBeforeMount, ref, watch, type Ref } from 'vue';
@@ -184,18 +183,14 @@ async function handleEventChangePage(currentPage: number) {
   <div class="wrapper-team">
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
-      <!-- <div v-if="can('can create teams')" class="mt-4"> -->
+      <div v-if="can('can create teams')">
       <!-- Button trigger modal -->
       <button @click="editTeam(false, null)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Создать коллектив
       </button>
       <ModalCreateTeam :is-edit-team="isEditTeam" :team="teamEdit" />
 
-      <!-- </div> -->
-      <!-- <a @click="show = true" :class="{ active: show }">Общий список</a>
-                <div v-if="can('can create teams')" class="mt-4">
-                  <ModalCreateTeam />
-                </div> -->
+      </div>
     </div>
 
     <!-- Обертка карточек коллективов -->
@@ -220,7 +215,6 @@ async function handleEventChangePage(currentPage: number) {
             <Switch_toggle />
           </div>
         </div>
-        <!--  {{ data }}-->
 
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
@@ -236,7 +230,6 @@ async function handleEventChangePage(currentPage: number) {
 
             <div class=" col-lg col-md-auto p-4 overflow-hidden">
               <div class="wrapperContent">
-                <!-- <div class="card__event-name"> -->
                 <div class="row mb-2">
 
                   <!-- team title -->
@@ -251,19 +244,16 @@ async function handleEventChangePage(currentPage: number) {
                       архиве)</p>
                   </div>
 
-                  <div class="col-auto d-flex justify-content-end align-items-end">
+                  <div  v-if="can('can create teams')" class="col-auto d-flex justify-content-end align-items-end">
                     <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal"
                       data-bs-target="#exampleModal">
                       <font-awesome-icon class="ic" icon="pencil-square" />
                     </div>
                   </div>
                 </div>
-                <!-- </div>
-                  </div> -->
+      
 
 
-
-                <!-- </div> -->
 
                 <div class="row mb-2">
                   <div class="row" style="max-height: 100px;">

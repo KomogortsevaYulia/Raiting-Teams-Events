@@ -5,10 +5,19 @@ import { DirectionName } from "./enums/enum_teams";
 
 export const useEventStore = defineStore("events", () => {
 
-  async function fetchEvents(): Promise<any> {
-    const res = await axios.get('api/events/external')
+  // type 4 is external
+  async function fetchEvents(limit:number, offset:number, type = 4): Promise<any> {
+
+    let params = {
+      type: type,
+      limit: limit,
+      offset: offset
+    }
+
+    const res = await axios.get('api/events', { params: params })
+
     const data = res.data
-    
+
     return data
   }
 
@@ -31,7 +40,7 @@ export const useEventStore = defineStore("events", () => {
     return data[0]
   }
 
-  async function getEventsViaJournalsByTeam(teamId: number, dateStart: Date, dateEnd: Date, 
+  async function getEventsViaJournalsByTeam(teamId: number, dateStart: Date, dateEnd: Date,
     type: number = 0, level: number = 0): Promise<any> {
 
     let lvl = level != 0 ? level : null
@@ -100,7 +109,7 @@ export const useEventStore = defineStore("events", () => {
   }
 
 
-  async function getReportEventsOfTeam(teamId: number, dateStart: Date, dateEnd: Date, 
+  async function getReportEventsOfTeam(teamId: number, dateStart: Date, dateEnd: Date,
     type: number = 0, level: number = 0) {
 
     let lvl = level != 0 ? level : null
@@ -108,7 +117,7 @@ export const useEventStore = defineStore("events", () => {
 
     const res = await axios.get('api/uploads/excel/events_of_team', {
       params: {
-        teamId:teamId,
+        teamId: teamId,
         level: lvl, type: tp,
         dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
       },

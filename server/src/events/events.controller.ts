@@ -5,6 +5,7 @@ import { CreateJournalDto } from './dto/create-journal.dto';
 import { UpdateJournalDto } from './dto/update-journal.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Event } from './entities/event.entity';
+import { SearchEvent } from './entities/search_event.entity';
 
 @ApiTags('events')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('events')
@@ -48,17 +49,12 @@ export class EventsController {
 
 
   @Get()
-  @ApiOperation({ summary: "Получение списка мероприятий с учетом различных параметров" })
+  @ApiOperation({ summary: "Универсальный запрос на получение списка мероприятий с учетом различных параметров" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAllEvents(@Query() { id = null, type = null, level = null,
-    direction = null, dateStart = null, dateEnd = null , title = null},
-    tags = null) {
+  findAllEvents(@Query() searchEvent:SearchEvent) {
 
-    let dStart: Date = dateStart == null ? null : (new Date(dateStart))
-    let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
-
-    return this.eventsService.findAllEvents(id, type, level, direction, dStart, dEnd, title, tags);
+    return this.eventsService.findAllEvents(searchEvent);
   }
 
 

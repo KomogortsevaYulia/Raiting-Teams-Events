@@ -1,8 +1,8 @@
 <template>
     <!-- current {{ current }}
-   maxPage {{ maxPage }}
-   startPage {{ startPage }}
-   endPage {{ endPage }} -->
+    maxPage {{ maxPage }}
+    startPage {{ startPage }}
+    endPage {{ endPage }} -->
     <div class="my-4">
         <nav aria-label="Pagination">
             <ul class="pagination">
@@ -55,6 +55,10 @@ const current = ref(1)
 const startPage = ref(1)
 const endPage = ref(1)
 
+onBeforeMount(() => {
+    // запустить на всякий случай если было maxPage быстро изменено
+    setEndStartPages()
+})
 
 watch(() => props.maxPage, async (prev) => {
     changePage(1)

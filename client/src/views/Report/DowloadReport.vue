@@ -41,7 +41,7 @@ async function getReportEventsOfDirection() {
 }
 
 // в процессе загрузки
-function setLoading(load:boolean){
+function setLoading(load: boolean) {
   loading.value = load
 }
 
@@ -127,7 +127,7 @@ async function downloadFile() {
                <a v-if="!loading && resFile" :href="fileURL" download="reportEvents.xlsx">
                <button @click="downloadFile()"> <font-awesome-icon icon="file-download" /></button>
                </a>
-               <font-awesome-icon v-else icon="circle-notch" class="fas fa-spin fa-xl loading" />
+               <font-awesome-icon v-if="loading" icon="circle-notch" class="fas fa-spin fa-xl loading" />
    
                
               </div>
