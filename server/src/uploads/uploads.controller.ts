@@ -4,7 +4,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EventsService } from '../events/events.service';
 import { Response } from 'express';
-import { UploadFileDto } from './dto/upload-file.dto';
 import { FileSizeValidationPipe } from './validation/file.validation.pipe ';
 import { SearchEvent } from 'src/events/entities/search_event.entity';
 

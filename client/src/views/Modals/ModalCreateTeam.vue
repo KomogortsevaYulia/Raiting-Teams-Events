@@ -42,6 +42,10 @@ const responseMsg = ref();
 // найденные юзеры
 const foundUsers = ref();
 
+// найденные направления из системы
+const directions = ref([{ id: 0, shortname: "Все" }])           //дата
+const selectedDirection = ref(0)
+
 //получить юзеров
 const func = _.debounce(() => {
   getUsers()
@@ -56,15 +60,21 @@ async function onTextChange(e: any) {
   func()
 }
 
-watch(
-  () => team.value, (value, previousValue) => {
-    fillForm()
-  })
+// watch(
+//   () => team.value, (value, previousValue) => {
+//     fillForm()
+//   })
 
 watch(
-  () => props.team, (value, previousValue) => {
-    team.value = props.team
+  () => props.team, async (value, previousValue) => {
+
+    if (value) {
+      const t = await teamStore.fetchTeam(value.id)
+      team.value = t
+    } else team.value = null
+
     responseMsg.value = ""
+    fillForm()
   })
 
 
@@ -72,14 +82,38 @@ onBeforeMount(async () => {
   await getUsers()
   team.value = props.team
 
+  await getDirections()
 })
+
+
+async function getDirections() {
+
+  let data = await teamStore.fetchTeamsOfDirection(-1, "direction")
+
+  let dir = data[0]
+  let arrayData = []
+  arrayData[0] = { id: 0, shortname: "Все" }
+
+  for (let i = 0; i < dir.length; i++) {
+    let direction = dir[i]
+
+    arrayData[i + 1] = direction
+  }
+
+  directions.value = arrayData
+}
 
 // заполнить форму данными
 async function fillForm() {
 
+  // make files is empty
+  charterTeamFile.value = null
+  documentFile.value = null
+
   if (team.value != null) {
     let t = team.value
 
+    selectedDirection.value = t.id_parent ? t.id_parent.id ?? 0 : 0
     title.value = t.title
     shortname.value = t.shortname
     description.value = t.description
@@ -115,6 +149,7 @@ async function fillForm() {
     title.value = shortname.value = description.value
       = cabinet.value = ""
     optionSelect.value = null
+    selectedDirection.value = 0
   }
 
 }
@@ -150,7 +185,7 @@ async function createTeam() {
   } else { userId = optionSelect.value.id }
 
   //create team
-  responseMsg.value = await teamStore.createTeam(title.value, description.value,
+  responseMsg.value = await teamStore.createTeam(selectedDirection.value, title.value, description.value,
     shortname.value, userId, cabinet.value, charterTeamFile.value, documentFile.value)
 
   // console.log(newTeam)
@@ -169,6 +204,7 @@ async function updateTeam() {
 
   //create team
   const uT = new UpdateTeam()
+  uT.id_parent = selectedDirection.value
   uT.cabinet = cabinet.value
   uT.description = description.value
   uT.id = team.value.id
@@ -272,6 +308,10 @@ async function archiveTeam(id: number, isArchive: boolean) {
 
                   <v-select placeholder="ФИО Руководителя или email" class="v-select" label="data" @input="onTextChange"
                     :options="foundUsers" v-model="optionSelect"></v-select>
+                  <!-- select direction -->
+                  <select class="form-select mb-2" aria-label="Default select example" v-model="selectedDirection">
+                    <option v-for="direction in directions" :value="direction.id">{{ direction.shortname }}</option>
+                  </select>
 
                   <input type="text" placeholder="Аудитория(кабинет)" v-model="cabinet">
 

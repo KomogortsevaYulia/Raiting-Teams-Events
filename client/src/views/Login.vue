@@ -87,7 +87,8 @@ async function OnLoginSubmit() {
     padding: 2rem 4rem 2rem 4rem;
     border-radius: 20px;
     // height: 500px auto;
-    width: 440px;
+    max-width: 440px;
+    min-width: 288px;
     flex-direction: column;
     margin: auto;
     background-color: #fff;
@@ -159,12 +160,4 @@ async function OnLoginSubmit() {
 }
 
 
-@media (max-width: 442px) {
-
-    .form-login {
-        width: 288px;
-        padding: 1rem 2rem;
-    }
-
-}
 </style>

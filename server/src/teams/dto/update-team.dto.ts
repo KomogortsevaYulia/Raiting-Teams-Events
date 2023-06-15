@@ -1,9 +1,15 @@
 
 import { Type } from 'class-transformer'
 import {IsNotEmpty, IsNumber, IsOptional, Length, MaxLength, isEmpty } from 'class-validator'
+import { Team } from '../entities/team.entity'
 
 
 export class UpdateTeamDto {
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    id_parent:Team
 
     @IsNotEmpty({ message: 'Поле пустое' })
     @Length(1,100,{

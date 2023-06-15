@@ -8,6 +8,7 @@ export default class UpdateTeam {
     cabinet = ""
     documentPath = ""
     charterPath = ""
+    id_parent = 0
 
     fileUstav: any
     fileDocument: any

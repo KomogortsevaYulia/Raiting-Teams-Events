@@ -55,12 +55,20 @@ export const useTeamStore = defineStore("teams", () => {
         return responseMsg
     }
 
-    async function fetchTeam(id: number): Promise<any> {
+    async function fetchUserOfTeam(id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + id + '/users')
         const data = res.data
         // console.log(data)
         return data
     }
+
+    async function fetchTeam(id: number): Promise<any> {
+        const res = await axios.get('/api/teams/' + id)
+        const data = res.data
+        return data
+    }
+    
+
     async function fetchRequisition(team_id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + team_id + '/requisition')
         const data = res.data
@@ -68,12 +76,15 @@ export const useTeamStore = defineStore("teams", () => {
         return data
     }
 
-    async function createTeam(title: string, description: string,
+    async function createTeam(direction: number, title: string, description: string,
         shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
 
         let responseMsg = "сохранено"
 
         const formData = new FormData();
+        if( direction > 0){
+            formData.append('id_parent', direction.toString())
+        }
         formData.append('title', title);
         formData.append('description', description);
         formData.append('shortname', shortname);
@@ -115,6 +126,9 @@ export const useTeamStore = defineStore("teams", () => {
         let responseMsg = "сохранено"
 
         const formData = new FormData();
+        if( uT.id_parent > 0){
+            formData.append('id_parent', uT.id_parent.toString())
+        }
         formData.append('title', uT.title);
         formData.append('description', uT.description);
         formData.append('shortname', uT.shortname);
@@ -242,6 +256,7 @@ export const useTeamStore = defineStore("teams", () => {
         createTeam,
         setLayout,
         fetchTeamsOfDirection,
+        fetchUserOfTeam,
         fetchTeam,
         updateTeam,
         archiveTeam,

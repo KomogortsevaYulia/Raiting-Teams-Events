@@ -35,7 +35,7 @@ export class Team {
     
     @ManyToOne((type)=>Team, (team)=>team.id)
     @JoinColumn([{ name: "id_parent" }])
-    id_parent:Team[]
+    id_parent:Team
 
     @ApiProperty() 
     @Column({

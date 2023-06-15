@@ -37,7 +37,7 @@ onBeforeMount(async () => {
 
 async function fetchTeam() {
 
-  team.value = await TeamStore.fetchTeam(idTeam)
+  team.value = await TeamStore.fetchUserOfTeam(idTeam)
 }
 
 async function Requisition() {

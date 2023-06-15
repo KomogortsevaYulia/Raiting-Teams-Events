@@ -12,14 +12,22 @@ export class UploadsService {
 
   async uploadFile(file: Express.Multer.File) {
 
-    const pathStart = "/public/media"
+    // текущий путь куда сохраняется, старт
+    const pathStart = "./public/media"
 
-    const randomName = Array(32).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
-    const filename = `${randomName}${extname(file.originalname)}`;
-    const path = `.${pathStart}/${filename}`;
-
-
+    let path = "";
+    // если буфер не пустой
     if (file.buffer != null) {
+
+      // сгенерировать уникальное имя
+      const filename = this.generateUniqueFileName();
+
+      const currentDate = new Date(); // Use the current date
+      // сгенерировать путь к папке (год, месяц)
+      const pathToFolder = this.generateFoldersYearMonthDay(currentDate, pathStart);
+
+      path = `${pathToFolder}/${filename}`;
+
       const stream = createWriteStream(path);
       stream.write(file.buffer);
       stream.end();
@@ -31,6 +39,43 @@ export class UploadsService {
     return path
   }
 
+  // generators---------------------------------------------------------------------------------
+  //генерирует уникальное имя для файла на основе даты
+  private generateUniqueFileName() {
+
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(2, 8); // Generate a random string of 6 characters
+
+    return `${timestamp}_${randomString}`;
+  }
+
+  // сгенерировать папку год.месяц и подпапку дня
+  private generateFoldersYearMonthDay(date: Date, pathStart: string) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month ranges from 0 to 11, so add 1 and pad with leading zero if necessary
+    const folderDay = date.getDate().toString().padStart(2, '0'); // Pad day with leading zero if necessary
+
+    const folderYearMonth = `${year}.${month}`
+    const pathToFolder = `${pathStart}/${folderYearMonth}/${folderDay}`;
+
+    this.createFolderIfNotExists(pathToFolder)
+
+    return pathToFolder;
+  }
+
+  // проверить существование папки и создать, если не существует
+  private createFolderIfNotExists(path: string) {
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path);
+      console.log(`Folder created: ${path}`);
+      return true
+    } else {
+      // console.log(`Folder already exists: ${path}`);
+      return false
+    }
+  }
+  // generators---------------------------------------------------------------------------------
+
 
   async getFileBuffer(path: string) {
 
@@ -41,22 +86,6 @@ export class UploadsService {
     } else {
       throw new HttpException('Путь не найден', HttpStatus.BAD_REQUEST)
     }
-
-
-    // let res: Promise<unknown> = null
-    // if (fs.existsSync(path)) {
-    //   res = new Promise((resolve, reject) => {
-    //     fs.readFile(path, (err, data) => {
-    //       if (err) {
-    //         reject(err);
-    //       } else {
-    //         resolve(data.toString());
-    //       }
-    //     });
-    //   });
-    // } else {
-    //   throw new HttpException('Путь не найден', HttpStatus.BAD_REQUEST)
-    // }
 
     return buffer
   }

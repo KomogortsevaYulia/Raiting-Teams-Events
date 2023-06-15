@@ -6,6 +6,11 @@ import { Type } from 'class-transformer'
 
 export class CreateTeamDto {
 
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    id_parent:Team
+
     @IsNotEmpty({ message: 'Поле пустое' })
     @IsString()
     @Length(1,100,{

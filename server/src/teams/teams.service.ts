@@ -30,7 +30,28 @@ export class TeamsService {
   ) { }
 
   async findOne(id: number) {
-    let res = await this.teamsRepository.findOneBy({ id: id })
+
+    const head = "Руководитель"
+
+    let res = await this.teamsRepository.createQueryBuilder("teams")
+
+      .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description",
+        "teams.short_description", "teams.type_team", "teams.cabinet", "teams.is_archive", "teams.document", "teams.shortname", "teams.charter_team",
+        "teams.id_parent"])
+      .where("teams.id = :id", { id: id })
+      .andWhere("teams.type_team = :type", { type: "teams" })
+      .leftJoin("teams.functions", "functions")
+      // select direction
+      .leftJoin("teams.id_parent", "direction")
+      .addSelect("direction.id")
+      .addSelect("functions.title")
+      .andWhere("functions.title = :head", { head: head })
+
+      .leftJoin("functions.userFunctions", "user_functions")
+      .addSelect("user_functions.id")
+      .leftJoinAndSelect("user_functions.user", "user")
+      .getOne()
+    // .addSelect("user.title_role")
 
     return res;
   }
@@ -39,6 +60,8 @@ export class TeamsService {
   // Обновить коллектив
   async update(id: number, updateTeamDto: UpdateTeamDto) {
 
+
+    updateTeamDto.id_parent = updateTeamDto.id_parent ?? null
     let team = await this.teamsRepository.save({
       id,
       ...updateTeamDto,
@@ -87,9 +110,13 @@ export class TeamsService {
       .createQueryBuilder("teams")
 
       .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description",
-        "teams.short_description", "teams.type_team", "teams.cabinet", "teams.is_archive", "teams.document", "teams.shortname", "teams.charter_team"])
+        "teams.short_description", "teams.type_team", "teams.cabinet", "teams.is_archive", "teams.document", "teams.shortname", "teams.charter_team",
+        "teams.id_parent"])
       .where("teams.type_team = :type", { type: "teams" })
       .leftJoin("teams.functions", "functions")
+      // select direction
+      .leftJoin("teams.id_parent", "direction")
+      .addSelect("direction.id")
       .addSelect("functions.title")
       .andWhere("functions.title = :head", { head: head })
 
