@@ -308,12 +308,21 @@ async function archiveTeam(id: number, isArchive: boolean) {
 
                   <v-select placeholder="ФИО Руководителя или email" class="v-select" label="data" @input="onTextChange"
                     :options="foundUsers" v-model="optionSelect"></v-select>
-                  <!-- select direction -->
-                  <select class="form-select mb-2" aria-label="Default select example" v-model="selectedDirection">
-                    <option v-for="direction in directions" :value="direction.id">{{ direction.shortname }}</option>
-                  </select>
 
-                  <input type="text" placeholder="Аудитория(кабинет)" v-model="cabinet">
+                  <div class="row">
+
+                    <div class="col-auto">
+                      <!-- select direction -->
+                      <select class="form-select mb-3" style="min-width: 80px ;" aria-label="Default select example"
+                        v-model="selectedDirection">
+                        <option v-for="direction in directions" :value="direction.id">{{ direction.shortname }}</option>
+                      </select>
+                    </div>
+
+                    <div class="col">
+                      <input type="text" style="width: -webkit-fill-available;" placeholder="Аудитория(кабинет)" v-model="cabinet">
+                    </div>
+                  </div>
 
                   <div class="mb-2">
                     <label for="formFile" class="form-label">загрузить устав</label>

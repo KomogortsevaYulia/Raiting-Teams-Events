@@ -26,8 +26,8 @@ async function OnLoginSubmit() {
         password: password.value,
     })
     if (isLogged) {
-        // @ts-ignore
-        router.push(route.query.next);
+       
+        router.push("/news");
     }
 }
 
