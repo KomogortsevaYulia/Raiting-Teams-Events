@@ -136,7 +136,7 @@ const props = defineProps<{
       display: block;
       width: 1.5rem;
       height: 1.5rem;
-      background-color: #5BD1D7;
+      background-color: var(--second-color);
       background-image: url(@/assets/icon/checked.svg);
       border-radius: 0.3rem;
       transform: (-50%, -50%);

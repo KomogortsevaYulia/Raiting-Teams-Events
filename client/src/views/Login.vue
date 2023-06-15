@@ -59,6 +59,7 @@ async function OnLoginSubmit() {
             </div>
         </form>
 
+
         <!-- Форма регистрации -->
         <form v-if="!show" @submit.prevent="OnRegistrationSubmit">
             <div class="form-login__input">
@@ -85,8 +86,8 @@ async function OnLoginSubmit() {
     display: flex;
     padding: 2rem 4rem 2rem 4rem;
     border-radius: 20px;
-    height: 500px auto;
-    width: 40%;
+    // height: 500px auto;
+    width: 440px;
     flex-direction: column;
     margin: auto;
     background-color: #fff;
@@ -100,7 +101,7 @@ async function OnLoginSubmit() {
         padding: 0 0 4rem 0;
     }
 
-    .form-login__choice {
+    &__choice {
         display: flex;
         justify-content: center;
         padding-bottom: 1rem;
@@ -127,18 +128,18 @@ async function OnLoginSubmit() {
         }
     }
 
-    .form-login__input {
+    &__input {
         display: flex;
         flex-direction: column;
         padding: 0.75rem 0 0.75rem 0;
     }
 
-    .form-login__submit-campus {
+    &__submit-campus {
         display: flex;
         justify-content: center;
     }
 
-    .form-login__submit {
+    &__submit {
         display: flex;
         justify-content: end;
         align-items: center;
@@ -155,5 +156,15 @@ async function OnLoginSubmit() {
             }
         }
     }
+}
+
+
+@media (max-width: 442px) {
+
+    .form-login {
+        width: 288px;
+        padding: 1rem 2rem;
+    }
+
 }
 </style>
