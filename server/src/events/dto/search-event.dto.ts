@@ -4,8 +4,13 @@ import { IsDate, IsNumber, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
 
 @Entity('events')
-export class SearchEvent {
+export class SearchEventDto {
 
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    teamId:number
+    
     @IsOptional()
     @IsNumber()
     @Type(() => Number)

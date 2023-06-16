@@ -5,8 +5,9 @@ import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EventsService } from '../events/events.service';
 import { Request, Response } from 'express';
 import { FileSizeValidationPipe } from './validation/file.validation.pipe';
-import { SearchEvent } from 'src/events/entities/search_event.entity';
+import { SearchEventDto } from 'src/events/dto/search-event.dto';
 import { FileImageValidationPipe } from './validation/image_file.validation.pipe';
+import { type } from 'os';
 
 
 @Controller('uploads')
@@ -84,24 +85,11 @@ export class UploadsController {
   @ApiOperation({ summary: "Получение файла excel по мероприятиям направления " })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async getReportEventsOfDirection(@Res() res: Response, @Query() { type = null, level = null,
-    direction = null, dateStart = null, dateEnd = null }) {
-
-    let dStart: Date = dateStart == null ? null : (new Date(dateStart))
-    let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
+  async getReportEventsOfDirection(@Res() res: Response, @Query() searchEventDto:SearchEventDto) {
 
     // получить все мероприятия по заданным параметрам
-    let searchEvent = new SearchEvent()
-    searchEvent.type = type
-    searchEvent.level = level
-    searchEvent.dateStart = dateStart
-    searchEvent.dateEnd = dateEnd
-    searchEvent.direction = direction
-
-    let events = await this.eventsService.findAllEvents(searchEvent)
-
-    await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level, direction: direction, dateStart: dStart, dateEnd: dEnd })
-    //return res
+    let events = await this.eventsService.findAllEvents(searchEventDto)
+    await this.uploadsService.getReportEvents(res, events[0], events[1])
   }
 
   //get excel file about events
@@ -112,15 +100,11 @@ export class UploadsController {
   @ApiOperation({ summary: "Получение файла excel по мероприятиям коллектива " })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async getReportEventsOfTeam(@Res() res: Response, @Query() { teamId = null, type = null, level = null, dateStart = null, dateEnd = null }) {
+  async getReportEventsOfTeam(@Res() res: Response, @Query() searchEventDto:SearchEventDto) {
 
+    let events = await this.eventsService.getEventsViaJournalsByTeam(searchEventDto)
 
-    let dStart: Date = dateStart == null ? null : (new Date(dateStart))
-    let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
-
-    let events = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dStart, dEnd)
-
-    await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level, direction: null, dateStart: dStart, dateEnd: dEnd })
+    await this.uploadsService.getReportEvents(res, events[0], events[1])
 
   }
 

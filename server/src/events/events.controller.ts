@@ -5,7 +5,7 @@ import { CreateJournalDto } from './dto/create-journal.dto';
 import { UpdateJournalDto } from './dto/update-journal.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Event } from './entities/event.entity';
-import { SearchEvent } from './entities/search_event.entity';
+import { SearchEventDto } from './dto/search-event.dto';
 
 @ApiTags('events')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('events')
@@ -52,7 +52,7 @@ export class EventsController {
   @ApiOperation({ summary: "Универсальный запрос на получение списка мероприятий с учетом различных параметров" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAllEvents(@Query() searchEvent:SearchEvent) {
+  findAllEvents(@Query() searchEvent:SearchEventDto) {
 
     return this.eventsService.findAllEvents(searchEvent);
   }
@@ -128,10 +128,10 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @Get('events_of_team/:teamId')
-   getEventsViaJournalsByTeam(@Param('teamId') teamId, @Query() { type = null, level = null,
-    dateStart = null, dateEnd = null }) {
+   getEventsViaJournalsByTeam(@Param('teamId') teamId, @Query() searchEventDto:SearchEventDto) {
 
-    let res =  this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dateStart, dateEnd)
+    searchEventDto.teamId = teamId
+    let res =  this.eventsService.getEventsViaJournalsByTeam(searchEventDto)
 
     return res
   }

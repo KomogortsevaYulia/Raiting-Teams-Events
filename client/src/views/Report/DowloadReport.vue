@@ -34,7 +34,7 @@ const loading = ref(false) //файл формируется
 // получить отчет по направлению
 async function getReportEventsOfDirection() {
   setLoading(true)
-  let res = await eventStore.getReportEventsOfDirection(props.direction.id, props.dateRange.start,
+  let res = await eventStore.getReportEventsOfDirection(props.direction.idDirectionEvent, props.dateRange.start,
     props.dateRange.end, props.level.id, props.typeEvent.id)
   resFile.value = res.data
   setLoading(false)

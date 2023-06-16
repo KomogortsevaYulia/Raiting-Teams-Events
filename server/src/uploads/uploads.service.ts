@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { Event } from 'src/events/entities/event.entity';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
+import { SearchEventDto } from 'src/events/dto/search-event.dto';
 
 @Injectable()
 export class UploadsService {
@@ -115,11 +116,7 @@ export class UploadsService {
 
 
   // install excel file for events in direction
-  async getReportEvents(res: Response, events: Event[], countEvents: number,
-    params = {
-      type: null, level: null,
-      direction: null, dateStart: null, dateEnd: null
-    }) {
+  async getReportEvents(res: Response, events: Event[], countEvents: number) {
 
     res.setHeader(
       'Content-Type',

@@ -10,7 +10,7 @@ import { Level, Type } from './enums/enums';
 import { Direction } from 'readline';
 import { Journal } from './entities/journal.entity';
 import { fail } from 'assert';
-import { SearchEvent } from './entities/search_event.entity';
+import { SearchEventDto } from './dto/search-event.dto';
 
 @Injectable()
 export class EventsService {
@@ -59,7 +59,7 @@ export class EventsService {
 
   // конструктор запроса для получения мероприятия по нужным параметрам
   //если параметр был выбран, то добавляем его в запрос (И)
-  findAllEvents(searchEvent: SearchEvent): Promise<[Event[], number]> {
+  async findAllEvents(searchEvent: SearchEventDto): Promise<[Event[], number]> {
 
     let buildQuery = this.eventsRepository
       .createQueryBuilder("events")
@@ -105,8 +105,8 @@ export class EventsService {
     // event dateEnd
     buildQuery = searchEvent.dateEnd != null ? buildQuery
       .andWhere("events.dateEnd <= :dateEnd", { dateEnd: searchEvent.dateEnd }) : buildQuery
-
-    return buildQuery.getManyAndCount()
+  
+    return await buildQuery.getManyAndCount()
   }
 
   findOne(id: number) {
@@ -218,12 +218,11 @@ export class EventsService {
 
 
 
-  async getEventsViaJournalsByTeam(teamId: number, type: number = null, level: number = null,
-    dateStart: Date = null, dateEnd: Date = null): Promise<[Event[], number]> {
+  async getEventsViaJournalsByTeam(searchEventDto: SearchEventDto): Promise<[Event[], number]> {
 
 
     // alert("teamId " + teamId)
-    let data = await this.findJournals(teamId)
+    let data = await this.findJournals(searchEventDto.teamId)
     let countAppropriate = 0
 
     //получить всех найденне journal
@@ -238,14 +237,8 @@ export class EventsService {
 
       let eventId = journal.event.id
 
-      let searchEvent = new SearchEvent()
-      searchEvent.id = eventId
-      searchEvent.type = type
-      searchEvent.level = level
-      searchEvent.dateStart = dateStart
-      searchEvent.dateEnd = dateEnd
-      // возвращает данные с кауентером
-      let event = (await this.findAllEvents(searchEvent))[0]
+      searchEventDto.id = eventId
+      let event = (await this.findAllEvents(searchEventDto))[0]
 
 
       if (event != null && event[0] != null) {
