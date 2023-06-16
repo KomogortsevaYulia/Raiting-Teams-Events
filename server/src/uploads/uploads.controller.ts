@@ -1,11 +1,12 @@
-import { Controller, Get, Post, UploadedFile, UseInterceptors, Redirect, HttpStatus, Query, Header, Headers, Res, ParseFilePipe, MaxFileSizeValidator, ParseFilePipeBuilder, FileTypeValidator, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, UploadedFile, UseInterceptors, Redirect, HttpStatus, Query, Header, Headers, Res, ParseFilePipe, MaxFileSizeValidator, ParseFilePipeBuilder, FileTypeValidator, UsePipes, ValidationPipe, Req } from '@nestjs/common';
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EventsService } from '../events/events.service';
-import { Response } from 'express';
-import { FileSizeValidationPipe } from './validation/file.validation.pipe ';
+import { Request, Response } from 'express';
+import { FileSizeValidationPipe } from './validation/file.validation.pipe';
 import { SearchEvent } from 'src/events/entities/search_event.entity';
+import { FileImageValidationPipe } from './validation/image_file.validation.pipe';
 
 
 @Controller('uploads')
@@ -15,19 +16,38 @@ export class UploadsController {
     private readonly eventsService: EventsService) { }
 
   @Post()
-  @ApiOperation({ summary: "Сохранение файла на сервере" })
+  @ApiOperation({ summary: "Сохранение файла на сервере (любой формат)" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile(
+  async uploadFile(@Req() request: Request, @UploadedFile(
     new FileSizeValidationPipe()
-   
+
   ) file: Express.Multer.File) {
-   
-    let path = await this.uploadsService.uploadFile(file)
+
+    const startPathUrl = `${request.protocol}://${request.get('host')}`;
+
+    let path = await this.uploadsService.uploadFile(startPathUrl, file)
 
     return path
   }
+
+
+  @Post('image')
+  @ApiOperation({ summary: "Сохранение изображения на сервер" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "файл должен весить < 20 мб" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Неподдерживаемый тип файла" })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadImage(@Req() request: Request, @UploadedFile(new FileImageValidationPipe())
+  file: Express.Multer.File) {
+
+    const startPathUrl = `${request.protocol}://${request.get('host')}`;
+
+    let path = await this.uploadsService.uploadFile(startPathUrl, file)
+    return path
+  }
+
 
 
   @Get("file_buffer")
@@ -42,17 +62,18 @@ export class UploadsController {
     return file
   }
 
-  @Get("image_base64")
-  @ApiOperation({ summary: "Получение файла с сервера в виде base64 для изображений" })
-  @ApiParam({ name: 'path', description: "путь к файлу для сохранения" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async getFileImageBase64(@Query() params) {
 
-    let base64 = await this.uploadsService.getFileImageBase64(params.path)
+  // @Get("image_base64")
+  // @ApiOperation({ summary: "Получение файла с сервера в виде base64 для изображений" })
+  // @ApiParam({ name: 'path', description: "путь к файлу для сохранения" })
+  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  // async getFileImageBase64(@Query() params) {
 
-    return base64
-  }
+  //   let base64 = await this.uploadsService.getFileImageBase64(params.path)
+
+  //   return base64
+  // }
 
 
   // reports--------------------------------------------------------------------------
@@ -70,12 +91,12 @@ export class UploadsController {
     let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
 
     // получить все мероприятия по заданным параметрам
-    let searchEvent =new SearchEvent()
-      searchEvent.type = type
-      searchEvent.level = level
-      searchEvent.dateStart = dateStart
-      searchEvent.dateEnd = dateEnd
-      searchEvent.direction = direction
+    let searchEvent = new SearchEvent()
+    searchEvent.type = type
+    searchEvent.level = level
+    searchEvent.dateStart = dateStart
+    searchEvent.dateEnd = dateEnd
+    searchEvent.direction = direction
 
     let events = await this.eventsService.findAllEvents(searchEvent)
 
@@ -93,14 +114,14 @@ export class UploadsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async getReportEventsOfTeam(@Res() res: Response, @Query() { teamId = null, type = null, level = null, dateStart = null, dateEnd = null }) {
 
-   
+
     let dStart: Date = dateStart == null ? null : (new Date(dateStart))
     let dEnd: Date = dateEnd == null ? null : (new Date(dateEnd))
-    
+
     let events = await this.eventsService.getEventsViaJournalsByTeam(teamId, type, level, dStart, dEnd)
-   
-    await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level,direction: null, dateStart: dStart, dateEnd: dEnd })
-   
+
+    await this.uploadsService.getReportEvents(res, events[0], events[1], { type: type, level: level, direction: null, dateStart: dStart, dateEnd: dEnd })
+
   }
 
 }

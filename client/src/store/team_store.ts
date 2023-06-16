@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 // import type { Permission } from "@/types";
 import axios from "axios";
 import type UpdateTeam from "@/views/Modals/UpdateTeam";
-import { number } from "echarts";
+
 
 export const useTeamStore = defineStore("teams", () => {
     const layout = ref(true)

@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { createReadStream, createWriteStream } from 'fs';
-import { extname } from 'path';
 import * as fs from 'fs';
 import { Event } from 'src/events/entities/event.entity';
 import { Workbook } from 'exceljs';
@@ -10,23 +9,31 @@ import { Response } from 'express';
 export class UploadsService {
 
 
-  async uploadFile(file: Express.Multer.File) {
+  // загрузить файл на сервер по указанному началу пути юрл
+  async uploadFile(startPathUrl:string, file: Express.Multer.File) {
 
-    // текущий путь куда сохраняется, старт
-    const pathStart = "./public/media"
+    const pathToSave = "public/media"
 
     let path = "";
+    let fullURL = ""
     // если буфер не пустой
     if (file.buffer != null) {
 
+      
       // сгенерировать уникальное имя
-      const filename = this.generateUniqueFileName();
+      let filename = this.generateUniqueFileName();
+
+      if(file.originalname){
+        // const fileExtension = file.originalname.split('.').pop();
+        filename += file.originalname
+      }
 
       const currentDate = new Date(); // Use the current date
       // сгенерировать путь к папке (год, месяц)
-      const pathToFolder = this.generateFoldersYearMonthDay(currentDate, pathStart);
+      const pathToFolder = this.generateFoldersYearMonthDay(currentDate, `./${pathToSave}`);
 
-      path = `${pathToFolder}/${filename}`;
+      path = `./${pathToSave}/${pathToFolder}/${filename}`;
+      fullURL = `${startPathUrl}/${pathToSave}/${pathToFolder}/${filename}`;
 
       const stream = createWriteStream(path);
       stream.write(file.buffer);
@@ -35,8 +42,8 @@ export class UploadsService {
       throw new HttpException('Буфер файла пустой', HttpStatus.BAD_REQUEST)
     }
 
-
-    return path
+ 
+    return fullURL
   }
 
   // generators---------------------------------------------------------------------------------
@@ -56,9 +63,10 @@ export class UploadsService {
     const folderDay = date.getDate().toString().padStart(2, '0'); // Pad day with leading zero if necessary
 
     const folderYearMonth = `${year}.${month}`
-    const pathToFolder = `${pathStart}/${folderYearMonth}/${folderDay}`;
+    const pathToFolder = `${folderYearMonth}/${folderDay}`;
+    const fullpath = `${pathStart}/${pathToFolder}`;
 
-    this.createFolderIfNotExists(pathToFolder)
+    this.createFolderIfNotExists(fullpath)
 
     return pathToFolder;
   }
@@ -92,12 +100,12 @@ export class UploadsService {
 
 
 
-  async getFileImageBase64(path: string) {
+  // async getFileImageBase64(path: string) {
 
-    let buffer = await this.getFileBuffer(path)
+  //   let buffer = await this.getFileBuffer(path)
 
-    return this.convertToBase64(buffer)
-  }
+  //   return this.convertToBase64(buffer)
+  // }
 
 
   async convertToBase64(buffer: Buffer) {

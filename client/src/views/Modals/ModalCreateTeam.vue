@@ -119,21 +119,6 @@ async function fillForm() {
     description.value = t.description
     cabinet.value = t.cabinet
 
-    // загрузить изображение
-
-    // if (team.value.charter_team != null) {
-    //   charterTeamImg.value = await fileStore.getImageBase64(team.value.charter_team)
-    //   // console.log("team path  " + props.team.charter_team + " charterTeam.value " + charterTeam.value)
-
-    //   const ustavExtention = team.value.charter_team.split(".").pop()
-    //   charterTeamBase64.value = `data:image/${ustavExtention};base64,` + charterTeamImg.value
-
-    // } else { charterTeamBase64.value = "" }
-
-    // console.log(charterTeamBase64.value)
-
-
-    // alert(t.functions [0].userFunctions[0].id)
     //если есть руководитель коллектива
     if (t.functions != null && t.functions[0] && t.functions[0].userFunctions) {
 
@@ -231,16 +216,6 @@ async function handleFileUpload(event: any, document: boolean) {
 
   const file = event.target.files[0];
 
-  // Get file size
-  // const fileSize = Math.round((file.size / 1024 / 1024) * 100) / 100
-  // // Get file extension
-  // const fileExtention = file.name.split(".").pop()
-  // // Get file name
-  // const fileName = file.name.split(".").shift()
-  // // Check if file is an image
-  // const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileExtention);
-  // // Print to console
-  // console.log(fileSize, fileExtention, fileName, isImage);
 
   if (!document)
     charterTeamFile.value = file

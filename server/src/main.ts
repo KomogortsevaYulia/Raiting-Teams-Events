@@ -5,8 +5,9 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
 
+  const app = await NestFactory.create(AppModule);
+  
   app.setGlobalPrefix('api');
   
   //надо для проверки данных (когда создаем или обновляем)
@@ -28,6 +29,10 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
+
   await app.listen(3000);
+  console.log(`Application is running on: ${await app.getUrl()}`);
+
 }
+
 bootstrap();

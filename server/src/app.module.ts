@@ -9,6 +9,8 @@ import CONNECTION from './db.connection';
 import { FormsModule } from './forms/forms.module';
 import { GeneralModule } from './general/general.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -19,6 +21,11 @@ import { UploadsModule } from './uploads/uploads.module';
       autoLoadEntities: true,
       
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public/'),
+      exclude: ['/api/(.*)'],
+      serveRoot: '/public/' //last slash was important, otherwise he is looking for index.html
+  }),
     UsersModule,
     TeamsModule,
     EventsModule,

@@ -30,7 +30,7 @@
     "@nestjs/core": "^9.3.9",
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^9.0.3",
-    "@nestjs/platform-express": "^9.3.9",
+    "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/typeorm": "^9.0.1",
     "argon2": "^0.30.3",

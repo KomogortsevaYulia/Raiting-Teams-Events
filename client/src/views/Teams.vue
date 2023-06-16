@@ -222,7 +222,7 @@ async function handleEventChangePage(currentPage: number) {
 
             <router-link class=" col-lg-auto p-0 col-md-auto d-flex justify-content-center" :to="'/team/' + team.id">
               <div class="card__banner">
-                <img v-if="team.image.length > 0" :src="team.image" class="d-block"
+                <img v-if="team.image.length > 0" :src="team.image[0]" class="d-block"
                   style="width: 100%;object-fit: cover;">
                 <img v-else src="@/assets/icon/empty_photo.jpg" class="d-block" style="width: 100%;object-fit: cover;">
               </div>

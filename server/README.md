@@ -4,6 +4,13 @@
 пароль во всех учетках "123", заходим по username
 ![image](https://user-images.githubusercontent.com/74527737/222896661-048ae0a0-723c-40ee-886a-be53151b1b9c.png)
 
+## Файлы на сервере
+
+сохраняются в папку public/media/{год.месяц}/{день}  - статичная папка на сервере
+uploads (папка) - отвечает за выгрузку и загрузку файлов на сервер, папки генерятся сами
+
+> важная ссылка: https://stackoverflow.com/questions/68019001/how-to-get-serve-static-images-nestjs
+
 
 ## Установка
 

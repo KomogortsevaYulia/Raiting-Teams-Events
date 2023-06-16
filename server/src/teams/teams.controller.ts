@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Put, Param, Delete, HttpStatus, Query, UploadedFile, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Param, Delete, HttpStatus, Query, UploadedFile, UseInterceptors, UploadedFiles, Req } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -14,15 +14,18 @@ import { UpdateTeamDto } from './dto/update-team.dto';
 import { UploadsService } from '../uploads/uploads.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { SearchTeamDto } from './dto/search-team.dto';
-import { FileSizeValidationPipe } from '../uploads/validation/file.validation.pipe ';
 import { Requisitions } from './entities/requisition.entity';
+import { Request } from 'express';
+import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe';
+import { FileImageValidationPipe } from 'src/uploads/validation/image_file.validation.pipe';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService,
     private readonly usersService: UsersService,
-    private readonly uploadsService: UploadsService) { }
+    private readonly uploadsService: UploadsService,
+  ) { }
 
 
   // @Get()
@@ -36,7 +39,7 @@ export class TeamsController {
 
   @Get()
   @ApiOperation({ summary: "Получение списка коллективов с их руководителями" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team]  })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAll(
     @Query() params: SearchTeamDto) {
@@ -68,8 +71,9 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   @UseInterceptors(FilesInterceptor('files'))
-  async update(@Param('id') id: number, @UploadedFiles(new FileSizeValidationPipe()) files:Express.Multer.File[], @Body() updateTeamDto: UpdateTeamDto) {
+  async update(@Req() request: Request, @Param('id') id: number, @UploadedFiles(new FileSizeValidationPipe()) files: Express.Multer.File[], @Body() updateTeamDto: UpdateTeamDto) {
 
+    const startPathUrl = `${request.protocol}://${request.get('host')}`;
 
     // устав коллектива
     let ustavPath = updateTeamDto.charterTeam
@@ -81,14 +85,14 @@ export class TeamsController {
 
     if (files.length < 3) {
       for (let f in files) {
-       
+
         //оставить только начало файла без расширения
         if (files[f].originalname.split(".").shift() == "ustav") {
 
-          ustavPath = await this.uploadsService.uploadFile(files[f])
+          ustavPath = await this.uploadsService.uploadFile(startPathUrl, files[f])
         } else if (files[f].originalname.split(".").shift() == "document") {
 
-          docPath = await this.uploadsService.uploadFile(files[f])
+          docPath = await this.uploadsService.uploadFile(startPathUrl, files[f])
         }
       }
     }
@@ -144,10 +148,9 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   @UseInterceptors(FilesInterceptor('files'))
-  // @UseInterceptors(FileInterceptor('document'))
-  async create(@UploadedFiles(new FileSizeValidationPipe()) files:Express.Multer.File[], @Body() createTeamDto: CreateTeamDto) { //, @Body() createTeamDto: CreateTeamDto
-    // console.log(files)
-    // console.log(createTeamDto)
+  async create(@Req() request: Request, @UploadedFiles(new FileSizeValidationPipe()) files: Express.Multer.File[], @Body() createTeamDto: CreateTeamDto) { //, @Body() createTeamDto: CreateTeamDto
+
+    const startPathUrl = `${request.protocol}://${request.get('host')}`;
 
     let ustav = null
     let doc = null
@@ -158,11 +161,11 @@ export class TeamsController {
       if (files[f].originalname.split(".").shift() == "ustav"
         && ustav == null) {
 
-        ustav = await this.uploadsService.uploadFile(files[f])
+        ustav = await this.uploadsService.uploadFile(startPathUrl, files[f])
       } else if (files[f].originalname.split(".").shift() == "document"
         && doc == null) {
 
-        doc = await this.uploadsService.uploadFile(files[f])
+        doc = await this.uploadsService.uploadFile(startPathUrl, files[f])
       }
     }
 
@@ -175,37 +178,35 @@ export class TeamsController {
   }
 
 
-  
-  @Post(':id/image')
-  @UseInterceptors(FileInterceptor('file', {
-    fileFilter: (req: any, file: any, cb: any) => {
-        if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-            cb(null, true);
-        } else {
-            cb(new HttpException(`Unsupported file type ${extname(file.originalname)}`, HttpStatus.BAD_REQUEST), false);
-        }
-    },
-    storage: diskStorage({
-      destination: (req: any, file: any, cb: any) => {
-        const uploadPath = '../client/public/team/';
-        if (!existsSync(uploadPath)) {
-            mkdirSync(uploadPath);
-        }
-        cb(null, uploadPath);
-    },
-      filename: (req, file, cb) => {
-        cb(null, `${uuidv4()}${extname(file.originalname)}`)
-      }
-    })
-  }))
 
+  @Post(':id/image')
+  @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: "Загрузить изображение коллектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  addImage(@Param('id') id: number, @UploadedFile() file: Express.Multer.File) {
-    return this.teamsService.addImage(id, file.filename);
+  async addImage(@Req() request: Request, @Param('id') id: number, @UploadedFile(new FileImageValidationPipe()) file: Express.Multer.File) {
+    const startPathUrl = `${request.protocol}://${request.get('host')}`;
+
+    let path = await this.uploadsService.uploadFile(startPathUrl, file)
+    return this.teamsService.addImage(id, path);
   }
+
+  // @Post(':id/image')
+  // @ApiOperation({ summary: "Загрузить изображение коллектива" })
+  // @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
+  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  // @UseInterceptors(FileInterceptor('file'))
+  // async addImsage(@Req() request: Request, @Param('id') id: number, @UploadedFile(new FileImageValidationPipe())
+  // file: Express.Multer.File) {
+
+  //   const startPathUrl = `${request.protocol}://${request.get('host')}`;
+
+  //   let path = await this.uploadsService.uploadFile(startPathUrl, file)
+  //   return this.teamsService.addImage(id, path);
+  // }
+
 
   // @UseInterceptors(FileInterceptor('file'))
   // async uploadFile(@UploadedFile() file) {
@@ -218,7 +219,7 @@ export class TeamsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async userRequisition(@Param('id') team_id: number): Promise<Requisitions[]> {
-    
+
     const requisitions = await this.teamsService.userRequisition(team_id)
 
     return requisitions;
