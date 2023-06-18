@@ -1,4 +1,4 @@
-import { Body, HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Body, HttpCode, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, getRepository, Repository } from 'typeorm';
 
@@ -88,15 +88,17 @@ export class UsersService {
   // }
 
   async login(username: string, pass: string): Promise<any> {
+   
     const user = await this.usersRepository
       .createQueryBuilder("users")
       .where("users.username = :username", { username })
       .getOne();
+
     if (user && await argon2.verify(user.password, pass)) {
       const { password, ...result } = user;
       return result;
     } else {
-      return null;
+      return null
     }
   }
 

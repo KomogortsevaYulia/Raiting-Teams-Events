@@ -57,7 +57,7 @@ const itemLink = [
                 </div>
 
                 <!-- Кнопка вход + Личный кабинет-->
-                <div class="navbar__item-login">
+                <div class="navbar__item-login ">
                     <User_Profile v-if="permissions_store.isLogged" />
                     <RouterLink v-if="!permissions_store.isLogged" to="/login">
                         <button class="login-button">Войти</button>

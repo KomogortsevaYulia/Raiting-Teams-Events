@@ -88,6 +88,7 @@ export class UsersController {
 
   }
 
+  
   @ApiOperation({ summary: "Login" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
@@ -103,7 +104,7 @@ export class UsersController {
       return user;
     }
     else {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("Неверное имя пользователя или пароль");
     }
   }
 

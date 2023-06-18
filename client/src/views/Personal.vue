@@ -99,44 +99,46 @@ function editProfile() {
           <div class="block-content">
 
             <h2 class="p-3">Достижения</h2>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">№</th>
-                  <th scope="col">Название</th>
-                  <th scope="col">Дата</th>
-                  <th scope="col">Мерорпиятие</th>
-                  <th scope="col">Направление</th>
-                  <th scope="col">Учитывается в рейтинге</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Диплом за 1 место в Аниме-квизе</td>
-                  <td>23.02.2023</td>
-                  <td>Аниме квиз</td>
-                  <td>КТД</td>
-                  <td>Нет</td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Грамота за 2 место в соревнованиях по волейьолу среди команд ИРНИТУ</td>
-                  <td>20.08.2022</td>
-                  <td>Соревнование по волейболу</td>
-                  <td>СД</td>
-                  <td>Да</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Грамота за участие в Субботнике</td>
-                  <td>02.10.2022</td>
-                  <td>Субботник</td>
-                  <td>ОД</td>
-                  <td>Нет</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="overflow-auto">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">№</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Мерорпиятие</th>
+                    <th scope="col">Направление</th>
+                    <th scope="col">Учитывается в рейтинге</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Диплом за 1 место в Аниме-квизе</td>
+                    <td>23.02.2023</td>
+                    <td>Аниме квиз</td>
+                    <td>КТД</td>
+                    <td>Нет</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Грамота за 2 место в соревнованиях по волейьолу среди команд ИРНИТУ</td>
+                    <td>20.08.2022</td>
+                    <td>Соревнование по волейболу</td>
+                    <td>СД</td>
+                    <td>Да</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>Грамота за участие в Субботнике</td>
+                    <td>02.10.2022</td>
+                    <td>Субботник</td>
+                    <td>ОД</td>
+                    <td>Нет</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

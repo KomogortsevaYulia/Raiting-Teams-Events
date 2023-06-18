@@ -10,6 +10,7 @@ const route = useRoute();
 const show = ref(true);
 const username = ref("");
 const password = ref("");
+const error = ref()
 
 
 function OnRegistrationSubmit() {
@@ -21,12 +22,17 @@ function OnLoginCampusSubmit() {
 }
 
 async function OnLoginSubmit() {
+
+    error.value = null
+
     let isLogged = await permissionsStore.login({
         username: username.value,
         password: password.value,
+    }).catch((err) => {
+        error.value = err.response.data;
     })
+
     if (isLogged) {
-       
         router.push("/news");
     }
 }
@@ -41,6 +47,11 @@ async function OnLoginSubmit() {
             <a @click="show = true" :class="{ active: show }">Авторизация</a>
             <a @click="show = false" :class="{ active: !show }">Регистрация</a>
         </div>
+        <!-- eroor msg -->
+        <div v-if="error && error.message" class="alert alert-danger" role="alert">
+            {{ error.message }}
+        </div>
+
         <div v-if="show" class="form-login__submit-campus">
             <button @click="OnLoginCampusSubmit" class="btn-campus" type="submit">Авторизоваться через кампус</button>
         </div>
@@ -158,6 +169,4 @@ async function OnLoginSubmit() {
         }
     }
 }
-
-
 </style>

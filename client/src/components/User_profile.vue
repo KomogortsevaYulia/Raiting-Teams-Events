@@ -31,7 +31,7 @@ function OnExitSubmit() {
 
 <template>
     <section class="DropdownWrapper__menu" v-click-outside="ClickOutside">
-        <div class="dropDownMenuButton" @click="openClose" tabindex="0">
+        <div class="dropDownMenuButton px-3" @click="openClose" tabindex="0">
             <label class="pe-3">{{ permissions_store.fullname }}</label>
             <!--  -->
             <svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">

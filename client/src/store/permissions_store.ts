@@ -43,6 +43,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     // отправка данных юзера при входе на проверку на сервер
     async function login({ username, password }: { username: string, password: string }) {
+              
         let response = await axios.post("/api/users/login", {
             "user": {
                 username: username,
@@ -52,9 +53,10 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
         if (response) {
             isLogged.value = true;
+            // router.push('/news')
         } else isLogged.value = false;
 
-        router.push('/news')
+      
         await checkLogin();
 
         return isLogged;
@@ -73,8 +75,8 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
         await checkLogin()
     }
 
-     // Получение информации о юзере
-     async function fetchUser(): Promise<any> {
+    // Получение информации о юзере
+    async function fetchUser(): Promise<any> {
         const res = await axios.get('/api/users/check-login')
         const data = res.data
         return data
