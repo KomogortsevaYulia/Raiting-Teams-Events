@@ -362,7 +362,6 @@ function changeTypeReport() {
               }}</button>
 
               <div class="my-dropdown" style="float:center;">
-                <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
                 <div class="dropdown-content">
                   <DatePicker v-model="selectedParams.dateRange" is-range />
                 </div>

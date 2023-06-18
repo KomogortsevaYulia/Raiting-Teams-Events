@@ -170,7 +170,7 @@ content-type: application/json
 GET http://localhost:3000/api/general/dictionary/2
 
 
-# FILE
+# UPLOAD
 ###
 GET http://localhost:3000/api/uploads/file_buffer?path=./public/media/6b3620e359194339a2bc2409fb8de569.png
 
@@ -183,6 +183,15 @@ GET http://localhost:3000/api/uploads/excel/events_of_team?teamId=1
 
 ###
 GET http://localhost:3000/api/teams/6/requisition
+
+###
+# DELETE FILE
+DELETE  http://localhost:3000/api/uploads HTTP/1.1
+content-type: application/json
+
+{
+    "pathUrl":"http://localhost:3000/public/media/2023.06/16/1686917327458_3y9kiw0d17b9c073259231460d65043eb882ef.jpeg"
+}
 
 
 

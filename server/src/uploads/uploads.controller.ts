@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UploadedFile, UseInterceptors, Redirect, HttpStatus, Query, Header, Headers, Res, ParseFilePipe, MaxFileSizeValidator, ParseFilePipeBuilder, FileTypeValidator, UsePipes, ValidationPipe, Req } from '@nestjs/common';
+import { Controller, Get, Post, UploadedFile, UseInterceptors, Redirect, HttpStatus, Query, Header, Headers, Res, ParseFilePipe, MaxFileSizeValidator, ParseFilePipeBuilder, FileTypeValidator, UsePipes, ValidationPipe, Req, Delete, Body } from '@nestjs/common';
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
@@ -49,6 +49,17 @@ export class UploadsController {
     return path
   }
 
+
+  @Delete()
+  @ApiOperation({ summary: "Удаление файла с сервера" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async deleteFileByUrl(@Body() params:{pathUrl:string}) {
+
+    let res = await this.uploadsService.deleteFileByUrl(params.pathUrl)
+
+    return res
+  }
 
 
   @Get("file_buffer")

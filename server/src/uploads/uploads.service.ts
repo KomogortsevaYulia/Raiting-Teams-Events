@@ -1,17 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { createReadStream, createWriteStream } from 'fs';
 import * as fs from 'fs';
 import { Event } from 'src/events/entities/event.entity';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
 import { SearchEventDto } from 'src/events/dto/search-event.dto';
+import * as url from 'url';
 
 @Injectable()
 export class UploadsService {
 
 
   // загрузить файл на сервер по указанному началу пути юрл
-  async uploadFile(startPathUrl:string, file: Express.Multer.File) {
+  async uploadFile(startPathUrl: string, file: Express.Multer.File) {
 
     const pathToSave = "public/media"
 
@@ -20,11 +21,11 @@ export class UploadsService {
     // если буфер не пустой
     if (file.buffer != null) {
 
-      
+
       // сгенерировать уникальное имя
       let filename = this.generateUniqueFileName();
 
-      if(file.originalname){
+      if (file.originalname) {
         // const fileExtension = file.originalname.split('.').pop();
         filename += file.originalname
       }
@@ -43,7 +44,7 @@ export class UploadsService {
       throw new HttpException('Буфер файла пустой', HttpStatus.BAD_REQUEST)
     }
 
- 
+
     return fullURL
   }
 
@@ -84,6 +85,45 @@ export class UploadsService {
     }
   }
   // generators---------------------------------------------------------------------------------
+
+  async deleteFileByUrl(pathURL: string) {
+
+    const startPath = "/public/media"
+    let deleted = true
+    let httpError:HttpException = null
+
+    try {
+      const url = new URL(pathURL);
+
+      const pathServer = `.${url.pathname}`
+
+      // need check correct path for preventing some bad api requests
+      if (url.pathname.startsWith(startPath)) {
+        await new Promise<void>((resolve, reject) => {
+          fs.unlink(pathServer, (err) => {
+            if (err) {
+              // console.error('Error deleting file:');
+              reject(err);
+            } else {
+              // console.log('File deleted successfully.');
+              resolve();
+            }
+          });
+        });
+      }else{
+        httpError = new HttpException("Ошибка удаления файла, путь для удаления с сервера должен начинаться с "
+         + startPath, HttpStatus.BAD_REQUEST, );
+      }
+
+
+    } catch (error) {
+      httpError = new HttpException(error.code, HttpStatus.BAD_REQUEST, { cause: new Error("Неверно введен URL") });
+    }
+
+    if(httpError) throw httpError
+
+    return deleted
+  }
 
 
   async getFileBuffer(path: string) {
