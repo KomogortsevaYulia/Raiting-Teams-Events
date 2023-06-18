@@ -47,15 +47,25 @@ export class TeamsController {
   }
 
 
-  @Get('direction')
-  @ApiOperation({ summary: "Получение списка коллективов c учетом параметров (направление, вид)" })
+  @Get('of-direction')
+  @ApiOperation({ summary: "Получение списка  коллективов направления" })
   @ApiParam({ name: "type_team", required: false, description: "указать тип коллектива" })
   @ApiParam({ name: "id_parent", required: false, description: "указать его родителя (если коллектив, то направление)" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Team] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findAllTeamsOfDirection(@Query() params) {
-    return this.teamsService.findAllTeamsOfDirection(params.type_team, params.id_parent);
+    return this.teamsService.findAllTeamsOfDirection(params.id_parent);
   }
+
+  @Get('directions')
+  @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
+  @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findDirections(@Query() params) {
+    return this.teamsService.findDirections(params.id_parent)
+  }
+
 
   @Put(":id/archive")
   @ApiOperation({ summary: "Архивировать коллектив или наоборот" })
@@ -212,7 +222,8 @@ export class TeamsController {
   // async uploadFile(@UploadedFile() file) {
 
 
-  // --------------------------------------------------------------------
+
+  // requisition --------------------------------------------------------------------
   @Get("/:id/requisition")
   @ApiOperation({ summary: "Получить список заявок в коллектив" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
@@ -224,16 +235,8 @@ export class TeamsController {
 
     return requisitions;
   }
-  // --------------------------------------------------------------------
+  // requisition --------------------------------------------------------------------
 
 
-  // @Get('directions')
-  // @ApiOperation({ summary: "отдает список направлений с юзерами которые за них отвечают" })
-  // @ApiParam({ name: "directions", required: true, description: "Идентификатор " })
-  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Team })
-  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  // directionsAndUsers() {
-  //   return this.teamsService.directionsAndUsers()
-  // }
 
 }

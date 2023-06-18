@@ -24,10 +24,19 @@ export const useTeamStore = defineStore("teams", () => {
     }
 
     // data will be returned as index 0 - is data, index 1 is count
-    async function fetchTeamsOfDirection(direction: number = -1, type_team = "teams"): Promise<any> {
-        const res = await axios.get('/api/teams/direction', { params: { id_parent: direction, type_team: type_team } })
+    async function fetchTeamsOfDirection(direction: number = -1): Promise<any> {
+        const res = await axios.get('/api/teams/of-direction', { params: { id_parent: direction } })
         const data = res.data
 
+        return data
+    }
+
+
+    async function fetchDirections(direction: number = -1): Promise<any> {
+
+        const dir = direction > 0 ? direction : null
+        const res = await axios.get('/api/teams/directions', { params: { id_parent: dir } })
+        const data = res.data
         return data
     }
 
@@ -67,7 +76,6 @@ export const useTeamStore = defineStore("teams", () => {
         const data = res.data
         return data
     }
-    
 
     async function fetchRequisition(team_id: number): Promise<any> {
         const res = await axios.get('/api/teams/' + team_id + '/requisition')
@@ -82,7 +90,7 @@ export const useTeamStore = defineStore("teams", () => {
         let responseMsg = "сохранено"
 
         const formData = new FormData();
-        if( direction > 0){
+        if (direction > 0) {
             formData.append('id_parent', direction.toString())
         }
         formData.append('title', title);
@@ -126,7 +134,7 @@ export const useTeamStore = defineStore("teams", () => {
         let responseMsg = "сохранено"
 
         const formData = new FormData();
-        if( uT.id_parent > 0){
+        if (uT.id_parent > 0) {
             formData.append('id_parent', uT.id_parent.toString())
         }
         formData.append('title', uT.title);
@@ -263,6 +271,7 @@ export const useTeamStore = defineStore("teams", () => {
         fetchRequisition,
         fetchTeamsSearch,
         addImage,
+        fetchDirections,
 
         layout,
         menu_items

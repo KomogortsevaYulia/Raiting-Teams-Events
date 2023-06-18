@@ -1,42 +1,58 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import WIP from '@/components/WIP.vue';
+import { useTeamStore } from '@/store/team_store';
+import { DirectionName } from '@/store/enums/enum_teams';
 
 const selectedItem = ref(0);
 const showCreate = ref(false);
+const directions = ref()
+// store--------------------------------------------------------------
+const teamStore = useTeamStore();
 
-const itemList = [
-    { name: "Научная" },
-    { name: "Учебная" },
-    { name: "Спортивная" },
-    { name: "Общественная" },
-    { name: "Культурно-творческая" }
-]
+// const itemList = [
+//     { name: "Научная", direction:DirectionName.NID },
+//     { name: "Учебная",  direction:DirectionName.UD },
+//     { name: "Спортивная",  direction:DirectionName.SD },
+//     { name: "Общественная",  direction:DirectionName.OD },
+//     { name: "Культурно-творческая",  direction:DirectionName.KTD }
+// ]
+
+onBeforeMount(async () => {
+   await getDirections()
+})
 
 const selectItem = (i: number) => {
     selectedItem.value = i
 }
 
-itemList.forEach((item, index) => {
-    return (item == itemList[index])
-})
+async function getDirections() {
+    // directions.value =  await teamStore.fetchTeamsOfDirection()
+
+    const data = await teamStore.fetchDirections()
+    directions.value = data[0]
+
+}
+
 </script>
 
 <template>
-
-  
     <div class="wrapper-team wrapper-content">
+
         <!-- Навигация -->
         <div class="wrapper-team__navigation">
-            <a @click="selectItem(index), showCreate = false" v-for="(item, index) in itemList" :key="index"
-                :class="{ active: index == selectedItem }">{{ item.name }}</a>
+            <a @click="selectItem(index), showCreate = false" v-for="(direction, index) in directions" :key="index"
+                :class="{ active: index == selectedItem }">{{ direction.title }}</a>
         </div>
 
         <div class="wrapper-team__create">
-            <div v-for="(item, index) in itemList" :key="index">
+            <div v-for="(direction, index) in directions" :key="index">
                 <div class="content" v-if="(index == selectedItem && !showCreate)">
                     <label>Руководитель направления</label>
-                    <a>Иванов Иван Иванович {{ item.name }}</a>
+                    <a v-if="direction.functions[0] &&
+                     direction.functions[0].userFunctions[0]">{{ direction.functions[0].userFunctions[0].user.fullname}} {{
+                        direction.shortname }}</a>
+                    <a v-else> Руководитель не назначен</a>
                     <div class="btn">
                         <button v-on:click="(showCreate = true)">Изменить</button>
                     </div>

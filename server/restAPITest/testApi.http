@@ -44,6 +44,11 @@ GET http://localhost:3000/api/teams/51
 GET http://localhost:3000/api/teams?limit=4&offset=0
 
 ###
+#directions
+GET http://localhost:3000/api/teams/directions
+
+
+###
 # select head user and teams
 GET http://localhost:3000/api/teams?limit=2&offset=3
 

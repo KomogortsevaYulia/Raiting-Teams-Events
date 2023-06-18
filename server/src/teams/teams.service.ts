@@ -178,8 +178,9 @@ export class TeamsService {
 
 
   // get all teams of specific direction for statistic
-  async findAllTeamsOfDirection(type_team = "teams", id_parent = -1): Promise<[Team[], number]> {
+  async findAllTeamsOfDirection(id_parent = -1): Promise<[Team[], number]> {
 
+   const type_team = "teams"
 
     let teams = this.teamsRepository
       .createQueryBuilder("teams")
@@ -195,7 +196,32 @@ export class TeamsService {
         .addSelect(["id_parent.id", "id_parent.shortname"])
     }
 
-    return teams.getManyAndCount()
+    return await teams.getManyAndCount()
+  }
+
+  async findDirections(id_parent = -1) {
+
+    // const head = "Руководитель"
+
+    const directionsAndUsers = this.teamsRepository
+      .createQueryBuilder("teams")
+      .select(["teams.shortname", "teams.type_team", "teams.id", "teams.title"])
+      .andWhere("teams.type_team = :type", { type: "direction" })
+      .leftJoinAndSelect("teams.functions", "functions")
+      .addSelect(["functions.title"])
+      .leftJoin("functions.userFunctions", "user_functions")
+      .addSelect("user_functions.id")
+      .leftJoin("user_functions.user", "user")
+      .addSelect(["user.fullname", "user.email", "user.phone", "user.image"])
+
+    // с учетом направления
+    if (id_parent > 0) {
+      directionsAndUsers.andWhere("teams.id_parent = :id_parent ", { id_parent: id_parent })
+        .leftJoin("teams.id_parent", "id_parent")
+        .addSelect(["id_parent.id", "id_parent.shortname"])
+    }
+
+    return await directionsAndUsers.getManyAndCount()
   }
 
   //вывести команду
@@ -230,14 +256,6 @@ export class TeamsService {
     return users;
   }
 
-  // async  directionsAndUsers() {
-
-  //   const directionsUsers = await this.teamsRepository
-  //   .createQueryBuilder("teams")
-  //   .select("teams.direction")
-  //   .getMany()
-  //   return directionsUsers
-  // }
 
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя
