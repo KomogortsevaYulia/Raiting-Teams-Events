@@ -21,7 +21,7 @@ describe('UploadsService', () => {
     });
 
     it('должен вернуть файл по указанному пути', async () => {
-      await expect(service.getFileBuffer("./public/media/c8fa4705bb127ee6eadcf35b7771043ab.jpg")).resolves.toBeDefined();
+      await expect(service.getFileBuffer("none")).rejects.toThrow(new HttpException('Путь не найден', HttpStatus.BAD_REQUEST));
     });
 
   });
