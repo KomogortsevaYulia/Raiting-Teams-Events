@@ -7,6 +7,13 @@ const router = createRouter({
   routes: [
     {
       // Авторизация
+      path: "/",
+      // @ts-ignore
+      component: () => import('@/views/Newa.vue'),
+      meta: {}
+    },
+    {
+      // Авторизация
       path: "/login",
       // @ts-ignore
       component: () => import('@/views/Login.vue'),
@@ -50,7 +57,9 @@ const router = createRouter({
       // @ts-ignore
       component: () => import('@/views/Report/Statistic.vue'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        permission: 'can view directions'
+
       }
     },
     {
@@ -63,7 +72,8 @@ const router = createRouter({
       path: "/event-create",
       // @ts-ignore
       component: () => import('@/views/EventCreate.vue'),
-      meta: {}
+      meta: {
+      }
     },
     {
       // Страница с личным кабинетом

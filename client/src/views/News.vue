@@ -1,24 +1,22 @@
 <template>
-  <router-link :to="'/event-create'" v-if="can('can view directions')">
+  <!-- Навигация -->
+  <div class="wrapper-news__navigation">
+    <router-link :to="'/event-create'" v-if="can('can view directions')">
 
-    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-      Создать мероприятие
-    </button>
-  </router-link>
+      <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Создать мероприятие
+      </button>
+    </router-link>
+    <a @click="selectItem(index)" v-for="(item, index) in itemList" :key="index"
+      :class="{ active: index == selectedItem }">{{ item.name }}</a>
+  </div>
 
-
-  <div>
-    <!-- <div class="full-width">
-      <div class="mainBanner">
-        <span class="descr">
-          Надо что-то написать
-          <button class="bannerBtn">Нажми меня</button>
-        </span>
-      </div>
-    </div> -->
+  <!-- see events -->
+  <div v-if="(selectedItem === 0)">
     <div class="events__container">
       <!-- Боковое меню -->
-      <CheckBox_Menu :menu_items="menu_items" />
+      <CheckBox_Menu :menu_items="menu_items" :handle-event-set-filters="handleEventSetFilters"
+        :handle-event-reset-filters="handleEventResetFilters" />
       <!-- Правая часть контейнера -->
       <div class="cards__container">
         <!-- Поисковые строки -->
@@ -56,6 +54,11 @@
 
     </div>
   </div>
+
+  <!-- see request for creation event -->
+  <div v-if="(selectedItem === 1)">
+    <EventsRequests />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -66,6 +69,7 @@ import { useTeamStore } from "../store/team_store";
 import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 import Pagination from '@/components/Pagination.vue';
+import EventsRequests from './EventsRequests.vue';
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
@@ -85,10 +89,22 @@ const maxPages = ref(1)
 const visiblePages = 7
 //pagination ---------------------------------------------------------------------
 
+const itemList = [
+  { name: "Мероприятия" },
+  { name: "Заявки на создание" },
+]
+
+const selectedItem = ref(0);
+
+
 
 onBeforeMount(async () => {
   await fetchEvents()
 })
+
+const selectItem = (i: number) => {
+  selectedItem.value = i
+}
 
 async function fetchEvents() {
 
@@ -107,6 +123,15 @@ async function handleEventChangePage(currentPage: number) {
   offset.value = (currentPage - 1) * limit
 
   await fetchEvents()
+}
+
+// задать фильтры
+async function handleEventSetFilters() {
+
+}
+
+// сбросить фильтры
+function handleEventResetFilters() {
 }
 
 </script>
@@ -330,5 +355,37 @@ async function handleEventChangePage(currentPage: number) {
 .mainBanner:hover .descr {
   cursor: pointer;
   opacity: 1;
+}
+
+.wrapper-news__navigation {
+  padding-bottom: 2rem;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 5px;
+  padding: 20px;
+  background: white;
+
+  a {
+    cursor: pointer;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+    transition: 0.3s;
+    color: #348498;
+    margin-inline: 1rem;
+    padding-bottom: 0.75rem;
+
+    &:hover {
+      color: var(--main-color);
+    }
+  }
+
+  // Первому элементу ставим отступ = 0, чтобы не выпирал
+  a:first-child {
+    margin-left: 0;
+  }
+
+  .active {
+    color: var(--main-color);
+    border-bottom: var(--main-border-bottom);
+  }
 }
 </style>

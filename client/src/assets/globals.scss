@@ -7,6 +7,7 @@
 
     // --second-color-hover: #9DD9D2;
     --second-color: #5BD1D7;
+    --second-accept: #3b8a8f;
 }
 
 // Обёртка на формы
@@ -96,6 +97,14 @@ textarea {
         background: var(--main-color);
     }
 
+}
+
+.btn-custom-accept{
+    background: var(--second-accept);
+
+    &:hover {
+        background: var(--main-color);
+    }
 }
 
 // главная кнопка - побуждает к действию (выделяется)

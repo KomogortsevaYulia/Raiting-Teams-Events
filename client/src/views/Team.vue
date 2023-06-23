@@ -75,7 +75,7 @@ async function fetchCurrentTeams() {
     })
 }
 
-function uploadImage(e:any) {
+function uploadImage(e: any) {
   image.value = e.target.files[0]
 }
 
@@ -100,7 +100,7 @@ const itemList = [
   { name: "Новости" },
   { name: "Расписание занятий" },
   { name: "Участники" },
-  { name: "Редактор анкеты"},
+  { name: "Редактор анкеты" },
   { name: "Заявки" },
 ]
 ///////////////////////////////////////////////////////////
@@ -230,7 +230,11 @@ const newsList = [
 
       <!-- заявки -->
       <div v-if="(selectedItem == 5)">
-       
+
+        <div v-if="req[0] == null" class="alert alert-warning" role="alert">
+          Заявок нет
+        </div>
+
         <div v-for="item in req">
           <div class="about">
             <div class="member-card py-2">

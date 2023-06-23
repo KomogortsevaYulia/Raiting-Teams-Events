@@ -21,6 +21,10 @@ export class Event {
     title: string
 
     @ApiProperty()
+    @Column({default:new Date()})
+    date_update: Date
+
+    @ApiProperty()
     @Column({
         default: null,
         nullable: true

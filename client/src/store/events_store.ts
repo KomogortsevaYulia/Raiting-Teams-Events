@@ -63,6 +63,8 @@ export const useEventStore = defineStore("events", () => {
     dateStart: Date, dateEnd: Date, level: number = 0, type: number = 0
   ): Promise<any> {
 
+     
+
     let res = null
 
     let lvl = level != 0 ? level : null
@@ -77,7 +79,7 @@ export const useEventStore = defineStore("events", () => {
         dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
       }
     })
-
+   
     const data = res.data
 
     return data

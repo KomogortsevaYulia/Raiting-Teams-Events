@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const permissionsStore = usePermissionsStore();
 const router = useRouter();
-const route = useRoute();
 
 const show = ref(true);
 const username = ref("");

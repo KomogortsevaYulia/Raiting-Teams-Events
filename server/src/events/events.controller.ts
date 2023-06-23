@@ -21,7 +21,7 @@ export class EventsController {
   }
 
   @Get('/tags')
-  @ApiOperation({ summary: "Получение списка внешних мероприятий" })
+  @ApiOperation({ summary: "Получение списка мероприятий по тегам" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findTags(@Query() {tags}) {
@@ -29,7 +29,7 @@ export class EventsController {
   }
 
   @Get('/journals')
-  @ApiOperation({ summary: "Получение списка внешних мероприятий" })
+  @ApiOperation({ summary: "Получение мероприятий через журнал" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   findJournals(@Query() { event_id = null,  title = null}) {
@@ -38,7 +38,7 @@ export class EventsController {
   }
 
   @Get('/journals/getEventUsers/:id')
-  @ApiOperation({ summary: "Получение списка внешних мероприятий" })
+  @ApiOperation({ summary: "Получение" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   getEventUsers(@Param('id') id: string) {

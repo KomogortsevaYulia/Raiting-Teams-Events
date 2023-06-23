@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { usePermissionsStore } from '@/store/permissions_store';
 import { ref, onBeforeMount } from 'vue';
-import { useRoute } from 'vue-router';
+// import { useRoute } from 'vue-router';
 import { useUserStore } from "@/store/user_store";
 import { useJournalStore } from "@/store/journals_store"
 import { forEach } from "lodash";
@@ -10,14 +10,14 @@ import { forEach } from "lodash";
 const selectedColor = ref('blue');
 
 
-const route = useRoute();
-const username = route.params.username;
+// const route = useRoute();
+// const username = route.params.username;
 
 
 const user = ref()
 const functions = ref()
 const dateEvent = ref()
-let dates
+// let dates
 
 const isEditing = ref(false)
 
@@ -63,7 +63,7 @@ function editProfile() {
             </div>
             <div class="col mt-3">
               <div class=" avatar__scale">
-                <img class="icon" width="150" height="150" :src=user.image alt="icon" />
+                <img class="icon" width="150" height="150" :src="user.image" alt="icon" />
                 <div v-if="isEditing" class="middle">
                   <font-awesome-icon icon="plus" class="fa-2x text-white" />
                 </div>
@@ -78,7 +78,7 @@ function editProfile() {
           </div>
           <div class="row">
             <h3 class="active">Коллективы</h3>
-            <div class="row d-flex" v-for="(item, index) in functions.data" :key="index">
+            <div class="row d-flex" v-if="functions" v-for="(item, index) in functions.data" :key="index">
               <p class="col d-flex justify-content-center align-items-center">{{ item.function.team.title }}</p>
               <p class="col d-flex justify-content-center align-items-center">{{ item.function.title }}</p>
             </div>

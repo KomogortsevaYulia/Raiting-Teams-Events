@@ -20,7 +20,7 @@ const itemLink = [
 </script>
 
 <template>
-    <nav class="navbar navbar-wrapper navbar-expand-md fixed-top p-1">
+    <nav class="navbar navbar-wrapper navbar-expand-lg fixed-top p-1">
         <div class="container-fluid mx-lg-6 mx-md-5">
             <!-- Иконка политеха -->
             <div class="navbar__item-logo">
