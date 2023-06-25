@@ -6,11 +6,21 @@ import { UpdateJournalDto } from './dto/update-journal.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Event } from './entities/event.entity';
 import { SearchEventDto } from './dto/search-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @ApiTags('events')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) { }
+
+  @Put(':id')
+  @ApiOperation({ summary: "обновить мерприятие" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  update(@Param("id") id: number, @Body()updateEventDto: UpdateEventDto) {
+    console.log(updateEventDto)
+    return this.eventsService.update(id,updateEventDto);
+  }
 
   @Get('/external')
   @ApiOperation({ summary: "Получение списка внешних мероприятий" })

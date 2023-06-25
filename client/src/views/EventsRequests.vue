@@ -1,101 +1,172 @@
 <template>
-    <div class="events-requests__wrapper">
-        <div v-for="event in events">
-            <div :class="[`${event.satus ? 'border-left__success' : (event.satus != null ? 'border-left__danger' : '')}`
-                , 'block-content card-event border-left']">
-                <div class="row mb-4">
-                    <div class="col card-event__name">
-                        {{ event.title }}
-                    </div>
-                    <div class="col-auto">
-                        <font-awesome-icon icon="clock" /> {{ (new Date(event.date_update)).toLocaleDateString() }}
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-auto">
-                        <div class="style-elem">Уровень:</div>
-                    </div>
-                    <div class="col-auto">{{ event.Level ? event.level.name : "-" }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-auto">
-                        <div class="style-elem">Формат проведения:</div>
-                    </div>
-                    <div class="col-auto">{{ event.format ? event.format.name : "-" }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-auto">
-                        <div class="style-elem">Количество участников:</div>
-                    </div>
-                    <div class="col-auto">{{ event.count_people ?? "-" }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-auto">
-                        <div class="style-elem">Даты начала/окончания:</div>
-                    </div>
-                    <div class="col-auto"> {{ (new Date(event.dateStart)).toLocaleDateString() }} -
-                        {{ (new Date(event.dateEnd)).toLocaleDateString() }} </div>
-                </div>
-
-
-                <div class="row mt-4">
-                    <div class="col-auto">
-                        <div class="fw-bold">Статус:</div>
-                    </div>
-                    <div class="col-auto">
-                        <font-awesome-icon v-if="event.status" icon="check-circle" class="text-success" />
-                        <font-awesome-icon v-else-if="event.status != null" icon="circle-xmark" class="text-danger" />
-                        <font-awesome-icon v-else icon="clock" />
-                        {{ event.status ?? "в ожидании" }}
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col d-flex justify-content-end">
-                        <button class="button btn-custom-accept" @click="changeStatus(true)">
-                            принять
-                       </button>
-                    </div>
-                    <div class="col-auto">
-                        <button class="button" @click="changeStatus(false)">
-                            отклонить
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-            <!-- {{ event }} -->
+    <!-- dropdowns -->
+    <div class="row my-3">
+        <div class="col-auto">
+            <label class="form-label fw-bold">Направление</label>
+            <select class="form-select" aria-label="Default select example" v-model="selectedDirection"
+                @change="fetchEvents()">
+                <option v-for="direction in directions" :value="direction.id">{{ direction.name }}</option>
+            </select>
         </div>
+    </div>
+
+    <!-- cards of events -->
+    <div class="row">
+        <div class="events-requests__wrapper">
+            <div v-for="event in events">
+                <div
+                    :class="['block-content card-event border-left', `${event.status ? 'border-left__success' : (event.status != null ? 'border-left__danger' : '')}`]">
+
+                    <div class="row mb-4">
+                        <div class="col card-event__name">
+                            {{ event.title }}
+                        </div>
+                        <div class="col-auto">
+                            <font-awesome-icon icon="clock" /> {{ (new Date(event.date_update)).toLocaleDateString() }}
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="style-elem">Уровень:</div>
+                        </div>
+                        <div class="col-auto">{{ event.Level ? event.level.name : "-" }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="style-elem">Формат проведения:</div>
+                        </div>
+                        <div class="col-auto">{{ event.format ? event.format.name : "-" }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="style-elem">Количество участников:</div>
+                        </div>
+                        <div class="col-auto">{{ event.count_people ?? "-" }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="style-elem">Даты начала/окончания:</div>
+                        </div>
+                        <div class="col-auto"> {{ (new Date(event.dateStart)).toLocaleDateString() }} -
+                            {{ (new Date(event.dateEnd)).toLocaleDateString() }} </div>
+                    </div>
+
+
+                    <div class="row mt-4">
+                        <div class="col-auto">
+                            <div class="fw-bold">Статус:</div>
+                        </div>
+                        <div class="col-auto">
+                            <div v-if="event.status">
+                                <font-awesome-icon icon="check-circle" class="text-success" />
+                                принято
+                            </div>
+                            <div v-else-if="event.status != null">
+                                <font-awesome-icon icon="circle-xmark" class="text-danger" />
+                                отклонено
+                            </div>
+                            <div v-else>
+                                <font-awesome-icon icon="clock" />
+                                в ожидании
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col d-flex justify-content-end">
+                            <button class="button btn-custom-accept" @click="changeStatus(event.id, true)">
+                                принять
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="button" @click="changeStatus(event.id, false)">
+                                отклонить
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
     </div>
 </template>
   
+
+
 <script setup lang="ts">
+import Pagination from '@/components/Pagination.vue';
 import { useEventStore } from '@/store/events_store';
+import { useEventStore as useSingleEvent } from '@/store/event_store';
+import { DIRECTION } from '@/store/constants/constants_class_names';
+
 import { onBeforeMount, ref } from 'vue';
-const eventStore = useEventStore();
+import { useDictionaryStore } from '@/store/dictionary_store';
+
+
+const eventsStore = useEventStore();
+const singleEvent = useSingleEvent();
+const dictionaryStore = useDictionaryStore();
 
 const events = ref()
+const directions = ref([{ id: 0, name: "Все" }])
+
+// загрузка
+const loading = ref(false)
+
+// dropdowns
+const selectedDirection = ref(0)
+
+//pagination ---------------------------------------------------------------------
+const limit = 5 //сколько  отображается на странице
+const offset = ref(0) //сколько  пропустить прежде чем отобразить
+
+const maxPages = ref(1)
+const visiblePages = 7
+//pagination ---------------------------------------------------------------------
 
 onBeforeMount(async () => {
-    let startDate = new Date()
-    startDate.setFullYear(1970)
+    let direct = await dictionaryStore.getFromDictionaryByClassID(DIRECTION)
+    directions.value = direct
+    directions.value.unshift({ id: 0, name: "Все" })
 
-    await eventStore.getEventsByDirection(8, startDate, new Date())
-        .then((respose: any) => {
-            events.value = respose[0]
-        }).catch(() => {
-
-        })
+    await fetchEvents()
 })
 
-function changeStatus(status:boolean){
+async function fetchEvents() {
 
+    loading.value = true
+
+    let d = await eventsStore.fetchEvents(limit, offset.value)
+    events.value = d[0]
+
+    const eventsCount = d[1]
+    maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1
+    loading.value = false
+
+}
+
+async function handleEventChangePage(currentPage: number) {
+    offset.value = (currentPage - 1) * limit
+
+    await fetchEvents()
+}
+
+async function changeStatus(id: number, status: boolean) {
+    await singleEvent.updateEvent(id, status)
+    await fetchEvents()
 }
 
 </script>
   
+
+
+
 <style lang="scss" scoped>
 .events-requests__wrapper {
     .block-content {

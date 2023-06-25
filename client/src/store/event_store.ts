@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 // import type { Permission } from "@/types";
 import axios from "axios";
 
-export const useEventStore = defineStore("events", () => {
+export const useEventStore = defineStore("event", () => {
     const layout = ref(true)
 
 
@@ -71,13 +71,21 @@ export const useEventStore = defineStore("events", () => {
         return responseMsg
     }
 
+    async function updateEvent(id:number, status:boolean){
+        let res = await axios.put("api/events/"+id, {
+            status: status
+        })
+
+        return res.data
+    }
 
 
     return {
         CreateTeamsTest,
         fetchEvents,
         createEvent,
-
+        updateEvent,
+        
         layout,
     }
 

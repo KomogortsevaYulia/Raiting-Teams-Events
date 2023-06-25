@@ -21,7 +21,14 @@ GET http://localhost:3000/api/events/events_of_team/7?level=1
 ###
 GET http://localhost:3000/api/events?type=4&limit=5&offset=0
 
+### update event
+PUT  http://localhost:3000/api/events/20 HTTP/1.1
+content-type: application/json
 
+{
+    "status":true
+    
+}
 
 
 ###

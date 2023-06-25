@@ -82,8 +82,8 @@ const data = ref()
 const loading = ref(false)
 
 //pagination ---------------------------------------------------------------------
-const limit = 5 //сколько колелктивов отображается на странице
-const offset = ref(0) //сколько коллективов пропустить прежде чем отобрад+зить
+const limit = 5 //сколько  отображается на странице
+const offset = ref(0) //сколько  пропустить прежде чем отобразить
 
 const maxPages = ref(1)
 const visiblePages = 7

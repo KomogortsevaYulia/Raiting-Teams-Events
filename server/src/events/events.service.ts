@@ -22,7 +22,6 @@ export class EventsService {
   ) { }
 
 
-
   findAllExternal(): Promise<Event[]> {
 
     return this.eventsRepository
@@ -105,7 +104,7 @@ export class EventsService {
     // event dateEnd
     buildQuery = searchEvent.dateEnd != null ? buildQuery
       .andWhere("events.dateEnd <= :dateEnd", { dateEnd: searchEvent.dateEnd }) : buildQuery
-  
+
     return await buildQuery.getManyAndCount()
   }
 
@@ -113,8 +112,15 @@ export class EventsService {
     return this.eventsRepository.findOne({ where: { id: id }, relations: { level: true, type: true, direction: true } });
   }
 
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+  async update(id: number, updateEventDto: UpdateEventDto) {
+
+    let event = await this.eventsRepository.save({
+      id,
+      date_update: new Date(),
+      ...updateEventDto,
+    })
+
+    return event
   }
 
   remove(id: number) {
