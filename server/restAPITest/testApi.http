@@ -17,9 +17,9 @@ GET http://localhost:3000/api/events?id=20
 GET http://localhost:3000/api/events/5
 
 ### events_of_team
-GET http://localhost:3000/api/events/events_of_team/7?level=1
+GET http://localhost:3000/api/events/events_of_team/7?level=
 ###
-GET http://localhost:3000/api/events?type=4&limit=5&offset=0
+GET http://localhost:3000/api/events?limit=5&offset=0&direction=6
 
 ### update event
 PUT  http://localhost:3000/api/events/20 HTTP/1.1

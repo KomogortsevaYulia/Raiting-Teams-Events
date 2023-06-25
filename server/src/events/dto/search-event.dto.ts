@@ -1,7 +1,7 @@
 
-import { Entity} from "typeorm"
-import { IsDate, IsNumber, IsOptional } from "class-validator";
-import { Type } from "class-transformer";
+import { Entity } from "typeorm"
+import { IsBoolean, IsDate, IsNumber, IsOptional } from "class-validator";
+import { Transform, Type } from "class-transformer";
 
 @Entity('events')
 export class SearchEventDto {
@@ -9,53 +9,58 @@ export class SearchEventDto {
     @IsOptional()
     @Type(() => Number)
     @IsNumber()
-    teamId:number
-    
-    @IsOptional()
-    @IsNumber()
-    @Type(() => Number)
-    id:number
+    teamId: number
 
     @IsOptional()
     @IsNumber()
     @Type(() => Number)
-    type:number
+    id: number
 
     @IsOptional()
     @IsNumber()
     @Type(() => Number)
-    level:number
+    type: number
 
     @IsOptional()
     @IsNumber()
     @Type(() => Number)
-    direction:number
+    level: number
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    direction: number
 
     @IsOptional()
     @IsDate()
     @Type(() => Date)
-    dateStart:Date
+    dateStart: Date
 
     @IsOptional()
     @IsDate()
     @Type(() => Date)
-    dateEnd:Date
+    dateEnd: Date
 
     @IsOptional()
-    title:string
+    title: string
 
     @IsOptional()
-    tags:string
+    tags: string
+
+    @IsOptional()
+    @IsBoolean()
+    @Transform(({value}) => value==1)
+    status: boolean
 
     @IsOptional()
     @IsNumber()
     @Type(() => Number)
-    limit:number
+    limit: number
 
     @IsOptional()
     @IsNumber()
     @Type(() => Number)
-    offset:number
+    offset: number
 }
 
 

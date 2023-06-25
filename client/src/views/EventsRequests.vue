@@ -3,9 +3,15 @@
     <div class="row my-3">
         <div class="col-auto">
             <label class="form-label fw-bold">Направление</label>
-            <select class="form-select" aria-label="Default select example" v-model="selectedDirection"
-                @change="fetchEvents()">
+            <select class="form-select" aria-label="Direction" v-model="selectedDirection" @change="fetchEvents()">
                 <option v-for="direction in directions" :value="direction.id">{{ direction.name }}</option>
+            </select>
+        </div>
+
+        <div class="col-auto">
+            <label class="form-label fw-bold">Статус</label>
+            <select class="form-select" aria-label="Status" v-model="selectedStatus" @change="fetchEvents()">
+                <option v-for="st in status" :value="st.id">{{ st.name }}</option>
             </select>
         </div>
     </div>
@@ -115,12 +121,17 @@ const dictionaryStore = useDictionaryStore();
 
 const events = ref()
 const directions = ref([{ id: 0, name: "Все" }])
+const status = [
+    { id: 0, name: "Принятные", value: 1 },
+    { id: 1, name: "Отклоненные", value: 0 },
+    { id: 2, name: "В рассмотрении", value: null }]
 
 // загрузка
 const loading = ref(false)
 
 // dropdowns
 const selectedDirection = ref(0)
+const selectedStatus = ref(2)
 
 //pagination ---------------------------------------------------------------------
 const limit = 5 //сколько  отображается на странице
@@ -142,7 +153,8 @@ async function fetchEvents() {
 
     loading.value = true
 
-    let d = await eventsStore.fetchEvents(limit, offset.value)
+    const sDirection = selectedDirection.value > 0 ? selectedDirection.value : null
+    let d = await eventsStore.fetchEvents(limit, offset.value, 4, status[selectedStatus.value].value, sDirection)
     events.value = d[0]
 
     const eventsCount = d[1]

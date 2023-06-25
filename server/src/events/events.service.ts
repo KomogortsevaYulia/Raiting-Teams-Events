@@ -81,6 +81,11 @@ export class EventsService {
     buildQuery = searchEvent.title != null ? buildQuery
       .andWhere("events.title like :title", { title: `%${searchEvent.title}%` }) : buildQuery
 
+    //status 
+    buildQuery = searchEvent.status != null ? buildQuery
+      .andWhere("events.status = :status", { status: searchEvent.status }) :
+      buildQuery.andWhere("events.status is null")
+
     //tag 
     buildQuery = searchEvent.tags != null ? buildQuery
       .andWhere("events.tag = :tag", { tag: searchEvent.tags }) : buildQuery

@@ -1,15 +1,15 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { Direction } from "./enums/enum_event";
-import { DirectionName } from "./enums/enum_teams";
 
 export const useEventStore = defineStore("events", () => {
 
   // type 4 is external
-  async function fetchEvents(limit:number, offset:number, type = 4): Promise<any> {
+  async function fetchEvents(limit:number, offset:number, type = 4, status:any = 1, direction:any = null): Promise<any> {
 
     let params = {
       type: type,
+      status:status,
+      direction:direction,
       limit: limit,
       offset: offset
     }
