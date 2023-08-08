@@ -39,4 +39,5 @@ export class Requisitions {
     @OneToMany((type) => RequisitionFields, (requisitionFields) => requisitionFields.requisition)
     @JoinColumn([{ name: "requisition_fields_id" }])
     requisition_fields: RequisitionFields[]
+    
 }

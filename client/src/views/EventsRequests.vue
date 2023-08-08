@@ -1,4 +1,5 @@
 <template>
+    
     <!-- dropdowns -->
     <div class="row my-3">
         <div class="col-auto">
@@ -59,6 +60,13 @@
                             {{ (new Date(event.dateEnd)).toLocaleDateString() }} </div>
                     </div>
 
+
+                    <div class="row">
+                        <router-link :to="'/event/' + event.id">
+                            <a href="#">Подробнее &rarr;</a>
+ 
+                        </router-link>
+                    </div>
 
                     <div class="row mt-4">
                         <div class="col-auto">

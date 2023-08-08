@@ -11,12 +11,15 @@ onBeforeMount(() => {
 </script>
 
 <template>
+  
   <header class="mw-100">
     <Navbar />
   </header>
+
   <div class="container">
     <RouterView />
   </div>
+
 </template>
 
 <style lang="scss">
