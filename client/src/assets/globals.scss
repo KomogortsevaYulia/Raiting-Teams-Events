@@ -43,7 +43,7 @@ button {
     color: #fff;
 
     &:hover {
-        background: var(--main-color-hover);
+       opacity: 0.8;
         transition: 0.3s;
     }
 
@@ -94,16 +94,17 @@ textarea {
     color: black;
 
     &:hover {
-        background: var(--main-color);
+        opacity: 0.8;
     }
 
 }
 
+// кнопка принять
 .btn-custom-accept{
     background: var(--second-accept);
 
     &:hover {
-        background: var(--main-color);
+        opacity: 0.8;
     }
 }
 
@@ -201,7 +202,7 @@ a {
 }
 
 .form-select{
-    padding: 0.75rem;
+    padding: 0.4rem;
 }
 
 .accordion-item {

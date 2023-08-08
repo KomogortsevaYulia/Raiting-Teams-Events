@@ -61,9 +61,9 @@
                     </div>
 
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <router-link :to="'/event/' + event.id">
-                            <a href="#">Подробнее &rarr;</a>
+                            <a href="#" class="info">Подробнее &rarr;</a>
  
                         </router-link>
                     </div>
@@ -197,6 +197,12 @@ async function changeStatus(id: number, status: boolean) {
         background: white;
 
 
+    }
+
+    .info{
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--second-color);
     }
 
     .border-left {

@@ -327,14 +327,16 @@ async function changeDirection(direction: any) {
 
 function changeTypeReport() {
   const tR = selectedParams.value.selectedTypeReport
+
   switch (tR) {
+
     case TypeReport.DIRECTION:
       selectedParams.value.selectedTeam = { name: "Все", id: 0 }
-
+      typeGraphics.value[1].isVisibleChart = false
       break
+
     case TypeReport.TEAM:
       getTeamsOfDirection(foundDirections.value[selectedParams.value.selectedDirection].idDB)
-
       break
   }
 }
@@ -398,7 +400,7 @@ function changeTypeReport() {
         <!-- team statistic or directions statistic -->
         <div class="row my-4 d-flex ">
 
-          <label class="form-label">Тип отчетности</label>
+          <label class="form-label">тип отчетности</label>
           <div class="form-check col-auto mx-2" v-for="drT in typeReports">
             <input class="form-check-input" type="radio" name="flexRadioDefault"
               :checked="drT.data == selectedParams.selectedTypeReport" :value="drT.data"
@@ -626,6 +628,9 @@ function changeTypeReport() {
   }
 }
 
+.form-label{
+  font-weight: 600;
+}
 // чекбоксы--------------------------------------------------------------------------------
 </style>
          
