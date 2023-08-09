@@ -88,7 +88,7 @@ onBeforeMount(async () => {
 
 async function getDirections() {
 
-  let data = await teamStore.fetchTeamsOfDirection(-1, "direction")
+  let data = await teamStore.fetchDirections()
 
   let dir = data[0]
   let arrayData = []

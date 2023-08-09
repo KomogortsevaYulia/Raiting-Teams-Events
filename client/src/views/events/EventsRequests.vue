@@ -63,7 +63,7 @@
 
                     <template #link>
                         <router-link :to="'/event/' + event.id">
-                            <a href="#" class="info">Подробнее &rarr;</a>
+                            <a href="#">Подробнее &rarr;</a>
                         </router-link>
                     </template>
 
@@ -113,6 +113,7 @@
 
 
 <script setup lang="ts">
+
 import Pagination from '@/components/Pagination.vue';
 import { useEventStore } from '@/store/events_store';
 import { useEventStore as useSingleEvent } from '@/store/event_store';
@@ -189,45 +190,8 @@ async function changeStatus(id: number, status: boolean) {
 
 <style lang="scss" scoped>
 .events-requests__wrapper {
-    .block-content {
-        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-        border-radius: 5px;
-        padding: 1.5rem 2rem;
-        margin: 10px auto 20px auto;
-        background: white;
-
-
-    }
-
-    .info {
-        font-size: 16px;
-        font-weight: bold;
-        color: var(--second-color);
-    }
-
-    .border-left {
-        border-left: 0.7rem solid gray;
-
-        &__success {
-            border-left-color: #95E09C;
-        }
-
-        &__danger {
-            border-left-color: #FF8383;
-        }
-    }
-
-    .card-event {
-        &__name {
-            color: #373737;
-            font-size: 1.2rem;
-        }
-
-        .style-elem {
-            color: var(--second-color);
-        }
-
-    }
-
+  .style-elem{
+    color: var(--second-color);
+  }
 }
 </style>

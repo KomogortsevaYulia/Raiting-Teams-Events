@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 // import type { Permission } from "@/types";
 import axios from "axios";
-import type UpdateTeam from "@/views/modals/UpdateTeam";
+import type UpdateTeam from "@/views/Modals/UpdateTeam";
 
 
 export const useTeamStore = defineStore("teams", () => {

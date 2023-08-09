@@ -30,14 +30,14 @@ const router = createRouter({
       // Коллективы
       path: "/teams",
       // @ts-ignore
-      component: () => import('@/views/Teams.vue'),
+      component: () => import('@/views/teams/Teams.vue'),
       meta: {}
     },
     {
       path: "/team/:id?",
       name: "Team",
       // @ts-ignore
-      component: () => import('@/views/Team.vue'),
+      component: () => import('@/views/teams/Team.vue'),
       meta: {
         requiresAuth: true
       }

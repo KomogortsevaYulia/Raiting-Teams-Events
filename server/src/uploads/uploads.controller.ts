@@ -7,7 +7,6 @@ import { Request, Response } from 'express';
 import { FileSizeValidationPipe } from './validation/file.validation.pipe';
 import { SearchEventDto } from 'src/events/dto/search-event.dto';
 import { FileImageValidationPipe } from './validation/image_file.validation.pipe';
-import { type } from 'os';
 
 
 @Controller('uploads')

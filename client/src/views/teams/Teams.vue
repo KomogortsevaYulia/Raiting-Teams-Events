@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
-import ModalCreateTeam from '@/views/Modals/ModalCreateTeam.vue';
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import { onBeforeMount, ref, watch, type Ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
-import { useTeamStore } from "../store/team_store";
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import _ from 'lodash';
 import { DirectionName } from '@/store/enums/enum_teams';
 import Pagination from '@/components/Pagination.vue';
+import { useTeamStore } from '@/store/team_store';
+import ModalCreateTeam from '@/components/modals/ModalCreateTeam.vue';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -154,7 +154,7 @@ function handleEventResetFilters() {
 // эти направления 
 async function getDirections() {
 
-  let data = await teamStore.fetchTeamsOfDirection(-1, "direction")
+  let data = await teamStore.fetchDirections()
 
   let directions = data[0]
   let arrayData = []
@@ -590,4 +590,4 @@ async function handleEventChangePage(currentPage: number) {
   }
 
 }
-</style>@/views/modals/ModalCreateTeam.vue
+</style>

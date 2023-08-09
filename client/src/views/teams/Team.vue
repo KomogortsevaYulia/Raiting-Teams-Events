@@ -2,12 +2,12 @@
 import WIP from '@/components/WIP.vue';
 import { onBeforeMount, ref, reactive } from 'vue';
 import Ankets from '@/views/Questionnaire.vue';
-import ModalQuestionnaire from "./Modals/ModalQuestionnaire.vue";
 import Participation from '@/components/Participation.vue'
 
-import { useTeamStore } from "../store/team_store"
 import axios from 'axios';
 import { useRoute } from "vue-router";
+import { useTeamStore } from '@/store/team_store';
+import ModalQuestionnaire from '@/components/modals/ModalQuestionnaire.vue';
 
 const route = useRoute()
 

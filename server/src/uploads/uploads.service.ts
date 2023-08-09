@@ -1,11 +1,9 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { createReadStream, createWriteStream } from 'fs';
+import {  HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {  createWriteStream } from 'fs';
 import * as fs from 'fs';
 import { Event } from 'src/events/entities/event.entity';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
-import { SearchEventDto } from 'src/events/dto/search-event.dto';
-import * as url from 'url';
 
 @Injectable()
 export class UploadsService {
@@ -15,8 +13,8 @@ export class UploadsService {
   async uploadFile(startPathUrl: string, file: Express.Multer.File) {
 
     const pathToSave = "public/media"
-
-    let path = "";
+    
+    let fullPath = "";
     let fullURL = ""
     // если буфер не пустой
     if (file.buffer != null) {
@@ -34,10 +32,10 @@ export class UploadsService {
       // сгенерировать путь к папке (год, месяц)
       const pathToFolder = this.generateFoldersYearMonthDay(currentDate, `./${pathToSave}`);
 
-      path = `./${pathToSave}/${pathToFolder}/${filename}`;
+      fullPath = `./${pathToSave}/${pathToFolder}/${filename}`;
       fullURL = `${startPathUrl}/${pathToSave}/${pathToFolder}/${filename}`;
 
-      const stream = createWriteStream(path);
+      const stream = createWriteStream(fullPath);
       stream.write(file.buffer);
       stream.end();
     } else {
@@ -65,12 +63,15 @@ export class UploadsService {
     const folderDay = date.getDate().toString().padStart(2, '0'); // Pad day with leading zero if necessary
 
     const folderYearMonth = `${year}.${month}`
-    const pathToFolder = `${folderYearMonth}/${folderDay}`;
-    const fullpath = `${pathStart}/${pathToFolder}`;
+    const pathToFolderDay = `${folderYearMonth}/${folderDay}`;
+
+    this.createFolderIfNotExists(`${pathStart}/${folderYearMonth}`)
+
+    const fullpath = `${pathStart}/${pathToFolderDay}`;
 
     this.createFolderIfNotExists(fullpath)
 
-    return pathToFolder;
+    return pathToFolderDay;
   }
 
   // проверить существование папки и создать, если не существует

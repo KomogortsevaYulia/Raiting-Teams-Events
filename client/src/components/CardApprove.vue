@@ -1,3 +1,13 @@
+
+<script lang="ts" setup>
+
+const props = defineProps<{
+    positiveBorderColor: boolean | undefined,
+
+}>()
+
+</script>
+
 <template>
     <div
         :class="['block-content border-left', `${positiveBorderColor ? 'border-left__success' : (positiveBorderColor != undefined ? 'border-left__danger' : '')}`]">
@@ -11,7 +21,7 @@
             </div>
             <!-- time -->
             <div class="col-auto">
-                <font-awesome-icon icon="clock" class="me-2"/>
+                <font-awesome-icon icon="clock" class="me-2" />
                 <slot name="time">
 
                 </slot>
@@ -19,14 +29,14 @@
 
         </div>
         <!-- body -->
-        <div class="row">
+        <div class="row ">
             <slot name="body">
 
             </slot>
         </div>
 
         <!-- link -->
-        <div class="row mt-2">
+        <div class="row mt-2 info">
             <slot name="link">
 
             </slot>
@@ -49,17 +59,6 @@
     </div>
 </template>
 
-<script lang="ts" setup>
-
-const props = defineProps<{
-    positiveBorderColor: boolean | undefined,
-
-}>()
-
-
-
-</script>
-
 <style lang="scss" scoped>
 .block-content {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -70,32 +69,28 @@ const props = defineProps<{
 }
 
 .info {
-        font-size: 16px;
-        font-weight: bold;
-        color: var(--second-color);
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--second-color);
+}
+
+.border-left {
+    border-left: 0.7rem solid gray;
+
+    &__success {
+        border-left-color: #95E09C;
     }
 
-    .border-left {
-        border-left: 0.7rem solid gray;
-
-        &__success {
-            border-left-color: #95E09C;
-        }
-
-        &__danger {
-            border-left-color: #FF8383;
-        }
+    &__danger {
+        border-left-color: #FF8383;
     }
+}
 
-    .card {
-        &__title {
-            color: #373737;
-            font-size: 1.2rem;
-        }
 
-        .style-elem {
-            color: var(--second-color);
-        }
-
+.card {
+    &__title {
+        color: #373737;
+        font-size: 1.2rem;
     }
+}
 </style>
