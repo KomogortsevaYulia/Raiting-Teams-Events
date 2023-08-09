@@ -65,11 +65,11 @@
 import Switch_toggle from '@/components/Switch_toggle.vue';
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import { useEventStore } from "@/store/events_store";
-import { useTeamStore } from "../store/team_store";
 import { onBeforeMount, ref } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 import Pagination from '@/components/Pagination.vue';
 import EventsRequests from './EventsRequests.vue';
+import { useTeamStore } from '@/store/team_store';
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();

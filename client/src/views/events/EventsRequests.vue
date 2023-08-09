@@ -1,5 +1,4 @@
 <template>
-    
     <!-- dropdowns -->
     <div class="row my-3">
         <div class="col-auto">
@@ -17,58 +16,58 @@
         </div>
     </div>
 
+
     <!-- cards of events -->
     <div class="row">
         <div class="events-requests__wrapper">
             <div v-for="event in events">
-                <div
-                    :class="['block-content card-event border-left', `${event.status ? 'border-left__success' : (event.status != null ? 'border-left__danger' : '')}`]">
+                <!-- карточка -->
+                <CardApprove :positive-border-color="event.status">
 
-                    <div class="row mb-4">
-                        <div class="col card-event__name">
-                            {{ event.title }}
+                    <template #title>
+                        {{ event.title }}
+                    </template>
+
+                    <template #time>
+                        {{ (new Date(event.date_update)).toLocaleDateString() }}
+                    </template>
+
+                    <template #body>
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="style-elem">Уровень:</div>
+                            </div>
+                            <div class="col-auto">{{ event.Level ? event.level.name : "-" }}</div>
                         </div>
-                        <div class="col-auto">
-                            <font-awesome-icon icon="clock" /> {{ (new Date(event.date_update)).toLocaleDateString() }}
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="style-elem">Формат проведения:</div>
+                            </div>
+                            <div class="col-auto">{{ event.format ? event.format.name : "-" }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="style-elem">Количество участников:</div>
+                            </div>
+                            <div class="col-auto">{{ event.count_people ?? "-" }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="style-elem">Даты начала/окончания:</div>
+                            </div>
+                            <div class="col-auto"> {{ (new Date(event.dateStart)).toLocaleDateString() }} -
+                                {{ (new Date(event.dateEnd)).toLocaleDateString() }} </div>
                         </div>
 
-                    </div>
+                    </template>
 
-                    <div class="row">
-                        <div class="col-auto">
-                            <div class="style-elem">Уровень:</div>
-                        </div>
-                        <div class="col-auto">{{ event.Level ? event.level.name : "-" }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-auto">
-                            <div class="style-elem">Формат проведения:</div>
-                        </div>
-                        <div class="col-auto">{{ event.format ? event.format.name : "-" }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-auto">
-                            <div class="style-elem">Количество участников:</div>
-                        </div>
-                        <div class="col-auto">{{ event.count_people ?? "-" }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-auto">
-                            <div class="style-elem">Даты начала/окончания:</div>
-                        </div>
-                        <div class="col-auto"> {{ (new Date(event.dateStart)).toLocaleDateString() }} -
-                            {{ (new Date(event.dateEnd)).toLocaleDateString() }} </div>
-                    </div>
-
-
-                    <div class="row mt-2">
+                    <template #link>
                         <router-link :to="'/event/' + event.id">
                             <a href="#" class="info">Подробнее &rarr;</a>
- 
                         </router-link>
-                    </div>
+                    </template>
 
-                    <div class="row mt-4">
+                    <template #footer>
                         <div class="col-auto">
                             <div class="fw-bold">Статус:</div>
                         </div>
@@ -86,9 +85,9 @@
                                 в ожидании
                             </div>
                         </div>
-                    </div>
+                    </template>
 
-                    <div class="row">
+                    <template #buttons>
                         <div class="col d-flex justify-content-end">
                             <button class="button btn-custom-accept" @click="changeStatus(event.id, true)">
                                 принять
@@ -99,10 +98,10 @@
                                 отклонить
                             </button>
                         </div>
-                    </div>
-
-                </div>
+                    </template>
+                </CardApprove>
             </div>
+
         </div>
     </div>
 
@@ -121,6 +120,7 @@ import { DIRECTION } from '@/store/constants/constants_class_names';
 
 import { onBeforeMount, ref } from 'vue';
 import { useDictionaryStore } from '@/store/dictionary_store';
+import CardApprove from '@/components/CardApprove.vue';
 
 
 const eventsStore = useEventStore();
@@ -199,7 +199,7 @@ async function changeStatus(id: number, status: boolean) {
 
     }
 
-    .info{
+    .info {
         font-size: 16px;
         font-weight: bold;
         color: var(--second-color);

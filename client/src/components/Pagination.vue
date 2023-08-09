@@ -1,3 +1,4 @@
+
 <template>
     <!-- current {{ current }}
     maxPage {{ maxPage }}
@@ -45,12 +46,12 @@
 import { onBeforeMount, ref, watch } from 'vue';
 
 const props = defineProps<{
-    visiblePages: number,
-    maxPage: number,
-    handleEventChangePage: Function,
+    visiblePages: number,           //сколько страниц для переключения может видеть юзер
+    maxPage: number,                //макс число страниц
+    handleEventChangePage: Function,//обработка события при переходе на другую страницу
 }>()
 
-const current = ref(1)
+const current = ref(1)  //текущая  страница
 
 const startPage = ref(1)
 const endPage = ref(1)
@@ -64,6 +65,7 @@ watch(() => props.maxPage, async (prev) => {
     changePage(1)
 })
 
+// изменить страницу
 function changePage(goToPage: number) {
 
     if (goToPage <= props.maxPage && goToPage >= 1)
@@ -74,6 +76,7 @@ function changePage(goToPage: number) {
     props.handleEventChangePage(current.value)
 }
 
+// задать начальную и конечную страницы
 function setEndStartPages() {
     // start page
     const halfPages = Math.floor(props.visiblePages / 2)
@@ -91,7 +94,7 @@ function setEndStartPages() {
     }
 }
 
-
+// вывод номеров страниц пагинации
 function range(from: number, to: number) {
     return Array.from({ length: to - from + 1 }, (_, index) => from + index);
 }

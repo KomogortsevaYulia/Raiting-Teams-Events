@@ -9,7 +9,7 @@ const router = createRouter({
       // Авторизация
       path: "/",
       // @ts-ignore
-      component: () => import('@/views/Newa.vue'),
+      component: () => import('@/views/events/News.vue'),
       meta: {}
     },
     {
@@ -23,7 +23,7 @@ const router = createRouter({
       // Страница с мероприятиями (кто её news назвал??)
       path: "/news",
       // @ts-ignore
-      component: () => import('@/views/News.vue'),
+      component: () => import('@/views/events/News.vue'),
       meta: {}
     },
     {
@@ -55,7 +55,7 @@ const router = createRouter({
       path: "/statistic",
       name: "Statistic",
       // @ts-ignore
-      component: () => import('@/views/Report/Statistic.vue'),
+      component: () => import('@/views/report/Statistic.vue'),
       meta: {
         requiresAuth: true,
         permission: 'can view directions'
@@ -65,13 +65,13 @@ const router = createRouter({
     {
       path: "/event/:id?",
       // @ts-ignore
-      component: () => import('@/views/Event.vue'),
+      component: () => import('@/views/events/Event.vue'),
       meta: {}
     },
     {
       path: "/event-create",
       // @ts-ignore
-      component: () => import('@/views/EventCreate.vue'),
+      component: () => import('@/views/events/EventCreate.vue'),
       meta: {
       }
     },

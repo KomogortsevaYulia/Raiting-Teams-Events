@@ -590,4 +590,4 @@ async function handleEventChangePage(currentPage: number) {
   }
 
 }
-</style>
+</style>@/views/modals/ModalCreateTeam.vue

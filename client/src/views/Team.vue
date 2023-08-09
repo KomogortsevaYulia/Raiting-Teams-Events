@@ -719,4 +719,4 @@ const newsList = [
     }
   }
 }
-</style>
+</style>./modals/ModalQuestionnaire.vue
