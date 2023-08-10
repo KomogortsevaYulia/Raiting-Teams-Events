@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import Switch_toggle from '@/components/Switch_toggle.vue';
-import { onBeforeMount, ref, watch, type Ref } from 'vue';
+import { onBeforeMount, ref, watch, type Ref, computed } from 'vue';
 import { usePermissionsStore } from '@/store/permissions_store';
 import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
 import _ from 'lodash';
@@ -9,6 +9,7 @@ import { DirectionName } from '@/store/enums/enum_teams';
 import Pagination from '@/components/Pagination.vue';
 import { useTeamStore } from '@/store/team_store';
 import ModalCreateTeam from '@/components/modals/ModalCreateTeam.vue';
+import { FilterTeam } from '@/store/models/teams.model';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -25,12 +26,15 @@ const teamEdit = ref()
 
 const findTeamTxt = ref()
 
-const filters = ref({
-  directions: [0],
-  is_archive: menu_items.value[2].menu_types[0].checked,
-  is_active: menu_items.value[2].menu_types[1].checked,
 
-})
+// const filters = ref({
+//   directions: [0],
+//   is_archive: menu_items.value[2].menu_types[0].checked,
+//   is_active: menu_items.value[2].menu_types[1].checked,
+//   set_open: open
+// })
+
+const filterTeam = ref(new FilterTeam())
 
 // загрузка
 const loading = ref(false)
@@ -49,7 +53,6 @@ const foundDirections = ref([{ id: 0, shortname: "-", idDB: 0 }])           //д
 
 onBeforeMount(async () => {
   // вытащить коллективы из бд и отобразить их
-
   await getDirections()
   await handleEventSetFilters()
 
@@ -78,7 +81,12 @@ async function fetchTeams() {
   loading.value = true
 
   let txt = findTeamTxt.value
-  let d = await teamStore.fetchTeamsSearch(txt, filters.value, limit, offset.value)
+
+  filterTeam.value.description =
+    filterTeam.value.title =
+    filterTeam.value.tags = txt
+
+  let d = await teamStore.fetchTeamsSearch(filterTeam.value)
 
   data.value = d[0]
 
@@ -92,11 +100,21 @@ async function fetchTeams() {
 async function handleEventSetFilters() {
 
   menu_items.value.forEach((el) => {
-    // el.menu_types.forEach((elType) => {
     switch (el.id) {
+      // is open
       case 1:
+        let open = undefined
+        if (el.menu_types[0].checked && el.menu_types[1].checked) {
+          open = undefined
+        } else if (el.menu_types[0].checked) {
+          open = true
+        } else if (el.menu_types[1].checked) {
+          open = false
+        }
 
+        filterTeam.value.set_open = open
         break
+      // directions
       case 2:
         let directions: number[] = []
         // пройтись по элементам меню
@@ -133,11 +151,12 @@ async function handleEventSetFilters() {
         })
 
         // задать выбранные направления
-        filters.value.directions = directions
+        filterTeam.value.directions = directions
         break
+      // archive
       case 3:
-        filters.value.is_archive = el.menu_types[0].checked
-        filters.value.is_active = el.menu_types[1].checked
+        filterTeam.value.is_archive = el.menu_types[0].checked
+        filterTeam.value.is_active = el.menu_types[1].checked
         break
     }
   })
@@ -184,11 +203,11 @@ async function handleEventChangePage(currentPage: number) {
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <div v-if="can('can create teams')">
-      <!-- Button trigger modal -->
-      <button @click="editTeam(false, null)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Создать коллектив
-      </button>
-      <ModalCreateTeam :is-edit-team="isEditTeam" :team="teamEdit" />
+        <!-- Button trigger modal -->
+        <button @click="editTeam(false, null)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Создать коллектив
+        </button>
+        <ModalCreateTeam :is-edit-team="isEditTeam" :team="teamEdit" />
 
       </div>
     </div>
@@ -218,7 +237,8 @@ async function handleEventChangePage(currentPage: number) {
 
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
-          <div v-if="!loading" v-for="team in data" :class="[ {'cardEvent__archive': team.is_archive}]" class="cardEvent row justify-content-center">
+          <div v-if="!loading" v-for="team in data" :class="[{ 'cardEvent__archive': team.is_archive }]"
+            class="cardEvent row justify-content-center">
 
             <router-link class=" col-lg-auto p-0 col-md-auto d-flex justify-content-center" :to="'/team/' + team.id">
               <div class="card__banner">
@@ -235,23 +255,27 @@ async function handleEventChangePage(currentPage: number) {
                   <!-- team title -->
                   <div class="col p-0">
                     <router-link :to="'/team/' + team.id">
-                      <div v-if="team.title && team.title.length > 50" class="cardTitle">
-                      {{ team.title.slice(0, 50)}} ... </div>
-                      <div v-else class="cardTitle"> {{ team.title }}</div>
+
+                      <!-- набор -->
+                      <span class="fs-6 text-bg-success px-1 me-1" v-if="team.set_open"> набор открыт</span>
+                      <span class="fs-6 text-bg-danger px-1 me-1"
+                       v-else> набор закрыт</span>
+
+                       <!-- тайтл -->
+                      <span v-if="team.title && team.title.length > 50" class="cardTitle">
+                        {{ team.title.slice(0, 50) }} ... </span>
+                      <span v-else class="cardTitle">{{ team.title }}</span>
                     </router-link>
 
-                    <!-- <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
-                      архиве)</p> -->
                   </div>
-
-                  <div  v-if="can('can create teams')" class="col-auto d-flex justify-content-end align-items-end">
+                  <!-- edit -->
+                  <div v-if="can('can create teams')" class="col-auto d-flex justify-content-end align-items-end">
                     <div @click="editTeam(true, team)" type="button" data-bs-toggle="modal"
                       data-bs-target="#exampleModal">
                       <font-awesome-icon class="ic" icon="pencil-square" />
                     </div>
                   </div>
                 </div>
-      
 
 
 
@@ -377,7 +401,7 @@ async function handleEventChangePage(currentPage: number) {
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           transition: all .5s;
 
-          &__archive{
+          &__archive {
             opacity: 0.5;
           }
 
@@ -499,7 +523,7 @@ async function handleEventChangePage(currentPage: number) {
           flex-direction: row;
           transition: all .5s;
 
-          &__archive{
+          &__archive {
             opacity: 0.7;
           }
 

@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger"
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Function } from "../../users/entities/function.entity";
 import { Journal } from "../../events/entities/journal.entity";
+import { Form } from "../../forms/entities/form.entity";
 
 @Entity("teams")
 export class Team {
@@ -62,7 +63,13 @@ export class Team {
     @Column({nullable:true})
     document:string
 
-    
+    @ApiProperty()
+    @Column({default:true})
+    set_open:boolean
+
+
+
+
     @ManyToOne((type)=>Team, (team)=>team.id)
     @JoinColumn([{ name: "id_parent" }])
     id_parent:Team
@@ -70,9 +77,12 @@ export class Team {
     @OneToMany((type)=>Function, (func)=>func.team, {cascade:true})
     @JoinColumn([{ name: "func_id" }])
     functions:Function[]
-
     
     @OneToMany((type) => Journal, (journal) => journal.team, {cascade:true})
     @JoinColumn([{ name: "journal_id" }])
     journal: Journal[]
+
+    @OneToMany((type) => Form, (form) => form.team, {cascade:true})
+    @JoinColumn([{ name: "form_id" }])
+    forms: Form[]
 }

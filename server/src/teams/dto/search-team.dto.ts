@@ -20,6 +20,11 @@ export class SearchTeamDto {
     @Transform(({value}) => value==='true')
     is_archive: boolean;
 
+    @IsOptional()
+    @IsBoolean()
+    @Transform(({value}) => value==='true')
+    set_open: boolean;
+
     //id parent
     @IsOptional()
     @IsArray()

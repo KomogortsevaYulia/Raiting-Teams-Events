@@ -1,15 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateJournalDto } from './dto/create-journal.dto';
-import { UpdateJournalDto } from './dto/update-journal.dto';
 import { Event } from './entities/event.entity'
-import { Level, Type } from './enums/enums';
-import { Direction } from 'readline';
+import { Type } from './enums/enums';
 import { Journal } from './entities/journal.entity';
-import { fail } from 'assert';
 import { SearchEventDto } from './dto/search-event.dto';
 
 @Injectable()

@@ -1,9 +1,11 @@
-import { PartialType } from '@nestjs/swagger';
-import { createFormDto } from './create-form.dto';
-import { IsNotEmpty, IsOptional } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator'
+import { Type } from 'class-transformer';
+import { Form } from '../entities/form.entity';
 
 export class UpdateFormDto {
     @IsOptional()
     @IsNotEmpty({ message: 'Поле пустое' })
-    form_id:number
+    @Type(() => Number)
+    @IsNumber()
+    form:Form
 }

@@ -80,7 +80,7 @@ async function createFormFields(title: string, form_id: number, required: boolea
     const response = await axios.post("/api/forms/field", {
       title: title,
       required: required,
-      form_id: form_id
+      form: form_id
     });
     const strId: string = response.data.id.toString()
     //console.log(response.data.id)

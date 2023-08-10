@@ -128,6 +128,11 @@ export class Event {
     @OneToMany((type)=>Achievement, (achievement)=>achievement.event, {cascade:true})
     achievement: Achievement
     
+    // creator
+    @ManyToOne((type) => User, (user) => user.id, {onDelete:"SET NULL"})
+    @JoinColumn([{ name: "user_id" }])
+    user: User
+
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "type_id" }])

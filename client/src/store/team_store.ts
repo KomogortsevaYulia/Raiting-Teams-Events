@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 // import type { Permission } from "@/types";
 import axios from "axios";
 import type UpdateTeam from "@/components/modals/UpdateTeam";
+import type { FilterTeam } from "./models/teams.model";
 
 
 export const useTeamStore = defineStore("teams", () => {
@@ -195,34 +196,31 @@ export const useTeamStore = defineStore("teams", () => {
 
 
     //fetch teams by
-    async function fetchTeamsSearch(txt = "", filters: {
-        directions: number[],
-        is_archive: boolean,
-        is_active: boolean,
-    }, limit = 5, offset = 0): Promise<any> {
+    async function fetchTeamsSearch(filterTeam:FilterTeam): Promise<any> {
 
-        let is_archive = undefined
+        // let is_archive = undefined
 
-        if (filters.is_archive && !filters.is_active) {
-            is_archive = true
-        } else if (filters.is_active && !filters.is_archive) {
-            is_archive = false
-        }
+        // if (filters.is_archive && !filters.is_active) {
+        //     is_archive = true
+        // } else if (filters.is_active && !filters.is_archive) {
+        //     is_archive = false
+        // }
 
 
-        let params = {
-            title: txt,
-            description: txt,
-            tags: txt,
-            is_archive: is_archive,
-            directions: filters.directions,
-            limit: limit,
-            offset: offset
-        }
+        // let params = {
+        //     title: txt,
+        //     description: txt,
+        //     tags: txt,
+        //     is_archive: is_archive,
+        //     directions: filters.directions,
+        //     set_open: filters.set_open,
+        //     limit: limit,
+        //     offset: offset
+        // }
 
         //find by all txt data in table
         const res = await axios.get('/api/teams', {
-            params: params
+            params: filterTeam
         })
 
         return res.data

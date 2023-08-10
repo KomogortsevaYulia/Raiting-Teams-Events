@@ -26,7 +26,7 @@ export class Form {
     @ApiProperty()
     @ManyToOne(()=>Team, (team)=> team.id, {onDelete:'CASCADE'})
     @JoinColumn([{ name: "team_id" }])
-    team_id:number
+    team:Team
 
     @OneToMany((type) => FormField, (formField) => formField.form, {cascade:true})
     @JoinColumn([{ name: "form_field_id" }])

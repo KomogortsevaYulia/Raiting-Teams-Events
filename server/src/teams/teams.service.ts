@@ -111,7 +111,7 @@ export class TeamsService {
 
       .select(["teams.id", "teams.title", "teams.tags", "teams.image", "teams.description",
         "teams.short_description", "teams.type_team", "teams.cabinet", "teams.is_archive", "teams.document", "teams.shortname", "teams.charter_team",
-        "teams.id_parent"])
+        "teams.id_parent", "teams.set_open"])
       .where("teams.type_team = :type", { type: "teams" })
       .leftJoin("teams.functions", "functions")
       // select direction
@@ -166,10 +166,15 @@ export class TeamsService {
 
     //отфильтровать по направлению
     query = params.directions ? query.andWhere("teams.id_parent in (:...id_parents)", { id_parents: params.directions }) : query
-
+  
     if (params.is_archive != null) {
       //отфильтровать по типу коллектива
       query = query.andWhere("teams.is_archive = :is_archive", { is_archive: params.is_archive })
+    }
+
+     // набор
+    if (params.set_open != null) {
+      query = query.andWhere("teams.set_open = :set_open", {  set_open: params.set_open  })
     }
 
     return query

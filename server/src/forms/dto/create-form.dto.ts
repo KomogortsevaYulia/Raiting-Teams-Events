@@ -1,5 +1,6 @@
 import {IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, Length} from 'class-validator'
 import { Type } from 'class-transformer'
+import { Form } from '../entities/form.entity'
 
 export class createUserFormDto{
     @IsOptional()
@@ -28,9 +29,11 @@ export class createFormDto{
 
 export class createFormFieldsDto{
 
-    @IsNumber()
+    // @IsNumber()
+    // @Type(() => Number)
     @Type(() => Number)
-    form_id:number
+    @IsNumber()
+    form:Form
 
     @IsString()
     @IsNotEmpty({ message: 'Поле пустое' })

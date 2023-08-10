@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import WIP from '@/components/WIP.vue';
 import { onBeforeMount, ref, reactive } from 'vue';
-import Ankets from '@/views/Questionnaire.vue';
+import Ankets from '@/views/teams/Questionnaire.vue';
 
 import axios from 'axios';
 import { useRoute } from "vue-router";
