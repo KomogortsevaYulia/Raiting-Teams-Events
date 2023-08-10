@@ -1,14 +1,18 @@
 <template>
   <!-- Навигация -->
   <div class="wrapper-news__navigation">
-    <router-link :to="'/event-create'" v-if="can('can view directions')">
 
+    <router-link :to="'/event-create'" v-if="can('can view directions')">
       <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Создать мероприятие
       </button>
     </router-link>
-    <a @click="selectItem(index)" v-for="(item, index) in itemList" :key="index"
+
+    <template  v-for="(item, index) in itemList" :key="index">
+      <a @click="selectItem(index)" v-if="item.permission"
       :class="{ active: index == selectedItem }">{{ item.name }}</a>
+    </template>
+   
   </div>
 
   <!-- see events -->
@@ -90,8 +94,8 @@ const visiblePages = 7
 //pagination ---------------------------------------------------------------------
 
 const itemList = [
-  { name: "Мероприятия" },
-  { name: "Заявки на создание" },
+  { name: "Главная", permission:true },
+  { name: "Заявки на создание", permission: can('can edit status events')},
 ]
 
 const selectedItem = ref(0);

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { useFunctionsStore } from "@/store/fucntion_store"
-import { useUserStore } from "@/store/user_store"
-import { update } from "lodash"
 import {ref} from "vue"
 const userStore = useFunctionsStore()
 

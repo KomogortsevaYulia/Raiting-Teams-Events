@@ -218,7 +218,7 @@ async function handleEventChangePage(currentPage: number) {
 
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
-          <div v-if="!loading" v-for="team in data" class="cardEvent row  justify-content-center">
+          <div v-if="!loading" v-for="team in data" :class="[ {'cardEvent__archive': team.is_archive}]" class="cardEvent row justify-content-center">
 
             <router-link class=" col-lg-auto p-0 col-md-auto d-flex justify-content-center" :to="'/team/' + team.id">
               <div class="card__banner">
@@ -240,8 +240,8 @@ async function handleEventChangePage(currentPage: number) {
                       <div v-else class="cardTitle"> {{ team.title }}</div>
                     </router-link>
 
-                    <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
-                      архиве)</p>
+                    <!-- <p class="fs-6 text-bg-danger" v-if="team != null && team.is_archive != null && team.is_archive"> (В
+                      архиве)</p> -->
                   </div>
 
                   <div  v-if="can('can create teams')" class="col-auto d-flex justify-content-end align-items-end">
@@ -377,6 +377,10 @@ async function handleEventChangePage(currentPage: number) {
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           transition: all .5s;
 
+          &__archive{
+            opacity: 0.5;
+          }
+
           .cardTitle {
             color: #373737;
             font-size: 1.2rem;
@@ -494,6 +498,10 @@ async function handleEventChangePage(currentPage: number) {
           display: flex;
           flex-direction: row;
           transition: all .5s;
+
+          &__archive{
+            opacity: 0.7;
+          }
 
           .cardTitle {
             color: #373737;

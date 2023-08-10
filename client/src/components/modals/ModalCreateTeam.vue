@@ -312,7 +312,7 @@ async function archiveTeam(id: number, isArchive: boolean) {
                     <p v-if="isEditTeam && team != null"> {{ team.document }}</p>
                   </div>
 
-                  <textarea placeholder="Опишите проект" v-model="description" required></textarea>
+                  <textarea placeholder="Описание" v-model="description" required></textarea>
                 </div>
 
                 <div class="fuck-off-btn">

@@ -9,7 +9,7 @@ import { DatePicker } from 'v-calendar';
 import DownloadReport from './DowloadReport.vue';
 
 // graphics
-import ColorfulBlocks from '@/components/Charts/ColorfulBlocks.vue';
+import ColorfulBlocks from '@/components/charts/ColorfulBlocks.vue';
 
 import { useTeamStore } from '@/store/team_store';
 import _, { defaultsDeep, forIn } from 'lodash';
