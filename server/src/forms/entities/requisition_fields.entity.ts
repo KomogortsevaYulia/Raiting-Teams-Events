@@ -15,12 +15,13 @@ export class RequisitionFields {
     @Column()
     value: string
 
-    @ManyToOne(()=>FormField, (fields)=> fields.id)
+
+
+    @ManyToOne(()=>FormField, (fields)=> fields.id, {onDelete:"CASCADE"})
     @JoinColumn([{ name: "form_fields_id" }])
     field:FormField[]
 
- 
-    @ManyToOne(()=>Requisitions, (requisition)=> requisition.id)
+    @ManyToOne(()=>Requisitions, (requisition)=> requisition.id, {cascade:true})
     @JoinColumn([{ name: "requisition_id" }])
     requisition:Requisitions
 }

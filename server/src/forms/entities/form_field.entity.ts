@@ -23,7 +23,7 @@ export class FormField {
     archive: boolean
 
     @ApiProperty()
-    @ManyToOne(()=>Form, (form)=> form.id)
+    @ManyToOne(()=>Form, (form)=> form.id, {onDelete:"CASCADE"})
     @JoinColumn([{ name: "form_id" }])
     form:Form
     

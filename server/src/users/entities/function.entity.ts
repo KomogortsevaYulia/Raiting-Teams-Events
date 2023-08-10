@@ -23,10 +23,10 @@ export class Function {
     type_function: string
 
     @ApiProperty()
-    @ManyToOne(() => Team, (team) => team.id)
+    @ManyToOne(() => Team, (team) => team.id, {onDelete:"CASCADE"})
     @JoinColumn([{ name: "team_id" }])
     team: Team
 
-    @OneToMany((type) => UserFunction, (uf) => uf.function)
+    @OneToMany((type) => UserFunction, (uf) => uf.function, {cascade:true})
     userFunctions: UserFunction[]
 }

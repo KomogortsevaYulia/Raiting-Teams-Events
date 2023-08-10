@@ -8,13 +8,9 @@ import { Achievement } from "../../users/entities/achievement.entity";
 @Entity('events')
 export class Event {
 
-    //26 энтити
-
     @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number
-
-  
 
     @ApiProperty()
     @Column()
@@ -124,13 +120,13 @@ export class Event {
 
 
 
-
-    @OneToMany((type)=>Journal, (journal)=>journal.event)
+    @ApiProperty()
+    @OneToMany((type)=>Journal, (journal)=>journal.event, {cascade:true})
     journal:Journal[] // журнал
 
-    @OneToMany((type)=>Achievement, (achievement)=>achievement.event)
+    @ApiProperty()
+    @OneToMany((type)=>Achievement, (achievement)=>achievement.event, {cascade:true})
     achievement: Achievement
-
     
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
@@ -142,7 +138,6 @@ export class Event {
     @JoinColumn([{ name: "level_id" }])
     level: Dictionary // уровень (вуз, межрег)
 
-    
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "direction_id" }])

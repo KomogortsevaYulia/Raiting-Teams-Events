@@ -7,6 +7,7 @@ import { Requisitions } from "../../teams/entities/requisition.entity";
 
 @Entity("users")
 export class User {
+
     @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number
@@ -59,17 +60,6 @@ export class User {
     @Column("simple-array",{ nullable: true })
     permissions: string[]
 
-    @OneToMany((type)=>UserFunction, (user_func)=>user_func.function)
-    user_function:UserFunction[]
-
-    @OneToMany((type) => Journal, (journal) => journal.user)
-    @JoinColumn([{ name: "journal_id" }])
-    journal: Journal
-
-    @OneToMany((type) => Requisitions, (requisition) => requisition.user)
-    @JoinColumn([{ name: "requisition_id" }])
-    requisition: Requisitions
-
     @BeforeInsert()
     async hashPassword() {
         this.password = await argon2.hash(this.password);
@@ -80,4 +70,16 @@ export class User {
 
     @Column({ nullable: true })
     course: number;
+
+
+
+
+    @OneToMany((type)=>UserFunction, (user_func)=>user_func.function, {cascade:true})
+    user_function:UserFunction[]
+
+    @OneToMany((type) => Journal, (journal) => journal.user, {cascade:true})
+    journal: Journal[]
+
+    @OneToMany((type) => Requisitions, (requisition) => requisition.user, {cascade:true})
+    requisition: Requisitions[]
 }

@@ -10,14 +10,6 @@ export class UserFunction {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne((type) => Function, (func) => func.id)
-    @JoinColumn([{ name: "function_id" }])
-    function: number
-
-    @ManyToOne((type) => User, (user) => user.id)
-    @JoinColumn([{ name: "user_id" }])
-    user: number
-
     @ApiProperty() 
     @Column()
     dateStart: Date
@@ -25,4 +17,13 @@ export class UserFunction {
     @ApiProperty() 
     @Column({ nullable: true })
     dateEnd: Date
+
+
+    @ManyToOne((type) => Function, (func) => func.id, {onDelete:"CASCADE"})
+    @JoinColumn([{ name: "function_id" }])
+    function: number
+
+    @ManyToOne((type) => User, (user) => user.id, {onDelete:"CASCADE"})
+    @JoinColumn([{ name: "user_id" }])
+    user: number
 }

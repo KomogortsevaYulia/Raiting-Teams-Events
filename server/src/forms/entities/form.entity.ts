@@ -22,12 +22,13 @@ export class Form {
     // @Column("simple-array")
     // fields_id: string
 
+
     @ApiProperty()
-    @ManyToOne(()=>Team, (team)=> team.id)
+    @ManyToOne(()=>Team, (team)=> team.id, {onDelete:'CASCADE'})
     @JoinColumn([{ name: "team_id" }])
     team_id:number
 
-    @OneToMany((type) => FormField, (formField) => formField.form)
+    @OneToMany((type) => FormField, (formField) => formField.form, {cascade:true})
     @JoinColumn([{ name: "form_field_id" }])
     form_field: FormField[]
 }

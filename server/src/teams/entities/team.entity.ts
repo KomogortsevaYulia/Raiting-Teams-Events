@@ -5,6 +5,7 @@ import { Journal } from "../../events/entities/journal.entity";
 
 @Entity("teams")
 export class Team {
+
     @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number
@@ -32,10 +33,6 @@ export class Team {
     @ApiProperty() 
     @Column({ nullable: true })
     short_description: string
-    
-    @ManyToOne((type)=>Team, (team)=>team.id)
-    @JoinColumn([{ name: "id_parent" }])
-    id_parent:Team
 
     @ApiProperty() 
     @Column({
@@ -65,14 +62,17 @@ export class Team {
     @Column({nullable:true})
     document:string
 
-    @OneToMany((type)=>Function, (func)=>func.team)
+    
+    @ManyToOne((type)=>Team, (team)=>team.id)
+    @JoinColumn([{ name: "id_parent" }])
+    id_parent:Team
+
+    @OneToMany((type)=>Function, (func)=>func.team, {cascade:true})
     @JoinColumn([{ name: "func_id" }])
     functions:Function[]
 
     
-    @OneToMany((type) => Journal, (journal) => journal.team)
+    @OneToMany((type) => Journal, (journal) => journal.team, {cascade:true})
     @JoinColumn([{ name: "journal_id" }])
     journal: Journal[]
-
-
 }

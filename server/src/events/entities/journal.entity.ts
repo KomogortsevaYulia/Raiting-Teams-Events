@@ -59,7 +59,13 @@ export class Journal {
     @Column({default:false})
     is_participation: boolean
 
-    @ManyToOne((type) => Event, (event) => event.id)
+    @ApiProperty()
+    @Column({nullable:true})
+    result_place:number
+
+    
+
+    @ManyToOne((type) => Event, (event) => event.id, {onDelete:"CASCADE"})
     @JoinColumn([{ name: "event_id" }])
     event: Event
     
@@ -71,8 +77,5 @@ export class Journal {
     @JoinColumn([{ name: "user_id" }])
     user: User
 
-    @ApiProperty()
-    @Column({nullable:true})
-    result_place:number
 }
 

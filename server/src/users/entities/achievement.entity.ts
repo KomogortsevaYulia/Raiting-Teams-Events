@@ -47,6 +47,17 @@ export class Achievement {
     @Column({default:false})
     need_in_rating: boolean
 
+
+    @ApiProperty()
+    @ManyToOne(() => User, (user) => user.id, {onDelete:'CASCADE'})
+    @JoinColumn([{ name: "user_id" }])
+    user: User
+
+    @ApiProperty()
+    @ManyToOne(() => Event, (event) => event.id)
+    @JoinColumn([{ name: "event_id" }])
+    event: Event
+
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "direction_id" }])
@@ -61,15 +72,4 @@ export class Achievement {
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "type_id" }])
     type: Dictionary
-
-
-    @ApiProperty()
-    @ManyToOne(() => User, (user) => user.id)
-    @JoinColumn([{ name: "user_id" }])
-    user: User
-
-    @ApiProperty()
-    @ManyToOne(() => Event, (event) => event.id)
-    @JoinColumn([{ name: "event_id" }])
-    event: Event
 }
