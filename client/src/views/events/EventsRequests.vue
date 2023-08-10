@@ -33,12 +33,34 @@
                     </template>
 
                     <template #body>
+                        <!-- initiator -->
+                        <div class="row">
+                            <!-- Инициатор -->
+                            <div class="col-auto">
+                                <div class="style-elem">Инициатор:</div>
+                            </div>
+                            <div class="col-auto">{{ event.user ? event.user.fullname : "-" }}</div>
+
+                            <div class="col-auto">
+                                <!-- email -->
+                                <div class="style-elem">email:</div>
+                            </div>
+                            <div class="col-auto">{{ event.user ? event.user.email : "-" }}</div>
+
+                            <!-- тел -->
+                            <div class="col-auto">
+                                <div class="style-elem">тел:</div>
+                            </div>
+                            <div class="col-auto">{{ event.user ? event.user.phone : "-" }}</div>
+                        </div>
+
                         <div class="row">
                             <div class="col-auto">
                                 <div class="style-elem">Уровень:</div>
                             </div>
-                            <div class="col-auto">{{ event.Level ? event.level.name : "-" }}</div>
+                            <div class="col-auto">{{ event.level ? event.level.name : "-" }}</div>
                         </div>
+
                         <div class="row">
                             <div class="col-auto">
                                 <div class="style-elem">Формат проведения:</div>
@@ -190,8 +212,8 @@ async function changeStatus(id: number, status: boolean) {
 
 <style lang="scss" scoped>
 .events-requests__wrapper {
-  .style-elem{
-    color: var(--second-color);
-  }
+    .style-elem {
+        color: var(--second-color);
+    }
 }
 </style>

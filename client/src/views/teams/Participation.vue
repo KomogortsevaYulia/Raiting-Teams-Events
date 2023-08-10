@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useFunctionsStore } from "@/store/fucntion_store"
-import {ref} from "vue"
+import { ref } from "vue"
 const userStore = useFunctionsStore()
 
 
 
 
 interface User {
-    id:number
+    id: number
     fullname: string
     education_group: string
 }
@@ -25,13 +25,13 @@ async function deleteItem() {
     // TODO:
 }
 
-async function saveChanges(education_group:string,title_role:string,id:number) {
-  await userStore.update(education_group,title_role,id)
-  isEditMode.value = false;
+async function saveChanges(education_group: string, title_role: string, id: number) {
+    await userStore.update(education_group, title_role, id)
+    isEditMode.value = false;
 }
 
 async function cancelEditMode() {
-  isEditMode.value = false
+    isEditMode.value = false
 }
 
 </script>
@@ -77,27 +77,36 @@ async function cancelEditMode() {
                                     <h2>Роль: {{ props.func.title }}</h2>
                                 </div>
 
-                                <div class="row d-flex justify-content-end">
-                                    <div class="member-buttons">
-                                        <button class="btn button px-3" @click="isEditMode = true">Редактировать</button>
-                                        <button class="btn button  px-3" @click="deleteItem">Удалить</button>
+                                <div class="row g-2  justify-content-end">
+                                    <div class="col-auto">
+                                        <button class="btn-custom-secondary"
+                                            @click="isEditMode = true">Редактировать</button>
                                     </div>
+                                    <div class="col-auto g-2">
+                                        <button class="btn-custom-secondary" @click="deleteItem">Удалить</button>
+                                    </div>
+
                                 </div>
 
-                                <div v-if="isEditMode">
-                                    <div class="row">
+                                <template v-if="isEditMode">
+                                    <div class="row g-2">
                                         <label>Группа:</label>
                                         <input v-model="props.user.education_group" />
                                     </div>
-                                    <div class="row">
+                                    <div class="row g-2">
                                         <label>Роль:</label>
                                         <input v-model="props.func.title" />
                                     </div>
-                                    <div class="row d-flex justify-content-end">
-                                        <button class="btn button px-3" @click="saveChanges(props.user.education_group,props.func.title,props.user.id)">Сохранить</button>
-                                        <button class="btn button px-3" @click="cancelEditMode">Отмена</button>
+                                    <div class="row g-2 d-flex justify-content-end mt-3">
+                                        <div class="col-auto">
+                                            <button class="btn-custom-accept"
+                                                @click="saveChanges(props.user.education_group, props.func.title, props.user.id)">Сохранить</button>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button @click="cancelEditMode">Отмена</button>
+                                        </div>
                                     </div>
-                                </div>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -112,66 +121,66 @@ async function cancelEditMode() {
 
 
 .member-card {
-  width: 100%;
-  margin-bottom: 12px;
-  background: rgb(243, 243, 243);
-  border-radius: 25px 20px 20px 25px;
+    width: 100%;
+    margin-bottom: 12px;
+    background: rgb(243, 243, 243);
+    border-radius: 25px 20px 20px 25px;
 
 }
 
 .member-info {
-  width: 100%;
-  padding: 19px 50px 19px 36px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    width: 100%;
+    padding: 19px 50px 19px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .member-image {
-  object-fit: cover;
-  height: 89px;
-  width: 89px;
-  border-radius: 20px 0 0 20px;
+    object-fit: cover;
+    height: 89px;
+    width: 89px;
+    border-radius: 20px 0 0 20px;
 }
 
 .member-info h1 {
-  color: black;
-  font-family: 'Raleway', serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 22px;
-  line-height: 38px;
-  padding-bottom: 10px;
+    color: black;
+    font-family: 'Raleway', serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 38px;
+    padding-bottom: 10px;
 }
 
 .member-info h2 {
-  color: rgba(90, 90, 90, 1);
-  font-family: 'Inter', serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 24px;
+    color: rgba(90, 90, 90, 1);
+    font-family: 'Inter', serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 24px;
 }
 
-.member-buttons {
-  display: flex;
-  justify-content: end;
-}
+// .member-buttons {
+//     display: flex;
+//     justify-content: end;
+// }
 
-.member-buttons .button {
-  background-color: rgba(217, 217, 217, 1);
-  color: rgba(102, 102, 102, 1);
+// .member-buttons .button {
+//     background-color: rgba(217, 217, 217, 1);
+//     color: rgba(102, 102, 102, 1);
 
-  width: 270px;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-family: 'Inter', serif;
-  font-style: normal;
-  font-weight: 400;
+//     width: 270px;
+//     padding: 10px;
+//     text-align: center;
+//     text-decoration: none;
+//     display: inline-block;
+//     font-family: 'Inter', serif;
+//     font-style: normal;
+//     font-weight: 400;
 
-  line-height: 24px;
-  margin-left: 15px;
-}
+//     line-height: 24px;
+//     margin-left: 15px;
+// }
 </style>

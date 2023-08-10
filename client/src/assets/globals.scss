@@ -8,6 +8,22 @@
     // --second-color-hover: #9DD9D2;
     --second-color: #5BD1D7;
     --second-accept: #3b8a8f;
+    --box-shadow:  0 0 5px 1px rgba(221, 221, 221, 1);
+    --hover-elem:  0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
+}
+
+// для элемента формы
+@mixin form-elem {
+    border: none;
+    box-shadow: var(--box-shadow);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    background-color: #fff;
+
+    &:focus {
+        box-shadow: var(--hover-elem);
+        outline: 0;
+    }
 }
 
 // Обёртка на формы
@@ -17,7 +33,7 @@
     padding: 1rem;
     border-radius: 5px;
     background-color: #fff;
-    box-shadow: 0 0 5px 2px rgba(221, 221, 221, 1);
+    box-shadow: var(--box-shadow);
 }
 
 .link {
@@ -43,7 +59,7 @@ button {
     color: #fff;
 
     &:hover {
-       opacity: 0.8;
+        opacity: 0.8;
         transition: 0.3s;
     }
 
@@ -59,39 +75,26 @@ button {
 }
 
 input {
-    background-color: #fff;
-    border: 0;
-    box-shadow: 0 0 5px 1px rgba(221, 221, 221, 1);
-    border-radius: 5px;
-    line-height: 1.5;
-    padding: 0.75rem;
+    @include form-elem();
     transition: 0.3s;
+}
 
+textarea {
+    @include form-elem();
+}
+
+.form-control{
     &:focus {
         box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
         outline: 0;
     }
 }
 
-textarea {
-    background-color: #fff;
-    border: 1px solid hsl(210, 14%, 83%);
-    border-radius: 0.25rem;
-    line-height: 1.5;
-    padding: 0.75rem;
-
-    &:focus {
-        box-shadow: 0 0 0 0.35rem rgba(187, 217, 255, 0.25);
-        outline: 0;
-    }
-}
-
-
-
+// кнопки ------------------------------------------------------------------------------------------
 // вторичная кнопка
 .btn-custom-secondary {
     border-radius: 10px;
-    color: black;
+    background: gray;
 
     &:hover {
         opacity: 0.8;
@@ -100,7 +103,7 @@ textarea {
 }
 
 // кнопка принять
-.btn-custom-accept{
+.btn-custom-accept {
     background: var(--second-accept);
 
     &:hover {
@@ -121,6 +124,9 @@ textarea {
         color: #fff;
     }
 }
+
+// кнопки ------------------------------------------------------------------------------------------
+
 
 h3 {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -149,11 +155,8 @@ a {
     min-width: 200px;
 
     .vs__dropdown-toggle {
-        padding: 0.2rem 0;
-        border: 1px solid var(--second-color);
-        border-radius: 0.25rem;
-        line-height: 1.5;
-        box-shadow: none;
+        @include form-elem();
+        transition: 0.3s;
     }
 
 
@@ -188,33 +191,28 @@ a {
 
 .form-select,
 .accordion-header {
-    border: 1px solid var(--second-color);
-    border-radius: 0.25rem;
-    line-height: 1.5;
-    box-shadow: none;
+    @include form-elem();
+    transition: 0.3s;
+}
 
-    &:focus {
-        box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
-        outline: 0;
-        border: 0;
-    }
-
+.accordion-header{
+    padding: 0;
 }
 
 .form-select{
-    padding: 0.4rem;
+    padding-right: 2rem;
 }
 
 .accordion-item {
     .accordion-header {
 
         .accordion-button {
-            
+
             &:focus,
             &:hover {
                 color: black;
                 background: white;
-                box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
+                box-shadow: var(--box-shadow);
                 outline: 0;
                 border: 0;
             }

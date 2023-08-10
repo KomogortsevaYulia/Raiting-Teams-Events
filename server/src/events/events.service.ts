@@ -62,6 +62,8 @@ export class EventsService {
       .leftJoinAndSelect("events.level", "level")
       .leftJoinAndSelect("events.type", "type")
       .leftJoinAndSelect("events.direction", "direction")
+      // creator
+      .leftJoinAndSelect("events.user", "user")
 
     // limit
     buildQuery = searchEvent.limit != null ? buildQuery.take(searchEvent.limit) : buildQuery

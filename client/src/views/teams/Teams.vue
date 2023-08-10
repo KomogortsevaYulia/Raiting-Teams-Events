@@ -190,6 +190,7 @@ async function getDirections() {
 
 async function handleEventChangePage(currentPage: number) {
   offset.value = (currentPage - 1) * limit
+  filterTeam.value.offset = offset.value
 
   await fetchTeams()
 }
