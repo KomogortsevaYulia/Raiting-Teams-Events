@@ -9,6 +9,9 @@ import { Team } from './entities/team.entity';
 import { UsersService } from '../users/users.service';
 import { SearchTeamDto } from './dto/search-team.dto';
 import { Requisitions } from './entities/requisition.entity';
+import { UpdateRequisitionDto } from './dto/update-requisition.dto';
+import { GeneralService } from '../general/general.service';
+import { DictionaryDto } from 'src/general/dto/dictionary.dto';
 
 
 
@@ -24,7 +27,10 @@ export class TeamsService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
+
     private readonly usersService: UsersService,
+    private readonly dictionaryService: GeneralService,
+
     @InjectRepository(Requisitions)
     private readonly requisitionsRepository: Repository<Requisitions>,
   ) { }
@@ -166,15 +172,15 @@ export class TeamsService {
 
     //отфильтровать по направлению
     query = params.directions ? query.andWhere("teams.id_parent in (:...id_parents)", { id_parents: params.directions }) : query
-  
+
     if (params.is_archive != null) {
       //отфильтровать по типу коллектива
       query = query.andWhere("teams.is_archive = :is_archive", { is_archive: params.is_archive })
     }
 
-     // набор
+    // набор
     if (params.set_open != null) {
-      query = query.andWhere("teams.set_open = :set_open", {  set_open: params.set_open  })
+      query = query.andWhere("teams.set_open = :set_open", { set_open: params.set_open })
     }
 
     return query
@@ -185,7 +191,7 @@ export class TeamsService {
   // get all teams of specific direction for statistic
   async findAllTeamsOfDirection(id_parent = -1): Promise<[Team[], number]> {
 
-   const type_team = "teams"
+    const type_team = "teams"
 
     let teams = this.teamsRepository
       .createQueryBuilder("teams")
@@ -246,20 +252,65 @@ export class TeamsService {
     return users;
   }
 
+
+
+
+  // requisition --------------------------------------------------------------------
+
+  async updateRequisition(id: number, updateRequisitionDto: UpdateRequisitionDto) {
+
+    const dict_class_id = 6
+
+    let findDict = null
+
+    const dd = new DictionaryDto()
+    dd.class_id = dict_class_id
+    dd.name = updateRequisitionDto.status_name
+
+    // найти знаечние в словаре,чтобы ид получить
+    if (updateRequisitionDto.status_name) {
+      findDict = (await this.dictionaryService.findAll(dd))[0]
+    }
+
+    const body = {
+      id: id,
+      ...updateRequisitionDto,
+      status: findDict,
+      date_update: new Date()
+    }
+
+    let req = await this.requisitionsRepository.save(body)
+
+    return req
+  }
+
+
   async userRequisition(team_id: number): Promise<Requisitions[]> {
+
+    const rejectStatus = "Принята"
 
     const users = await this.requisitionsRepository
       .createQueryBuilder("requisition")
-      .select(["requisition.date_create", "requisition.date_update", "requisition.status"])
+      .select(["requisition.date_create", "requisition.date_update", "requisition.status", "requisition.id"])
       .leftJoinAndSelect("requisition.user", "user")
       .leftJoinAndSelect("requisition.requisition_fields", "rf")
       .leftJoinAndSelect("rf.field", "field")
+      // взять статус со словаря
+      .leftJoinAndSelect("requisition.status", "status")
       .leftJoinAndSelect("field.form", "form")
       .where("form.team_id = :team_id", { team_id })
+      // пользователей с этим статусом н показывать
+      .andWhere("status.name != :rejectStatus", { rejectStatus: rejectStatus })
+      .orderBy("status.name", "DESC")
       .getMany()
 
     return users;
   }
+  // requisition --------------------------------------------------------------------
+
+
+
+
 
 
   async teamsFunctions(id: number) {

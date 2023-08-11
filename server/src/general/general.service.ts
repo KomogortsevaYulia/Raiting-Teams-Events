@@ -2,30 +2,38 @@ import { Injectable } from '@nestjs/common';
 import { Dictionary } from './entities/dictionary.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
+import { DictionaryDto } from './dto/dictionary.dto';
 
 @Injectable()
 export class GeneralService {
+
   constructor(
     @InjectRepository(Dictionary)  // user //,
-    private readonly eventsRepository: Repository<Dictionary>,
+    private readonly dictionaryRepository: Repository<Dictionary>,
   ) { }
 
-  findAll(class_name: string = null, class_id: number = null) {
 
-    // find by name
-    let options: FindManyOptions<Dictionary> = {}
+  async findAll(dictDto: DictionaryDto) {
 
-    if (class_name != null) { //find by class name
-      options = { where: { class_name: class_name } }
-    } else if (class_id != null) { //find by class id
-      options = { where: { class_id: class_id } }
-    }
+    let query = this.dictionaryRepository
+      .createQueryBuilder("dictionary")
+    // class_name
+    query = dictDto.class_name ? query.andWhere("dictionary.class_name = :class_name",
+      { class_name: dictDto.class_name }) : query
+    // name
+    query = dictDto.name ? query.andWhere("dictionary.name = :name",
+      { name: dictDto.name }) : query
+    // class_id
+    query = dictDto.class_id ? query.andWhere("dictionary.class_id = :class_id",
+      { class_id: dictDto.class_id }) : query
 
-    return this.eventsRepository.find(options);
+
+    return await query.getMany()
   }
 
+
   findOne(id: number) {
-    return this.eventsRepository.findOneBy({ id: id });
+    return this.dictionaryRepository.findOneBy({ id: id });
   }
 
   // update(id: number, updateGeneralDto: UpdateGeneralDto) {

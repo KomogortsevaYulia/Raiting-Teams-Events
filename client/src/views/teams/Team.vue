@@ -193,10 +193,10 @@ itemList.forEach((item, index) => {
       <div v-if="(selectedItem === 4)">
         <Ankets />
       </div>
-
+     
       <!-- заявки -->
       <div v-if="(selectedItem == 5)">
-        <TeamRequests :users="req"/>
+        <TeamRequests :idTeam="idTeam"/>
       </div>
 
     </div>

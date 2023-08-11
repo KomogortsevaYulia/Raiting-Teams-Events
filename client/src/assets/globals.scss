@@ -93,36 +93,17 @@ textarea {
 // кнопки ------------------------------------------------------------------------------------------
 // вторичная кнопка
 .btn-custom-secondary {
-    border-radius: 10px;
     background: gray;
-
-    &:hover {
-        opacity: 0.8;
-    }
-
 }
 
 // кнопка принять
 .btn-custom-accept {
     background: var(--second-accept);
-
-    &:hover {
-        opacity: 0.8;
-    }
 }
 
 // главная кнопка - побуждает к действию (выделяется)
 .btn-custom-primary {
-    border-radius: 10px;
-    width: auto;
-    padding: 10px 30px !important;
     background: var(--main-color);
-    color: #fff;
-
-    &:hover {
-        background: var(--main-color-hover);
-        color: #fff;
-    }
 }
 
 // кнопки ------------------------------------------------------------------------------------------

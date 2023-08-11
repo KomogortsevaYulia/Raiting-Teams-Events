@@ -78,12 +78,6 @@ export const useTeamStore = defineStore("teams", () => {
         return data
     }
 
-    async function fetchRequisition(team_id: number): Promise<any> {
-        const res = await axios.get('/api/teams/' + team_id + '/requisition')
-        const data = res.data
-
-        return data
-    }
 
     async function createTeam(direction: number, title: string, description: string,
         shortname: string, userId: number, cabinet: string, fileUstav: any, fileDocument: any,) {
@@ -196,7 +190,7 @@ export const useTeamStore = defineStore("teams", () => {
 
 
     //fetch teams by
-    async function fetchTeamsSearch(filterTeam:FilterTeam): Promise<any> {
+    async function fetchTeamsSearch(filterTeam: FilterTeam): Promise<any> {
 
         // let is_archive = undefined
 
@@ -225,6 +219,32 @@ export const useTeamStore = defineStore("teams", () => {
 
         return res.data
     }
+
+
+
+
+
+    // requisition --------------------------------------------------------------------
+
+    async function fetchRequisition(team_id: number): Promise<any> {
+        const res = await axios.get('/api/teams/' + team_id + '/requisition')
+        const data = res.data
+
+        return data
+    }
+
+    // update
+    async function updateRequisition(id:number, status_name:string): Promise<any> {
+        const res = await axios.put('/api/teams/requisition/' + id, {status_name:status_name})
+        const data = res.data
+
+        return data
+    }
+    // requisition --------------------------------------------------------------------
+
+
+
+
 
     // Переключение Switch_toggle в стр. Коллективы и Мероприятия
     function setLayout(res: any) {
@@ -266,7 +286,10 @@ export const useTeamStore = defineStore("teams", () => {
         fetchTeam,
         updateTeam,
         archiveTeam,
+
+        updateRequisition,
         fetchRequisition,
+
         fetchTeamsSearch,
         addImage,
         fetchDirections,

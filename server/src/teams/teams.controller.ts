@@ -13,6 +13,7 @@ import { Requisitions } from './entities/requisition.entity';
 import { Request } from 'express';
 import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe';
 import { FileImageValidationPipe } from 'src/uploads/validation/image_file.validation.pipe';
+import { UpdateRequisitionDto } from './dto/update-requisition.dto';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -218,6 +219,8 @@ export class TeamsController {
 
 
 
+
+
   // requisition --------------------------------------------------------------------
   @Get("/:id/requisition")
   @ApiOperation({ summary: "Получить список заявок в коллектив" })
@@ -227,6 +230,18 @@ export class TeamsController {
   async userRequisition(@Param('id') team_id: number): Promise<Requisitions[]> {
 
     const requisitions = await this.teamsService.userRequisition(team_id)
+
+    return requisitions;
+  }
+
+  @Put("requisition/:id")
+  @ApiOperation({ summary: "обновить заявку в коллектив" })
+  @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async updateRequisition(@Param('id') req_id: number, @Body() updateRequisitionDto:UpdateRequisitionDto){
+
+    const requisitions = await this.teamsService.updateRequisition(req_id, updateRequisitionDto)
 
     return requisitions;
   }

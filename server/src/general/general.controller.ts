@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { GeneralService } from './general.service';
+import { DictionaryDto } from './dto/dictionary.dto';
 
 @Controller('general')
 export class GeneralController {
@@ -14,8 +15,8 @@ export class GeneralController {
 
 
   @Get("/dictionary")
-  findAll(@Query() {class_name = null,  class_id = null}) {
-    return this.generalService.findAll(class_name, class_id);
+  findAll(@Query() dictionaryDto:DictionaryDto) {
+    return this.generalService.findAll(dictionaryDto);
   }
   
 

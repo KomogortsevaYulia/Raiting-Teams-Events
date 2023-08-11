@@ -9,10 +9,12 @@ import { Function } from '../users/entities/function.entity';
 import { UsersService } from '../users/users.service';
 import { UploadsService } from '../uploads/uploads.service';
 import { Requisitions } from './entities/requisition.entity';
+import { Dictionary } from '../general/entities/dictionary.entity';
+import { GeneralService } from '../general/general.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions])],
+  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions, Dictionary])],
   controllers: [TeamsController],
-  providers: [TeamsService, UsersService, UploadsService]
+  providers: [TeamsService, UsersService, UploadsService, GeneralService]
 })
 export class TeamsModule {}
