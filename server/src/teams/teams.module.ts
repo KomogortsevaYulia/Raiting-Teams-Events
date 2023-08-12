@@ -11,9 +11,10 @@ import { UploadsService } from '../uploads/uploads.service';
 import { Requisitions } from './entities/requisition.entity';
 import { Dictionary } from '../general/entities/dictionary.entity';
 import { GeneralService } from '../general/general.service';
+import { Form } from '../forms/entities/form.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions, Dictionary])],
+  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions, Dictionary, Form])],
   controllers: [TeamsController],
   providers: [TeamsService, UsersService, UploadsService, GeneralService]
 })

@@ -222,12 +222,12 @@ export class TeamsController {
 
 
   // requisition --------------------------------------------------------------------
-  @Get("/:id/requisition")
+  @Get("/:team_id/requisition")
   @ApiOperation({ summary: "Получить список заявок в коллектив" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async userRequisition(@Param('id') team_id: number): Promise<Requisitions[]> {
+  async userRequisition(@Param('team_id') team_id: number): Promise<Requisitions[]> {
 
     const requisitions = await this.teamsService.userRequisition(team_id)
 
@@ -236,7 +236,7 @@ export class TeamsController {
 
   @Put("requisition/:id")
   @ApiOperation({ summary: "обновить заявку в коллектив" })
-  @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
+  @ApiParam({ name: "id", required: true, description: "Идентификатор" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async updateRequisition(@Param('id') req_id: number, @Body() updateRequisitionDto:UpdateRequisitionDto){
@@ -245,6 +245,7 @@ export class TeamsController {
 
     return requisitions;
   }
+
   // requisition --------------------------------------------------------------------
 
 

@@ -267,7 +267,8 @@ itemList.forEach((item, index) => {
       p {
         font-size: 36px;
         font-weight: 600;
-        font-family: 'Montserrat', sans-serif;
+        font-family: var(--font-family-title);
+;
         margin: 0;
         margin-bottom: 2rem;
       }
@@ -279,7 +280,8 @@ itemList.forEach((item, index) => {
 
     a {
       cursor: pointer;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-family: var(--font-family-title);
+      font-weight: 600;
       font-size: 14px;
       transition: 0.3s;
       color: #348498;
@@ -323,7 +325,7 @@ itemList.forEach((item, index) => {
 
     label {
       cursor: pointer;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-family: var(--font-family-title);
       font-size: 32px;
       padding: 0 0.75rem 0.75rem 0.75rem;
       border-bottom-color: var(--main-color-hover);
@@ -402,7 +404,7 @@ itemList.forEach((item, index) => {
           cursor: pointer;
           text-align: center;
           font-size: 25px;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          font-family: var(--font-family-title);
         }
 
         img {
@@ -452,7 +454,7 @@ itemList.forEach((item, index) => {
           font-size: 20px;
           font-weight: 600;
           height: 2rem;
-          font-family: 'Montserrat', sans-serif;
+          font-family: var(--font-family-title);
         }
       }
 

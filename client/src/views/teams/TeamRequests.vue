@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ModalQuestionnaireAnswers from '@/components/modals/ModalQuestionnaireAnswers.vue';
 import { useTeamStore } from '@/store/team_store';
 import { ref, onBeforeMount } from 'vue';
 
@@ -9,6 +10,7 @@ const props = defineProps<{
 }>()
 
 const req = ref()
+const currentRequisition = ref()
 
 onBeforeMount(async () => {
     await fetchRequisitions()
@@ -27,20 +29,28 @@ async function getRequisitions(req_id: number, status_name: string) {
     await teamStore.updateRequisition(req_id, status_name)
 }
 
+
+function setCurrentRequisition(req:any) {
+    // редактируем колектив или создаем новый
+    currentRequisition.value = req
+}
+
 </script>
 
 <template>
-  
     <div v-if="req == null || req[0] == null" class="alert alert-warning" role="alert">
         Заявок нет
     </div>
 
+    <!-- анкета -->
+    <ModalQuestionnaireAnswers :requisition="currentRequisition" />
+
     <div v-for="item in req">
 
-        <div class="member-card py-2">
+        <div class="member-card ">
             <div class="row ms-lg-3">
                 <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
-                    <img class="member-image" src="@/assets/icon/user.png" alt="" />
+                    <img class="member-image" src="@/assets/icon/user.png" alt="картинка пользователя" />
                 </div>
                 <div class="col-lg-10 col-md-12">
                     <div class="member-info p-3">
@@ -55,6 +65,12 @@ async function getRequisitions(req_id: number, status_name: string) {
                                 <h2>Статус: {{ item.status.name }}</h2>
                             </div>
                             <div class="row d-flex justify-content-end g-2">
+                                <div class="col-auto">
+                                <!-- anketa -->
+                                    <button class="btn-custom-secondary" @click="setCurrentRequisition(item)" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#viewReqFormModal">Анкета &rarr;</button>
+
+                                </div>
                                 <div class="col-auto">
                                     <button class="btn-custom-accept"
                                         @click="updateRequisition(item.id, 'Принята')">Принять</button>

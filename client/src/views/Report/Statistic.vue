@@ -523,6 +523,7 @@ function changeTypeReport() {
   padding: 16px;
   font-size: 16px;
   border: none;
+  color: black;
   cursor: pointer;
 }
 
@@ -628,6 +629,9 @@ function changeTypeReport() {
   }
 }
 
+.btn-custom-secondary{
+  color: black;
+}
 .form-label{
   font-weight: 600;
 }

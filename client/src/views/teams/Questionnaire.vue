@@ -182,7 +182,7 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
       margin-bottom: 5px;
 
       .num-question {
-        font-family: 'Montserrat';
+        font-family: var(--font-family-title);
         font-weight: 700;
         font-size: 20px;
 
@@ -197,7 +197,7 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
         cursor: pointer;
 
         .checkbox-text {
-          font-family: 'Montserrat';
+          font-family: var(--font-family-title);
           font-weight: 400;
           font-size: 14px;
           text-decoration-line: line-through;
@@ -267,7 +267,7 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
         border-radius: 5px;
         width: 100%;
         resize: none;
-        font-family: 'Montserrat';
+        font-family: var(--font-family-title);
         font-weight: 900;
         font-size: 14px;
         line-height: 17px;
@@ -297,7 +297,7 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
     display: block;
     margin: 0px auto;
     padding: 0;
-    font-family: 'Montserrat';
+    font-family: var(--font-family-title);
     width: 230px;
     height: 60px;
     font-weight: 400;
@@ -318,7 +318,7 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
   .save-btn {
     display: block;
     margin: 0px auto;
-    font-family: 'Montserrat';
+    font-family: var(--font-family-title);
     font-weight: 400;
     font-size: 20px;
     width: 290px;

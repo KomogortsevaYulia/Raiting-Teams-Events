@@ -109,7 +109,7 @@ const itemLink = [
                 font-size: 14px;
                 font-weight: 600;
                 margin: 0;
-                font-family: 'Montserrat', sans-serif;
+                font-family: var(--font-family-title);
 
                 &:hover {
                     color: var(--main-color);

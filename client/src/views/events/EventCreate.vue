@@ -287,7 +287,6 @@ await axios.post("api/events", {
     padding: 20px;
     justify-content: center;
     border-radius: 1rem;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     transition: all .5s;
 
     h1 {

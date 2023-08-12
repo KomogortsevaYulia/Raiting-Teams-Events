@@ -12,6 +12,7 @@ import { Requisitions } from './entities/requisition.entity';
 import { UpdateRequisitionDto } from './dto/update-requisition.dto';
 import { GeneralService } from '../general/general.service';
 import { DictionaryDto } from 'src/general/dto/dictionary.dto';
+import { Form } from 'src/forms/entities/form.entity';
 
 
 
@@ -293,11 +294,13 @@ export class TeamsService {
       .createQueryBuilder("requisition")
       .select(["requisition.date_create", "requisition.date_update", "requisition.status", "requisition.id"])
       .leftJoinAndSelect("requisition.user", "user")
-      .leftJoinAndSelect("requisition.requisition_fields", "rf")
-      .leftJoinAndSelect("rf.field", "field")
       // взять статус со словаря
       .leftJoinAndSelect("requisition.status", "status")
-      .leftJoinAndSelect("field.form", "form")
+
+      .leftJoin("requisition.requisition_fields", "rf")
+      .leftJoin("rf.form_field", "form_field")
+      .leftJoin("form_field.form", "form")
+      // .addSelect(["form.id"])
       .where("form.team_id = :team_id", { team_id })
       // пользователей с этим статусом н показывать
       .andWhere("status.name != :rejectStatus", { rejectStatus: rejectStatus })
@@ -306,6 +309,8 @@ export class TeamsService {
 
     return users;
   }
+
+
   // requisition --------------------------------------------------------------------
 
 

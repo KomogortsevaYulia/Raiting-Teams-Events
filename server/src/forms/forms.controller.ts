@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, Put, HttpStatus } from '@nestjs/common';
 import { FormsService } from './forms.service';
-import { ApiOperation, ApiParam,ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiParam,ApiResponse,ApiTags } from "@nestjs/swagger";
 import { createFormDto } from './dto/create-form.dto';
 import { createFormFieldsDto } from './dto/create-form.dto';
-import { UpdateFormDto } from './dto/update-form.dto';
 import { UpdateFieldDto } from './dto/update-field';
 
 @ApiTags('forms')  // <---- Отдельная секция в Swagger для всех методов контроллера
@@ -36,6 +35,8 @@ export class FormsController {
   //   return this.formsService.findAll();
   // }
 
+
+
   @Get(':team_id')
   @ApiOperation({ summary: "Получение списка вопросов анкеты по id коллектива" })
   @ApiParam({ name: "team_id", required: true, description: "Идентификатор коллектива" })
@@ -55,6 +56,20 @@ export class FormsController {
   updateFormField(@Param("id") field_id, @Body() updateFieldDto: UpdateFieldDto) {
     console.log(updateFieldDto)
     return this.formsService.updateFormField(field_id, updateFieldDto);
+  }
+
+
+
+  @Get("requisition/:id")
+  @ApiOperation({ summary: "получить форму с ответами пользователя" })
+  @ApiParam({ name: "id", required: true, description: "Идентификатор запроса" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async fetchRequisitionForm(@Param('id') req_id: number){
+
+    const requisitions = await this.formsService.fetchRequisitionForm(req_id)
+
+    return requisitions;
   }
 
 }

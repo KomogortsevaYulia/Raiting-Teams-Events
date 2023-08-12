@@ -249,7 +249,7 @@ async function handleEventChangePage(currentPage: number) {
               </div>
             </router-link>
 
-            <div class=" col-lg col-md-auto p-4 overflow-hidden">
+            <div class=" col-lg col-md-auto px-5 py-4 overflow-hidden">
               <div class="wrapperContent">
                 <div class="row mb-2">
 
@@ -321,7 +321,6 @@ async function handleEventChangePage(currentPage: number) {
 
     a {
       // cursor: pointer;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       font-size: 14px;
       text-decoration: none;
       transition: 0.3s;
@@ -399,7 +398,6 @@ async function handleEventChangePage(currentPage: number) {
           flex-wrap: wrap;
           overflow: hidden;
           border-radius: 5px;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           transition: all .5s;
 
           &__archive {

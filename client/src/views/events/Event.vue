@@ -172,7 +172,7 @@ async function fetchCurrentEvent() {
             p {
                 font-size: 36px;
                 font-weight: 600;
-                font-family: 'Montserrat', sans-serif;
+                font-family: var(--font-family-title);
                 margin: 0;
                 margin-bottom: 2rem;
             }
@@ -217,7 +217,6 @@ async function fetchCurrentEvent() {
     height: auto;
     justify-content: center;
     border-radius: 1rem;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     transition: all .5s;
     margin-top: 2rem;
     margin-bottom: 5rem;

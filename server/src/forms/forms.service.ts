@@ -4,7 +4,6 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { createUserFormDto } from './dto/create-form.dto';
 import { createFormDto } from './dto/create-form.dto';
 import { createFormFieldsDto } from './dto/create-form.dto';
-import { UpdateFormDto } from './dto/update-form.dto';
 import { Form } from './entities/form.entity';
 import { FormField } from './entities/form_field.entity';
 import { RequisitionFields } from './entities/requisition_fields.entity';
@@ -107,4 +106,18 @@ export class FormsService {
   remove(id: number) {
     return `This action removes a #${id} form`;
   }
+
+  // получить ответы пользователей на анкету
+  async fetchRequisitionForm(req_id: number) {
+    const users = await this.formRepository
+      .createQueryBuilder("form")
+      .leftJoinAndSelect("form.form_field", "form_fields")
+      .leftJoinAndSelect("form_fields.requisition_field", "req_field")
+      .leftJoin("req_field.requisition", "requisition")
+      .where("requisition.id = :id", {id:req_id})
+      .getOne()
+
+    return users;
+  }
+
 }

@@ -17,9 +17,9 @@ export class RequisitionFields {
 
 
 
-    @ManyToOne(()=>FormField, (fields)=> fields.id, {onDelete:"CASCADE"})
+    @ManyToOne(()=>FormField, (form_field)=> form_field.id,  {cascade:true})
     @JoinColumn([{ name: "form_fields_id" }])
-    field:FormField[]
+    form_field:FormField
 
     @ManyToOne(()=>Requisitions, (requisition)=> requisition.id, {cascade:true})
     @JoinColumn([{ name: "requisition_id" }])

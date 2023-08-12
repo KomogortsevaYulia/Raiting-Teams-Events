@@ -18,6 +18,14 @@ export const useFormStore = defineStore("form", ()=>{
 
     }
 
+    async function fetchRequisitionAnswers(req_id: number): Promise<any> {
+     
+        const res = (await axios.get('/api/forms/requisition/' + req_id ))
+        
+        return res.data
+
+    }
+
     // async function createForm(field_id: string, team_id: number) {
         
     //     const formData = new FormData();
@@ -45,6 +53,8 @@ export const useFormStore = defineStore("form", ()=>{
     // }
     return {
         fetchFormFields,
-        fetchFormId
+        fetchFormId,
+
+        fetchRequisitionAnswers
       }
 })

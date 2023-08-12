@@ -145,7 +145,7 @@ async function cancelEditMode() {
 
 .member-info h1 {
     color: black;
-    font-family: 'Raleway', serif;
+  
     font-style: normal;
     font-weight: 400;
     font-size: 22px;
@@ -155,7 +155,6 @@ async function cancelEditMode() {
 
 .member-info h2 {
     color: rgba(90, 90, 90, 1);
-    font-family: 'Inter', serif;
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

@@ -107,7 +107,6 @@ async function OnLoginSubmit() {
 
     a {
         font-size: 25px;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         text-align: center;
         padding: 0 0 4rem 0;
     }

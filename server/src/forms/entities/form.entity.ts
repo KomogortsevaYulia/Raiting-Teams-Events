@@ -28,8 +28,8 @@ export class Form {
     @JoinColumn([{ name: "team_id" }])
     team:Team
 
-    @OneToMany((type) => FormField, (formField) => formField.form, {cascade:true})
-    @JoinColumn([{ name: "form_field_id" }])
+    @OneToMany((type) => FormField, (formField) => formField.form, {onDelete:'CASCADE'})
+    @JoinColumn([{ name: "form_fields" }])
     form_field: FormField[]
 }
 

@@ -102,7 +102,6 @@ async function getDirections() {
 
         a {
             cursor: pointer;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             font-size: 14px;
             transition: 0.3s;
             text-decoration: none;
