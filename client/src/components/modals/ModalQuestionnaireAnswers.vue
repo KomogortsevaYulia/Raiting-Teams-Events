@@ -34,7 +34,7 @@ async function fetchRequisitionAnswers() {
         <div v-if="formAnswers" v-for="form_field in formAnswers.form_field" class="wrapper-questions">
           <div class="wrapper-one-question">
             <div class="question-label">{{ form_field.title }}</div>
-            <input class="input-answer" type="text" :placeholder="form_field.requisition_field[0].value" readonly>
+            <textarea class="input-answer" type="text" :placeholder="form_field.requisition_field[0].value"  />
           </div>
         </div>
         <div class="wrap-button">

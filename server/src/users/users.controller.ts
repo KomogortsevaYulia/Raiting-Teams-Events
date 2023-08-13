@@ -3,15 +3,14 @@ import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus,
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 import { UserFunction } from './entities/user_function.entity';
 import { LocalAuthGuard } from './local-auth.guard';
+import { UserFunctionDto } from './dto/user-functions.dto';
 
 
 @ApiTags('users')  // <---- Отдельная секция в Swagger для всех методов контроллера
@@ -31,13 +30,13 @@ export class UsersController {
     let email: string = params.email
 
     // console.log(" email " + params.fullname) 
-    let users:User[] = null
+    let users: User[] = null
     if (fullname || email) {
       // console.log("name")
       users = await this.usersService.findByName(limit, fullname, email);
     } else {
       // console.log("findAll")
-      users =await this.usersService.findAllWithLimit(limit);
+      users = await this.usersService.findAllWithLimit(limit);
     }
     return users
   }
@@ -60,9 +59,9 @@ export class UsersController {
     return res;
   }
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto,@Request() req) {
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto, @Request() req) {
     const userData = new CreateUserDto();
-    return this.usersService.update(req.body,+id);
+    return this.usersService.update(req.body, +id);
   }
 
   @ApiOperation({ summary: "Регистрация пользователя" })
@@ -88,7 +87,7 @@ export class UsersController {
 
   }
 
-  
+
   @ApiOperation({ summary: "Login" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
@@ -126,7 +125,7 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   createFunction(@Body() createFunctionDto: CreateFunctionDto) {
-    return this.usersService.createFunction(createFunctionDto);
+    return this.usersService.createFunctionIfNotExist(createFunctionDto);
   }
 
   @Put('functions/:id')
@@ -142,20 +141,31 @@ export class UsersController {
   @ApiOperation({ summary: "Получить список коллективов в которых состоит пользователь" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findOneWithFunction(@Param("id") id:number){
+  findOneWithFunction(@Param("id") id: number) {
     return this.usersService.findOneWithFunction(id);
   }
-  
+
   // function--------------------------------------------------------------------
 
-  @Delete('team/:id_team/leader/:id_leader')
-  @ApiOperation({ summary: "Удалить лидера коллектива" })
+  @Delete('team/:id_team/user/:id_user')
+  @ApiOperation({ summary: "Удалить роль юзера из коллектива" })
   @ApiParam({ name: "id_team", required: true, description: "ид коллектива" })
-  @ApiParam({ name: "id_leader", required: true, description: "ид лидера" })
+  @ApiParam({ name: "id_leader", required: true, description: "ид user" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  removeLeader(@Param('id_leader') idLeader: number,@Param('id_team') idTeam: number) {
-    return this.usersService.removeLeader(idTeam,idLeader)
+  async removeUserFunction(@Param('id_user') idUser: number, @Param('id_team') idTeam: number) {
+
+    const uFDto = new UserFunctionDto()
+    uFDto.user = idUser
+    uFDto.team = idTeam
+
+    let uFs = await this.usersService.findUserFunctions(uFDto)
+
+    uFs.forEach(async (uF) => {
+      await this.usersService.removeUserFunction(uF.id)
+    })
+
+    return true
   }
 
   //user functions---------------------------------------------------------------
@@ -164,7 +174,32 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   createUserFunction(@Body() createUserFunctionDto: CreateUserFunctionDto) {
-    return this.usersService.createUserFunction(createUserFunctionDto);
+    return this.usersService.createUserFunctionOrUpdate(createUserFunctionDto);
+  }
+
+  @Delete('user-functions/:id')
+  @ApiOperation({ summary: "Удалить функцию userFunctions" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  deleteUserFunction(@Param("id") id: number) {
+    return this.usersService.removeUserFunction(id);
+  }
+
+  @Get('user-functions')
+  @ApiOperation({ summary: "Получить userFunctions" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  findUserFunctions(@Query() userFDto: UserFunctionDto) {
+    return this.usersService.findUserFunctions(userFDto);
+  }
+
+  @Post('user-functions/new-participant')
+  @ApiOperation({ summary: "создать нового учатсника коллектива" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async assignRole(@Body() userFDto: UserFunctionDto) {
+
+    return await this.usersService.assignRole(userFDto.team, userFDto.user, "Участник");
   }
   //user functions---------------------------------------------------------------
 

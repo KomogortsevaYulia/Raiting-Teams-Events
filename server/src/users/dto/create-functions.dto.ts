@@ -10,5 +10,5 @@ export class CreateFunctionDto {
     @IsNotEmpty({ message: 'Team Поле пустое' })
     @Type(() => Number)
     @IsNumber()
-    team: Team
+    team: number
 }

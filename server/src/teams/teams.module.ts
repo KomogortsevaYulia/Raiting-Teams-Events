@@ -16,6 +16,6 @@ import { Form } from '../forms/entities/form.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions, Dictionary, Form])],
   controllers: [TeamsController],
-  providers: [TeamsService, UsersService, UploadsService, GeneralService]
+  providers: [TeamsService, UsersService, UploadsService, GeneralService],
 })
 export class TeamsModule {}

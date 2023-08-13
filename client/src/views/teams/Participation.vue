@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useFunctionsStore } from "@/store/fucntion_store"
+import { useTeamStore } from "@/store/team_store";
+import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref } from "vue"
+
 const userStore = useFunctionsStore()
-
-
-
+const teamStore = useTeamStore();
+const uFStore = useUserFunctionsStore();
 
 interface User {
     id: number
@@ -16,14 +18,30 @@ interface Func {
 }
 const props = defineProps<{
     user: User
-    func: Func
+    func: Func,
+    idTeam: number
 }>()
 
 const isEditMode = ref(false)
 
-async function deleteItem() {
-    // TODO:
+async function deleteUserFromTeam(status_name: string) {
+    // заявка меняет статус
+    let requisitions = await teamStore.fetchRequisitions(props.idTeam, props.user.id)
+
+    if (requisitions && requisitions[0]?.id)
+        await teamStore.updateRequisition(requisitions[0].id, status_name)
+
+    // remove user functions
+    let uFs = await uFStore.findUserFunctions(props.idTeam, props.user.id)
+
+    uFs.forEach(async (uF:any) => {
+         // удалить роль в коллективе
+        await  uFStore.removeUserFunction(uF.id)
+    })
+   
+
 }
+
 
 async function saveChanges(education_group: string, title_role: string, id: number) {
     await userStore.update(education_group, title_role, id)
@@ -83,7 +101,8 @@ async function cancelEditMode() {
                                             @click="isEditMode = true">Редактировать</button>
                                     </div>
                                     <div class="col-auto g-2">
-                                        <button class="btn-custom-secondary" @click="deleteItem">Удалить</button>
+                                        <button class="btn-custom-primary"
+                                            @click="deleteUserFromTeam('Отклонена')">Удалить</button>
                                     </div>
 
                                 </div>
@@ -145,7 +164,7 @@ async function cancelEditMode() {
 
 .member-info h1 {
     color: black;
-  
+
     font-style: normal;
     font-weight: 400;
     font-size: 22px;

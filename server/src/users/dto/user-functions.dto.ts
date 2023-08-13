@@ -1,13 +1,14 @@
 import { Type } from "class-transformer";
-import { IsNumber, IsOctal, IsOptional } from "class-validator";
-import { Team } from "src/teams/entities/team.entity";
+import { IsNumber, IsOptional } from "class-validator";
 
-export class CreateUserFunctionDto {
+export class UserFunctionDto {
 
+    @IsOptional()
     @Type(() => Number) 
     @IsNumber()
     function: number;
 
+    @IsOptional()
     @Type(() => Number) 
     @IsNumber()
     user: number;
@@ -15,5 +16,5 @@ export class CreateUserFunctionDto {
     @IsOptional()
     @Type(() => Number) 
     @IsNumber()
-    team: Team;
+    team: number;
 }

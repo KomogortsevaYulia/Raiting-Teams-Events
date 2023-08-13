@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+
 import ModalQuestionnaireAnswers from '@/components/modals/ModalQuestionnaireAnswers.vue';
 import { useTeamStore } from '@/store/team_store';
+import { useUserFunctionsStore } from '@/store/user_functions.store';
 import { ref, onBeforeMount } from 'vue';
 
 const teamStore = useTeamStore();
+const uFStore = useUserFunctionsStore();
 
 const props = defineProps<{
     idTeam: number,
@@ -17,12 +20,18 @@ onBeforeMount(async () => {
 })
 
 async function fetchRequisitions() {
-    req.value = await teamStore.fetchRequisition(props.idTeam)
+    req.value = await teamStore.fetchRequisitions(props.idTeam)
 }
 
-async function updateRequisition(req_id: number, status_name: string) {
-    await teamStore.updateRequisition(req_id, status_name)
+async function updateRequisition(req: any, status_name: string) {
+    await teamStore.updateRequisition(req.id, status_name)
     await fetchRequisitions()
+
+    if(status_name == "Принята"){
+       await uFStore.assignNewParticipant(props.idTeam, req.user.id)
+    }
+   
+    //   await this.usersService.assignRole(team, reqWithForm.user.id, "Участник")
 }
 
 async function getRequisitions(req_id: number, status_name: string) {
@@ -30,7 +39,7 @@ async function getRequisitions(req_id: number, status_name: string) {
 }
 
 
-function setCurrentRequisition(req:any) {
+function setCurrentRequisition(req: any) {
     // редактируем колектив или создаем новый
     currentRequisition.value = req
 }
@@ -66,19 +75,22 @@ function setCurrentRequisition(req:any) {
                             </div>
                             <div class="row d-flex justify-content-end g-2">
                                 <div class="col-auto">
-                                <!-- anketa -->
-                                    <button class="btn-custom-secondary" @click="setCurrentRequisition(item)" type="button" data-bs-toggle="modal"
-                                        data-bs-target="#viewReqFormModal">Анкета &rarr;</button>
+                                    <!-- anketa -->
+
+                                    <button class="btn-custom-secondary" @click="setCurrentRequisition(item)" type="button"
+                                        data-bs-toggle="modal" data-bs-target="#viewReqFormModal">
+                                        Анкета <font-awesome-icon icon="id-card-clip" />
+                                    </button>
 
                                 </div>
                                 <div class="col-auto">
                                     <button class="btn-custom-accept"
-                                        @click="updateRequisition(item.id, 'Принята')">Принять</button>
+                                        @click="updateRequisition(item, 'Принята')">Принять</button>
                                 </div>
 
                                 <div class="col-auto">
                                     <button class="btn-custom-primary"
-                                        @click="updateRequisition(item.id, 'Отклонена')">Отклонить</button>
+                                        @click="updateRequisition(item, 'Отклонена')">Отклонить</button>
                                 </div>
                             </div>
                         </div>

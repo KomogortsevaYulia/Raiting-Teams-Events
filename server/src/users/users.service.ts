@@ -10,11 +10,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Function } from './entities/function.entity';
 import { User } from './entities/user.entity';
 import { UserFunction } from './entities/user_function.entity';
-import { SECRET } from '../config';
-import { LoginUserDto } from './dto/login-user.dto';
 import * as argon2 from 'argon2';
 import { validate } from 'class-validator';
 import { Team } from '../teams/entities/team.entity';
+import { UserFunctionDto } from './dto/user-functions.dto';
+import { FunctionDto } from './dto/functions.dto';
+
 const jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -27,8 +28,9 @@ export class UsersService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
+
     @InjectRepository(Team)
-    private readonly teamsRepository: Repository<Team>,
+    private readonly teamRepository: Repository<Team>,
   ) { }
 
   async findByName(limit: number, name: string, email: string) {
@@ -42,15 +44,14 @@ export class UsersService {
     })
 
   }
-  async update(updateUserDto: UpdateUserDto,id: number){
-    console.log(updateUserDto);
+  async update(updateUserDto: UpdateUserDto, id: number) {
     return this.usersRepository.update(+id, updateUserDto);
   }
 
-  async addRole(education_group,title_role) {
-    
+  async addRole(education_group, title_role) {
+
   }
-  
+
   async findAllWithLimit(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });
   }
@@ -88,7 +89,7 @@ export class UsersService {
   // }
 
   async login(username: string, pass: string): Promise<any> {
-   
+
     const user = await this.usersRepository
       .createQueryBuilder("users")
       .where("users.username = :username", { username })
@@ -107,7 +108,7 @@ export class UsersService {
   }
 
 
-  
+
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
@@ -161,28 +162,58 @@ export class UsersService {
   }
 
   // function--------------------------------------------------------------------
-  async createFunction(createFunctionDto: CreateFunctionDto): Promise<Function> {
+  async createFunctionIfNotExist(createFunctionDto: CreateFunctionDto): Promise<Function> {
 
-    return await this.functionsRepository.save(createFunctionDto);
+    // find existing function for team
+    const fD = new FunctionDto()
+    fD.team = createFunctionDto.team
+    fD.title = createFunctionDto.title
+
+    const existFs = await this.findFunctions(fD)
+    let func = existFs ? existFs[0] : null
+
+    const team = await this.teamRepository.findOneOrFail({where:{id:createFunctionDto.team}})
+    // если не существует функции, то создать новую
+    if (!func) {
+      //создать фукнцию 
+      func = await this.functionsRepository.save({
+        ...createFunctionDto,
+        team:team
+      })
+    }
+
+    return func;
   }
 
+
   async updateFunction(idFunction: number, createFunctionDto: CreateFunctionDto) {
-    await this.functionsRepository.update(idFunction, createFunctionDto);
+   
+    const team = await this.teamRepository.findOneOrFail({where:{id:createFunctionDto.team}})
+
+    await this.functionsRepository.update(idFunction, {
+      ...createFunctionDto,
+      team:team
+    });
   }
 
 
   // найти функции по ид команды
-  async findFunctionByTeam(idTeam: number) {
+  async findFunctions(functionDto: FunctionDto) {
 
-    const functions = await this.functionsRepository.
+    let query = this.functionsRepository.
       createQueryBuilder("functions")
       .leftJoin("functions.team", "team")
       .addSelect("team.id")
-      .where("team.id = :idTeam", { idTeam })
-      .getMany();
 
-    return functions
+    // team
+    functionDto.team ? query.andWhere("team.id = :id", { id: functionDto.team }) : query
+    // title
+    functionDto.title ? query.andWhere("functions.title = :title", { title: functionDto.title }) : query
+
+    return await query.getMany();
   }
+
+
 
   async removeFunction(id: number) {
 
@@ -196,7 +227,7 @@ export class UsersService {
   @HttpCode(400)
   async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
 
-    if(isNaN(id)){
+    if (isNaN(id)) {
       throw new HttpException("такого юзера не существует " + id, 400)
     }
 
@@ -206,7 +237,7 @@ export class UsersService {
       .addSelect("functions")
       .leftJoinAndSelect("functions.team", "teams")
       .addSelect("teams")
-        .where("user_function.user = :id", { id })
+      .where("user_function.user = :id", { id })
       .getMany();
 
     if (!userExist) {
@@ -214,77 +245,88 @@ export class UsersService {
     }
     return userExist
   }
-  
+
   // function--------------------------------------------------------------------
 
-   //удалить руководителя
-   async removeLeader(team: number, oldLeaderId: number) {
 
-    let functions = await this.findFunctionByTeam(team)
+  //назначить роль юзеру в коллективе
+  async assignRole(teamId: number, userId: number, roleName: string) {
 
-    for (let f in functions) {
-      let funId = functions[f].id
-      let res = await this.removeUserFunctionByFunctionAndUser(funId, oldLeaderId)
-      
-      if( res.affected > 0){
-        await this.removeFunction(funId)
-      }
-     
-    }
-    
+    const funcDto = new CreateFunctionDto()
+    funcDto.team = teamId
+    funcDto.title = roleName
+
+    // find existing function with role or update
+    let func = await this.createFunctionIfNotExist(funcDto)
+
+
+    const ufDto = new CreateUserFunctionDto()
+    ufDto.function = func.id
+    ufDto.user = userId
+
+    // find existing user function or update
+    const existUFs = await this.createUserFunctionOrUpdate(ufDto)
+
+
+    return existUFs
   }
-
-    //назначить руководителя
-    async assignLeader(team: Team, leaderid: number) {
-
-      //создать руководителя
-      let newFunction = await this.createFunction({
-        title: 'Руководитель',
-        team: team
-      })
-  
-      let newUserFunction = await this.createUserFunction({
-        function: newFunction.id,
-        user: leaderid
-      })
-  
-  
-      return newUserFunction
-    }
 
 
   //user functions---------------------------------------------------------------
   @HttpCode(400)
-  async createUserFunction(createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
+  async createUserFunctionOrUpdate(createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
 
-    //check if user is exist, if not, then error 400 will
-    //this.findOneWithFunction(createUserFunctionDto.user)
+    let uFDto = new UserFunctionDto()
+    uFDto.function = createUserFunctionDto.function
+    uFDto.user = createUserFunctionDto.user
+
+    let uFs = await this.findUserFunctions(uFDto)
+
+    let uF = uFs ? uFs[0] : null
 
     let dateStart = new Date();
-
     let dateEnd = new Date();
     dateEnd.setFullYear(dateEnd.getFullYear() + 1) //only on one year set 
 
-    return await this.userFunctionsRepository.save({
+    // const user = await this.usersRepository.findOneOrFail({where:{id:createUserFunctionDto.user}})
+    
+    uF = await this.userFunctionsRepository.save({
+      id: uF ? uF.id : null,
       ...createUserFunctionDto,
       dateStart: dateStart,
       dateEnd: dateEnd
     });
+
+    return uF
   }
 
-  async removeUserFunctionByFunctionAndUser(idFunction: number, idUser: number) {
 
-    const userFunctions = await this.userFunctionsRepository.
+  async removeUserFunction(id: number) {
+
+    let query = this.userFunctionsRepository.
+      createQueryBuilder("user_functions")
+      .where("user_functions.id = :id", { id })
+
+    return await query.delete().execute();
+  }
+
+
+  async findUserFunctions(userFDto: UserFunctionDto) {
+
+    let query = this.userFunctionsRepository.
       createQueryBuilder("user_functions")
       .leftJoin("user_functions.function", "function")
-      .addSelect("function.id")
       .leftJoin("user_functions.user", "user")
-      .addSelect("user.id")
-      .where("function.id = :idFunction and user.id = :idUser ", { idFunction, idUser})
-      .delete()
-      .execute();
+      .leftJoin("function.team", "team")
 
-    return userFunctions
+    // function
+    userFDto.function ? query.andWhere("function.id = :function_id", { function_id: userFDto.function }) : query
+    // user
+    userFDto.user ? query.andWhere("user.id = :user_id", { user_id: userFDto.user }) : query
+    // team
+    userFDto.team ? query.andWhere("team.id = :team_id", { team_id: userFDto.team }) : query
+
+    return await query.getMany();
   }
   //user functions---------------------------------------------------------------
 

@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UserFunction } from './entities/user_function.entity';
 import { Function } from './entities/function.entity';
-import { Team } from 'src/teams/entities/team.entity';
+import { Team } from '../teams/entities/team.entity';
 import { Achievement } from './entities/achievement.entity';
 
 @Module({

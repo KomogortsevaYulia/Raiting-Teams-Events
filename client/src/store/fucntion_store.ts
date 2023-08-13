@@ -10,6 +10,7 @@ export const useFunctionsStore = defineStore("function", () => {
       title_role,
     })
   }
+
    return {
     update,
     

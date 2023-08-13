@@ -38,7 +38,7 @@ async function fetchTeam() {
 }
 
 async function Requisition() {
-  req.value = await TeamStore.fetchRequisition(idTeam)
+  req.value = await TeamStore.fetchRequisitions(idTeam)
 }
 
 
@@ -186,7 +186,7 @@ itemList.forEach((item, index) => {
       <!-- участники -->
       <div v-if="(selectedItem === 3)">
         <div v-for="item in team">
-          <Participation :user=item.user :func=item.function />
+          <Participation :user=item.user :func=item.function :idTeam="idTeam" />
         </div>
       </div>
 

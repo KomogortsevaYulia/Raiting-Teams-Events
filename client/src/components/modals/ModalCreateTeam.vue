@@ -60,10 +60,6 @@ async function onTextChange(e: any) {
   func()
 }
 
-// watch(
-//   () => team.value, (value, previousValue) => {
-//     fillForm()
-//   })
 
 watch(
   () => props.team, async (value, previousValue) => {
@@ -120,9 +116,9 @@ async function fillForm() {
     cabinet.value = t.cabinet
 
     //если есть руководитель коллектива
-    if (t.functions != null && t.functions[0] && t.functions[0].userFunctions) {
 
-      let uF = t.functions[0].userFunctions[0].user
+    let uF = t?.functions[0]?.userFunctions[0]?.user
+    if (uF) {
       optionSelect.value = { name: uF.fullname, email: uF.email, id: uF.id, data: uF.fullname + " " + uF.email }
       oldUserId.value = uF.id
     } else {
@@ -295,7 +291,8 @@ async function archiveTeam(id: number, isArchive: boolean) {
                     </div>
 
                     <div class="col">
-                      <input type="text" style="width: -webkit-fill-available;" placeholder="Аудитория(кабинет)" v-model="cabinet">
+                      <input type="text" style="width: -webkit-fill-available;" placeholder="Аудитория(кабинет)"
+                        v-model="cabinet">
                     </div>
                   </div>
 

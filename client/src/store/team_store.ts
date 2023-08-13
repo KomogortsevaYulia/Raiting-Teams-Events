@@ -226,16 +226,24 @@ export const useTeamStore = defineStore("teams", () => {
 
     // requisition --------------------------------------------------------------------
 
-    async function fetchRequisition(team_id: number): Promise<any> {
-        const res = await axios.get('/api/teams/' + team_id + '/requisition')
+    async function fetchRequisitions(team_id: number, user_id:any = null): Promise<any> {
+        const res = await axios.get('/api/teams/' + team_id + '/requisition', {params:{user_id:user_id}})
         const data = res.data
 
         return data
     }
 
     // update
-    async function updateRequisition(id:number, status_name:string): Promise<any> {
-        const res = await axios.put('/api/teams/requisition/' + id, {status_name:status_name})
+    async function updateRequisition(id: number, status_name: string): Promise<any> {
+        const res = await axios.put('/api/teams/requisition/' + id, { status_name: status_name })
+        const data = res.data
+
+        return data
+    }
+
+    // update by user id
+    async function updateRequisitionByUserId(user_id: number, status_name: string): Promise<any> {
+        const res = await axios.put('/api/teams/requisition/', { status_name: status_name, user_id:user_id })
         const data = res.data
 
         return data
@@ -288,7 +296,8 @@ export const useTeamStore = defineStore("teams", () => {
         archiveTeam,
 
         updateRequisition,
-        fetchRequisition,
+        fetchRequisitions,
+        updateRequisitionByUserId,
 
         fetchTeamsSearch,
         addImage,

@@ -12,7 +12,7 @@ import { Requisitions } from './entities/requisition.entity';
 import { UpdateRequisitionDto } from './dto/update-requisition.dto';
 import { GeneralService } from '../general/general.service';
 import { DictionaryDto } from 'src/general/dto/dictionary.dto';
-import { Form } from 'src/forms/entities/form.entity';
+import { UserFunctionDto } from 'src/users/dto/user-functions.dto';
 
 
 
@@ -78,10 +78,19 @@ export class TeamsService {
 
     // удалить прошлого лидера
     if (updateTeamDto.oldLeaderId != null && updateTeamDto.newLeaderId != null) {
-      await this.usersService.removeLeader(team.id, updateTeamDto.oldLeaderId)
+      const ufDto = new UserFunctionDto()
+      ufDto.team = team.id
+      ufDto.user = updateTeamDto.oldLeaderId
+
+
+      let uFs = await this.usersService.findUserFunctions(ufDto)
+
+      uFs.forEach(async (uF) => {
+        await this.usersService.removeUserFunction(uF.id)
+      })
 
       // назначить нового пользвоателя
-      let newUserFunction = await this.usersService.assignLeader(team, updateTeamDto.newLeaderId)
+      let newUserFunction = await this.usersService.assignRole(team.id, updateTeamDto.newLeaderId, "Руководитель")
 
     }
 
@@ -101,7 +110,7 @@ export class TeamsService {
       creation_date: new Date()
     })
 
-    await this.usersService.assignLeader(team, createTeamDto.userID)
+    await this.usersService.assignRole(team.id, createTeamDto.userID, "Руководитель")
 
     return team;
   }
@@ -258,6 +267,7 @@ export class TeamsService {
 
   // requisition --------------------------------------------------------------------
 
+  // обновить заявку пользователя на вступление
   async updateRequisition(id: number, updateRequisitionDto: UpdateRequisitionDto) {
 
     const dict_class_id = 6
@@ -280,17 +290,18 @@ export class TeamsService {
       date_update: new Date()
     }
 
+    // сохранить новые данные заявки
     let req = await this.requisitionsRepository.save(body)
 
     return req
   }
 
 
-  async userRequisition(team_id: number): Promise<Requisitions[]> {
+  async findAllRequisitions(team_id: number = null, reqDto: UpdateRequisitionDto): Promise<Requisitions[]> {
 
     const rejectStatus = "Принята"
 
-    const users = await this.requisitionsRepository
+    let query = this.requisitionsRepository
       .createQueryBuilder("requisition")
       .select(["requisition.date_create", "requisition.date_update", "requisition.status", "requisition.id"])
       .leftJoinAndSelect("requisition.user", "user")
@@ -303,14 +314,34 @@ export class TeamsService {
       // .addSelect(["form.id"])
       .where("form.team_id = :team_id", { team_id })
       // пользователей с этим статусом н показывать
-      .andWhere("status.name != :rejectStatus", { rejectStatus: rejectStatus })
-      .orderBy("status.name", "DESC")
-      .getMany()
 
-    return users;
+      .orderBy("status.name", "DESC")
+
+    query = reqDto.user_id ? query.andWhere("user.id = :user_id", { user_id: reqDto.user_id })
+      : query.andWhere("status.name != :rejectStatus", { rejectStatus: rejectStatus })
+
+    return await query.getMany();
   }
 
 
+  async findRequisition(req_id: number): Promise<Requisitions> {
+
+    const req = await this.requisitionsRepository.findOne({
+      where: { id: req_id },
+      relations: {
+        user: true,
+        requisition_fields: {
+          form_field: {
+            form: {
+              team: true
+            }
+          }
+        }
+      }
+    })
+
+    return req;
+  }
   // requisition --------------------------------------------------------------------
 
 
