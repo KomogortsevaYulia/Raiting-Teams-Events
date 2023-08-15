@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, Put, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, Put, HttpStatus, SetMetadata, UseGuards } from '@nestjs/common';
 import { FormsService } from './forms.service';
 import { ApiOperation, ApiParam,ApiResponse,ApiTags } from "@nestjs/swagger";
 import { createFormDto } from './dto/create-form.dto';
 import { createFormFieldsDto } from './dto/create-form.dto';
 import { UpdateFieldDto } from './dto/update-field';
+import { LocalAuthGuard } from '../users/local-auth.guard';
 
 @ApiTags('forms')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('forms')
@@ -11,6 +12,8 @@ export class FormsController {
   constructor(private readonly formsService: FormsService) {}
 
   @Post()
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create questionnaires'])
   @UsePipes(new ValidationPipe)
   @ApiOperation({ summary: "Создать новую анкету" })
   create(@Body() createFormDto: createFormDto) {
@@ -25,6 +28,8 @@ export class FormsController {
   // }
   
   @Post('field')
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create questionnaires'])
   @UsePipes(new ValidationPipe)
   @ApiOperation({ summary: "Создать новый вопрос" })
   createFormField(@Body() createFormFieldsDto: createFormFieldsDto) {
@@ -52,6 +57,8 @@ export class FormsController {
   }
 
   @Put("field/:id")
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create questionnaires'])
   @ApiOperation({ summary: "Обновить поле" })
   updateFormField(@Param("id") field_id, @Body() updateFieldDto: UpdateFieldDto) {
     console.log(updateFieldDto)

@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Function } from "../../users/entities/function.entity";
 import { Journal } from "../../events/entities/journal.entity";
 import { Form } from "../../forms/entities/form.entity";
+import { Requisitions } from "./requisition.entity";
 
 @Entity("teams")
 export class Team {
@@ -16,7 +17,7 @@ export class Team {
     title: string
 
     @ApiProperty() 
-    @Column()
+    @CreateDateColumn({ default: () => 'now()'})
     creation_date: Date
     
     @ApiProperty() 
@@ -75,14 +76,14 @@ export class Team {
     id_parent:Team
 
     @OneToMany((type)=>Function, (func)=>func.team, {cascade:true})
-    @JoinColumn([{ name: "func_id" }])
     functions:Function[]
     
     @OneToMany((type) => Journal, (journal) => journal.team, {cascade:true})
-    @JoinColumn([{ name: "journal_id" }])
     journal: Journal[]
 
     @OneToMany((type) => Form, (form) => form.team, {cascade:true})
-    @JoinColumn([{ name: "form_id" }])
     forms: Form[]
+    
+    @OneToMany((type) => Requisitions, (requisition) => requisition.team)
+    requisitions: Requisitions[]
 }

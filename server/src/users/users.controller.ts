@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus, Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Request, Param, Delete, HttpStatus, Query, UsePipes, UnauthorizedException, UseGuards, Session, HttpCode, Put, SetMetadata} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -58,6 +58,7 @@ export class UsersController {
     let { password, ...res } = user;
     return res;
   }
+  
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto, @Request() req) {
     const userData = new CreateUserDto();
@@ -121,6 +122,8 @@ export class UsersController {
 
 
   @Post('functions')
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Создать функцию для пользователя" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
@@ -129,6 +132,8 @@ export class UsersController {
   }
 
   @Put('functions/:id')
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Обновить функцию для пользователя" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
@@ -148,6 +153,8 @@ export class UsersController {
   // function--------------------------------------------------------------------
 
   @Delete('team/:id_team/user/:id_user')
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Удалить роль юзера из коллектива" })
   @ApiParam({ name: "id_team", required: true, description: "ид коллектива" })
   @ApiParam({ name: "id_leader", required: true, description: "ид user" })
@@ -170,6 +177,8 @@ export class UsersController {
 
   //user functions---------------------------------------------------------------
   @Post('userFunctions')
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Создать функцию userFunctions" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
@@ -178,6 +187,8 @@ export class UsersController {
   }
 
   @Delete('user-functions/:id')
+    @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Удалить функцию userFunctions" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
@@ -194,7 +205,9 @@ export class UsersController {
   }
 
   @Post('user-functions/new-participant')
-  @ApiOperation({ summary: "создать нового учатсника коллектива" })
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can edit status requisitions'])
+  @ApiOperation({ summary: "создать нового учатстника коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   async assignRole(@Body() userFDto: UserFunctionDto) {

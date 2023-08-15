@@ -180,7 +180,7 @@ export const useTeamStore = defineStore("teams", () => {
         })
             .catch((err) => {
                 if (err.response) {
-                    responseMsg = err.response.data.message[0]
+                    responseMsg = err.response.data.message
                     isOK = false
                 }
             })

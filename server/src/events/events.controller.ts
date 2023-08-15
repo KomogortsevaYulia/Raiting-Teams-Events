@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, Put, SetMetadata, UseGuards } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { CreateJournalDto } from './dto/create-journal.dto';
@@ -7,6 +7,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Event } from './entities/event.entity';
 import { SearchEventDto } from './dto/search-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { LocalAuthGuard } from 'src/users/local-auth.guard';
 
 @ApiTags('events')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('events')
@@ -14,12 +15,14 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) { }
 
   @Put(':id')
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create events'])
   @ApiOperation({ summary: "обновить мерприятие" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  update(@Param("id") id: number, @Body()updateEventDto: UpdateEventDto) {
+  update(@Param("id") id: number, @Body() updateEventDto: UpdateEventDto) {
     console.log(updateEventDto)
-    return this.eventsService.update(id,updateEventDto);
+    return this.eventsService.update(id, updateEventDto);
   }
 
   @Get('/external')
@@ -34,7 +37,7 @@ export class EventsController {
   @ApiOperation({ summary: "Получение списка мероприятий по тегам" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findTags(@Query() {tags}) {
+  findTags(@Query() { tags }) {
     return this.eventsService.findTags(tags);
   }
 
@@ -42,8 +45,8 @@ export class EventsController {
   @ApiOperation({ summary: "Получение мероприятий через журнал" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findJournals(@Query() { event_id = null,  title = null}) {
-   
+  findJournals(@Query() { event_id = null, title = null }) {
+
     return this.eventsService.findAllJournals(event_id, title);
   }
 
@@ -52,7 +55,7 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   getEventUsers(@Param('id') id: string) {
-   
+
     return this.eventsService.getEventUsers(+id);
   }
 
@@ -62,7 +65,7 @@ export class EventsController {
   @ApiOperation({ summary: "Универсальный запрос на получение списка мероприятий с учетом различных параметров" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAllEvents(@Query() searchEvent:SearchEventDto) {
+  findAllEvents(@Query() searchEvent: SearchEventDto) {
 
     return this.eventsService.findAllEvents(searchEvent);
   }
@@ -70,12 +73,14 @@ export class EventsController {
 
 
   @Post()
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create events'])
   @ApiOperation({ summary: "Создать новое мероприятие" })
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   create(@Body() createEventDto: CreateEventDto) {
-      console.log(createEventDto)
+    console.log(createEventDto)
     return this.eventsService.create(createEventDto);
   }
 
@@ -85,7 +90,7 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   createJournal(@Body() createJournal: CreateJournalDto) {
-      console.log(createJournal)
+    console.log(createJournal)
     return this.eventsService.createJournal(createJournal);
   }
 
@@ -94,7 +99,7 @@ export class EventsController {
   @ApiBody({ description: "333", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
-  async updateJournal(@Query() { user_id, event_id}){
+  async updateJournal(@Query() { user_id, event_id }) {
     return this.eventsService.updateJournal(event_id, user_id);
   }
 
@@ -104,7 +109,7 @@ export class EventsController {
   @ApiBody({ description: "333", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
-  async deleteJournal(@Query() { user_id, event_id}){
+  async deleteJournal(@Query() { user_id, event_id }) {
     return this.eventsService.deleteJournal(event_id, user_id);
   }
 
@@ -126,22 +131,23 @@ export class EventsController {
   //   return this.eventsService.findAllJournals(params.team_id);
   // }
 
+  @Get('/:id')
   @ApiOperation({ summary: "Получение мероприятия" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  @Get('/:id')
   find(@Param('id') id: number) {
     return this.eventsService.findOne(id);
   }
 
+
+  @Get('events_of_team/:teamId')
   @ApiOperation({ summary: "Получение мероприятия коллектива по журналу" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  @Get('events_of_team/:teamId')
-   getEventsViaJournalsByTeam(@Param('teamId') teamId, @Query() searchEventDto:SearchEventDto) {
+  getEventsViaJournalsByTeam(@Param('teamId') teamId, @Query() searchEventDto: SearchEventDto) {
 
     searchEventDto.teamId = teamId
-    let res =  this.eventsService.getEventsViaJournalsByTeam(searchEventDto)
+    let res = this.eventsService.getEventsViaJournalsByTeam(searchEventDto)
 
     return res
   }
@@ -150,7 +156,7 @@ export class EventsController {
   @ApiOperation({ summary: "Получение списка мероприятий из журнала по id пользователя" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  findAllJournalsByUserId(@Param("id") id:number){
+  findAllJournalsByUserId(@Param("id") id: number) {
     return this.eventsService.findAllJournalByUserId(id)
   }
 }

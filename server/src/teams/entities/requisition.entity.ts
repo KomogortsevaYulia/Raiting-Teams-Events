@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { User } from "../../users/entities/user.entity"
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { RequisitionFields } from "../../forms/entities/requisition_fields.entity"
 import { Dictionary } from "../../general/entities/dictionary.entity"
+import { Team } from "./team.entity"
 
 @Entity('requisition')
 export class Requisitions {
@@ -28,20 +29,25 @@ export class Requisitions {
     // })
     // status: string
 
+
+    @ApiProperty()
+    @CreateDateColumn({ default: () => 'now()'})
+    date_create: Date
+
+    @ApiProperty()
+    @UpdateDateColumn({ default: () => 'now()'})
+    date_update: Date
+
+    @ApiProperty()
+    @ManyToOne(() => Team, (team) => team.id)
+    @JoinColumn([{ name: "team_id" }])
+    team: Team // формат проведения
+
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)
     @JoinColumn([{ name: "status_id" }])
     status: Dictionary // формат проведения
 
-    @ApiProperty()
-    @Column()
-    date_create: Date
-
-    @ApiProperty()
-    @Column()
-    date_update: Date
-
     @OneToMany((type) => RequisitionFields, (requisitionFields) => requisitionFields.requisition)
-    @JoinColumn([{ name: "requisition_fields_id" }])
     requisition_fields: RequisitionFields[]
 }

@@ -330,6 +330,7 @@ export class TeamsService {
       where: { id: req_id },
       relations: {
         user: true,
+        team:true,
         requisition_fields: {
           form_field: {
             form: {

@@ -7,10 +7,12 @@ import { Team } from 'src/teams/entities/team.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Journal } from './entities/journal.entity';
 import { Dictionary } from 'src/general/entities/dictionary.entity';
+import { UserFunction } from 'src/users/entities/user_function.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Event,Team,User,Journal, Dictionary])],
+  imports: [TypeOrmModule.forFeature([Event,Journal, Dictionary, Team, User, UserFunction, Function])],
   controllers: [EventsController],
-  providers: [EventsService]
+  providers: [EventsService, UsersService]
 })
 export class EventsModule {}

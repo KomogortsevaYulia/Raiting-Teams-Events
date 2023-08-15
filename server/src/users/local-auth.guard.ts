@@ -1,21 +1,32 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from 'src/users/users.service';
-import * as argon2 from 'argon2';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class LocalAuthGuard implements CanActivate {
 
-    constructor(private readonly usersService: UsersService) {
+    constructor(private readonly usersService: UsersService,
+        private reflector: Reflector) {
 
     }
     async canActivate(context: ExecutionContext) {
-        
+
         // console.log(context.switchToHttp().getRequest().session)
-        const user = await this.usersService.findById(context.switchToHttp().getRequest().session.user_id);
-        if (user && context.switchToHttp().getRequest().session.logged) {
-            return true;
-        }    
+        const session = context.switchToHttp().getRequest().session
+        const user = await this.usersService.findById(session.user_id);
+        // вошел ли юзер?
+        if (user && session.logged) {
+
+            // запросить разрешения с декоратора
+            const requiredPermissions = this.reflector.get<string[]>('permissions', context.getHandler());
+            if (!requiredPermissions) {
+                return true; // no permissions required, allow access
+            }
+            const userId:number = session.user_id;
+            return this.usersService.hasPermissions(userId, requiredPermissions);
+        }
+
+
         return false;
     }
 }

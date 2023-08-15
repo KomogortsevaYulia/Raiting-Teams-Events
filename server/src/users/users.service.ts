@@ -161,6 +161,61 @@ export class UsersService {
     return user;
   }
 
+
+
+
+
+  // checkers---------------------------------------------------------------------------
+  // check permissions
+  async hasPermissions(userId: number, requiredPermissions: string[]) {
+
+
+    let userHaveAllPermissions = true
+    //  get user and its permissions
+    const user = await this.usersRepository.findOne({ where: { id: userId } })
+    // console.log("user", user.permissions, "req ", requiredPermissions)
+
+    // go throught req permissions
+    requiredPermissions.forEach((reqPermission) => {
+      let havePermission = false
+      //  go throught user permissions
+      for (let i = 0; i < user.permissions.length; i++) {
+        if (user.permissions[i] === reqPermission) {
+          havePermission = true
+          break
+        }
+      }
+      // if one from permissions not granted then return false
+      if (!havePermission) {
+        userHaveAllPermissions = false
+        return userHaveAllPermissions
+      }
+    })
+
+    return userHaveAllPermissions
+  }
+
+  // проверить есть ли у юзера специальные
+  async hasPermissionsInTeam(userId: number, teamId: number, permissions: string[]) {
+
+    const permissisonsInTeam = await this.userFunctionsRepository
+      .createQueryBuilder("user_function")
+      .leftJoin("user_function.function", "function")
+      .leftJoin("user_function.user", "user")
+      .leftJoin("function.team", "team")
+      .where("user.id = :user_id", { user_id: userId })
+      .andWhere("team.id = :team_id", { team_id: teamId })
+      .andWhere("function.type_function in (:...type_functions) ", { type_functions: permissions })
+      // special for admin
+      .orWhere("user.username = :name", {name:'admin'})
+      .getMany();
+
+    return permissisonsInTeam && permissisonsInTeam.length > 0
+  }
+  // checkers---------------------------------------------------------------------------
+
+
+
   // function--------------------------------------------------------------------
   async createFunctionIfNotExist(createFunctionDto: CreateFunctionDto): Promise<Function> {
 
@@ -172,13 +227,13 @@ export class UsersService {
     const existFs = await this.findFunctions(fD)
     let func = existFs ? existFs[0] : null
 
-    const team = await this.teamRepository.findOneOrFail({where:{id:createFunctionDto.team}})
+    const team = await this.teamRepository.findOneOrFail({ where: { id: createFunctionDto.team } })
     // если не существует функции, то создать новую
     if (!func) {
       //создать фукнцию 
       func = await this.functionsRepository.save({
         ...createFunctionDto,
-        team:team
+        team: team
       })
     }
 
@@ -187,12 +242,12 @@ export class UsersService {
 
 
   async updateFunction(idFunction: number, createFunctionDto: CreateFunctionDto) {
-   
-    const team = await this.teamRepository.findOneOrFail({where:{id:createFunctionDto.team}})
+
+    const team = await this.teamRepository.findOneOrFail({ where: { id: createFunctionDto.team } })
 
     await this.functionsRepository.update(idFunction, {
       ...createFunctionDto,
-      team:team
+      team: team
     });
   }
 
@@ -289,7 +344,7 @@ export class UsersService {
     dateEnd.setFullYear(dateEnd.getFullYear() + 1) //only on one year set 
 
     // const user = await this.usersRepository.findOneOrFail({where:{id:createUserFunctionDto.user}})
-    
+
     uF = await this.userFunctionsRepository.save({
       id: uF ? uF.id : null,
       ...createUserFunctionDto,

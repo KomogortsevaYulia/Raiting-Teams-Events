@@ -29,7 +29,6 @@ export class Form {
     team:Team
 
     @OneToMany((type) => FormField, (formField) => formField.form, {onDelete:'CASCADE'})
-    @JoinColumn([{ name: "form_fields" }])
     form_field: FormField[]
 }
 

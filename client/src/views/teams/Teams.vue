@@ -199,6 +199,7 @@ async function handleEventChangePage(currentPage: number) {
 </script>
 
 <template>
+  
   <!-- Это вся обертка -->
   <div class="wrapper-team">
     <!-- Навигация -->
@@ -259,10 +260,9 @@ async function handleEventChangePage(currentPage: number) {
 
                       <!-- набор -->
                       <span class="fs-6 text-bg-success px-1 me-1" v-if="team.set_open"> набор открыт</span>
-                      <span class="fs-6 text-bg-danger px-1 me-1"
-                       v-else> набор закрыт</span>
+                      <span class="fs-6 text-bg-danger px-1 me-1" v-else> набор закрыт</span>
 
-                       <!-- тайтл -->
+                      <!-- тайтл -->
                       <span v-if="team.title && team.title.length > 50" class="cardTitle">
                         {{ team.title.slice(0, 50) }} ... </span>
                       <span v-else class="cardTitle">{{ team.title }}</span>

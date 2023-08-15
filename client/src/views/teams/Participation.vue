@@ -19,7 +19,8 @@ interface Func {
 const props = defineProps<{
     user: User
     func: Func,
-    idTeam: number
+    idTeam: number,
+    onDeleteMemberEvent: Function
 }>()
 
 const isEditMode = ref(false)
@@ -34,11 +35,12 @@ async function deleteUserFromTeam(status_name: string) {
     // remove user functions
     let uFs = await uFStore.findUserFunctions(props.idTeam, props.user.id)
 
-    uFs.forEach(async (uF:any) => {
-         // удалить роль в коллективе
-        await  uFStore.removeUserFunction(uF.id)
+    uFs.forEach(async (uF: any) => {
+        // удалить роль в коллективе
+        await uFStore.removeUserFunction(uF.id)
     })
-   
+
+    props.onDeleteMemberEvent()
 
 }
 

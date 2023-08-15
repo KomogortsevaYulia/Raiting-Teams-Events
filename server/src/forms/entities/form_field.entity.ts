@@ -24,7 +24,6 @@ export class FormField {
     archive: boolean
 
     @OneToMany(()=>RequisitionFields, (req_fields)=> req_fields.form_field, {onDelete:"CASCADE"})
-    @JoinColumn([{ name: "req_fields" }])
     requisition_field:RequisitionFields[]
 
     

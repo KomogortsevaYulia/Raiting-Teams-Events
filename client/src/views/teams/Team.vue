@@ -108,6 +108,11 @@ const selectItem = (i: number) => {
 itemList.forEach((item, index) => {
   return (item == itemList[index])
 })
+
+async function handleDeleteMemberEvent() {
+  await fetchTeam()
+  await Requisition()
+}
 ////////////////////////////////////////////
 
 // const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "/teams" },]
@@ -176,7 +181,7 @@ itemList.forEach((item, index) => {
 
       <div v-if="(selectedItem === 1)">
         <!-- Блок с НОВОСТЯМИ -->
-        <TeamNews :team="team"/>
+        <TeamNews :team="team" />
       </div>
 
       <div v-if="(selectedItem === 2)">
@@ -186,17 +191,18 @@ itemList.forEach((item, index) => {
       <!-- участники -->
       <div v-if="(selectedItem === 3)">
         <div v-for="item in team">
-          <Participation :user=item.user :func=item.function :idTeam="idTeam" />
+          <Participation :onDeleteMemberEvent="handleDeleteMemberEvent" :user=item.user :func=item.function
+            :idTeam="idTeam" />
         </div>
       </div>
 
       <div v-if="(selectedItem === 4)">
         <Ankets />
       </div>
-     
+
       <!-- заявки -->
       <div v-if="(selectedItem == 5)">
-        <TeamRequests :idTeam="idTeam"/>
+        <TeamRequests :idTeam="idTeam" />
       </div>
 
     </div>
@@ -268,7 +274,7 @@ itemList.forEach((item, index) => {
         font-size: 36px;
         font-weight: 600;
         font-family: var(--font-family-title);
-;
+        ;
         margin: 0;
         margin-bottom: 2rem;
       }

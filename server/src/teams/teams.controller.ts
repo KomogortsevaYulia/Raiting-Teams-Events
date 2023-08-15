@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, HttpStatus, Query, UploadedFile, UseInterceptors, UploadedFiles, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, HttpStatus, Query, UploadedFile, UseInterceptors, UploadedFiles, Req, SetMetadata, UseGuards, ForbiddenException } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -14,6 +14,8 @@ import { Request } from 'express';
 import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe';
 import { FileImageValidationPipe } from 'src/uploads/validation/image_file.validation.pipe';
 import { UpdateRequisitionDto } from './dto/update-requisition.dto';
+import { LocalAuthGuard } from 'src/users/local-auth.guard';
+import { User } from 'src/general/decorators/user.decorator';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -64,6 +66,8 @@ export class TeamsController {
 
 
   @Put(":id/archive")
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create teams'])
   @ApiOperation({ summary: "Архивировать коллектив или наоборот" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
@@ -72,6 +76,8 @@ export class TeamsController {
   }
 
   @Put(':id')
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create teams'])
   @ApiOperation({ summary: "Обновить коллектив (ответственный по направлению)" })
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
@@ -149,6 +155,8 @@ export class TeamsController {
   }
 
   @Post()
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can create teams'])
   @ApiOperation({ summary: "Создать новый коллектив (ответственный по направлению)" })
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
@@ -186,16 +194,24 @@ export class TeamsController {
 
 
   @Post(':id/image')
+  @UseGuards(LocalAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: "Загрузить изображение коллектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async addImage(@Req() request: Request, @Param('id') id: number, @UploadedFile(new FileImageValidationPipe()) file: Express.Multer.File) {
-    const startPathUrl = `${request.protocol}://${request.get('host')}`;
+  async addImage(@User() userId: number, @Req() request: Request, @Param('id') id: number, @UploadedFile(new FileImageValidationPipe()) file: Express.Multer.File) {
 
-    let path = await this.uploadsService.uploadFile(startPathUrl, file)
-    return this.teamsService.addImage(id, path);
+    const hasPermissions = await this.usersService.hasPermissionsInTeam(userId, id, ["special"])
+
+    if (hasPermissions) {
+
+      const startPathUrl = `${request.protocol}://${request.get('host')}`;
+
+      let path = await this.uploadsService.uploadFile(startPathUrl, file)
+      return this.teamsService.addImage(id, path);
+
+    } else throw new ForbiddenException("Вы имеете недостаточно прав в коллективе, обратитесь к руководителю")
   }
 
   // @Post(':id/image')
@@ -223,11 +239,11 @@ export class TeamsController {
 
   // requisition --------------------------------------------------------------------
   @Get("/:team_id/requisition")
-  @ApiOperation({ summary: "Получить список заявок в коллектив" })
+  @ApiOperation({ summary: "Получить список заявок в коллектив по ид колектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async userRequisitionByTeam(@Param('team_id') team_id: number, @Query() reqDto:UpdateRequisitionDto): Promise<Requisitions[]> {
+  async userRequisitionByTeam(@Param('team_id') team_id: number, @Query() reqDto: UpdateRequisitionDto): Promise<Requisitions[]> {
 
     const requisitions = await this.teamsService.findAllRequisitions(team_id, reqDto)
 
@@ -235,7 +251,7 @@ export class TeamsController {
   }
 
   @Get("requisition/:id")
-  @ApiOperation({ summary: "Получить список заявок в коллектив" })
+  @ApiOperation({ summary: "Получить список заявок в коллектив по ид" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор запроса" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
@@ -247,15 +263,22 @@ export class TeamsController {
   }
 
   @Put("requisition/:id")
+  @UseGuards(LocalAuthGuard)
+  @SetMetadata('permissions', ['can edit status requisitions'])
   @ApiOperation({ summary: "обновить заявку в коллектив" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async updateRequisition(@Param('id') req_id: number, @Body() updateRequisitionDto:UpdateRequisitionDto){
+  async updateRequisition(@User() userId: number, @Param('id') req_id: number, @Body() updateRequisitionDto: UpdateRequisitionDto) {
 
-    const requisitions = await this.teamsService.updateRequisition(req_id, updateRequisitionDto)
+    const requisition = await this.teamsService.findRequisition(req_id)
+    const hasPermissions = await this.usersService.hasPermissionsInTeam(userId, requisition.team.id, ["special"])
 
-    return requisitions;
+    if (hasPermissions) {
+      const requisitions = await this.teamsService.updateRequisition(req_id, updateRequisitionDto)
+      return requisitions;
+    } else throw new ForbiddenException("Вы имеете недостаточно прав в коллективе, обратитесь к руководителю")
+
   }
 
   // requisition --------------------------------------------------------------------

@@ -14,7 +14,7 @@ export class User {
     id: number
 
     @ApiProperty()
-    @Column({ nullable: true, default: "123" })
+    @Column({ nullable: true, default: "123", unique:true })
     username: string
 
     @ApiProperty()
@@ -26,7 +26,7 @@ export class User {
     fullname: string
 
     @ApiProperty()
-    @Column()
+    @Column({unique:true})
     email: string
 
     @ApiProperty()

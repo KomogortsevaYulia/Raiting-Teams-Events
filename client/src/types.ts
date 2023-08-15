@@ -4,14 +4,15 @@ export type Permission =
     | 'can view directions' //+
     | 'can view reports directions' //+
     | 'can view reports teams' //+
-    | 'can edit status events'
-    | 'can edit status requisitions'
-
-    
     | 'can view reports'
+    | 'can edit status events'
+
 
     // Руководитель коллектива
     | 'can view teams reports'
+    | 'can edit status requisitions'
+    | 'can create questionnaires'
+    | 'can create team roles'
     | ''
 
     // Руководитель коллектива
