@@ -657,9 +657,4 @@ async function handleEventChangePage(currentPage: number) {
 
 }
 
-@media (min-width: 768px) {
-  .d-md-none {
-    display: none !important;
-  }
-}
 </style>

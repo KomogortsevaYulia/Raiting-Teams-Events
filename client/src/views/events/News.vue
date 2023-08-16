@@ -8,26 +8,48 @@
       </button>
     </router-link>
 
-    <template  v-for="(item, index) in itemList" :key="index">
-      <a @click="selectItem(index)" v-if="item.permission"
-      :class="{ active: index == selectedItem }">{{ item.name }}</a>
+    <template v-for="(item, index) in itemList" :key="index">
+      <a @click="selectItem(index)" v-if="item.permission" :class="{ active: index == selectedItem }">{{ item.name }}</a>
     </template>
-   
+
   </div>
 
   <!-- see events -->
   <div v-if="(selectedItem === 0)">
     <div class="events__container">
-      <!-- Боковое меню -->
-      <CheckBox_Menu :menu_items="menu_items" :handle-event-set-filters="handleEventSetFilters"
-        :handle-event-reset-filters="handleEventResetFilters" />
+      <!-- Фильтр вдимый-->
+      <div class="nav-collapse  collapse" id="collapseCkecker">
+        <div class="filters-block">
+          <!-- Боковое меню -->
+          <CheckBox_Menu :menu_items="menu_items" :handle-event-set-filters="handleEventSetFilters"
+            :handle-event-reset-filters="handleEventResetFilters" />
+        </div>
+      </div>
+
+
       <!-- Правая часть контейнера -->
-      <div class="cards__container">
+      <div class="cards__container ms-md-4">
         <!-- Поисковые строки -->
         <div class="cards__search">
           <input class="title__search" placeholder="Начните поиск..." />
           <input class="date__search" placeholder="Выберите дату" type="date" />
           <Switch_toggle />
+          <div class="d-md-none">
+            <button type="button" class="btn-icon-rounded" data-bs-toggle="modal" data-bs-target="#filtersModal">
+              <font-awesome-icon class="ic" icon="filter" />
+            </button>
+          </div>
+          <ModalFull modal-id="filtersModal">
+            <template #header>
+              Фильтры
+            </template>
+            <template #body>
+              <!-- Боковое меню -->
+              <CheckBox_Menu :menu_items="menu_items" :handle-event-set-filters="handleEventSetFilters"
+                :handle-event-reset-filters="handleEventResetFilters" />
+            </template>
+
+          </ModalFull>
         </div>
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data.length > 0">
           <div class="card" v-for="event in data" :key="event.id">
@@ -74,6 +96,7 @@ import { usePermissionsStore } from '@/store/permissions_store';
 import Pagination from '@/components/Pagination.vue';
 import EventsRequests from './EventsRequests.vue';
 import { useTeamStore } from '@/store/team_store';
+import ModalFull from '@/components/modals/ModalFull.vue';
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
@@ -94,8 +117,8 @@ const visiblePages = 7
 //pagination ---------------------------------------------------------------------
 
 const itemList = [
-  { name: "Главная", permission:true },
-  { name: "Заявки на создание", permission: can('can edit status events')},
+  { name: "Главная", permission: true },
+  { name: "Заявки на создание", permission: can('can edit status events') },
 ]
 
 const selectedItem = ref(0);
@@ -146,7 +169,7 @@ function handleEventResetFilters() {
   padding-top: 1rem;
 
   .cards__container {
-    margin-left: 2rem;
+   
     width: 100%;
 
     .cards__search {
@@ -390,5 +413,12 @@ function handleEventResetFilters() {
     color: var(--main-color);
     border-bottom: var(--main-border-bottom);
   }
+}
+
+.filters-block {
+  background-color: #fff;
+  box-shadow: var(--box-shadow);
+  padding: 2rem;
+  border-radius: 5px;
 }
 </style>
