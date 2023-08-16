@@ -344,12 +344,11 @@ async function archiveTeam(id: number, isArchive: boolean) {
 
 <style lang="scss" scoped>
 .btn-close {
-  &:hover {
-    border: 1px solid var(--main-color-hover);
-    transition: 0.3s;
-  }
+    &:hover {
+        background-color: var(--main-color-hover);
+        transition: 0.3s;
+    }
 }
-
 
 .wrapper-team__create {
 

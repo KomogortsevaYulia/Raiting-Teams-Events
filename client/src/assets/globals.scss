@@ -23,7 +23,7 @@
     border: none;
     box-shadow: var(--box-shadow);
     border-radius: 0.25rem;
-    padding: 0.5rem;
+    padding: 0.6rem;
     background-color: #fff;
 
     &:focus {
@@ -113,11 +113,22 @@ textarea {
     background: var(--main-color);
 }
 
+// вторичная кнопка
+.btn-icon-rounded {
+    background: white;
+    border-radius: 50px;
+    color: black;
+    padding: 0.6rem 0.9rem;
+    box-shadow: var(--box-shadow);
+
+    &:hover{
+        color: var(--main-color);
+    }
+}
+
+
 // кнопки ------------------------------------------------------------------------------------------
 
-
-h3 {
-}
 
 a {
     font-size: 14px;
@@ -211,3 +222,12 @@ a {
 .loading {
     color: var(--second-color);
 }
+
+
+// meadia
+@media (min-width: 768px) {
+    .nav-collapse {
+      display: block !important;
+    }
+  }
+  

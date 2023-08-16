@@ -16,7 +16,7 @@ onBeforeMount(() => {
     <Navbar />
   </header>
 
-  <div class="container">
+  <div class="container-lg">
     <RouterView />
   </div>
 
@@ -28,7 +28,7 @@ header {
   box-shadow: 0 6px 4px -4px rgba(0, 0, 0, .2);
 }
 
-.container {
+.container-lg {
   margin-inline: 0;
   margin-top: 5.5rem;
 }

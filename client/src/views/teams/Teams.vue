@@ -10,6 +10,7 @@ import Pagination from '@/components/Pagination.vue';
 import { useTeamStore } from '@/store/team_store';
 import ModalCreateTeam from '@/components/modals/ModalCreateTeam.vue';
 import { FilterTeam } from '@/store/models/teams.model';
+import ModalFull from '@/components/modals/ModalFull.vue';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -199,11 +200,11 @@ async function handleEventChangePage(currentPage: number) {
 </script>
 
 <template>
-  
   <!-- Это вся обертка -->
   <div class="wrapper-team">
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
+      <!-- создание коллектива -->
       <div v-if="can('can create teams')">
         <!-- Button trigger modal -->
         <button @click="editTeam(false, null)" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -217,24 +218,53 @@ async function handleEventChangePage(currentPage: number) {
     <!-- Обертка карточек коллективов -->
     <div v-if="show" class="wrapper-team__content">
 
-
-
-      <!-- Фильтр -->
-      <CheckBox_Menu :menu_items="menu_items" :handleEventSetFilters="handleEventSetFilters"
-        :handleEventResetFilters="handleEventResetFilters" />
-
-
+      <!-- Фильтр вдимый-->
+      <div class="nav-collapse  collapse" id="collapseCkecker">
+        <div class="filters-block">
+          <CheckBox_Menu :menu_items="menu_items" :handleEventSetFilters="handleEventSetFilters"
+            :handleEventResetFilters="handleEventResetFilters" />
+        </div>
+      </div>
 
       <!-- Обертка контента с карточками -->
-      <div class="content-cards">
+      <div class="content-cards ms-md-4">
 
         <!-- Инпут с поиском -->
         <div class="cards__search">
-          <input class="search-inp" placeholder="Начните поиск..." v-model="findTeamTxt" />
-          <input placeholder="Выберите дату" type="date" />
-          <div class="search-toggle">
-            <Switch_toggle />
+          <div class="row g-2">
+
+            <div class="col-sm-12 col-md-6">
+              <input class="search-inp" placeholder="Начните поиск..." v-model="findTeamTxt" />
+            </div>
+            <div class="col-auto"> <input placeholder="Выберите дату" type="date" /></div>
+
+            <div class="col-auto">
+              <Switch_toggle />
+            </div>
+
+            <!-- фильтры в модальнос окне -->
+            <div class="col">
+              <div class="d-md-none">
+                <button type="button" class="btn-icon-rounded" data-bs-toggle="modal" data-bs-target="#filtersModal">
+                  <font-awesome-icon class="ic" icon="filter" />
+                </button>
+              </div>
+
+              <ModalFull modal-id="filtersModal">
+                <template #header>
+                  Фильтры
+                </template>
+                <template #body>
+                  <CheckBox_Menu :menu_items="menu_items" :handleEventSetFilters="handleEventSetFilters"
+                    :handleEventResetFilters="handleEventResetFilters" />
+                </template>
+
+              </ModalFull>
+
+            </div>
           </div>
+
+
         </div>
 
         <!-- Сами карточки -->
@@ -302,7 +332,6 @@ async function handleEventChangePage(currentPage: number) {
         <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
 
       </div>
-
     </div>
 
 
@@ -310,6 +339,13 @@ async function handleEventChangePage(currentPage: number) {
 </template>
 
 <style lang="scss" scoped>
+.filters-block {
+  background-color: #fff;
+  box-shadow: var(--box-shadow);
+  padding: 2rem;
+  border-radius: 5px;
+}
+
 .wrapper-team {
   display: block;
   width: 100%;
@@ -359,16 +395,15 @@ async function handleEventChangePage(currentPage: number) {
     }
 
     .content-cards {
-      margin-left: 2rem;
-      width: 80%;
+      // margin-left: 2rem;
 
       .cards__search {
-        display: flex;
-        justify-content: space-between;
+        // display: flex;
+        // justify-content: space-between;
         // padding-bottom: 1rem;
 
         .search-inp {
-          width: 70%;
+          width: 100%;
         }
 
         input {
@@ -377,10 +412,10 @@ async function handleEventChangePage(currentPage: number) {
           // width: 80%;
         }
 
-        .search-toggle {
-          display: flex;
-          padding-left: 1rem;
-        }
+        // .search-toggle {
+        //   display: flex;
+        //   padding-left: 1rem;
+        // }
       }
 
       .wrapper-grid {
@@ -620,5 +655,11 @@ async function handleEventChangePage(currentPage: number) {
     max-height: 15rem !important;
   }
 
+}
+
+@media (min-width: 768px) {
+  .d-md-none {
+    display: none !important;
+  }
 }
 </style>

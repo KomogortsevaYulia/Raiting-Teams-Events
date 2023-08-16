@@ -35,16 +35,16 @@ const teamStore = useTeamStore();
     width: auto;
     background-color: #fff;
     border-radius: 24px;
-    box-shadow: 0 0 5px 2px rgba(221, 221, 221, 1);
-    padding: 3px;
+    box-shadow: var(--box-shadow);
+    padding: 0.3rem 0.6rem;
 
     .switch-item {
         cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 45px;
-        width: 45px;
+        height: 35px;
+        width: 35px;
         border-radius: 100%;
         transition: 0.4s;
 

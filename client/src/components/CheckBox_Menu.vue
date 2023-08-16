@@ -1,11 +1,7 @@
 <template>
 
-  <!-- <div class="col"> -->
-    <!-- <div class="row-cols-auto">
-      <button @click="setFiltersVisivle(!filtersVisivle)">filters</button>
+    <div class="checkbox__nav ">
 
-    </div> -->
-    <div  class="checkbox__nav ">
       <div class="checkbox__block" v-for="menu_item in props.menu_items" :key="menu_item.id">
         <div class="checkbox__title">{{ menu_item.title }}</div>
         <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id"
@@ -23,7 +19,7 @@
       <button class="apply__btn" @click="handleEventSetFilters()">Применить</button>
       <button class="refuse__btn" @click="handleEventResetFilters()">Сбросить</button>
     </div>
-  <!-- </div> -->
+
 </template>
 
 <script setup lang="ts">
@@ -43,19 +39,13 @@ const props = defineProps<{
 </script>
 
 <style scoped lang="scss">
+
 .checkbox__block {
   margin-bottom: 1rem;
 }
 
 .checkbox__nav {
-  background-color: #fff;
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-  width: 20rem;
-  padding: 2rem;
-  height: 100%;
-  max-height: 100rem;
-  border-radius: 5px;
-  margin-bottom: 4rem;
+
 
   .btn__open {
     display: flex;
