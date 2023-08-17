@@ -15,7 +15,7 @@ import { useTeamStore } from '@/store/team_store';
 import _, { defaultsDeep, forIn } from 'lodash';
 import { useEventStore } from '@/store/events_store';
 import { useDictionaryStore } from '@/store/dictionary_store';
-import { Direction, Level } from '@/store/enums/enum_event';
+import { DirectionId } from '@/store/enums/enum_event';
 import { useChartStore } from './chart_logic';
 import { useStatiscticLogicStore } from './statistic_logic';
 
@@ -93,7 +93,7 @@ const colorfulBlocksData = ref([
 // data for graphics---------------------------------------------------
 
 // найденные направления из системы
-const foundDirections = ref([{ id: 0, shortname: "Все", idDB: 0, idDirectionEvent: Direction.ALL }])           //дата
+const foundDirections = ref([{ id: 0, shortname: "Все", idDB: 0, idDirectionEvent: DirectionId.ALL }])           //дата
 
 // заполнить выпадающие списки
 function fillDropdowns(data: any) {
@@ -225,7 +225,7 @@ async function getDirections() {
 
   let directions = data[0]
   let arrayData = []
-  arrayData[0] = { id: 0, shortname: DirectionName.ALL, idDB: 0, idDirectionEvent: Direction.ALL }
+  arrayData[0] = { id: 0, shortname: DirectionName.ALL, idDB: 0, idDirectionEvent: DirectionId.ALL }
 
   for (let i = 0; i < directions.length; i++) {
     // console.log("directions " + directions[i].shortname)
@@ -290,7 +290,7 @@ async function getEventsViaJournalsByTeam(teamId: number) {
 // получить мероприятия
 async function getEventsByDirection() {
 
-  let direction = Direction.ALL
+  let direction = DirectionId.ALL
   direction = foundDirections.value[selectedParams.value.selectedDirection].idDirectionEvent
 
   let data = await eventStore.getEventsByDirection(direction,

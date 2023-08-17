@@ -1,4 +1,4 @@
-import { Direction } from "@/store/enums/enum_event"
+import { DirectionId } from "@/store/enums/enum_event"
 import { DirectionName } from "@/store/enums/enum_teams"
 import { defineStore } from "pinia"
 
@@ -6,23 +6,23 @@ export const useStatiscticLogicStore = defineStore("statisticLogic", () => {
 
    function directionInTeamsConvertToDirectionInEvents (direction: string){
     
-        let directionInEvent = Direction.ALL
+        let directionInEvent = DirectionId.ALL
     
         switch (direction) {
             case DirectionName.KTD:
-                directionInEvent =  Direction.KTD
+                directionInEvent =  DirectionId.KTD
                 break
             case DirectionName.UD:
-                directionInEvent =  Direction.UD
+                directionInEvent =  DirectionId.UD
                 break
             case DirectionName.SD:
-                directionInEvent =  Direction.SD
+                directionInEvent =  DirectionId.SD
                 break
             case DirectionName.NID:
-                directionInEvent =  Direction.NID
+                directionInEvent =  DirectionId.NID
                 break
             case DirectionName.OD:
-                directionInEvent =  Direction.OD
+                directionInEvent =  DirectionId.OD
                 break
         }
     

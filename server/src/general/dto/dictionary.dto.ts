@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNumber, IsOptional } from "class-validator";
+import { IsNumber, IsOptional, registerDecorator } from "class-validator";
 
 export class DictionaryDto{
 
@@ -13,4 +13,9 @@ export class DictionaryDto{
     @IsNumber()
     @Type(()=>Number)
     class_id:number
+
+    constructor(name:string, class_is:number){
+        this.name = name
+        this.class_id = class_is
+    }
 }

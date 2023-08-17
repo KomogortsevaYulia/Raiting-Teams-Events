@@ -233,17 +233,17 @@ async function handleEventChangePage(currentPage: number) {
         <div class="cards__search">
           <div class="row g-2">
 
-            <div class="col-sm-12 col-md-6">
+            <div class="col">
               <input class="search-inp" placeholder="Начните поиск..." v-model="findTeamTxt" />
             </div>
-            <div class="col-auto"> <input placeholder="Выберите дату" type="date" /></div>
+            <!-- <div class="col-auto"> <input placeholder="Выберите дату" type="date" /></div> -->
 
             <div class="col-auto">
               <Switch_toggle />
             </div>
 
             <!-- фильтры в модальнос окне -->
-            <div class="col">
+            <div class="col-auto">
               <div class="d-md-none">
                 <button type="button" class="btn-icon-rounded" data-bs-toggle="modal" data-bs-target="#filtersModal">
                   <font-awesome-icon class="ic" icon="filter" />
@@ -280,8 +280,7 @@ async function handleEventChangePage(currentPage: number) {
               </div>
             </router-link>
 
-            <div class=" col-lg col-md-auto px-5 py-4 overflow-hidden">
-              <div class="wrapperContent">
+            <div class="wrapperContent col-lg col-md-auto px-5 py-4">
                 <div class="row mb-2">
 
                   <!-- team title -->
@@ -309,9 +308,7 @@ async function handleEventChangePage(currentPage: number) {
                 </div>
 
 
-
-                <div class="row mb-2">
-                  <div class="row" style="max-height: 100px;">
+                  <div class="row mb-2 " >
                     <div class="navigation-tags row g-1">
                       <div v-for="el in team.tags" class="teg col-auto">{{ el }}</div>
                     </div>
@@ -319,9 +316,7 @@ async function handleEventChangePage(currentPage: number) {
                       {{ team.short_description }}
                     </div>
                   </div>
-                </div>
               </div>
-            </div>
 
           </div>
 

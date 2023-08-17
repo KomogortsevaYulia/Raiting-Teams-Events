@@ -10,19 +10,35 @@
 // }
 
 export enum Level {
-  UNIVERSITY = 1,
-  CITY = 2,
-  REGION = 3,
-  ALL = 0
+  UNIVERSITY = "Вузовский",
+  CITY = "Городской",
+  REGION = "Региональный",
+  ALL = "Все"
+}
+
+export enum Status {
+  CREATED = "Создана",
+  ACCEPTED = "Принята",
+  CANCELLED = "Отклонена",
+  ALL = "Все"
 }
 
 export enum Type {
-  OUTSIDE = 4,
-  INSIDE = 5,
-  ALL = 0
+  OUTSIDE = "Внешнее",
+  INSIDE = "Внутреннее",
+  ALL = "Все"
 }
 
 export enum Direction {
+  NID = "НИД",
+  KTD = "КТД",
+  UD = "УД",
+  SD = "СД",
+  OD = "ОД",
+  ALL = "Все"
+}
+
+export enum DirectionId {
   NID = 6,
   KTD = 7,
   UD = 8,

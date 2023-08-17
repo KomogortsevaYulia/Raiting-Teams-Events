@@ -16,8 +16,8 @@ export const useChartStore = defineStore("echarts", () => {
         for (let i = 0; i < events.length; i++) {
 
             let event = events[i]
-            if (event.type != null && event.type.id == Type.INSIDE) inner += 1
-            else if (event.type != null && event.type.id == Type.OUTSIDE) outer += 1
+            if (event.type != null && event.type.name == Type.INSIDE) inner += 1
+            else if (event.type != null && event.type.name == Type.OUTSIDE) outer += 1
         }
 
 

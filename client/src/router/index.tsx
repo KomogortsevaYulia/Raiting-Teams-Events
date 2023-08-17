@@ -93,6 +93,16 @@ const router = createRouter({
         requiresAuth: true
       }
     },
+    {//различные заяки, которые формировал юзер
+      path: "/user-requests",
+      name: "Requests",
+      props:(route)=>({userId:route.query.user_id}),
+      // @ts-ignore
+      component: () => import('@/views/user/Requests.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
     // {
     //   path: "/questionnaire",
     //   name: "Questionnaire",

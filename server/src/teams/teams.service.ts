@@ -274,9 +274,8 @@ export class TeamsService {
 
     let findDict = null
 
-    const dd = new DictionaryDto()
-    dd.class_id = dict_class_id
-    dd.name = updateRequisitionDto.status_name
+    const dd = new DictionaryDto( updateRequisitionDto.status_name, dict_class_id)
+ 
 
     // найти знаечние в словаре,чтобы ид получить
     if (updateRequisitionDto.status_name) {

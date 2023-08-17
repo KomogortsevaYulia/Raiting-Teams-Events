@@ -7,6 +7,7 @@ import { useRoute, useRouter } from "vue-router";
 export const usePermissionsStore = defineStore("permissionsStore", () => {
     const router = useRouter();
 
+    const user_id = ref(-1)
     const username = ref("")
     const fullname = ref("")
     const permissions = ref<Array<Permission>>([])
@@ -27,6 +28,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
             permissions.value = response.data.permissions
             username.value = response.data.username
             fullname.value = response.data.fullname
+            user_id.value = response.data.id
 
             let nextUrl = "/news";
             if (typeof router.options.history.state.current == 'string' && router.options.history.state.current != '/' && router.options.history.state.current != '/#/') {
@@ -87,6 +89,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
         username,
         fullname,
         isLogged,
+        user_id,
 
         fetchUser,
         checkLogin,

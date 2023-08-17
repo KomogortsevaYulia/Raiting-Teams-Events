@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 // import type { Permission } from "@/types";
 import axios from "axios";
+import type { Status } from "./enums/enum_event";
 
 export const useEventStore = defineStore("event", () => {
     const layout = ref(true)
@@ -71,7 +72,7 @@ export const useEventStore = defineStore("event", () => {
         return responseMsg
     }
 
-    async function updateEvent(id:number, status:boolean){
+    async function updateEvent(id:number, status:Status){
         let res = await axios.put("api/events/"+id, {
             status: status
         })

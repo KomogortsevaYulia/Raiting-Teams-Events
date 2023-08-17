@@ -17,9 +17,7 @@ export class SearchEventDto {
     id: number
 
     @IsOptional()
-    @IsNumber()
-    @Type(() => Number)
-    type: number
+    type: string
 
     @IsOptional()
     @IsNumber()
@@ -48,9 +46,12 @@ export class SearchEventDto {
     tags: string
 
     @IsOptional()
-    @IsBoolean()
-    @Transform(({value}) => value==1)
-    status: boolean
+    status: string
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    user_id: number
 
     @IsOptional()
     @IsNumber()

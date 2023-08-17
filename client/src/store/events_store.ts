@@ -1,19 +1,20 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { Status, Type } from "./enums/enum_event";
+import type { Event } from "./models/events.model";
 
 export const useEventStore = defineStore("events", () => {
 
   // type 4 is external
-  async function fetchEvents(limit:number, offset:number, type = 4, status:any = 1, direction:any = null): Promise<any> {
+  async function fetchEvents(event:Event): Promise<any> {
 
     let params = {
-      type: type,
-      status:status,
-      direction:direction,
-      limit: limit,
-      offset: offset
+      ...event,
+      type: event.type != Type.ALL? event.type:null,
+      status:event.status!= Status.ALL? event.status:null,
     }
 
+   
     const res = await axios.get('api/events', { params: params })
 
     const data = res.data

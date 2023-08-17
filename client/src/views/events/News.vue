@@ -51,7 +51,7 @@
 
           </ModalFull>
         </div>
-        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data.length > 0">
+        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data && data.length > 0">
           <div class="card" v-for="event in data" :key="event.id">
             <div class="card__banner">
               <img :src="event.images" class="d-block" style="width: 100%;object-fit: cover;">
@@ -85,6 +85,11 @@
   <div v-if="(selectedItem === 1)">
     <EventsRequests />
   </div>
+
+  <div v-if="(selectedItem === 2)">
+    <UserEvents :idUser="permissions_store.user_id" />
+  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -97,6 +102,8 @@ import Pagination from '@/components/Pagination.vue';
 import EventsRequests from './EventsRequests.vue';
 import { useTeamStore } from '@/store/team_store';
 import ModalFull from '@/components/modals/ModalFull.vue';
+import { Event } from '@/store/models/events.model';
+import UserEvents from '../user/UserEvents.vue';
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
@@ -119,6 +126,7 @@ const visiblePages = 7
 const itemList = [
   { name: "Главная", permission: true },
   { name: "Заявки на создание", permission: can('can edit status events') },
+  { name: "Мои мероприятия", permission: can('can create events') },
 ]
 
 const selectedItem = ref(0);
@@ -137,7 +145,11 @@ async function fetchEvents() {
 
   loading.value = true
 
-  let d = await eventStore.fetchEvents(limit, offset.value)
+  let event = new Event()
+    event.limit = limit
+    event.offset = offset.value
+
+  let d = await eventStore.fetchEvents(event)
   data.value = d[0]
 
   const eventsCount = d[1]

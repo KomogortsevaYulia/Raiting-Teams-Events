@@ -21,7 +21,6 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   update(@Param("id") id: number, @Body() updateEventDto: UpdateEventDto) {
-    console.log(updateEventDto)
     return this.eventsService.update(id, updateEventDto);
   }
 
@@ -80,7 +79,7 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   create(@Body() createEventDto: CreateEventDto) {
-    console.log(createEventDto)
+
     return this.eventsService.create(createEventDto);
   }
 
@@ -90,7 +89,7 @@ export class EventsController {
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request, какие то данные неверно введены" })
   createJournal(@Body() createJournal: CreateJournalDto) {
-    console.log(createJournal)
+
     return this.eventsService.createJournal(createJournal);
   }
 

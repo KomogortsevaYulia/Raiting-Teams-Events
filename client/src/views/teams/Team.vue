@@ -10,8 +10,12 @@ import ModalQuestionnaire from '@/components/modals/ModalQuestionnaire.vue';
 import TeamNews from './TeamNews.vue';
 import Participation from './Participation.vue';
 import TeamRequests from './TeamRequests.vue';
+import { usePermissionsStore } from '@/store/permissions_store';
 
 const route = useRoute()
+
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
 
 const idTeam = Number(route.params.id);
 
@@ -93,12 +97,12 @@ const selectedItem = ref(0);
 const showCreate = ref(false);
 
 const itemList = [
-  { name: "Главная" },
-  { name: "Новости" },
-  { name: "Расписание занятий" },
-  { name: "Участники" },
-  { name: "Редактор анкеты" },
-  { name: "Заявки" },
+  { name: "Главная", permission: true },
+  { name: "Новости", permission: true },
+  { name: "Расписание занятий", permission: true },
+  { name: "Участники", permission: true },
+  { name: "Редактор анкеты", permission: can('can create questionnaires') },
+  { name: "Заявки", permission: can('can edit status requisitions') },
 ]
 ///////////////////////////////////////////////////////////
 const selectItem = (i: number) => {
@@ -139,8 +143,11 @@ async function handleDeleteMemberEvent() {
 
       <!-- Навигация -->
       <div class="wrapper-team__navigation">
-        <a @click="selectItem(index), showCreate = false" v-for="(item, index) in itemList" :key="index"
-          :class="{ active: index == selectedItem }">{{ item.name }}</a>
+        <template v-for="(item, index) in itemList" :key="index">
+          <a v-if="item.permission" @click="selectItem(index), showCreate = false"
+            :class="{ active: index == selectedItem }">{{ item.name }}</a>
+        </template>
+
       </div>
 
       <div v-if="(selectedItem === 0)">

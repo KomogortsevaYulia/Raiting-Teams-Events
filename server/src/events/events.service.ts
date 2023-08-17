@@ -8,6 +8,8 @@ import { Event } from './entities/event.entity'
 import { Type } from './enums/enums';
 import { Journal } from './entities/journal.entity';
 import { SearchEventDto } from './dto/search-event.dto';
+import { DictionaryDto } from 'src/general/dto/dictionary.dto';
+import { GeneralService } from 'src/general/general.service';
 
 @Injectable()
 export class EventsService {
@@ -16,6 +18,7 @@ export class EventsService {
     private readonly eventsRepository: Repository<Event>,
     @InjectRepository(Journal)
     private readonly journalsRepository: Repository<Journal>,
+    private readonly dictionaryService: GeneralService,
   ) { }
 
 
@@ -57,56 +60,62 @@ export class EventsService {
   //если параметр был выбран, то добавляем его в запрос (И)
   async findAllEvents(searchEvent: SearchEventDto): Promise<[Event[], number]> {
 
+
     let buildQuery = this.eventsRepository
       .createQueryBuilder("events")
       .leftJoinAndSelect("events.level", "level")
       .leftJoinAndSelect("events.type", "type")
       .leftJoinAndSelect("events.direction", "direction")
+      .leftJoinAndSelect("events.status", "status")
       // creator
       .leftJoinAndSelect("events.user", "user")
+      .orderBy("events.date_update", "DESC")
+
+
+    searchEvent.status != null ? buildQuery
+      .andWhere("status.name = :status", { status: searchEvent.status }) :
+      buildQuery
 
     // limit
-    buildQuery = searchEvent.limit != null ? buildQuery.take(searchEvent.limit) : buildQuery
+    searchEvent.limit != null ? buildQuery.take(searchEvent.limit) : buildQuery
 
     // offset
-    buildQuery = searchEvent.offset != null ? buildQuery.skip(searchEvent.offset) : buildQuery
-
+    searchEvent.offset != null ? buildQuery.skip(searchEvent.offset) : buildQuery
+    // user id
+    searchEvent.user_id != null ? buildQuery
+    .andWhere("user.id = :user_id", { user_id: searchEvent.user_id }) : buildQuery
 
     //id 
-    buildQuery = searchEvent.id != null ? buildQuery
+    searchEvent.id != null ? buildQuery
       .andWhere("events.id = :id", { id: searchEvent.id }) : buildQuery
 
     //title 
-    buildQuery = searchEvent.title != null ? buildQuery
+    searchEvent.title != null ? buildQuery
       .andWhere("events.title like :title", { title: `%${searchEvent.title}%` }) : buildQuery
 
-    //status 
-    buildQuery = searchEvent.status != null ? buildQuery
-      .andWhere("events.status = :status", { status: searchEvent.status }) :
-      buildQuery.andWhere("events.status is null")
 
     //tag 
-    buildQuery = searchEvent.tags != null ? buildQuery
+    searchEvent.tags != null ? buildQuery
       .andWhere("events.tag = :tag", { tag: searchEvent.tags }) : buildQuery
 
     // event type
-    buildQuery = searchEvent.type != null ? buildQuery
-      .andWhere("events.type = :type", { type: searchEvent.type }) : buildQuery
+    searchEvent.type != null ? buildQuery
+      .andWhere("type.name = :type", { type: searchEvent.type }) : buildQuery
 
     // event level
-    buildQuery = searchEvent.level != null ? buildQuery
+    searchEvent.level != null ? buildQuery
       .andWhere("events.level = :level", { level: searchEvent.level }) : buildQuery
 
     // event direction
-    buildQuery = searchEvent.direction != null ? buildQuery
+    searchEvent.direction != null ? buildQuery
       .andWhere("events.direction = :direction", { direction: searchEvent.direction }) : buildQuery
 
     // event dateStart
-    buildQuery = searchEvent.dateStart != null ? buildQuery
+    searchEvent.dateStart != null ? buildQuery
       .andWhere("events.dateStart >= :dateStart", { dateStart: searchEvent.dateStart }) : buildQuery
 
     // event dateEnd
-    buildQuery = searchEvent.dateEnd != null ? buildQuery
+    searchEvent.dateEnd != null ? buildQuery
       .andWhere("events.dateEnd <= :dateEnd", { dateEnd: searchEvent.dateEnd }) : buildQuery
 
     return await buildQuery.getManyAndCount()
@@ -116,16 +125,23 @@ export class EventsService {
     return this.eventsRepository.findOne({ where: { id: id }, relations: { level: true, type: true, direction: true } });
   }
 
+
+
   async update(id: number, updateEventDto: UpdateEventDto) {
+
+    let status = (await this.dictionaryService.findAll(new DictionaryDto(updateEventDto.status, 6)))[0]
 
     let event = await this.eventsRepository.save({
       id,
       date_update: new Date(),
       ...updateEventDto,
+      status: status
     })
 
     return event
   }
+
+
 
   remove(id: number) {
     return `This action removes a #${id} event`;
@@ -198,8 +214,10 @@ export class EventsService {
       .addSelect("team")
       .leftJoin("journals.event", "event")
       .addSelect("event")
+
     buildQuery = id != null ? buildQuery
       .andWhere("journals.user_id = :id", { id: id }) : buildQuery
+
     return buildQuery.getManyAndCount()
   }
 
@@ -272,15 +290,18 @@ export class EventsService {
       // type_team: "teams",
       // creation_date: new Date()
     })
-    console.log(journal)
+    // console.log(journal)
     return journal;
   }
 
 
   async create(createEventDto: CreateEventDto): Promise<Event> {
 
+    let status = (await this.dictionaryService.findAll(new DictionaryDto("Создана", 6)))[0]
+
     let event = await this.eventsRepository.save({
       ...createEventDto,
+      status: status
       // image: [],
       // tags: [],
       // type_team: "teams",

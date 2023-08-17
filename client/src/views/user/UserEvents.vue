@@ -1,12 +1,6 @@
 <template>
     <!-- dropdowns -->
     <div class="row my-3">
-        <div class="col-auto">
-            <label class="form-label fw-bold">Направление</label>
-            <select class="form-select" aria-label="Direction" v-model="selectedDirection" @change="fetchEvents()">
-                <option v-for="direction in directions" :value="direction.id">{{ direction.name }}</option>
-            </select>
-        </div>
 
         <div class="col-auto">
             <label class="form-label fw-bold">Статус</label>
@@ -27,10 +21,10 @@
 
             <div v-else v-for="event in events">
                 <!-- карточка -->
-                <CardApprove :positive-border-color="event.status && event.status.name == Status.ACCEPTED">
+                <CardApprove :positive-border-color="event.status">
 
                     <template #title>
-                        {{ event.title }}
+                        ({{ event.direction ? event.direction.name : "-" }}) {{ event.title }}
                     </template>
 
                     <template #time>
@@ -38,26 +32,6 @@
                     </template>
 
                     <template #body>
-                        <!-- initiator -->
-                        <div class="row">
-                            <!-- Инициатор -->
-                            <div class="col-auto">
-                                <div class="style-elem">Инициатор:</div>
-                            </div>
-                            <div class="col-auto">{{ event.user ? event.user.fullname : "-" }}</div>
-
-                            <div class="col-auto">
-                                <!-- email -->
-                                <div class="style-elem">email:</div>
-                            </div>
-                            <div class="col-auto">{{ event.user ? event.user.email : "-" }}</div>
-
-                            <!-- тел -->
-                            <div class="col-auto">
-                                <div class="style-elem">тел:</div>
-                            </div>
-                            <div class="col-auto">{{ event.user ? event.user.phone : "-" }}</div>
-                        </div>
 
                         <div class="row">
                             <div class="col-auto">
@@ -88,22 +62,17 @@
 
                     </template>
 
-                    <template #link>
-                        <router-link :to="'/event/' + event.id">
-                            <a href="#">Подробнее &rarr;</a>
-                        </router-link>
-                    </template>
 
                     <template #footer>
                         <div class="col-auto">
                             <div class="fw-bold">Статус:</div>
                         </div>
                         <div class="col-auto">
-                            <div v-if="event.status && event.status.name == Status.ACCEPTED">
+                            <div v-if="event.status">
                                 <font-awesome-icon icon="check-circle" class="text-success" />
                                 принято
                             </div>
-                            <div v-else-if="event.status && event.status.name == Status.CANCELLED">
+                            <div v-else-if="event.status != null">
                                 <font-awesome-icon icon="circle-xmark" class="text-danger" />
                                 отклонено
                             </div>
@@ -116,13 +85,13 @@
 
                     <template #buttons>
                         <div class="col d-flex justify-content-end">
-                            <button class="button btn-custom-accept" @click="changeStatus(event.id, Status.ACCEPTED)">
-                                принять
+                            <button class="button btn-custom-accept" @click="updateEvent(event.id)">
+                                Редактировать
                             </button>
                         </div>
                         <div class="col-auto">
-                            <button class="button" @click="changeStatus(event.id, Status.CANCELLED)">
-                                отклонить
+                            <button class="button" @click="deleteEvent(event.id)">
+                                Удалить
                             </button>
                         </div>
                     </template>
@@ -143,47 +112,52 @@
 
 import Pagination from '@/components/Pagination.vue';
 import { useEventStore } from '@/store/events_store';
-import { useEventStore as useSingleEvent } from '@/store/event_store';
-import { DIRECTION } from '@/store/constants/constants_class_names';
 
 import { onBeforeMount, ref } from 'vue';
 import { useDictionaryStore } from '@/store/dictionary_store';
 import CardApprove from '@/components/CardApprove.vue';
-import { Type, Status } from '@/store/enums/enum_event';
+import { Status, Type } from '@/store/enums/enum_event';
 import { Event } from '@/store/models/events.model';
 
 
 const eventsStore = useEventStore();
-const singleEvent = useSingleEvent();
 const dictionaryStore = useDictionaryStore();
 
+const props = defineProps<{
+    idUser: number,
+}>()
+
+
 const events = ref()
-const directions = ref([{ id: 0, name: "Все" }])
 const status = [
     { id: 0, name: "Принятные", value: Status.ACCEPTED },
     { id: 1, name: "Отклоненные", value: Status.CANCELLED },
     { id: 2, name: "В рассмотрении", value: Status.CREATED },
     { id: 3, name: "Все", value: Status.ALL }]
 
+
 // загрузка
 const loading = ref(false)
 
 // dropdowns
-const selectedDirection = ref(0)
 const selectedStatus = ref(2)
 
 //pagination ---------------------------------------------------------------------
-let limit = 5 //сколько  отображается на странице
-const offset = ref(0) //сколько  пропустить прежде чем отобразить
+const limit = 5 //сколько  отображается на странице
 
 const maxPages = ref(1)
 const visiblePages = 7
 //pagination ---------------------------------------------------------------------
 
+const eventFilter = ref(new Event())
+
 onBeforeMount(async () => {
-    let direct = await dictionaryStore.getFromDictionaryByClassID(DIRECTION)
-    directions.value = direct
-    directions.value.unshift({ id: 0, name: "Все" })
+
+    eventFilter.value.limit = limit
+    eventFilter.value.offset = 0
+    eventFilter.value.type = Type.OUTSIDE
+    eventFilter.value.direction = null
+    eventFilter.value.user_id = props.idUser
 
     await fetchEvents()
 })
@@ -192,15 +166,9 @@ async function fetchEvents() {
 
     loading.value = true
 
-    const sDirection = selectedDirection.value > 0 ? selectedDirection.value : null
-    let event = new Event()
-    event.limit = limit
-    event.offset = offset.value
-    event.type = Type.OUTSIDE
-    event.status = status[selectedStatus.value].value
-    event.direction = sDirection
-    
-    let d = await eventsStore.fetchEvents(event)
+    eventFilter.value.status = status[selectedStatus.value].value
+
+    let d = await eventsStore.fetchEvents(eventFilter.value)
     events.value = d[0]
 
     const eventsCount = d[1]
@@ -210,16 +178,18 @@ async function fetchEvents() {
 }
 
 async function handleEventChangePage(currentPage: number) {
-    offset.value = (currentPage - 1) * limit
+    eventFilter.value.offset = (currentPage - 1) * limit
 
     await fetchEvents()
 }
 
-async function changeStatus(id: number, status: Status) {
-    await singleEvent.updateEvent(id, status)
-    await fetchEvents()
+async function updateEvent(id: number) {
+
 }
 
+async function deleteEvent(id: number) {
+
+}
 </script>
   
 

@@ -26,8 +26,8 @@ export class CreateEventDto {
     dateEndRegistration: Date
 
   
-    @IsBoolean()
-    status: boolean // статус
+    // @IsBoolean()
+    // status: string // статус
   
 
     @IsNumber()

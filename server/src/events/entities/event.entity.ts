@@ -100,10 +100,6 @@ export class Event {
     
     @ApiProperty()
     @Column({ nullable: true })
-    status: boolean // статус
-
-    @ApiProperty()
-    @Column({ nullable: true })
     phone: string // телефон
 
     @ApiProperty()
@@ -132,6 +128,11 @@ export class Event {
     @ManyToOne((type) => User, (user) => user.id, {onDelete:"SET NULL"})
     @JoinColumn([{ name: "user_id" }])
     user: User
+
+    @ApiProperty()
+    @ManyToOne(() => Dictionary, (dict) => dict.id)
+    @JoinColumn([{ name: "status_id"}])
+    status: Dictionary // формат проведения
 
     @ApiProperty()
     @ManyToOne(() => Dictionary, (dict) => dict.id)

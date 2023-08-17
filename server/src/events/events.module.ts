@@ -9,10 +9,11 @@ import { Journal } from './entities/journal.entity';
 import { Dictionary } from 'src/general/entities/dictionary.entity';
 import { UserFunction } from 'src/users/entities/user_function.entity';
 import { UsersService } from 'src/users/users.service';
+import { GeneralService } from 'src/general/general.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Event,Journal, Dictionary, Team, User, UserFunction, Function])],
   controllers: [EventsController],
-  providers: [EventsService, UsersService]
+  providers: [EventsService, UsersService, GeneralService]
 })
 export class EventsModule {}
