@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer'
 import { IsNumber, IsOptional} from 'class-validator'
 
-export class UpdateRequisitionDto {
+export class RequisitionDto {
 
     @IsOptional()
     status_name:string

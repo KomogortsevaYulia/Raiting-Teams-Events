@@ -9,7 +9,7 @@ import { Team } from './entities/team.entity';
 import { UsersService } from '../users/users.service';
 import { SearchTeamDto } from './dto/search-team.dto';
 import { Requisitions } from './entities/requisition.entity';
-import { UpdateRequisitionDto } from './dto/update-requisition.dto';
+import { RequisitionDto } from './dto/update-requisition.dto';
 import { GeneralService } from '../general/general.service';
 import { DictionaryDto } from 'src/general/dto/dictionary.dto';
 import { UserFunctionDto } from 'src/users/dto/user-functions.dto';
@@ -173,24 +173,24 @@ export class TeamsService {
     } else { //если не все параметры, то ищем через 'и'
 
       //if title (если у нас есть тайтл то ищем по нему)
-      query = params.title ? query.andWhere("LOWER(teams.title) like :title", { title: `%${params.title}%` }) : query
+      params.title ? query.andWhere("LOWER(teams.title) like :title", { title: `%${params.title}%` }) : query
       //if description
-      query = params.description ? query.andWhere("LOWER(teams.description) like :description", { description: `%${params.description}%` }) : query
+      params.description ? query.andWhere("LOWER(teams.description) like :description", { description: `%${params.description}%` }) : query
       //if description
-      query = params.tags ? query.andWhere("LOWER(teams.tags) like :tags", { tags: `%${params.tags}%` }) : query
+      params.tags ? query.andWhere("LOWER(teams.tags) like :tags", { tags: `%${params.tags}%` }) : query
     }
 
     //отфильтровать по направлению
-    query = params.directions ? query.andWhere("teams.id_parent in (:...id_parents)", { id_parents: params.directions }) : query
+    params.directions ? query.andWhere("teams.id_parent in (:...id_parents)", { id_parents: params.directions }) : query
 
     if (params.is_archive != null) {
       //отфильтровать по типу коллектива
-      query = query.andWhere("teams.is_archive = :is_archive", { is_archive: params.is_archive })
+      query.andWhere("teams.is_archive = :is_archive", { is_archive: params.is_archive })
     }
 
     // набор
     if (params.set_open != null) {
-      query = query.andWhere("teams.set_open = :set_open", { set_open: params.set_open })
+      query.andWhere("teams.set_open = :set_open", { set_open: params.set_open })
     }
 
     return query
@@ -268,14 +268,14 @@ export class TeamsService {
   // requisition --------------------------------------------------------------------
 
   // обновить заявку пользователя на вступление
-  async updateRequisition(id: number, updateRequisitionDto: UpdateRequisitionDto) {
+  async updateRequisition(id: number, updateRequisitionDto: RequisitionDto) {
 
     const dict_class_id = 6
 
     let findDict = null
 
-    const dd = new DictionaryDto( updateRequisitionDto.status_name, dict_class_id)
- 
+    const dd = new DictionaryDto(updateRequisitionDto.status_name, dict_class_id)
+
 
     // найти знаечние в словаре,чтобы ид получить
     if (updateRequisitionDto.status_name) {
@@ -296,7 +296,7 @@ export class TeamsService {
   }
 
 
-  async findAllRequisitions(team_id: number = null, reqDto: UpdateRequisitionDto): Promise<Requisitions[]> {
+  async findAllRequisitions(team_id: number = null, reqDto: RequisitionDto): Promise<Requisitions[]> {
 
     const rejectStatus = "Принята"
 
@@ -312,11 +312,12 @@ export class TeamsService {
       .leftJoin("form_field.form", "form")
       // .addSelect(["form.id"])
       .where("form.team_id = :team_id", { team_id })
+      .orWhere("requisition.team_id = :team_id", { team_id })
       // пользователей с этим статусом н показывать
 
       .orderBy("status.name", "DESC")
 
-    query = reqDto.user_id ? query.andWhere("user.id = :user_id", { user_id: reqDto.user_id })
+    reqDto.user_id ? query.andWhere("user.id = :user_id", { user_id: reqDto.user_id })
       : query.andWhere("status.name != :rejectStatus", { rejectStatus: rejectStatus })
 
     return await query.getMany();
@@ -329,7 +330,7 @@ export class TeamsService {
       where: { id: req_id },
       relations: {
         user: true,
-        team:true,
+        team: true,
         requisition_fields: {
           form_field: {
             form: {

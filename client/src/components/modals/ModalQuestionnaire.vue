@@ -2,13 +2,19 @@
 import { onBeforeMount, ref } from 'vue';
 import { useFormStore } from "@/store/form_store"
 import { useRoute } from "vue-router";
+import { useTeamStore } from '@/store/team_store';
+import { usePermissionsStore } from '@/store/permissions_store';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+const permissions_store = usePermissionsStore();
+
+const teamStore = useTeamStore();
 const route = useRoute()
 
 const idTeam = Number(route.params.id);
 
 const formStore = useFormStore()
-
+const userReq = ref() //проверить не подавал ли уже юзер заявку в этот колелктив
 const data = ref()
 
 defineProps({
@@ -19,6 +25,7 @@ defineProps({
 
 onBeforeMount(async () => {
   fetchFormFields()
+  fetchRequisition() //проверить не подавал ли уже юзер заявку в этот колелктив
 })
 
 async function fetchFormFields() {
@@ -28,6 +35,12 @@ async function fetchFormFields() {
 async function checkRequired() {
   
 }
+
+
+async function fetchRequisition() {
+  userReq.value = await teamStore.fetchRequisitions(idTeam, permissions_store.user_id)
+}
+
   //  export default {
   //   name: "ModalQuestionnaire",
   //   props: {
@@ -51,9 +64,12 @@ async function checkRequired() {
 </script>
 
 <template>
-  <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+
+  <button v-if="userReq==null || userReq.length<=0" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Подать заявку
   </button>
+  <div v-else class="">Заявка "{{userReq[0].status ? userReq[0].status.name : "Подана"}}"<FontAwesomeIcon icon="feather"/></div>
+
   <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">

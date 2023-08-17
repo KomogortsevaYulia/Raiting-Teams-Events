@@ -13,7 +13,7 @@ import { Requisitions } from './entities/requisition.entity';
 import { Request } from 'express';
 import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe';
 import { FileImageValidationPipe } from 'src/uploads/validation/image_file.validation.pipe';
-import { UpdateRequisitionDto } from './dto/update-requisition.dto';
+import { RequisitionDto } from './dto/update-requisition.dto';
 import { LocalAuthGuard } from 'src/users/local-auth.guard';
 import { User } from 'src/general/decorators/user.decorator';
 
@@ -243,7 +243,7 @@ export class TeamsController {
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async userRequisitionByTeam(@Param('team_id') team_id: number, @Query() reqDto: UpdateRequisitionDto): Promise<Requisitions[]> {
+  async userRequisitionByTeam(@Param('team_id') team_id: number, @Query() reqDto: RequisitionDto): Promise<Requisitions[]> {
 
     const requisitions = await this.teamsService.findAllRequisitions(team_id, reqDto)
 
@@ -251,7 +251,7 @@ export class TeamsController {
   }
 
   @Get("requisition/:id")
-  @ApiOperation({ summary: "Получить список заявок в коллектив по ид" })
+  @ApiOperation({ summary: "Получить список заявок в коллектив по ид заявки" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор запроса" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
@@ -269,7 +269,7 @@ export class TeamsController {
   @ApiParam({ name: "id", required: true, description: "Идентификатор" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  async updateRequisition(@User() userId: number, @Param('id') req_id: number, @Body() updateRequisitionDto: UpdateRequisitionDto) {
+  async updateRequisition(@User() userId: number, @Param('id') req_id: number, @Body() updateRequisitionDto: RequisitionDto) {
 
     const requisition = await this.teamsService.findRequisition(req_id)
     const hasPermissions = await this.usersService.hasPermissionsInTeam(userId, requisition.team.id, ["special"])
