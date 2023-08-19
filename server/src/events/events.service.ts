@@ -54,7 +54,9 @@ export class EventsService {
 
   }
 
-
+  async deleteEvent(id: number) {
+    return await this.eventsRepository.delete(id)
+  }
 
   // конструктор запроса для получения мероприятия по нужным параметрам
   //если параметр был выбран, то добавляем его в запрос (И)
@@ -83,7 +85,7 @@ export class EventsService {
     searchEvent.offset != null ? buildQuery.skip(searchEvent.offset) : buildQuery
     // user id
     searchEvent.user_id != null ? buildQuery
-    .andWhere("user.id = :user_id", { user_id: searchEvent.user_id }) : buildQuery
+      .andWhere("user.id = :user_id", { user_id: searchEvent.user_id }) : buildQuery
 
     //id 
     searchEvent.id != null ? buildQuery

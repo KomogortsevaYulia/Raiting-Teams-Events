@@ -1,4 +1,7 @@
 export type Permission =
+    // admin
+    | 'can edit all events'
+    | 'can edit all teams'
     // Отвественный за ИРНИТУ //
     | 'can create teams' //+
     | 'can view directions' //+
@@ -10,6 +13,7 @@ export type Permission =
 
     // Руководитель коллектива
     | 'can view teams reports'
+    | 'can edit own teams' //+
     | 'can edit status requisitions'
     | 'can create questionnaires'
     | 'can create team roles'
@@ -21,4 +25,5 @@ export type Permission =
 
     // Пользователь
     | 'can create events'
+    | 'can edit own events'
     ;

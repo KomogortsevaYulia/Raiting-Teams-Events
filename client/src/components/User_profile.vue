@@ -30,8 +30,8 @@ function OnExitSubmit() {
 </script>
 
 <template>
-    <section class="DropdownWrapper__menu" v-click-outside="ClickOutside">
-        <div class="dropDownMenuButton px-3 text-center d-flex" @click="openClose" tabindex="0">
+    <section class="DropdownWrapper__menu " v-click-outside="ClickOutside">
+        <div class="dropDownMenuButton align-items-center d-flex  px-3 text-center " @click="openClose" tabindex="0">
             <label class="pe-3">{{ permissions_store.fullname }}</label>
           
             <!--  -->

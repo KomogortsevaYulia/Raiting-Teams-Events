@@ -2,12 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, P
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { CreateJournalDto } from './dto/create-journal.dto';
-import { UpdateJournalDto } from './dto/update-journal.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Event } from './entities/event.entity';
 import { SearchEventDto } from './dto/search-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { LocalAuthGuard } from 'src/users/local-auth.guard';
+import { LocalAuthGuard } from 'src/users/guard/local-auth.guard';
+import { User } from 'src/general/decorators/user.decorator';
+import { PermissionsGuard } from 'src/users/guard/check-permissions.guard';
 
 @ApiTags('events')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('events')
@@ -15,13 +16,31 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) { }
 
   @Put(':id')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create events'])
   @ApiOperation({ summary: "обновить мерприятие" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: [Event] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
   update(@Param("id") id: number, @Body() updateEventDto: UpdateEventDto) {
     return this.eventsService.update(id, updateEventDto);
+  }
+
+  @Delete("/:id")
+  @ApiOperation({ summary: "Удаление мероприятия по id" })
+  @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
+  async deleteEvent(@User() userId: number, @Param('id') event_id: number) {
+
+    // const searchDto = new SearchEventDto()
+    // searchDto.id = event_id
+    // searchDto.user_id = userId
+    // // проверить является ли юзер владельцем мероприятия
+    // const userEvent = await this.eventsService.findAllEvents(searchDto);
+    // if (userEvent || userEvent.) {
+
+    // }
+
+    return await this.eventsService.deleteEvent(event_id);
   }
 
   @Get('/external')
@@ -69,10 +88,8 @@ export class EventsController {
     return this.eventsService.findAllEvents(searchEvent);
   }
 
-
-
   @Post()
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create events'])
   @ApiOperation({ summary: "Создать новое мероприятие" })
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })

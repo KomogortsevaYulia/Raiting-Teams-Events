@@ -29,4 +29,6 @@ export class Function {
 
     @OneToMany((type) => UserFunction, (uf) => uf.function, {cascade:true})
     userFunctions: UserFunction[]
+
+    usersCount:number
 }

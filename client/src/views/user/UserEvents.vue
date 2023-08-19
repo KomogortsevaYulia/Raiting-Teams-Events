@@ -1,3 +1,88 @@
+<script setup lang="ts">
+
+import Pagination from '@/components/Pagination.vue';
+import { useEventStore } from '@/store/events_store';
+
+import { onBeforeMount, ref } from 'vue';
+import { useDictionaryStore } from '@/store/dictionary_store';
+import CardApprove from '@/components/CardApprove.vue';
+import { Status, Type } from '@/store/enums/enum_event';
+import { Event } from '@/store/models/events.model';
+
+
+const eventsStore = useEventStore();
+const dictionaryStore = useDictionaryStore();
+
+const props = defineProps<{
+    idUser: number,
+}>()
+
+
+const events = ref()
+const status = [
+    { id: 0, name: "Принятные", value: Status.ACCEPTED },
+    { id: 1, name: "Отклоненные", value: Status.CANCELLED },
+    { id: 2, name: "В рассмотрении", value: Status.CREATED },
+    { id: 3, name: "Все", value: Status.ALL }]
+
+
+// загрузка
+const loading = ref(false)
+
+// dropdowns
+const selectedStatus = ref(2)
+
+//pagination ---------------------------------------------------------------------
+const limit = 5 //сколько  отображается на странице
+
+const maxPages = ref(1)
+const visiblePages = 7
+//pagination ---------------------------------------------------------------------
+
+const eventFilter = ref(new Event())
+
+onBeforeMount(async () => {
+
+    eventFilter.value.limit = limit
+    eventFilter.value.offset = 0
+    eventFilter.value.type = Type.OUTSIDE
+    eventFilter.value.direction = null
+    eventFilter.value.user_id = props.idUser
+
+    await fetchEvents()
+})
+
+async function fetchEvents() {
+
+    loading.value = true
+
+    eventFilter.value.status = status[selectedStatus.value].value
+
+    let d = await eventsStore.fetchEvents(eventFilter.value)
+    events.value = d[0]
+
+    const eventsCount = d[1]
+    maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1
+    loading.value = false
+
+}
+
+async function handleEventChangePage(currentPage: number) {
+    eventFilter.value.offset = (currentPage - 1) * limit
+
+    await fetchEvents()
+}
+
+async function updateEvent(id: number) {
+
+}
+
+async function deleteEvent(id: number) {
+   await eventsStore.deleteEvent(id)
+}
+
+</script>
+
 <template>
     <!-- dropdowns -->
     <div class="row my-3">
@@ -105,94 +190,6 @@
         <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
     </div>
 </template>
-  
-
-
-<script setup lang="ts">
-
-import Pagination from '@/components/Pagination.vue';
-import { useEventStore } from '@/store/events_store';
-
-import { onBeforeMount, ref } from 'vue';
-import { useDictionaryStore } from '@/store/dictionary_store';
-import CardApprove from '@/components/CardApprove.vue';
-import { Status, Type } from '@/store/enums/enum_event';
-import { Event } from '@/store/models/events.model';
-
-
-const eventsStore = useEventStore();
-const dictionaryStore = useDictionaryStore();
-
-const props = defineProps<{
-    idUser: number,
-}>()
-
-
-const events = ref()
-const status = [
-    { id: 0, name: "Принятные", value: Status.ACCEPTED },
-    { id: 1, name: "Отклоненные", value: Status.CANCELLED },
-    { id: 2, name: "В рассмотрении", value: Status.CREATED },
-    { id: 3, name: "Все", value: Status.ALL }]
-
-
-// загрузка
-const loading = ref(false)
-
-// dropdowns
-const selectedStatus = ref(2)
-
-//pagination ---------------------------------------------------------------------
-const limit = 5 //сколько  отображается на странице
-
-const maxPages = ref(1)
-const visiblePages = 7
-//pagination ---------------------------------------------------------------------
-
-const eventFilter = ref(new Event())
-
-onBeforeMount(async () => {
-
-    eventFilter.value.limit = limit
-    eventFilter.value.offset = 0
-    eventFilter.value.type = Type.OUTSIDE
-    eventFilter.value.direction = null
-    eventFilter.value.user_id = props.idUser
-
-    await fetchEvents()
-})
-
-async function fetchEvents() {
-
-    loading.value = true
-
-    eventFilter.value.status = status[selectedStatus.value].value
-
-    let d = await eventsStore.fetchEvents(eventFilter.value)
-    events.value = d[0]
-
-    const eventsCount = d[1]
-    maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1
-    loading.value = false
-
-}
-
-async function handleEventChangePage(currentPage: number) {
-    eventFilter.value.offset = (currentPage - 1) * limit
-
-    await fetchEvents()
-}
-
-async function updateEvent(id: number) {
-
-}
-
-async function deleteEvent(id: number) {
-
-}
-</script>
-  
-
 
 
 <style lang="scss" scoped>

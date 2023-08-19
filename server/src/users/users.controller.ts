@@ -9,8 +9,9 @@ import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 import { UserFunction } from './entities/user_function.entity';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from './guard/local-auth.guard';
 import { UserFunctionDto } from './dto/user-functions.dto';
+import { PermissionsGuard } from './guard/check-permissions.guard';
 
 
 @ApiTags('users')  // <---- Отдельная секция в Swagger для всех методов контроллера
@@ -122,7 +123,7 @@ export class UsersController {
 
 
   @Post('functions')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Создать функцию для пользователя" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
@@ -132,7 +133,7 @@ export class UsersController {
   }
 
   @Put('functions/:id')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Обновить функцию для пользователя" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
@@ -153,7 +154,7 @@ export class UsersController {
   // function--------------------------------------------------------------------
 
   @Delete('team/:id_team/user/:id_user')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Удалить роль юзера из коллектива" })
   @ApiParam({ name: "id_team", required: true, description: "ид коллектива" })
@@ -177,7 +178,7 @@ export class UsersController {
 
   //user functions---------------------------------------------------------------
   @Post('userFunctions')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Создать функцию userFunctions" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
@@ -187,7 +188,7 @@ export class UsersController {
   }
 
   @Delete('user-functions/:id')
-    @UseGuards(LocalAuthGuard)
+    @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create team roles'])
   @ApiOperation({ summary: "Удалить функцию userFunctions" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })
@@ -205,7 +206,7 @@ export class UsersController {
   }
 
   @Post('user-functions/new-participant')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can edit status requisitions'])
   @ApiOperation({ summary: "создать нового учатстника коллектива" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: UserFunction })

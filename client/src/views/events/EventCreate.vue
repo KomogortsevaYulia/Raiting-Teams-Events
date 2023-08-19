@@ -4,7 +4,7 @@ import { onBeforeMount, ref, computed } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { useEventStore } from '@/store/event_store';
 
-const teamStore = useEventStore();
+const eventStore = useEventStore();
 
 const title = ref();
 const description = ref();

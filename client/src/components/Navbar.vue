@@ -32,53 +32,55 @@ const itemLink = [
                 aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Переключатель навигации">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <div class="collapse navbar-collapse " id="navbarTogglerDemo02">
                 <!-- Здесь перебираем элементы из массива менюшек -->
-                <div class="navbar__item-link row">
+                <div class="navbar__item-link  row w-100 justify-content-center ">
                     <div v-for="item in itemLink" class="link-item col-auto">
                         <RouterLink class="link" active-class="active" :to="item.path">
-                            <p>{{ item.name }}</p>
+                            <p class="align-items-center d-flex">{{ item.name }}</p>
                         </RouterLink>
                     </div>
 
                     <div v-if="can('can view directions')" class="link-item col-auto">
 
                         <RouterLink class="link" active-class="active" :to="'/statistic'">
-                            <p>Статистика</p>
+                            <p class="align-items-center d-flex">Статистика</p>
                         </RouterLink>
 
                     </div>
 
                     <div v-if="can('can view directions')" class="link-item col-auto">
                         <RouterLink class="link" active-class="active" :to="'/directions'">
-                            <p>Направления</p>
+                            <p class="align-items-center d-flex">Направления</p>
                         </RouterLink>
                     </div>
-                </div>
 
+
+                </div>
                 <!-- Кнопка вход + Личный кабинет-->
-                <div class="navbar__item-login ">
+                <div class="navbar__item-login  justify-content-center d-flex">
                     <User_Profile v-if="permissions_store.isLogged" />
                     <RouterLink v-if="!permissions_store.isLogged" to="/login">
                         <button class="login-button">Войти</button>
                     </RouterLink>
                 </div>
+
             </div>
         </div>
     </nav>
-
-
 </template>
 
 <style lang="scss" scoped>
 @import '@/assets/globals.scss';
 
-.navbar-toggler{
+.navbar-toggler {
     background: none;
-    &:hover{
+
+    &:hover {
         background: none;
     }
 }
+
 // Блок
 .navbar-wrapper {
     background-color: white;

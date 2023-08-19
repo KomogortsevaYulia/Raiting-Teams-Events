@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
-import WIP from '@/components/WIP.vue';
 import { useTeamStore } from '@/store/team_store';
-import { DirectionName } from '@/store/enums/enum_teams';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const selectedItem = ref(0);
 const showCreate = ref(false);
@@ -19,7 +18,7 @@ const teamStore = useTeamStore();
 // ]
 
 onBeforeMount(async () => {
-   await getDirections()
+    await getDirections()
 })
 
 const selectItem = (i: number) => {
@@ -48,20 +47,35 @@ async function getDirections() {
         <div class="wrapper-team__create">
             <div v-for="(direction, index) in directions" :key="index">
                 <div class="content" v-if="(index == selectedItem && !showCreate)">
-                    <label>Руководитель направления</label>
-                    <a v-if="direction.functions[0] &&
-                     direction.functions[0].userFunctions[0]">{{ direction.functions[0].userFunctions[0].user.fullname}} {{
-                        direction.shortname }}</a>
-                    <a v-else> Руководитель не назначен</a>
-                    <div class="btn">
-                        <button v-on:click="(showCreate = true)">Изменить</button>
+                    <!--description  -->
+                    <p>({{ direction.shortname }}) {{ direction.description }}</p>
+                    <div class="alert alert-info">
+                        <div v-if="direction.functions[0] &&
+                            direction.functions[0].userFunctions[0]">
+                            <p>
+                                Руководитель: {{ direction?.functions[0]?.userFunctions[0]?.user?.fullname }}
+                            </p>
+
+                            <p>Почта: {{ direction?.functions[0]?.userFunctions[0]?.user?.email ?? "-" }}</p>
+                            <p>Телефон: {{ direction?.functions[0]?.userFunctions[0]?.user?.phone ?? "-" }}</p>
+                        </div>
+                        <div v-else> Руководитель не назначен</div>
+                        <p>Аудитория: {{ direction.cabinet ?? "-" }}</p>
                     </div>
+
                 </div>
             </div>
+            <div class="">
+                <button>Рейтинговая стипендия <FontAwesomeIcon icon="arrow-right"/></button>
+            </div>
+
+            <!-- <div class="btn">
+                <button v-on:click="(showCreate = true)">Изменить</button>
+            </div> -->
         </div>
 
         <!-- Форма с полями для создания -->
-        <div class="wrapper-team__create">
+        <!-- <div class="wrapper-team__create">
             <form v-if="showCreate" class="form-team__create">
                 <div class="create-filds">
                     <div class="filds-area">
@@ -72,8 +86,7 @@ async function getDirections() {
                     </div>
                 </div>
             </form>
-        </div>
-        <WIP />
+        </div> -->
     </div>
 </template>
 

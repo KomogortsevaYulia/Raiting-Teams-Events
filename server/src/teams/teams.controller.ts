@@ -14,8 +14,9 @@ import { Request } from 'express';
 import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe';
 import { FileImageValidationPipe } from 'src/uploads/validation/image_file.validation.pipe';
 import { RequisitionDto } from './dto/update-requisition.dto';
-import { LocalAuthGuard } from 'src/users/local-auth.guard';
+import { LocalAuthGuard } from 'src/users/guard/local-auth.guard';
 import { User } from 'src/general/decorators/user.decorator';
+import { PermissionsGuard } from 'src/users/guard/check-permissions.guard';
 
 @ApiTags('teams')  // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -66,7 +67,7 @@ export class TeamsController {
 
 
   @Put(":id/archive")
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create teams'])
   @ApiOperation({ summary: "Архивировать коллектив или наоборот" })
   @ApiResponse({ status: HttpStatus.OK, description: "Успешно" })
@@ -76,7 +77,7 @@ export class TeamsController {
   }
 
   @Put(':id')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create teams'])
   @ApiOperation({ summary: "Обновить коллектив (ответственный по направлению)" })
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
@@ -155,7 +156,7 @@ export class TeamsController {
   }
 
   @Post()
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can create teams'])
   @ApiOperation({ summary: "Создать новый коллектив (ответственный по направлению)" })
   @ApiBody({ description: "название коллектива, ФИО руководителя, описание проекта", required: true })
@@ -194,7 +195,7 @@ export class TeamsController {
 
 
   @Post(':id/image')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: "Загрузить изображение коллектива" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
@@ -263,7 +264,7 @@ export class TeamsController {
   }
 
   @Put("requisition/:id")
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', ['can edit status requisitions'])
   @ApiOperation({ summary: "обновить заявку в коллектив" })
   @ApiParam({ name: "id", required: true, description: "Идентификатор" })

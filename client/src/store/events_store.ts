@@ -6,15 +6,15 @@ import type { Event } from "./models/events.model";
 export const useEventStore = defineStore("events", () => {
 
   // type 4 is external
-  async function fetchEvents(event:Event): Promise<any> {
+  async function fetchEvents(event: Event): Promise<any> {
 
     let params = {
       ...event,
-      type: event.type != Type.ALL? event.type:null,
-      status:event.status!= Status.ALL? event.status:null,
+      type: event.type != Type.ALL ? event.type : null,
+      status: event.status != Status.ALL ? event.status : null,
     }
 
-   
+
     const res = await axios.get('api/events', { params: params })
 
     const data = res.data
@@ -41,6 +41,17 @@ export const useEventStore = defineStore("events", () => {
     return data[0]
   }
 
+  // удалить мероприятие
+  async function deleteEvent(id: number) {
+
+    const res = await axios.delete('api/events/' + id)
+
+    const data = res.data
+
+    return data
+  }
+
+
   async function getEventsViaJournalsByTeam(teamId: number, dateStart: Date, dateEnd: Date,
     type: number = 0, level: number = 0): Promise<any> {
 
@@ -64,7 +75,7 @@ export const useEventStore = defineStore("events", () => {
     dateStart: Date, dateEnd: Date, level: number = 0, type: number = 0
   ): Promise<any> {
 
-     
+
 
     let res = null
 
@@ -80,7 +91,7 @@ export const useEventStore = defineStore("events", () => {
         dateStart: dateStart.toISOString(), dateEnd: dateEnd.toISOString()
       }
     })
-   
+
     const data = res.data
 
     return data
@@ -175,6 +186,8 @@ export const useEventStore = defineStore("events", () => {
     menu_items,
     fetchEvents,
     fetchEventById,
+    deleteEvent,
+
     getEventsByDirection,
     getReportEventsOfDirection,
     getEventsViaJournalsByTeam,

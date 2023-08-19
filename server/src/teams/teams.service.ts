@@ -132,14 +132,10 @@ export class TeamsService {
       .leftJoin("teams.functions", "functions")
       // select direction
       .leftJoin("teams.id_parent", "direction")
-      .addSelect("direction.id")
-      .addSelect("functions.title")
-      .andWhere("functions.title = :head", { head: head })
-
+      // .andWhere("functions.title = :head", { head: head })
       .leftJoin("functions.userFunctions", "user_functions")
-      .addSelect("user_functions.id")
-      .leftJoinAndSelect("user_functions.user", "user")
-      // .addSelect("user.title_role")
+      .leftJoin("user_functions.user", "user")
+
       .orderBy("teams.id", "DESC")
 
     query = await this.filterTeam(params, query)
@@ -226,7 +222,8 @@ export class TeamsService {
 
     const directionsAndUsers = this.teamsRepository
       .createQueryBuilder("teams")
-      .select(["teams.shortname", "teams.type_team", "teams.id", "teams.title"])
+      .select(["teams.shortname", "teams.type_team", "teams.id", "teams.title", "teams.short_description",
+     "teams.description", "teams.cabinet"])
       .andWhere("teams.type_team = :type", { type: "direction" })
       .leftJoinAndSelect("teams.functions", "functions")
       .addSelect(["functions.title"])

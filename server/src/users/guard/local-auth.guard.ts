@@ -16,16 +16,8 @@ export class LocalAuthGuard implements CanActivate {
         const user = await this.usersService.findById(session.user_id);
         // вошел ли юзер?
         if (user && session.logged) {
-
-            // запросить разрешения с декоратора
-            const requiredPermissions = this.reflector.get<string[]>('permissions', context.getHandler());
-            if (!requiredPermissions) {
-                return true; // no permissions required, allow access
-            }
-            const userId:number = session.user_id;
-            return this.usersService.hasPermissions(userId, requiredPermissions);
+            return true
         }
-
 
         return false;
     }
