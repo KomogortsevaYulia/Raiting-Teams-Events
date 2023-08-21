@@ -177,9 +177,21 @@ content-type: application/json
     "username": "bossTeam"
 }
 
-###
+
+
+### general
 # DICTIONARY
 GET http://localhost:3000/api/general/dictionary/2
+
+### mail
+POST http://localhost:3000/api/general/mail HTTP/1.1
+content-type: application/json
+
+{
+    "to":"AkitaSpam@gmail.com"
+}
+
+
 
 
 # UPLOAD

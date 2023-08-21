@@ -36,11 +36,4 @@ export class GeneralService {
     return this.dictionaryRepository.findOneBy({ id: id });
   }
 
-  // update(id: number, updateGeneralDto: UpdateGeneralDto) {
-  //   return `This action updates a #${id} general`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} general`;
-  }
 }

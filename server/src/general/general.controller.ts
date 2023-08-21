@@ -1,18 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { GeneralService } from './general.service';
 import { DictionaryDto } from './dto/dictionary.dto';
+import { MailService } from './mail.service';
 
 @Controller('general')
 export class GeneralController {
-  constructor(private readonly generalService: GeneralService) { }
+  constructor(
+    private readonly generalService: GeneralService,
+    private readonly mailService: MailService) { }
 
-  // @Post()
-  // create(@Body() createGeneralDto: CreateGeneralDto) {
-  //   return this.generalService.create(createGeneralDto);
-  // }
 
   // dictionary------------------------------------------------------------------------------
-
 
   @Get("/dictionary")
   findAll(@Query() dictionaryDto:DictionaryDto) {
@@ -28,13 +26,10 @@ export class GeneralController {
   // dictionary------------------------------------------------------------------------------
 
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateGeneralDto: UpdateGeneralDto) {
-  //   return this.generalService.update(+id, updateGeneralDto);
+  // mail
+  // @Post('/mail')
+  // sendMail(@Body() params: any) {
+  //   return this.mailService.sendSomeEmail(params.to);
   // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.generalService.remove(+id);
-  }
 }
