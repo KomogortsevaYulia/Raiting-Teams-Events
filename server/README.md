@@ -4,13 +4,6 @@
 пароль во всех учетках "123", заходим по username
 ![image](https://user-images.githubusercontent.com/74527737/222896661-048ae0a0-723c-40ee-886a-be53151b1b9c.png)
 
-## Файлы на сервере
-
-сохраняются в папку public/media/{год.месяц}/{день}  - статичная папка на сервере
-uploads (папка) - отвечает за выгрузку и загрузку файлов на сервер, папки генерятся сами
-
-> важная ссылка: https://stackoverflow.com/questions/68019001/how-to-get-serve-static-images-nestjs
-
 
 ## Установка
 
@@ -37,19 +30,29 @@ backup.sql файл в папке server
 
      \i 'C:/Users/Yulia/Study/Raiting-Teams-Events/backup.sql'
 
-## Running the app
 
+#### Файл .env (настройка подкл. к БД)
+Нужно создать файл .env в папке server, примерно след вида:
+
+DB_NAME=raiting_team_events
+DB_USER=postgres
+DB_PASSWORD=root
+DB_HOST=localhost
+DB_PORT=5432
+
+SESSION_SECRET=my-secret
+
+## Running the app
+запуск сервера
+```bash
+npm run start:dev
+```
+
+
+# Доп. инфа
 
 ## Документация
 Swagger - документированые api-шки, http://localhost:3000/documentation
-
-
-
-```bash
-# watch mode
-$ npm run start:dev
-
-```
 
 ## Создание бэкапа
 
@@ -96,7 +99,16 @@ psql
 ```
 *что бы выйти из режима работы с БД нажать CTRL+Z
 
+
 ## Лайфхаки
 
 Заполнить бэкап данными, генератор
 https://poe.com/chatgpt
+
+## Файлы на сервере
+
+сохраняются в папку public/media/{год.месяц}/{день}  - статичная папка на сервере
+uploads (папка) - отвечает за выгрузку и загрузку файлов на сервер, папки генерятся сами
+
+> важная ссылка: https://stackoverflow.com/questions/68019001/how-to-get-serve-static-images-nestjs
+
