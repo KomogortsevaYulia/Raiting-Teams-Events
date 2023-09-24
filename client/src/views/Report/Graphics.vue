@@ -1,7 +1,7 @@
 <script setup  lang="ts">
+import EPie from '@/components/charts/EPie.vue';
 import type { TypeGraphic, TypeReport, TypeSeason } from './enums_report';
-import EPie from '@/components/Charts/EPie.vue';
-import EBar from '@/components/Charts/EBar.vue';
+import EBar from '@/components/charts/EBar.vue';
 
 const props = defineProps<{
     typeGraphics: {

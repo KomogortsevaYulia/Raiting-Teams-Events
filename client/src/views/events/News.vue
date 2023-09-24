@@ -176,6 +176,7 @@ function handleEventResetFilters() {
 </script>
 
 <style lang="scss" scoped>
+
 .events__container {
   display: flex;
   padding-top: 1rem;

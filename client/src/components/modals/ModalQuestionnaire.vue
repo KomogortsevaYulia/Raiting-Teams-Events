@@ -149,7 +149,6 @@ async function fetchRequisition() {
       display: flex;
       justify-content: space-between;
       .close-btn{
-        background: #FF502F;
         border-radius: 10px;
         color: white;
         cursor: pointer;

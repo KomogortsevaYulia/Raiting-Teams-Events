@@ -11,6 +11,7 @@ import { useTeamStore } from '@/store/team_store';
 import ModalCreateTeam from '@/components/modals/ModalCreateTeam.vue';
 import { FilterTeam } from '@/store/models/teams.model';
 import ModalFull from '@/components/modals/ModalFull.vue';
+import  Search from '@/components/Search.vue';
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -26,14 +27,6 @@ const isEditTeam = ref(false)
 const teamEdit = ref()
 
 const findTeamTxt = ref()
-
-
-// const filters = ref({
-//   directions: [0],
-//   is_archive: menu_items.value[2].menu_types[0].checked,
-//   is_active: menu_items.value[2].menu_types[1].checked,
-//   set_open: open
-// })
 
 const filterTeam = ref(new FilterTeam())
 
@@ -66,15 +59,6 @@ function editTeam(editT: boolean, team: any) {
   teamEdit.value = team
 }
 
-
-const fetchTeamsTimer = _.debounce(() => {
-  fetchTeams()
-}, 300)
-
-
-watch(findTeamTxt, () => {
-  fetchTeamsTimer()
-})
 
 
 // вытащить коллективы из бд 
@@ -196,6 +180,14 @@ async function handleEventChangePage(currentPage: number) {
   await fetchTeams()
 }
 
+async function handleTimerSearch(seachText: string) {
+  findTeamTxt.value = seachText
+
+  await fetchTeams()
+}
+
+
+
 //const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
 </script>
 
@@ -234,7 +226,7 @@ async function handleEventChangePage(currentPage: number) {
           <div class="row g-2">
 
             <div class="col">
-              <input class="search-inp" placeholder="Начните поиск..." v-model="findTeamTxt" />
+              <Search :handleTimerSearch="handleTimerSearch"/>
             </div>
             <!-- <div class="col-auto"> <input placeholder="Выберите дату" type="date" /></div> -->
 
@@ -393,24 +385,10 @@ async function handleEventChangePage(currentPage: number) {
       // margin-left: 2rem;
 
       .cards__search {
-        // display: flex;
-        // justify-content: space-between;
-        // padding-bottom: 1rem;
 
         .search-inp {
           width: 100%;
         }
-
-        input {
-          // margin: 0;
-          // height: 40px;
-          // width: 80%;
-        }
-
-        // .search-toggle {
-        //   display: flex;
-        //   padding-left: 1rem;
-        // }
       }
 
       .wrapper-grid {
@@ -436,7 +414,6 @@ async function handleEventChangePage(currentPage: number) {
 
           .cardTitle {
             color: #373737;
-            font-size: 1.2rem;
 
             &:hover {
               color: var(--main-color-hover);
@@ -479,8 +456,6 @@ async function handleEventChangePage(currentPage: number) {
           overflow: hidden;
 
           p {
-            font-weight: 100;
-            font-size: 1.4rem;
             margin: 4rem 0 0 1rem;
             color: #fff;
             position: absolute;
@@ -526,8 +501,6 @@ async function handleEventChangePage(currentPage: number) {
 
           .date {
             text-align: end;
-            font-size: 1.6rem;
-            font-weight: 100;
           }
         }
 
@@ -627,7 +600,6 @@ async function handleEventChangePage(currentPage: number) {
           .date {
             text-align: end;
             font-size: 1.6rem;
-            font-weight: 100;
           }
         }
 

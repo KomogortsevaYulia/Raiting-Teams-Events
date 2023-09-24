@@ -118,7 +118,6 @@ function setCurrentRequisition(req: any) {
 
 .member-info h1 {
     color: black;
-    font-weight: 400;
     font-size: 22px;
     line-height: 38px;
     padding-bottom: 10px;

@@ -1,5 +1,5 @@
 <script setup  lang="ts">
-import type { Direction } from '@/store/enums/enum_event';
+import type { DirectionId } from '@/store/enums/enum_event';
 import type { TypeReport } from './enums_report';
 import { ref } from 'vue';
 import { useEventStore } from '@/store/events_store';
@@ -11,7 +11,7 @@ const props = defineProps<{
     id: number;
     shortname: string;
     idDB: number;
-    idDirectionEvent: Direction;
+    idDirectionEvent: DirectionId;
   },
   typeReport: TypeReport,
   level: {

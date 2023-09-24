@@ -1,7 +1,13 @@
+@font-face {
+    font-family: 'Montserrat';
+    src: url('./fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+  }
+
+  
 :root {
-    --main-border-bottom: 5px solid #ff502f;
-    --main-color: #ff502f;
-    --main-color-hover: #fc745c;
+    --main-border-bottom: 5px solid #e3254b;
+    --main-color: #e3254b;
+    --main-color-hover: #AF1E3B;
     --main-border-card: 1px solid #d9d9d9;
     --main-navigation-color: #348498;
 
@@ -14,9 +20,10 @@
     --hover-elem:  0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
 
     // fonts
-    --font-family-title: 'Montserrat', sans-serif;
-    --font-family-primary: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";;
+    --font-family-title: 'Montserrat';
+    --font-family-primary: 'Montserrat';
 }
+
 
 // для элемента формы
 @mixin form-elem {
@@ -25,6 +32,8 @@
     border-radius: 0.25rem;
     padding: 0.6rem;
     background-color: #fff;
+    font-family: var(--font-family-primary);
+    
 
     &:focus {
         box-shadow: var(--hover-elem);
@@ -34,7 +43,10 @@
 
 body{
     font-family: var(--font-family-primary);
-    // font-weight: 600;
+    font-size:14px;
+}
+h1, h2, h3, h4{
+    font-weight: 400;
 }
 // Обёртка на формы
 .wrapper-content {
@@ -62,7 +74,7 @@ button {
     background-color: var(--main-color);
     color: #fff;
     font-family: var(--font-family-title);
-    font-weight: 600;
+    font-weight: 400;
 
 
     &:hover {
@@ -74,11 +86,6 @@ button {
         outline: none;
         box-shadow: 0 0 0 2px var(--second-color);
     }
-
-    // &:active {
-    //     transition: 0.3s;
-    //     background-color: #fd524c;
-    // }
 }
 
 input {

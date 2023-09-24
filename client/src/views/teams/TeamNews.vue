@@ -66,7 +66,6 @@ const newsList = [
         h2 {
             padding: 0;
             margin: 0;
-            font-weight: inherit;
             font-size: 32px;
         }
 

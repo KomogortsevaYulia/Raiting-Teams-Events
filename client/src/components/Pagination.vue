@@ -105,8 +105,8 @@ function range(from: number, to: number) {
 <style lang="scss" scoped>
 .pagination {
     .active-page {
-        background-color: var(--main-color-hover);
-        box-shadow: var(--main-color-hover) 0px 3px 8px;
+        background-color: var(--main-color);
+       
         border: none;
 
     }

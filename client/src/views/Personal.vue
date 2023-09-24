@@ -183,11 +183,11 @@ function editProfile() {
   .vc-arrow {
     width: 35px;
     height: 30px;
-    color: #fd524c;
+    color: var(--main-color);
   }
 
   .vc-header .vc-title {
-    color: #fd524c;
+    color: var(--main-color);
   }
 
   .vc-highlight-content-solid {
@@ -197,7 +197,7 @@ function editProfile() {
   button {
     background: none;
     padding: 0em;
-    color: #fd524c;
+    color: var(--main-color);
   }
 
   .block-content {

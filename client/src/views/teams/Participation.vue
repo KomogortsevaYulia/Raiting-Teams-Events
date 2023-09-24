@@ -57,9 +57,7 @@ async function cancelEditMode() {
 </script>
 <template>
     <div v-if="props.func.title === 'Руководитель'" class="mt-5">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter&family=Raleway&display=swap" rel="stylesheet">
+       
         <div class="about" style="margin-top: 20px;">
             <div class="member-card">
                 <!-- <img class="member-image" src="../assets/icon/event1.png" alt="" /> -->
@@ -167,8 +165,6 @@ async function cancelEditMode() {
 .member-info h1 {
     color: black;
 
-    font-style: normal;
-    font-weight: 400;
     font-size: 22px;
     line-height: 38px;
     padding-bottom: 10px;
@@ -176,31 +172,7 @@ async function cancelEditMode() {
 
 .member-info h2 {
     color: rgba(90, 90, 90, 1);
-    font-style: normal;
-    font-weight: 400;
-    font-size: 15px;
+    font-size: 16px;
     line-height: 24px;
 }
-
-// .member-buttons {
-//     display: flex;
-//     justify-content: end;
-// }
-
-// .member-buttons .button {
-//     background-color: rgba(217, 217, 217, 1);
-//     color: rgba(102, 102, 102, 1);
-
-//     width: 270px;
-//     padding: 10px;
-//     text-align: center;
-//     text-decoration: none;
-//     display: inline-block;
-//     font-family: 'Inter', serif;
-//     font-style: normal;
-//     font-weight: 400;
-
-//     line-height: 24px;
-//     margin-left: 15px;
-// }
 </style>

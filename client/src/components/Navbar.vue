@@ -20,7 +20,7 @@ const itemLink = [
 </script>
 
 <template>
-    <nav class="navbar navbar-wrapper navbar-expand-lg fixed-top p-1">
+    <nav class="navbar navbar-wrapper navbar-expand-lg fixed-top p-2">
         <div class="container-fluid mx-lg-6 mx-md-5">
             <!-- Иконка политеха -->
             <div class="navbar__item-logo">
@@ -109,7 +109,8 @@ const itemLink = [
                 color: #348498;
                 transition: 0.2s ease;
                 font-size: 14px;
-                font-weight: 600;
+                font-weight: 700;
+                text-transform: uppercase;
                 margin: 0;
                 font-family: var(--font-family-title);
 
@@ -138,16 +139,6 @@ const itemLink = [
             &:hover {
                 background: var(--main-color-hover);
                 transition: 0.3s;
-            }
-
-            &:focus {
-                outline: none;
-                box-shadow: 0 0 0 2px #ff746f;
-            }
-
-            &:active {
-                transition: 0.3s;
-                background-color: #fd524c;
             }
         }
     }

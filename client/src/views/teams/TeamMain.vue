@@ -90,25 +90,7 @@ async function addImage() {
   .wrapper-team__navigation {
     padding-bottom: 2rem;
 
-    a {
-      cursor: pointer;
-      font-family: var(--font-family-title);
-      font-weight: 600;
-      font-size: 14px;
-      transition: 0.3s;
-      color: #348498;
-      margin-inline: 1rem;
-      padding-bottom: 0.75rem;
-
-      &:hover {
-        color: var(--main-color);
-      }
-    }
-
-    // Первому элементу ставим отступ = 0, чтобы не выпирал
-    a:first-child {
-      margin-left: 0;
-    }
+   
 
     .active {
       color: var(--main-color);
@@ -149,7 +131,6 @@ async function addImage() {
         h2 {
           color: #000;
           font-size: 20px;
-          font-weight: 600;
           height: 2rem;
           font-family: var(--font-family-title);
         }

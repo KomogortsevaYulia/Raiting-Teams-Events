@@ -3,7 +3,6 @@ import axios from 'axios';
 import { onBeforeMount, ref } from 'vue';
 import { useFormStore } from "@/store/form_store"
 import { useRoute } from "vue-router";
-import { fi } from 'date-fns/locale';
 
 const route = useRoute()
 
@@ -281,7 +280,6 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
       }
 
       .remove-btn {
-        background: #FF502F;
         border-radius: 10px;
         color: white;
         border: none;

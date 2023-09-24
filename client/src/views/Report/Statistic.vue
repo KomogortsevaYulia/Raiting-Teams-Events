@@ -302,9 +302,6 @@ async function getEventsByDirection() {
   colorfulBlocksData.value[0].value = data[1]
 
   foundEvents.value = events
-  // console.log("evnt dir")
-  // console.log(events)
-  // console.log("directions " + foundDirections.value[selectedDirection.value].shortname + "   selectedDirection " + selectedDirection.value)
 }
 
 
@@ -518,8 +515,6 @@ function changeTypeReport() {
 <style lang="scss" scoped>
 // dropdown for calendar----------------------------------------------------------------------
 .dropbtn {
-  // background-color: #04AA6D;
-  // color: white;
   padding: 16px;
   font-size: 16px;
   border: none;
@@ -541,10 +536,7 @@ function changeTypeReport() {
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   border-radius: 20px;
-
-
 }
-
 
 
 .dropdown-content a:hover {
@@ -601,7 +593,7 @@ function changeTypeReport() {
 
   p {
     color: var(--second-color);
-    font-weight: 500;
+    font-weight: 800;
   }
 }
 
@@ -632,9 +624,7 @@ function changeTypeReport() {
 .btn-custom-secondary{
   color: black;
 }
-.form-label{
-  font-weight: 600;
-}
+
 // чекбоксы--------------------------------------------------------------------------------
 </style>
          
