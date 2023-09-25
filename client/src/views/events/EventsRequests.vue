@@ -108,7 +108,7 @@
                                 отклонено
                             </div>
                             <div v-else>
-                                <font-awesome-icon icon="clock" />
+                                <font-awesome-icon icon="clock"  />
                                 в ожидании
                             </div>
                         </div>

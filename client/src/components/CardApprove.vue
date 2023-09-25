@@ -21,7 +21,7 @@ const props = defineProps<{
             </div>
             <!-- time -->
             <div class="col-auto">
-                <font-awesome-icon icon="clock" class="me-2" />
+                <font-awesome-icon icon="clock" class="me-2 " />
                 <slot name="time">
 
                 </slot>

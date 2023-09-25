@@ -1,9 +1,9 @@
 @font-face {
     font-family: 'Montserrat';
     src: url('./fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
-  }
+}
 
-  
+
 :root {
     --main-border-bottom: 5px solid #e3254b;
     --main-color: #e3254b;
@@ -16,8 +16,8 @@
     --second-accept: #3b8a8f;
 
     // shadow
-    --box-shadow:  0 0 5px 1px rgba(221, 221, 221, 1);
-    --hover-elem:  0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
+    --box-shadow: 0 0 5px 1px rgba(221, 221, 221, 1);
+    --hover-elem: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
 
     // fonts
     --font-family-title: 'Montserrat';
@@ -33,7 +33,7 @@
     padding: 0.6rem;
     background-color: #fff;
     font-family: var(--font-family-primary);
-    
+
 
     &:focus {
         box-shadow: var(--hover-elem);
@@ -41,13 +41,18 @@
     }
 }
 
-body{
+body {
     font-family: var(--font-family-primary);
-    font-size:14px;
+    font-size: 14px;
 }
-h1, h2, h3, h4{
+
+h1,
+h2,
+h3,
+h4 {
     font-weight: 400;
 }
+
 // Обёртка на формы
 .wrapper-content {
     margin-top: 1rem;
@@ -65,6 +70,10 @@ h1, h2, h3, h4{
 
 label {
     font-size: 15px;
+}
+
+.form-label {
+    font-weight: 600;
 }
 
 button {
@@ -97,7 +106,7 @@ textarea {
     @include form-elem();
 }
 
-.form-control{
+.form-control {
     &:focus {
         box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
         outline: 0;
@@ -128,7 +137,7 @@ textarea {
     padding: 0.6rem 0.9rem;
     box-shadow: var(--box-shadow);
 
-    &:hover{
+    &:hover {
         color: var(--main-color);
     }
 }
@@ -199,11 +208,11 @@ a {
     transition: 0.3s;
 }
 
-.accordion-header{
+.accordion-header {
     padding: 0;
 }
 
-.form-select{
+.form-select {
     padding-right: 2rem;
 }
 
@@ -234,7 +243,6 @@ a {
 // meadia
 @media (min-width: 768px) {
     .nav-collapse {
-      display: block !important;
+        display: block !important;
     }
-  }
-  
+}

@@ -11,7 +11,7 @@ const props = defineProps<{
 
 
 const fetchTimer = _.debounce(() => {
-    props.handleTimerSearch(findTeamTxt)
+    props.handleTimerSearch(findTeamTxt.value)
 }, 300)
 
 

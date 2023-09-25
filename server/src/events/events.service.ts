@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateJournalDto } from './dto/create-journal.dto';
@@ -74,6 +74,14 @@ export class EventsService {
       .orderBy("events.date_update", "DESC")
 
 
+    buildQuery = await this.filterEvents(searchEvent, buildQuery)
+
+    return await buildQuery.getManyAndCount()
+  }
+
+  // фильтры для мероприятий
+  async filterEvents(searchEvent: SearchEventDto, buildQuery: SelectQueryBuilder<Event>) {
+
     searchEvent.status != null ? buildQuery
       .andWhere("status.name = :status", { status: searchEvent.status }) :
       buildQuery
@@ -120,8 +128,24 @@ export class EventsService {
     searchEvent.dateEnd != null ? buildQuery
       .andWhere("events.dateEnd <= :dateEnd", { dateEnd: searchEvent.dateEnd }) : buildQuery
 
-    return await buildQuery.getManyAndCount()
+    // additional
+    // search_txt
+    if (searchEvent.search_txt) {
+
+      buildQuery = buildQuery.andWhere(
+        `(LOWER(events.title) like :title 
+     or LOWER(events.description) like :description 
+     or LOWER(events.tags) like :tags)`, {
+        title: `%${searchEvent.search_txt}%`,
+        description: `%${searchEvent.search_txt}%`,
+        tags: `%${searchEvent.search_txt}%`
+      })
+    }
+
+    return buildQuery
+
   }
+
 
   findOne(id: number) {
     return this.eventsRepository.findOne({ where: { id: id }, relations: { level: true, type: true, direction: true } });

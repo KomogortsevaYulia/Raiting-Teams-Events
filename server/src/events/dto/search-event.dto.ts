@@ -62,6 +62,10 @@ export class SearchEventDto {
     @IsNumber()
     @Type(() => Number)
     offset: number
+
+    // additional
+    @IsOptional()
+    search_txt: string
 }
 
 

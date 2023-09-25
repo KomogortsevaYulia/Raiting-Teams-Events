@@ -6,6 +6,7 @@ export class Event {
     status?: Status = Status.ACCEPTED
     direction?: any
     user_id?: number
+    search_text?:string
 
     limit = 5
     offset = 0

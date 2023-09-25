@@ -31,7 +31,7 @@
       <div class="cards__container ms-md-4">
         <!-- Поисковые строки -->
         <div class="cards__search">
-          <input class="title__search" placeholder="Начните поиск..." />
+          <Search :handleTimerSearch="handleTimerSearch"/>
           <input class="date__search" placeholder="Выберите дату" type="date" />
           <Switch_toggle />
           <div class="d-md-none">
@@ -104,6 +104,7 @@ import { useTeamStore } from '@/store/team_store';
 import ModalFull from '@/components/modals/ModalFull.vue';
 import { Event } from '@/store/models/events.model';
 import UserEvents from '../user/UserEvents.vue';
+import Search from '@/components/Search.vue';
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
@@ -130,12 +131,18 @@ const itemList = [
 ]
 
 const selectedItem = ref(0);
-
+const findEventTxt = ref()
 
 
 onBeforeMount(async () => {
   await fetchEvents()
 })
+
+async function handleTimerSearch(eventTxt: string) {
+  findEventTxt.value = eventTxt
+
+  await fetchEvents()
+}
 
 const selectItem = (i: number) => {
   selectedItem.value = i
@@ -148,6 +155,7 @@ async function fetchEvents() {
   let event = new Event()
     event.limit = limit
     event.offset = offset.value
+    event.search_text = findEventTxt.value
 
   let d = await eventStore.fetchEvents(event)
   data.value = d[0]
