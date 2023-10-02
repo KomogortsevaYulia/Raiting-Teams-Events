@@ -97,7 +97,6 @@ function OnExitSubmit() {
 
         &:focus {
             background-color: #d1e6ff;
-            box-shadow: 0 0 25px 24px #f2f6fd;
         }
     }
 
@@ -108,10 +107,10 @@ function OnExitSubmit() {
         width: 100%;
         flex-direction: column;
         border-radius: 10px;
-        background-color: antiquewhite;
+        background-color: white;
         transition: 0.2s ease;
         padding: 0.75rem;
-        box-shadow: 0 0 15px 15px rgba(114, 114, 114, 0.239);
+        box-shadow: var(--box-shadow);
 
         p {
             cursor: pointer;
