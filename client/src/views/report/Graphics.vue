@@ -33,7 +33,7 @@ const props = defineProps<{
         <!-- statistic -->
 
         <!-- Мероприятия -->
-        <div v-if="typeGraphics[0].isVisibleChart" class="block-content">
+        <div v-if="typeGraphics[0].isVisibleChart" class="block-content border-block">
 
             <div class="row d-flex justify-content-center text-center">
                 <h4>Мероприятия</h4>
@@ -59,7 +59,7 @@ const props = defineProps<{
 
 
         <!-- Коллективы -->
-        <div v-if="typeGraphics[1].isVisibleChart" class="block-content">
+        <div v-if="typeGraphics[1].isVisibleChart" class="block-content border-block">
 
             <div class="row d-flex justify-content-center text-center">
                 <h4>Коллективы</h4>
@@ -106,7 +106,6 @@ const props = defineProps<{
 
 // copied from Statistic
 .block-content {
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 5px;
     padding: 40px;
     margin: 30px auto 30px auto;

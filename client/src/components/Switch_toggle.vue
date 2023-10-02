@@ -4,7 +4,7 @@ const teamStore = useTeamStore();
 </script>
 
 <template>
-    <div class="switch">
+    <div class="switch border-block">
         <div @click="teamStore.setLayout(true)" class="switch-item" :class="{ active: teamStore.layout === true }">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0H4V5H0V0Z" />
@@ -35,7 +35,6 @@ const teamStore = useTeamStore();
     width: auto;
     background-color: #fff;
     border-radius: 24px;
-    box-shadow: var(--box-shadow);
     padding: 0.3rem 0.6rem;
 
     .switch-item {

@@ -261,9 +261,6 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
 
       .input-question {
         background-color: #fff;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
-        border-radius: 5px;
         width: 100%;
         resize: none;
         font-family: var(--font-family-title);

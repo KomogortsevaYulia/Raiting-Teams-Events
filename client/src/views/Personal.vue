@@ -52,7 +52,7 @@ function editProfile() {
     <div class="row">
 
       <div class="avatar col-lg-4 px-lg-4 px-0">
-        <div class="block-content">
+        <div class="block-content border-block">
           <div class="row position-relative">
             <div class="edit">
               <button class=" " @click="editProfile()">
@@ -88,7 +88,7 @@ function editProfile() {
 
       <div class="col-lg-8">
         <div class="row">
-          <div class="block-content pb-2 p-3">
+          <div class="block-content border-block pb-2 p-3">
 
             <h2 class="ps-3">Расписание</h2>
             <VCalendar :attributes='attrs' expanded />
@@ -96,7 +96,7 @@ function editProfile() {
 
         </div>
         <div class="row mb-3">
-          <div class="block-content">
+          <div class="block-content border-block">
 
             <h2 class="p-3">Достижения</h2>
             <div class="overflow-auto">
@@ -201,7 +201,6 @@ function editProfile() {
   }
 
   .block-content {
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 5px;
     padding: 40px;
     margin: 10px auto 20px auto;

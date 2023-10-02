@@ -1,6 +1,6 @@
 <template>
   <!-- Навигация -->
-  <div class="wrapper-news__navigation">
+  <div class="wrapper-news__navigation border-block">
 
     <router-link :to="'/event-create'" v-if="can('can view directions')">
       <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -19,7 +19,7 @@
     <div class="events__container">
       <!-- Фильтр вдимый-->
       <div class="nav-collapse  collapse" id="collapseCkecker">
-        <div class="filters-block">
+        <div class="filters-block border-block">
           <!-- Боковое меню -->
           <CheckBox_Menu :menu_items="menu_items" :handle-event-set-filters="handleEventSetFilters"
             :handle-event-reset-filters="handleEventResetFilters" />
@@ -52,7 +52,7 @@
           </ModalFull>
         </div>
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data && data.length > 0">
-          <div class="card" v-for="event in data" :key="event.id">
+          <div class="card border-block" v-for="event in data" :key="event.id">
             <div class="card__banner">
               <img :src="event.images" class="d-block" style="width: 100%;object-fit: cover;">
             </div>
@@ -208,15 +208,13 @@ function handleEventResetFilters() {
     }
 
     .wrapper-list {
-      padding-top: 2rem;
+      padding-top: 1rem;
 
       .card {
         width: 100%;
         background-color: #fff;
         height: 15rem;
         margin-bottom: 1rem;
-        border: none;
-        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: row;
         transition: all .5s;
@@ -285,14 +283,12 @@ function handleEventResetFilters() {
       flex-wrap: wrap;
 
       .card {
-        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
         width: 250px;
         background-color: #fff;
         height: 350px auto;
         margin: 0 1rem 1rem 0;
         flex-wrap: wrap;
         overflow: hidden;
-        border: none;
         display: flex;
         // flex-direction: row;
         transition: all .5s;
@@ -407,7 +403,6 @@ function handleEventResetFilters() {
 
 .wrapper-news__navigation {
   padding-bottom: 2rem;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border-radius: 5px;
   padding: 20px;
   background: white;
@@ -438,7 +433,6 @@ function handleEventResetFilters() {
 
 .filters-block {
   background-color: #fff;
-  box-shadow: var(--box-shadow);
   padding: 2rem;
   border-radius: 5px;
 }

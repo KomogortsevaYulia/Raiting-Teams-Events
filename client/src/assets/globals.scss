@@ -10,25 +10,29 @@
     --main-color-hover: #AF1E3B;
     --main-border-card: 1px solid #d9d9d9;
     --main-navigation-color: #348498;
+    --border-color: rgba(61, 61, 61, 0.20);
 
     // --second-color-hover: #9DD9D2;
     --second-color: #5BD1D7;
     --second-accept: #3b8a8f;
 
     // shadow
-    --box-shadow: 0 0 5px 1px rgba(221, 221, 221, 1);
+    --box-shadow: 0 0 5px 1px rgb(221, 221, 221);
     --hover-elem: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
 
     // fonts
     --font-family-title: 'Montserrat';
     --font-family-primary: 'Montserrat';
+
+    // border
+    --border-block: 1px solid var(--border-color);
+    --border-radius: 10px
 }
 
 
 // для элемента формы
 @mixin form-elem {
-    border: none;
-    box-shadow: var(--box-shadow);
+    border: var(--border-block);
     border-radius: 0.25rem;
     padding: 0.6rem;
     background-color: #fff;
@@ -40,6 +44,7 @@
         outline: 0;
     }
 }
+
 
 body {
     font-family: var(--font-family-primary);
@@ -53,6 +58,11 @@ h4 {
     font-weight: 400;
 }
 
+.border-block {
+    border: var(--border-block);
+    border-radius: var(--border-radius);
+}
+
 // Обёртка на формы
 .wrapper-content {
     margin-top: 1rem;
@@ -60,7 +70,7 @@ h4 {
     padding: 1rem;
     border-radius: 5px;
     background-color: #fff;
-    box-shadow: var(--box-shadow);
+    border: var(--border-block);
 }
 
 .link {
@@ -135,7 +145,7 @@ textarea {
     border-radius: 50px;
     color: black;
     padding: 0.6rem 0.9rem;
-    box-shadow: var(--box-shadow);
+    border: var(--border-block);
 
     &:hover {
         color: var(--main-color);
@@ -204,7 +214,7 @@ a {
 
 .form-select,
 .accordion-header {
-    @include form-elem();
+    // @include form-elem();
     transition: 0.3s;
 }
 
@@ -214,6 +224,11 @@ a {
 
 .form-select {
     padding-right: 2rem;
+
+    &:focus{
+        box-shadow: none;
+        border: var(--border-block);
+    }
 }
 
 .accordion-item {

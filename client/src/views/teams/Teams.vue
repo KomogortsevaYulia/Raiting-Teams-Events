@@ -212,7 +212,7 @@ async function handleTimerSearch(seachText: string) {
 
       <!-- Фильтр вдимый-->
       <div class="nav-collapse  collapse" id="collapseCkecker">
-        <div class="filters-block">
+        <div class="filters-block border-block">
           <CheckBox_Menu :menu_items="menu_items" :handleEventSetFilters="handleEventSetFilters"
             :handleEventResetFilters="handleEventResetFilters" />
         </div>
@@ -262,7 +262,7 @@ async function handleTimerSearch(seachText: string) {
         <!-- Сами карточки -->
         <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']">
           <div v-if="!loading" v-for="team in data" :class="[{ 'cardEvent__archive': team.is_archive }]"
-            class="cardEvent row justify-content-center">
+            class="cardEvent border-block row justify-content-center">
 
             <router-link class=" col-lg-auto p-0 col-md-auto d-flex justify-content-center" :to="'/team/' + team.id">
               <div class="card__banner">
@@ -328,7 +328,6 @@ async function handleTimerSearch(seachText: string) {
 <style lang="scss" scoped>
 .filters-block {
   background-color: #fff;
-  box-shadow: var(--box-shadow);
   padding: 2rem;
   border-radius: 5px;
 }
@@ -399,7 +398,6 @@ async function handleTimerSearch(seachText: string) {
         .cardEvent {
           border-radius: 5px;
           overflow: hidden;
-          box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
           width: 250px;
           height: 350px auto;
           margin: 0 1rem 1rem 0;
@@ -519,8 +517,7 @@ async function handleTimerSearch(seachText: string) {
           background-color: #fff;
           height: 15rem;
           margin-bottom: 1rem;
-          border: none;
-          box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+
           display: flex;
           flex-direction: row;
           transition: all .5s;

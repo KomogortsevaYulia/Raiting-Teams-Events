@@ -10,7 +10,7 @@ const props = defineProps<{
 
 <template>
     <div
-        :class="['block-content border-left', `${positiveBorderColor ? 'border-left__success' : (positiveBorderColor != undefined ? 'border-left__danger' : '')}`]">
+        :class="['block-content border-block border-left', `${positiveBorderColor ? 'border-left__success' : (positiveBorderColor != undefined ? 'border-left__danger' : '')}`]">
 
         <div class="row mb-4">
             <!-- title -->
@@ -61,7 +61,6 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .block-content {
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 5px;
     padding: 1.5rem 2rem;
     margin: 10px auto 20px auto;

@@ -4,41 +4,46 @@
     maxPage {{ maxPage }}
     startPage {{ startPage }}
     endPage {{ endPage }} -->
-    <div class="my-4">
-        <nav aria-label="Pagination">
-            <ul class="pagination">
-                <!-- prev page -->
-                <li class="page-item">
-                    <a class="page-link" @click="changePage(current - 1)" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <!-- start page -->
-                <li v-if="startPage >= 2" class="page-item">
-                    <a class="page-link" href="#" @click="changePage(1)">1</a>
-                </li>
-                <li v-if="startPage >= 2" class="page-item">
-                    <a class="page-link">...</a>
-                </li>
-                <!-- pages -->
-                <li v-for="index in range(startPage, endPage)" :key="index" class="page-item" @click="changePage(index)">
-                    <a :class="[{ 'active-page': current == index }, 'page-link']" href="#">{{ index }}</a>
-                </li>
-                <!-- end page -->
-                <li v-if="endPage < maxPage" class="page-item">
-                    <a class="page-link">...</a>
-                </li>
-                <li v-if="endPage < maxPage" class="page-item">
-                    <a class="page-link" href="#" @click="changePage(maxPage)">{{ maxPage }}</a>
-                </li>
-                <!-- nest page -->
-                <li class="page-item">
-                    <a class="page-link" @click="changePage(current + 1)" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <div class="my-4 container-pagination">
+        <div class="wrapper-pagination border-block">
+            <nav aria-label="Pagination">
+                <ul class="pagination">
+                    <!-- prev page -->
+                    <li class="page-item">
+                        <a class="page-link-custom" @click="changePage(current - 1)" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <!-- start page -->
+                    <li v-if="startPage >= 2" class="page-item">
+                        <a class="page-link-custom" href="#" @click="changePage(1)">1</a>
+                    </li>
+                    <li v-if="startPage >= 2" class="page-item">
+                        <a class="page-link-custom">...</a>
+                    </li>
+                    <!-- pages -->
+                    <li v-for="index in range(startPage, endPage)" :key="index" class="page-item"
+                        @click="changePage(index)">
+                        <a :class="[{ 'active-page': current == index }, 'page-link-custom custom-border']" href="#">{{
+                            index
+                        }}</a>
+                    </li>
+                    <!-- end page -->
+                    <li v-if="endPage < maxPage" class="page-item">
+                        <a class="page-link-custom">...</a>
+                    </li>
+                    <li v-if="endPage < maxPage" class="page-item">
+                        <a class="page-link-custom" href="#" @click="changePage(maxPage)">{{ maxPage }}</a>
+                    </li>
+                    <!-- nest page -->
+                    <li class="page-item">
+                        <a class="page-link-custom" @click="changePage(current + 1)" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </template>
 
@@ -103,27 +108,62 @@ function range(from: number, to: number) {
 </script>
 
 <style lang="scss" scoped>
-.pagination {
-    .active-page {
-        background-color: var(--main-color);
-       
-        border: none;
-
-    }
-
-
-    .page-link {
-        color: black;
-
-        &:active {
-            background-color: var(--main-color-hover);
-        }
-
-        &:focus {
-            box-shadow: none;
-            border: 1px solid var(--main-color-hover);
-        }
-    }
-
+@mixin item-border {
+    border-bottom: 3px solid var(--main-color) !important;
 }
-</style>
+
+.container-pagination {
+    display: flex;
+    justify-content: center;
+
+    .wrapper-pagination{
+        background-color: white;
+    }
+}
+
+.pagination {
+    margin: 0;
+
+    .active-page {
+        @include item-border();
+
+    }
+
+
+    .page-item {
+        padding: 10px 0;
+
+        .page-link-custom {
+            padding: 10px 15px;
+            color: black;
+        }
+
+        &:last-child .page-link-custom {
+            border-radius: 0px 10px 10px 0px;
+
+            &:hover {
+                color: var(--main-color);
+            }
+        }
+
+        &:first-child .page-link-custom {
+            border-radius: 10px 0px 0px 10px;
+
+            &:hover {
+                color: var(--main-color);
+            }
+        }
+    }
+
+
+    .custom-border {
+        &:active {
+            @include item-border()
+        }
+
+        &:hover {
+            @include item-border()
+        }
+    }
+
+}</style>

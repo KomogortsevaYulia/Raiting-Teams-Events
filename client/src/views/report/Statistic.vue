@@ -345,7 +345,7 @@ function changeTypeReport() {
 <template>
   <div class="row">
     <div class="col-lg-5">
-      <div class=" block-content">
+      <div class=" block-content border-block">
 
         <div class="row text-center mb-2">
           <h6>{{ selectedParams.dateRange.start.toDateString() }} - {{ selectedParams.dateRange.end.toDateString() }}</h6>
@@ -356,13 +356,13 @@ function changeTypeReport() {
         <div class="row">
           <div class="w-100 justify-content-center d-flex">
             <div class="date">
-              <button class=" btn-custom-secondary date" v-for="dt in dates" @click="changeTimeViaButton(dt.timeRange)">{{
+              <button class=" btn-custom-secondary date border-block" v-for="dt in dates" @click="changeTimeViaButton(dt.timeRange)">{{
                 dt.date
               }}</button>
 
               <div class="my-dropdown" style="float:center;">
                 <button class="dropbtn btn-custom-secondary date"><font-awesome-icon icon="calendar-days" /></button>
-                <div class="dropdown-content">
+                <div class="dropdown-content border-block">
                   <DatePicker v-model="selectedParams.dateRange" is-range />
                 </div>
               </div>
@@ -533,7 +533,6 @@ function changeTypeReport() {
   right: 0px;
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   border-radius: 20px;
 }
@@ -556,7 +555,6 @@ function changeTypeReport() {
 
 // блоки с содержимым-------------------------------------------------------------------
 .block-content {
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border-radius: 5px;
   padding: 40px;
   margin: 30px auto 30px auto;
@@ -602,7 +600,6 @@ function changeTypeReport() {
   button.date {
     background: none;
     padding: 0.5rem 0.8rem;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 50px;
     margin: 8px;
 

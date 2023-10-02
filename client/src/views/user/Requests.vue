@@ -28,7 +28,7 @@ const selectItem = (i: number) => {
 
 <template>
     <!-- Навигация -->
-    <div class="navigation">
+    <div class="navigation border-block">
 
         <template v-for="(item, index) in itemList" :key="index">
             <a @click="selectItem(index)" :class="{ active: index == selectedItem }">{{ item.name
@@ -52,7 +52,6 @@ const selectItem = (i: number) => {
 
 .navigation {
     padding-bottom: 2rem;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 5px;
     padding: 20px;
     background: white;
