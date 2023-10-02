@@ -381,6 +381,7 @@ async function handleTimerSearch(seachText: string) {
     }
 
     .content-cards {
+      width: 100%;
       // margin-left: 2rem;
 
       .cards__search {
