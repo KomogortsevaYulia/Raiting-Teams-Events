@@ -129,6 +129,7 @@
 </template>
 
 <script setup lang="ts">
+import "@/assets/nav-second.scss"
 import Switch_toggle from "@/components/Switch_toggle.vue";
 import CheckBox_Menu from "@/components/CheckBox_Menu.vue";
 import { useEventStore } from "@/store/events_store";
