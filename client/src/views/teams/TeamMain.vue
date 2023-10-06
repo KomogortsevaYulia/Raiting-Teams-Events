@@ -1,8 +1,6 @@
 <template>
-  <div class="navigation-tags">
-    <div v-for="(item, index) in team.tags" :key="index" class="teg">
-      {{ item }}
-    </div>
+  <div class="navigation-tags row g-1">
+    <Tag v-for="(item, index) in team.tags" class="col-auto me-2" :text="item" :key="index" />
   </div>
   <hr />
   <div class="middle-panel">
@@ -41,6 +39,7 @@
 import { useTeamStore } from "@/store/team_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
+import Tag from "@/components/Tag.vue";
 
 const props = defineProps<{
   team: any; //коллектив
@@ -100,14 +99,6 @@ async function addImage() {
 
 .navigation-tags {
   display: flex;
-
-  .teg {
-    margin-right: 1rem;
-    background-color: #b7eaed;
-    padding: 0.2rem 1rem;
-    color: #348498;
-    border-radius: var(--border-radius);
-  }
 }
 
 .middle-panel {

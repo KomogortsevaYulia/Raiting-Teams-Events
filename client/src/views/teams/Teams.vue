@@ -142,10 +142,8 @@
               </div>
 
               <div class="row mb-2">
-                <div class="navigation-tags row g-1">
-                  <div v-for="el in team.tags" class="teg col-auto">
-                    {{ el }}
-                  </div>
+                <div class="navigation-tags my-2 row g-1">
+                  <Tag v-for="(item, index) in team.tags" class="col-auto me-2" :text="item" :key="index" />
                 </div>
                 <div class="row">
                   {{ team.short_description }}
@@ -184,6 +182,7 @@ import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
 import { FilterTeam } from "@/store/models/teams.model";
 import ModalFull from "@/components/modals/ModalFull.vue";
 import Search from "@/components/Search.vue";
+import Tag from "@/components/Tag.vue";
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -509,21 +508,6 @@ async function handleTimerSearch(seachText: string) {
           margin: 10px;
           width: 100%;
 
-          .navigation-tags {
-            .teg {
-              margin-right: 1rem;
-              margin-bottom: 1rem;
-              background-color: #b7eaed;
-              padding: 0.2rem 1rem;
-              color: #348498;
-              border-radius: var(--border-radius);
-            }
-
-            .teg:last-child {
-              margin-bottom: 0;
-            }
-          }
-
           .date {
             text-align: end;
           }
@@ -597,19 +581,6 @@ async function handleTimerSearch(seachText: string) {
 
           p {
             color: #000;
-          }
-
-          .navigation-tags {
-            margin-top: 0.5rem;
-            padding-bottom: 1rem;
-
-            .teg {
-              margin-right: 1rem;
-              background-color: #b7eaed;
-              padding: 0.2rem 1rem;
-              color: #348498;
-              border-radius: var(--border-radius);
-            }
           }
 
           .date {
