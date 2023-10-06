@@ -126,7 +126,7 @@ async function fetchRequisition() {
       .modal-title {
         font-weight: 400;
         font-size: 36px;
-        color: #348498;
+        color: var(--second-color);
       }
 
       .modal-subtitle {
@@ -184,13 +184,13 @@ async function fetchRequisition() {
           height: 80px;
 
           color: #ffffff;
-          background: #348498;
+          background: var(--second-accept);
           border-radius: 10px;
 
-          &:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px #348498;
-          }
+          //&:focus {
+          //  outline: none;
+          //  box-shadow: 0 0 0 2px #348498;
+          //}
         }
       }
     }

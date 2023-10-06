@@ -99,6 +99,7 @@ async function getDirections() {
 </script>
 
 <style lang="scss" scoped>
+
 .btn {
   padding-top: 1rem;
 }

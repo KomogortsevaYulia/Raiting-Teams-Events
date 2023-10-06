@@ -15,7 +15,7 @@
 
     <div v-if="show" class="wrapper-team__content wrapper-content border-block">
       <!-- Навигация -->
-      <div class="wrapper-team__navigation">
+      <div class="wrapper-second__navigation">
         <template v-for="(item, index) in itemList" :key="index">
           <a
             v-if="item.permission"
@@ -64,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import "@/assets/nav-second.scss"
 import WIP from "@/components/WIP.vue";
 import { onBeforeMount, ref } from "vue";
 import Ankets from "@/views/teams/Questionnaire.vue";
@@ -142,6 +143,7 @@ async function handleUpdateTeam() {
 </script>
 
 <style lang="scss" scoped>
+
 .wrapper {
   display: flex;
   height: 89px;
@@ -202,35 +204,6 @@ async function handleUpdateTeam() {
         font-family: var(--font-family-title);
         margin: 0 0 2rem;
       }
-    }
-  }
-
-  .wrapper-team__navigation {
-    padding-bottom: 2rem;
-
-    a {
-      cursor: pointer;
-      font-family: var(--font-family-title);
-      font-weight: 600;
-      font-size: 14px;
-      transition: 0.3s;
-      color: #348498;
-      margin-inline: 1rem;
-      padding-bottom: 0.75rem;
-
-      &:hover {
-        color: var(--main-color);
-      }
-    }
-
-    // Первому элементу ставим отступ = 0, чтобы не выпирал
-    a:first-child {
-      margin-left: 0;
-    }
-
-    .active {
-      color: var(--main-color);
-      border-bottom: var(--main-border-bottom);
     }
   }
 

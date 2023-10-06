@@ -1,0 +1,39 @@
+:root {
+  //////////////////////////////////////////////////
+  // colors
+  //////////////////////////////////////////////////
+
+  --main-color: #e3255e;
+  --main-color-hover: #de234b;
+  --main-border-card: 1px solid #d9d9d9;
+  --main-navigation-color: #485485;
+  --border-color: rgba(61, 61, 61, 0.20);
+
+  // --second-color-hover
+  --second-color: #6786da;
+  --second-color-50: rgba(103, 134, 218, 0.5);
+  --second-accept: #5f7ccb;
+
+  //////////////////////////////////////////////////
+  // shadow
+  //////////////////////////////////////////////////
+
+  --box-shadow: 0 0 5px 1px rgb(221, 221, 221);
+  --hover-elem: 0 0 0.1rem 0.15rem #6786da;
+
+  //////////////////////////////////////////////////
+  // fonts
+  //////////////////////////////////////////////////
+
+  --font-family-title: 'Montserrat';
+  --font-family-primary: 'Montserrat';
+
+  //////////////////////////////////////////////////
+  // border
+  //////////////////////////////////////////////////
+
+  --border-block: 1px solid var(--border-color);
+  --border-radius: 15px;
+  --main-border-bottom: 5px solid var(--main-color);
+
+}

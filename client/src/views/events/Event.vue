@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="eventInfo row">
+    <div class="eventInfo row border-block">
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
@@ -21,10 +21,13 @@
       <h1 class="">{{ data.title }}</h1>
 
       <div class="header__info">
-        <div class="navigation-tags">
-          <div v-for="(item, index) in data.tags" :key="index" class="teg">
-            {{ item }}
-          </div>
+        <div class="row g-1 my-2">
+          <Tag
+            v-for="(item, index) in data.tags"
+            class="col-auto me-2"
+            :text="item"
+            :key="index"
+          />
         </div>
       </div>
       <div class="line"></div>
@@ -93,6 +96,7 @@ import { onBeforeMount, ref } from "vue";
 
 import { useRoute } from "vue-router";
 import moment from "moment";
+import Tag from "@/components/Tag.vue";
 
 const route = useRoute();
 const data = ref();
@@ -214,9 +218,7 @@ async function fetchCurrentEvent() {
 }
 
 .eventInfo {
-  box-shadow: 0 0 5px 2px rgb(221, 221, 221);
-  width: 102%;
-  height: auto;
+  background: white;
   justify-content: center;
   border-radius: 1rem;
   transition: all 0.5s;
@@ -248,22 +250,6 @@ async function fetchCurrentEvent() {
     font-size: 1.6rem;
     font-weight: 100;
     margin: 0;
-  }
-
-  .button {
-    background-color: #ff502f;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:hover {
-      background: var(--main-color-hover);
-      transition: 0.3s;
-    }
   }
 }
 
@@ -309,19 +295,6 @@ async function fetchCurrentEvent() {
 
   h2 {
     font-size: 1em;
-  }
-}
-
-.navigation-tags {
-  margin-bottom: 0.5rem;
-  display: flex;
-
-  .teg {
-    margin-right: 1rem;
-    background-color: #b7eaed;
-    padding: 0.2rem 1rem;
-    color: #348498;
-    border-radius: 5px;
   }
 }
 </style>

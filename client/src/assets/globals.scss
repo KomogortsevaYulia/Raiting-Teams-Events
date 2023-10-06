@@ -1,32 +1,8 @@
+@import "constants";
+
 @font-face {
   font-family: 'Montserrat';
   src: url('./fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
-}
-
-
-:root {
-  --main-border-bottom: 5px solid #e3254b;
-  --main-color: #e3254b;
-  --main-color-hover: #de234b;
-  --main-border-card: 1px solid #d9d9d9;
-  --main-navigation-color: #348498;
-  --border-color: rgba(61, 61, 61, 0.20);
-
-  // --second-color-hover: #9DD9D2;
-  --second-color: #5BD1D7;
-  --second-accept: #3b8a8f;
-
-  // shadow
-  --box-shadow: 0 0 5px 1px rgb(221, 221, 221);
-  --hover-elem: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
-
-  // fonts
-  --font-family-title: 'Montserrat';
-  --font-family-primary: 'Montserrat';
-
-  // border
-  --border-block: 1px solid var(--border-color);
-  --border-radius: 15px;
 }
 
 
@@ -100,10 +76,10 @@ button {
     transition: 0.3s;
   }
 
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--second-color);
-  }
+  //&:focus {
+  //  outline: none;
+  //  box-shadow: 0 0 0 2px var(--main-color-hover);
+  //}
 }
 
 input {
@@ -117,7 +93,7 @@ textarea {
 
 .form-control {
   &:focus {
-    box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
+    box-shadow: 0 0 0.1rem 0.15rem var(--second-color);
     outline: 0;
   }
 }
@@ -176,14 +152,18 @@ a {
 .v-select {
   min-width: 200px;
 
+
   .vs__dropdown-toggle {
     @include form-elem();
     transition: 0.3s;
   }
 
+  .vs__search {
+    font-size: 14px;
+  }
 
   &:focus {
-    box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
+    box-shadow: 0 0 0.1rem 0.15rem var(--second-color);
     outline: 0;
     border: 0;
   }
@@ -248,7 +228,7 @@ a {
 
 }
 
-// meadia
+// media
 @media (min-width: 768px) {
   .nav-collapse {
     display: block !important;

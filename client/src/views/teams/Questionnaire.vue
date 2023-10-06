@@ -293,7 +293,8 @@ async function archiveFields(deletedFields: [], is_archive: boolean) {
     margin: 0px auto 50px;
 
     color: #ffffff;
-    background: rgba(52, 132, 152, 0.8);
+    background: var(--second-accept);
+    opacity: 0.8;
 
     &:focus {
       outline: none;
@@ -311,12 +312,7 @@ async function archiveFields(deletedFields: [], is_archive: boolean) {
     height: 80px;
 
     color: #ffffff;
-    background: #348498;
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px #348498;
-    }
+    background:var(--second-accept);
   }
 }
 </style>

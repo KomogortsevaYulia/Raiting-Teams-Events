@@ -1,6 +1,6 @@
 <template>
   <!-- Навигация -->
-  <div class="wrapper-news__navigation border-block">
+  <div class="navigation wrapper-second__navigation border-block">
     <router-link :to="'/event-create'" v-if="can('can view directions')">
       <button
         type="button"
@@ -411,33 +411,10 @@ function handleEventResetFilters() {}
   opacity: 1;
 }
 
-.wrapper-news__navigation {
+.navigation {
   border-radius: var(--border-radius);
   padding: 20px;
   background: white;
-
-  a {
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.3s;
-    color: #348498;
-    margin-inline: 1rem;
-    padding-bottom: 0.75rem;
-
-    &:hover {
-      color: var(--main-color);
-    }
-  }
-
-  // Первому элементу ставим отступ = 0, чтобы не выпирал
-  a:first-child {
-    margin-left: 0;
-  }
-
-  .active {
-    color: var(--main-color);
-    border-bottom: var(--main-border-bottom);
-  }
 }
 
 .filters-block {

@@ -131,9 +131,10 @@ function OnExitSubmit() {
       margin: 0;
 
       &:hover {
-        background-color: rgb(190, 231, 231);
+        background-color: var(--second-color) ;
         border-radius: 5px;
         transition: 0.2s ease;
+        color: white;
       }
     }
   }

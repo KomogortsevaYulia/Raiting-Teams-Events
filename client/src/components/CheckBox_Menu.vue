@@ -62,7 +62,7 @@ const props = defineProps<{
 .checkbox__nav {
   .btn__open {
     display: flex;
-    color: #348498;
+    color: var(--second-color);
     padding-left: 0.5rem;
 
     &:hover {
@@ -124,11 +124,11 @@ const props = defineProps<{
       width: 1.5rem;
       height: 1.5rem;
       border-radius: 0.3rem;
-      background-color: #cdeef0;
+      background-color: var(--second-color-50);
 
       &:hover {
         cursor: pointer;
-        background-color: #b9e6e9;
+        background-color: var(--second-color);
       }
     }
 
