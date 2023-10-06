@@ -32,7 +32,6 @@
         <!-- Поисковые строки -->
         <div class="cards__search">
           <Search :handleTimerSearch="handleTimerSearch"/>
-          <input class="date__search" placeholder="Выберите дату" type="date" />
           <Switch_toggle />
           <div class="d-md-none">
             <button type="button" class="btn-icon-rounded" data-bs-toggle="modal" data-bs-target="#filtersModal">
@@ -51,7 +50,7 @@
 
           </ModalFull>
         </div>
-        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data && data.length > 0">
+        <div :class="[teamStore.layout ? 'wrapper-list' : 'wrapper-grid']" v-if="data && data.length > 0">
           <div class="card border-block" v-for="event in data" :key="event.id">
             <div class="card__banner">
               <img :src="event.images" class="d-block" style="width: 100%;object-fit: cover;">
@@ -221,7 +220,6 @@ function handleEventResetFilters() {
 
         .card__banner {
           height: 100%;
-          width: 15rem;
           max-width: 15rem;
           border-radius: 5px 0 0 5px;
           width: 100%;
@@ -273,7 +271,7 @@ function handleEventResetFilters() {
 
       .card:hover {
         cursor: pointer;
-        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
       }
     }
 
@@ -295,12 +293,10 @@ function handleEventResetFilters() {
 
         .card__banner {
           height: 15rem;
-          max-width: 15rem;
           width: 100%;
           max-width: 100%;
           flex-wrap: wrap;
           border-radius: 5px 0 0 0;
-          width: 100%;
           overflow: hidden;
           background-position: center;
           display: flex;
@@ -402,7 +398,6 @@ function handleEventResetFilters() {
 }
 
 .wrapper-news__navigation {
-  padding-bottom: 2rem;
   border-radius: 5px;
   padding: 20px;
   background: white;

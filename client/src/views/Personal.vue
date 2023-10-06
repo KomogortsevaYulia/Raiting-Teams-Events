@@ -1,69 +1,28 @@
-<script setup lang="ts">
-import { usePermissionsStore } from '@/store/permissions_store';
-import { ref, onBeforeMount } from 'vue';
-// import { useRoute } from 'vue-router';
-import { useUserStore } from "@/store/user_store";
-import { useJournalStore } from "@/store/journals_store"
-import { forEach } from "lodash";
-
-
-const selectedColor = ref('blue');
-
-
-// const route = useRoute();
-// const username = route.params.username;
-
-
-const user = ref()
-const functions = ref()
-const dateEvent = ref()
-// let dates
-
-const isEditing = ref(false)
-
-onBeforeMount(async () => {
-  user.value = await usePermissionsStore().fetchUser()
-  functions.value = await useUserStore().getUsersFunction(3)
-  dateEvent.value = await useJournalStore().fetchJournalsByUserId(3)
-  attrs.value[0].dates = dateEvent.value[0].map((x: any) => x.dateParticipation)
-})
-
-const attrs = ref([
-  {
-    highlight: {
-      color: 'purple',
-      fillMode: 'solid',
-      contentClass: 'italic',
-    },
-    dates: null,
-  }
-]);
-
-
-function editProfile() {
-  isEditing.value = !isEditing.value
-}
-
-</script>
-
-<template >
+<template>
   <div class="personal">
-
     <div class="row">
-
       <div class="avatar col-lg-4 px-lg-4 px-0">
         <div class="block-content border-block">
           <div class="row position-relative">
             <div class="edit">
               <button class=" " @click="editProfile()">
-                <font-awesome-icon icon="fa-solid fa-pen-to-square" size="2x" pull="right"
-                  :class="[{ 'fa-beat': isEditing }]" />
+                <font-awesome-icon
+                  icon="fa-solid fa-pen-to-square"
+                  size="2x"
+                  pull="right"
+                  :class="[{ 'fa-beat': isEditing }]"
+                />
               </button>
-
             </div>
             <div class="col mt-3">
-              <div class=" avatar__scale">
-                <img class="icon" width="150" height="150" :src="user.image" alt="icon" />
+              <div class="avatar__scale">
+                <img
+                  class="icon"
+                  width="150"
+                  height="150"
+                  :src="user.image"
+                  alt="icon"
+                />
                 <div v-if="isEditing" class="middle">
                   <font-awesome-icon icon="plus" class="fa-2x text-white" />
                 </div>
@@ -72,15 +31,24 @@ function editProfile() {
           </div>
           <div class="row">
             <p class="FIO row-auto">{{ user.fullname }}</p>
-            <p class="row-auto"> {{ user.institute }}</p>
+            <p class="row-auto">{{ user.institute }}</p>
             <p class="row-auto">{{ user.course }} курс</p>
             <p class="row-auto">{{ user.education_group }}</p>
           </div>
           <div class="row">
             <h3 class="active">Коллективы</h3>
-            <div class="row d-flex" v-if="functions" v-for="(item, index) in functions.data" :key="index">
-              <p class="col d-flex justify-content-center align-items-center">{{ item.function.team.title }}</p>
-              <p class="col d-flex justify-content-center align-items-center">{{ item.function.title }}</p>
+            <div
+              class="row d-flex"
+              v-if="functions"
+              v-for="(item, index) in functions.data"
+              :key="index"
+            >
+              <p class="col d-flex justify-content-center align-items-center">
+                {{ item.function.team.title }}
+              </p>
+              <p class="col d-flex justify-content-center align-items-center">
+                {{ item.function.title }}
+              </p>
             </div>
           </div>
         </div>
@@ -89,15 +57,12 @@ function editProfile() {
       <div class="col-lg-8">
         <div class="row">
           <div class="block-content border-block pb-2 p-3">
-
             <h2 class="ps-3">Расписание</h2>
-            <VCalendar :attributes='attrs' expanded />
+            <VCalendar :attributes="attrs" expanded />
           </div>
-
         </div>
         <div class="row mb-3">
           <div class="block-content border-block">
-
             <h2 class="p-3">Достижения</h2>
             <div class="overflow-auto">
               <table class="table">
@@ -122,7 +87,10 @@ function editProfile() {
                   </tr>
                   <tr>
                     <th scope="row">2</th>
-                    <td>Грамота за 2 место в соревнованиях по волейьолу среди команд ИРНИТУ</td>
+                    <td>
+                      Грамота за 2 место в соревнованиях по волейьолу среди
+                      команд ИРНИТУ
+                    </td>
                     <td>20.08.2022</td>
                     <td>Соревнование по волейболу</td>
                     <td>СД</td>
@@ -146,9 +114,48 @@ function editProfile() {
   </div>
 </template>
 
-<style lang="scss" >
-.personal {
+<script setup lang="ts">
+import { usePermissionsStore } from "@/store/permissions_store";
+import { ref, onBeforeMount } from "vue";
+import { useUserStore } from "@/store/user_store";
+import { useJournalStore } from "@/store/journals_store";
 
+const selectedColor = ref("blue");
+
+const user = ref();
+const functions = ref();
+const dateEvent = ref();
+// let dates
+
+const isEditing = ref(false);
+
+onBeforeMount(async () => {
+  user.value = await usePermissionsStore().fetchUser();
+  functions.value = await useUserStore().getUsersFunction(3);
+  dateEvent.value = await useJournalStore().fetchJournalsByUserId(3);
+  attrs.value[0].dates = dateEvent.value[0].map(
+    (x: any) => x.dateParticipation,
+  );
+});
+
+const attrs = ref([
+  {
+    highlight: {
+      color: "purple",
+      fillMode: "solid",
+      contentClass: "italic",
+    },
+    dates: null,
+  },
+]);
+
+function editProfile() {
+  isEditing.value = !isEditing.value;
+}
+</script>
+
+<style lang="scss">
+.personal {
   .edit {
     position: absolute;
     z-index: 10;
@@ -160,7 +167,6 @@ function editProfile() {
     position: absolute;
     top: 0;
     right: 0;
-
   }
 
   .vc-day {
@@ -170,11 +176,6 @@ function editProfile() {
   .vc-weekday {
     background-color: #cbecee;
   }
-
-  // .information {
-  //   width: 800px;
-  //   background-color: rgb(255, 255, 255);
-  // }
 
   .vc-day-box-center-center {
     border: 1px groove;
@@ -208,16 +209,10 @@ function editProfile() {
   }
 
   .avatar {
-    // margin-right: 2em;
-    // width: 30%;
-    // height: max-content;
     text-align: center;
-    // background-color: rgb(255, 255, 255);
-
-
 
     .tag {
-      background-color: #5BD1D7;
+      background-color: #5bd1d7;
       border-radius: 15px;
     }
 
@@ -248,7 +243,6 @@ function editProfile() {
       position: relative;
       cursor: pointer;
 
-
       &:hover .middle {
         opacity: 1;
       }
@@ -267,7 +261,7 @@ function editProfile() {
       }
 
       .middle {
-        transition: .5s ease;
+        transition: 0.5s ease;
         opacity: 0;
         position: absolute;
         top: 50%;
@@ -275,19 +269,12 @@ function editProfile() {
         transform: translate(-50%, -50%);
         -ms-transform: translate(-50%, -50%);
         text-align: center;
-
       }
     }
   }
 
-
   .active {
-
     border-bottom: var(--main-border-bottom);
   }
-
 }
-
-
-//
 </style>

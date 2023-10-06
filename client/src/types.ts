@@ -12,7 +12,6 @@ export type Permission =
 
 
     // Руководитель коллектива
-    | 'can view teams reports'
     | 'can edit own teams' //+
     | 'can edit status requisitions'
     | 'can create questionnaires'
@@ -21,7 +20,6 @@ export type Permission =
 
     // Руководитель коллектива
     | 'can view teams reports'
-    | ''
 
     // Пользователь
     | 'can create events'

@@ -24,7 +24,7 @@ const itemLink = [
         <div class="container-fluid mx-lg-6 mx-md-5">
             <!-- Иконка политеха -->
             <div class="navbar__item-logo">
-                <RouterLink to="/">
+                <RouterLink to="/news">
                     <img src="@/assets/icon/logo.svg" alt="logo" class="logo">
                 </RouterLink>
             </div>

@@ -1,8 +1,8 @@
 import axios from "axios";
-import { computed, ref } from "vue";
-import type { Permission } from "@/types";
-import { defineStore } from "pinia";
-import { useRoute, useRouter } from "vue-router";
+import {ref} from "vue";
+import type {Permission} from "@/types";
+import {defineStore} from "pinia";
+import {useRouter} from "vue-router";
 
 export const usePermissionsStore = defineStore("permissionsStore", () => {
     const router = useRouter();
@@ -21,9 +21,9 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     // получить нужные данные от юзера
     async function checkLogin() {
-        let response = await axios.get("api/users/check-login")
+        const response = await axios.get("api/users/check-login")
 
-        if (isLogged) {
+        if (isLogged.value) {
             isLogged.value = true;
             permissions.value = response.data.permissions
             username.value = response.data.username
@@ -34,7 +34,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
             if (typeof router.options.history.state.current == 'string' && router.options.history.state.current != '/' && router.options.history.state.current != '/#/') {
                 nextUrl = router.options.history.state.current
             }
-            router.push(nextUrl)
+            await router.push(nextUrl)
 
         } else {
             permissions.value = []
@@ -44,9 +44,9 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     }
 
     // отправка данных юзера при входе на проверку на сервер
-    async function login({ username, password }: { username: string, password: string }) {
-              
-        let response = await axios.post("/api/users/login", {
+    async function login({username, password}: { username: string, password: string }) {
+
+        const response = await axios.post("/api/users/login", {
             "user": {
                 username: username,
                 password: password
@@ -58,7 +58,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
             // router.push('/news')
         } else isLogged.value = false;
 
-      
+
         await checkLogin();
 
         return isLogged;
@@ -73,7 +73,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
         fullname.value = ''
         isLogged.value = false
 
-        router.push('/news')
+        await router.push('/news')
         await checkLogin()
     }
 
