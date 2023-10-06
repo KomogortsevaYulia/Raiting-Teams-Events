@@ -40,7 +40,6 @@ const selectItem = (i: number) => {
 
 <style lang="scss" scoped>
 .navigation {
-  border-radius: 5px;
   padding: 20px;
   background: white;
 

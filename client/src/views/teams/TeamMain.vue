@@ -106,7 +106,7 @@ async function addImage() {
     background-color: #b7eaed;
     padding: 0.2rem 1rem;
     color: #348498;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
   }
 }
 
@@ -115,7 +115,7 @@ async function addImage() {
 
   .title {
     color: rgb(8, 7, 7);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
     align-items: center;

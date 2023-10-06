@@ -121,7 +121,7 @@ function setCurrentRequisition(req: any) {
   width: 100%;
   margin-bottom: 12px;
   background: rgb(243, 243, 243);
-  border-radius: 10px;
+  border-radius: var(--border-radius);
 }
 
 .member-image {

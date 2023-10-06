@@ -271,7 +271,6 @@ async function archiveFields(deletedFields: [], is_archive: boolean) {
       }
 
       .remove-btn {
-        border-radius: 10px;
         color: white;
         border: none;
         cursor: pointer;
@@ -295,7 +294,6 @@ async function archiveFields(deletedFields: [], is_archive: boolean) {
 
     color: #ffffff;
     background: rgba(52, 132, 152, 0.8);
-    border-radius: 10px;
 
     &:focus {
       outline: none;
@@ -314,7 +312,6 @@ async function archiveFields(deletedFields: [], is_archive: boolean) {
 
     color: #ffffff;
     background: #348498;
-    border-radius: 10px;
 
     &:focus {
       outline: none;

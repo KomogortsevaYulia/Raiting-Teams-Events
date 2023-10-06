@@ -252,7 +252,7 @@ function handleEventResetFilters() {
               background-color: #B7EAED;
               padding: 0.2rem 1rem;
               color: #348498;
-              border-radius: 5px;
+              border-radius: var(--border-radius);
             }
           }
 
@@ -326,7 +326,7 @@ function handleEventResetFilters() {
               background-color: #B7EAED;
               padding: 0.2rem 1rem;
               color: #348498;
-              border-radius: 5px;
+              border-radius: var(--border-radius);
             }
           }
 
@@ -403,7 +403,7 @@ function handleEventResetFilters() {
 }
 
 .wrapper-news__navigation {
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   padding: 20px;
   background: white;
 
@@ -434,6 +434,6 @@ function handleEventResetFilters() {
 .filters-block {
   background-color: #fff;
   padding: 2rem;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
 }
 </style>

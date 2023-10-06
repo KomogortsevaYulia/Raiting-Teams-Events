@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div v-if="show" class="wrapper-team__content wrapper-content">
+    <div v-if="show" class="wrapper-team__content wrapper-content border-block">
       <!-- Навигация -->
       <div class="wrapper-team__navigation">
         <template v-for="(item, index) in itemList" :key="index">
@@ -147,7 +147,6 @@ async function handleUpdateTeam() {
   height: 89px;
   margin: 1rem;
   background: #d1cdcd;
-  border-radius: 10px;
 }
 
 .wrapper-team {

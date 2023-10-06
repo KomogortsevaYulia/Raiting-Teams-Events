@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper-team wrapper-content">
+  <div class="wrapper-team wrapper-content border-block">
     <!-- Навигация -->
-    <div class="wrapper-team__navigation">
+    <div class="wrapper-second__navigation">
       <a
         @click="selectItem(index), (showCreate = false)"
         v-for="(direction, index) in directions"
@@ -74,20 +74,13 @@
 import { onBeforeMount, ref } from "vue";
 import { useTeamStore } from "@/store/team_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import "@/assets/nav-second.scss"
 
 const selectedItem = ref(0);
 const showCreate = ref(false);
 const directions = ref();
 // store--------------------------------------------------------------
 const teamStore = useTeamStore();
-
-// const itemList = [
-//     { name: "Научная", direction:DirectionName.NID },
-//     { name: "Учебная",  direction:DirectionName.UD },
-//     { name: "Спортивная",  direction:DirectionName.SD },
-//     { name: "Общественная",  direction:DirectionName.OD },
-//     { name: "Культурно-творческая",  direction:DirectionName.KTD }
-// ]
 
 onBeforeMount(async () => {
   await getDirections();
@@ -121,34 +114,5 @@ async function getDirections() {
   display: block;
   width: 100%;
   justify-content: center;
-
-  .wrapper-team__navigation {
-    padding-bottom: 2rem;
-    width: 100%;
-
-    a {
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
-      text-decoration: none;
-      color: #348498;
-      margin-inline: 1rem;
-      padding-bottom: 5px;
-
-      &:hover {
-        color: var(--main-color);
-      }
-    }
-
-    // Первому элементу ставим отступ = 0, чтобы не выпирал
-    a:first-child {
-      margin-left: 0;
-    }
-
-    .active {
-      color: var(--main-color);
-      border-bottom: var(--main-border-bottom);
-    }
-  }
 }
 </style>

@@ -600,7 +600,7 @@ function changeTypeReport() {
 
 // блоки с содержимым-------------------------------------------------------------------
 .block-content {
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   padding: 40px;
   margin: 30px auto 30px auto;
   background: white;

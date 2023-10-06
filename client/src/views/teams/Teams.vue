@@ -373,7 +373,6 @@ async function handleTimerSearch(seachText: string) {
 .filters-block {
   background-color: #fff;
   padding: 2rem;
-  border-radius: 5px;
 }
 
 .wrapper-team {
@@ -416,7 +415,7 @@ async function handleTimerSearch(seachText: string) {
     width: 100%;
 
     .content-filter {
-      border-radius: 15px;
+      border-radius: var(--border-radius);
       border: var(--main-border-card);
       height: 300px;
       width: 15rem;
@@ -438,7 +437,7 @@ async function handleTimerSearch(seachText: string) {
         flex-wrap: wrap;
 
         .cardEvent {
-          border-radius: 5px;
+          border-radius: var(--border-radius);
           overflow: hidden;
           width: 250px;
           height: 350px;
@@ -517,7 +516,7 @@ async function handleTimerSearch(seachText: string) {
               background-color: #b7eaed;
               padding: 0.2rem 1rem;
               color: #348498;
-              border-radius: 5px;
+              border-radius: var(--border-radius);
             }
 
             .teg:last-child {
@@ -534,7 +533,7 @@ async function handleTimerSearch(seachText: string) {
       .wrapper-list {
         .cardEvent {
           margin: 1rem 0;
-          border-radius: 5px;
+          border-radius: var(--border-radius);
           overflow: hidden;
           width: 100%;
           background-color: #fff;
@@ -609,7 +608,7 @@ async function handleTimerSearch(seachText: string) {
               background-color: #b7eaed;
               padding: 0.2rem 1rem;
               color: #348498;
-              border-radius: 5px;
+              border-radius: var(--border-radius);
             }
           }
 

@@ -202,7 +202,6 @@ function editProfile() {
   }
 
   .block-content {
-    border-radius: 5px;
     padding: 40px;
     margin: 10px auto 20px auto;
     background: white;
@@ -210,21 +209,6 @@ function editProfile() {
 
   .avatar {
     text-align: center;
-
-    .tag {
-      background-color: #5bd1d7;
-      border-radius: 15px;
-    }
-
-    .tags {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-column-gap: 10px;
-      grid-row-gap: 1em;
-      margin-left: 2em;
-      margin-right: 2em;
-      margin-bottom: 2em;
-    }
 
     .FIO {
       font-size: 1.4rem;
@@ -239,7 +223,7 @@ function editProfile() {
     &__scale {
       display: inline-block;
       overflow: hidden;
-      border-radius: 100px;
+      border-radius: 50%;
       position: relative;
       cursor: pointer;
 
