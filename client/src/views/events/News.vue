@@ -73,6 +73,10 @@
           </div>
         </div>
 
+        <div v-else-if="loading" class="d-flex align-items-center justify-content-center mt-4">
+          <Loading   size-fa-icon="fa-3x"/>
+        </div>
+
         <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
 
       </div>
@@ -104,6 +108,7 @@ import ModalFull from '@/components/modals/ModalFull.vue';
 import { Event } from '@/store/models/events.model';
 import UserEvents from '../user/UserEvents.vue';
 import Search from '@/components/Search.vue';
+import Loading from "@/components/Loading.vue";
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
@@ -283,7 +288,7 @@ function handleEventResetFilters() {
       .card {
         width: 250px;
         background-color: #fff;
-        height: 350px auto;
+        height: 350px;
         margin: 0 1rem 1rem 0;
         flex-wrap: wrap;
         overflow: hidden;

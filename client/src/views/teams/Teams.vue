@@ -154,11 +154,10 @@
             </div>
           </div>
 
-          <font-awesome-icon
-            v-else
-            icon="circle-notch"
-            class="fas fa-spin fa-xl m-5 loading"
-          />
+          <div v-else-if="loading" class="d-flex align-items-center justify-content-center mt-4">
+            <Loading   size-fa-icon="fa-3x"/>
+          </div>
+
         </div>
 
         <Pagination
@@ -176,6 +175,7 @@ import Switch_toggle from "@/components/Switch_toggle.vue";
 import { onBeforeMount, ref } from "vue";
 import { usePermissionsStore } from "@/store/permissions_store";
 import CheckBox_Menu from "@/components/CheckBox_Menu.vue";
+import Loading from "@/components/Loading.vue";
 import _ from "lodash";
 import { DirectionName } from "@/store/enums/enum_teams";
 import Pagination from "@/components/Pagination.vue";
