@@ -99,31 +99,32 @@
               </div>
             </router-link>
 
-            <div class="wrapperContent col-lg col-md-auto px-5 py-4">
+            <div class="wrapperContent col-lg col-md-auto px-4 py-4">
               <div class="row mb-2">
                 <!-- team title -->
                 <div class="col p-0">
-                  <router-link :to="'/team/' + team.id">
+                  <div class="row g-2">
                     <!-- набор -->
-                    <span
-                      class="fs-6 text-bg-success px-1 me-1"
-                      v-if="team.set_open"
-                    >
-                      набор открыт</span
-                    >
-                    <span class="fs-6 text-bg-danger px-1 me-1" v-else>
-                      набор закрыт</span
-                    >
 
-                    <!-- тайтл -->
-                    <span
-                      v-if="team.title && team.title.length > 50"
-                      class="cardTitle"
-                    >
-                      {{ team.title.slice(0, 50) }} ...
-                    </span>
-                    <span v-else class="cardTitle">{{ team.title }}</span>
-                  </router-link>
+                    <div class="col-12">
+                      <router-link :to="'/team/' + team.id">
+                        <span
+                          v-if="team.title && team.title.length > 50"
+                          class="cardTitle"
+                        >
+                          {{ team.title.slice(0, 50) }} ...
+                        </span>
+                        <span v-else class="cardTitle">{{ team.title }}</span>
+                      </router-link>
+                    </div>
+
+                    <div class="col-auto">
+                      <span v-if="team.set_open" class="set set__open">
+                        Набор открыт</span
+                      >
+                      <span class="set set__closed" v-else> Набор закрыт</span>
+                    </div>
+                  </div>
                 </div>
                 <!-- edit -->
                 <div
@@ -143,7 +144,12 @@
 
               <div class="row mb-2">
                 <div class="navigation-tags my-2 row g-1">
-                  <Tag v-for="(item, index) in team.tags" class="col-auto me-2" :text="item" :key="index" />
+                  <Tag
+                    v-for="(item, index) in team.tags"
+                    class="col-auto me-2"
+                    :text="item"
+                    :key="index"
+                  />
                 </div>
                 <div class="row">
                   {{ team.short_description }}
@@ -152,10 +158,12 @@
             </div>
           </div>
 
-          <div v-else-if="loading" class="d-flex align-items-center justify-content-center mt-4">
-            <Loading   size-fa-icon="fa-3x"/>
+          <div
+            v-else-if="loading"
+            class="d-flex align-items-center justify-content-center mt-4"
+          >
+            <Loading size-fa-icon="fa-3x" />
           </div>
-
         </div>
 
         <Pagination
@@ -379,6 +387,20 @@ async function handleTimerSearch(seachText: string) {
   width: 100%;
   justify-content: center;
 
+  .set {
+    padding: 5px 15px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+
+    &__open {
+      background: var(--green-color);
+    }
+
+    &__closed {
+      background: var(--red-color);
+    }
+  }
+
   .wrapper-team__navigation {
     padding-bottom: 1rem;
     width: 100%;
@@ -436,8 +458,13 @@ async function handleTimerSearch(seachText: string) {
         flex-wrap: wrap;
 
         .cardEvent {
+          &::-webkit-scrollbar {
+            display: none;
+          }
+
+          background: white;
           border-radius: var(--border-radius);
-          overflow: hidden;
+          overflow: auto;
           width: 250px;
           height: 350px;
           margin: 0 1rem 1rem 0;
@@ -516,12 +543,16 @@ async function handleTimerSearch(seachText: string) {
 
       .wrapper-list {
         .cardEvent {
+          &::-webkit-scrollbar {
+            display: none;
+          }
+
           margin: 1rem 0;
           border-radius: var(--border-radius);
-          overflow: hidden;
-          width: 100%;
+          overflow-y: scroll;
           background-color: #fff;
           height: 15rem;
+          width: 100%;
 
           display: flex;
           flex-direction: row;

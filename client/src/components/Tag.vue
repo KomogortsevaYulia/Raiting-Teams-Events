@@ -1,5 +1,5 @@
 <template>
-  <div class="tag">
+  <div :class="['tag', styles]">
     {{ text }}
   </div>
 </template>
@@ -7,6 +7,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   text: string;
+  styles:string;
 }>();
 </script>
 
