@@ -1,22 +1,40 @@
 <template>
   <!-- Блок с НОВОСТЯМИ -->
   <div class="news-panel">
+    <div class="filters">
+      <div class="block search">
+        <div class="icon"> 
+          <FontAwesomeIcon icon="search" />
+        </div>
+        Поиск по новостям
+      </div>
+      <div class="block date">
+        <FontAwesomeIcon icon="calendar" />
+        25 сен - 1 окт 2023
+        <FontAwesomeIcon icon="angle-down" />
+      </div>
+      <div class="block order">
+        <FontAwesomeIcon icon="sort" />
+        Сначала новые
+        <FontAwesomeIcon icon="angle-down" />
+      </div>
+    </div>
     <div class="news-card" v-for="news in newsList" :key="news.id">
       <div class="image-container">
         <img :src="news.imageUrl" alt="" />
       </div>
       <div class="text-container">
-        <h2 class="title">{{ news.title }}</h2>
-        <label class="description">{{ news.description }}</label>
+        <div class="title">{{ news.title }}</div>
+        <div class="description">{{ news.description }}</div>
+        <div class="date">07.03.2022</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  team: any; //коллектив
-}>();
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+const props = defineProps<{ team: any; }>();
 
 const newsList = [
   {
@@ -51,40 +69,80 @@ const newsList = [
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+
+  .filters {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 30px;
+
+    .block {
+      padding: 7px 15px;
+      border: 1.5px solid rgba(61, 61, 61, 0.1);
+      border-radius: 15px;
+    }
+    
+    .search {
+      .icon {
+        margin-right: 10px;
+      }
+
+      display: flex;
+      align-items: center;
+      width: 40%;
+    }
+
+    .date {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 25%;
+    }
+
+    .order {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 25%;
+    }
+  }
 
   .news-card {
     display: flex;
     align-items: center;
-    height: 230px;
-    // width: 80%;
-    // background-color: #B7EAED;
-    // border-style: #000000,10px;
-    border: 2px solid #b7eaed;
+    height: 200px;
+    border: 1px solid #d8d8d8;
 
     margin-bottom: 20px;
-    border-radius: 25px;
-
-    h2 {
-      padding: 0;
-      margin: 0;
-      font-size: 32px;
-    }
+    border-radius: 15px;
 
     img {
-      height: 225px;
-      width: 225px;
-      border-radius: 25px;
+      height: 200px;
+      width: 300px;
+      border-radius: 15px;
       object-fit: cover;
       overflow: hidden;
     }
 
+    .date {
+      text-align: right;
+      font-weight: bold;
+      font-size: 10px;
+      color: #7d7d7d;
+    }
+
     .title {
-      margin-top: 0;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
 
     .description {
-      margin-bottom: 0;
+      text-align: justify;
+      font-size: 12px;
     }
 
     .text-container {

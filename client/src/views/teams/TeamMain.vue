@@ -3,35 +3,46 @@
     <Tag v-for="(item, index) in team.tags" class="col-auto me-2" :text="item" :key="index" />
   </div>
   <hr />
+  <div class="block-title">О коллективе</div>
   <div class="middle-panel">
     <div class="column-left">
-      <h2>О коллективе</h2>
-      {{ team.description }}
+      <div class="description">
+        {{ team.description }}
+      </div>
     </div>
     <div class="column-right">
-      <div class="image-container">
-        <div v-for="(item, index) in team.image" :key="index">
-          <img :src="item" v-if="currentPage === index" />
-        </div>
-      </div>
-      <div class="page-arrows" v-iv="team.image.length > 0">
+      <div class="image-box">
         <div class="arrow-left" @click="previousPage">
           <FontAwesomeIcon icon="angle-left" />
+        </div>
+        <div class="image-container">
+          <div v-for="(item, index) in team.image" :key="index">
+            <img :src="item" v-if="currentPage === index" />
+          </div>
         </div>
         <div class="arrow-right" @click="nextPage">
           <FontAwesomeIcon icon="angle-right" />
         </div>
       </div>
-      <div class="add-container">
-        <input
-          ref="image"
-          class="form-control"
-          type="file"
-          @change="uploadImage"
-        />
-        <button @click="addImage()">Добавить изображение</button>
-      </div>
     </div>
+  </div>
+  <div class="block-title">Галерея</div>
+  <div class="middle-panel">
+    <div class="gallery">
+      <img src="https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album" alt="" />
+      <img src="https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album" alt="" />
+      <img src="https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album" alt="" />
+      <img src="https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album" alt="" />
+    </div>
+  </div>
+  <div class="map">
+    <div class="info">
+      <div class="title">Наши контакты</div>
+      <div class="phone block">+7 (924) 601-90-94</div>
+      <div class="adress block">г. Иркутск, ул. Лермонтова, 83,<br>главный корпус ИРНИТУ,<br>каб. А-203</div>
+      <div class="schedule block">пн-пт 9:00 - 18:00,<br>сб 10:00 - 15:00<br>вс - выходной</div>
+    </div>
+    <img src="https://i.imgur.com/0e7rWdZ.png">
   </div>
 </template>
 
@@ -42,15 +53,13 @@ import { ref } from "vue";
 import Tag from "@/components/Tag.vue";
 
 const props = defineProps<{
-  team: any; //коллектив
+  team: any;
   onUpdateTeam: Function;
 }>();
 
 const teamStore = useTeamStore();
 
 const currentPage = ref(0);
-
-const image = ref<File>();
 
 function setCurrentPage(page: number) {
   currentPage.value = page;
@@ -71,20 +80,6 @@ function previousPage() {
     currentPage.value = props.team.image.length - 1;
   }
 }
-
-function uploadImage(e: any) {
-  image.value = e.target.files[0];
-}
-
-async function addImage() {
-  let formteam = new FormData();
-  formteam.append("file", image.value!);
-
-  image.value = undefined;
-
-  await teamStore.addImage(props.team.id, formteam);
-  props.onUpdateTeam();
-}
 </script>
 
 <style lang="scss" scoped>
@@ -101,8 +96,14 @@ async function addImage() {
   display: flex;
 }
 
+.block-title {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
 .middle-panel {
   display: flex;
+  margin-bottom: 20px;
 
   .title {
     color: rgb(8, 7, 7);
@@ -119,11 +120,35 @@ async function addImage() {
       height: 2rem;
       font-family: var(--font-family-title);
     }
+    .description {
+      text-align: justify;
+      font-size: 12px;
+    }
+  }
+
+  .gallery {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+
+    img {
+      height: 250px;
+      width: 400px;
+      border-radius: 10px;
+      object-fit: cover;
+      overflow: hidden;
+      margin-right: 10px;
+    }
   }
 
   .column-right {
     max-width: fill-available;
-    padding: 0 10px;
+
+    .image-box {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
 
     .add-container {
       margin-top: 20px;
@@ -167,15 +192,13 @@ async function addImage() {
       width: 20px;
       height: 20px;
       margin: 0 10px;
-      border-radius: 50%;
-      background-color: #ccc;
       cursor: pointer;
     }
 
-    .arrow-left i,
-    .arrow-right i {
-      color: #fff;
-      font-size: 14px;
+    .arrow-left > *,
+    .arrow-right > *{
+      color: #ababab;
+      font-size: 18px;
     }
 
     // .page-buttons {
@@ -195,6 +218,43 @@ async function addImage() {
     // .page-buttons button.active {
     //   background-color: var(--main-color);
     // }
+  }
+}
+
+.map {
+  display: flex;
+  margin: 2rem -2.5rem -1.5rem -2.5rem;
+
+  .info {
+    position: absolute;
+    width: 290px;
+    padding: 25px;
+    margin: 2rem 0 0 2rem;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(61, 61, 61, 0.2);
+    border-radius: 20px;
+    background-color: white;
+
+    .block {
+      margin: 8px 0;
+    }
+
+    .phone {
+      color: #d83c5b;
+    }
+
+    .title {
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0 0 14px 14px;
   }
 }
 </style>
