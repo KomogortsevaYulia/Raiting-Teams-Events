@@ -56,7 +56,7 @@ const teamStore = useTeamStore();
   width: auto;
   background-color: #fff;
   border-radius: 24px;
-  padding: 0.3rem 0.6rem;
+  padding: 0.15rem 0.6rem;
 
   .switch-item {
     cursor: pointer;

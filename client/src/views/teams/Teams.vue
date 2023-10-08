@@ -72,7 +72,7 @@
         </div>
 
         <!-- Сами карточки -->
-        <div :class="[teamStore.layout ? 'wrapper-list' : 'wrapper-grid']">
+        <div :class="[teamStore.layout ? 'wrapper-list' : 'wrapper-grid row-cols-lg-3']">
           <div
             v-if="!loading"
             v-for="team in data"
@@ -80,7 +80,7 @@
             class="cardEvent border-block row justify-content-center"
           >
             <router-link
-              class="col-lg-auto p-0 col-md-auto d-flex justify-content-center"
+              class="p-0 col-md-auto d-flex  justify-content-center"
               :to="'/team/' + team.id"
             >
               <div class="card__banner">
@@ -456,6 +456,8 @@ async function handleTimerSearch(seachText: string) {
         padding-top: 1rem;
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
 
         .cardEvent {
           &::-webkit-scrollbar {
@@ -625,13 +627,18 @@ async function handleTimerSearch(seachText: string) {
 }
 
 @media (max-width: 992px) {
-  .cardEvent {
-    height: 25rem !important;
+  .wrapper-list{
+    .cardEvent {
+    
+    // height: 25rem !important;
   }
 
   .card__banner {
-    max-width: 100% !important;
-    max-height: 15rem !important;
+    display: none !important;
+    // max-width: 100% !important;
+    // max-height: 15rem !important;
   }
+  }
+ 
 }
 </style>
