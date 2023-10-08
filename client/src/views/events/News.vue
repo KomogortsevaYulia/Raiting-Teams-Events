@@ -94,8 +94,8 @@
                   </p>
                   <p v-else>{{ event.description }}</p>
                   <!-- <div class="btn__container">
-                  <button class="card__btn">Подать заявку</button>
-                </div> -->
+                                      <button class="card__btn">Подать заявку</button>
+                                    </div> -->
                 </div>
               </div>
             </router-link>
@@ -129,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import "@/assets/nav-second.scss"
+import "@/assets/nav-second.scss";
 import Switch_toggle from "@/components/Switch_toggle.vue";
 import CheckBox_Menu from "@/components/CheckBox_Menu.vue";
 import { useEventStore } from "@/store/events_store";
