@@ -93,9 +93,11 @@
                     {{ event.description.slice(0, 150) }}
                   </p>
                   <p v-else>{{ event.description }}</p>
-                  <!-- <div class="btn__container">
-                                      <button class="card__btn">Подать заявку</button>
-                                    </div> -->
+                  <!-- @TODO: реализовать кнопку "Подать заявку" на участие в мероприятии -->
+
+<!--                  <div class="btn__container">-->
+<!--                    <button class="card__btn">Подать заявку</button>-->
+<!--                  </div>-->
                 </div>
               </div>
             </router-link>
