@@ -16,6 +16,7 @@
         "@typescript-eslint",
         "vue"
     ],
+    "ignorePatterns": ["*.spec.js", "**/vendor/*.js"],
     "rules": {
     }
 }
