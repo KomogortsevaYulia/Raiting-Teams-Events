@@ -1,55 +1,46 @@
 <template>
   <div class="switch border-block">
-    <div
-      @click="teamStore.setLayout(true)"
-      class="switch-item"
-      :class="{ active: teamStore.layout }"
-    >
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M0 0H4V5H0V0Z" />
-        <path d="M6 0H16V5H6V0Z" />
-        <path d="M0 6H4V10H0V6Z" />
-        <path d="M6 6H16V10H6V6Z" />
-        <path d="M0 11H4V16H0V11Z" />
-        <path d="M6 11H16V16H6V11Z" />
-      </svg>
+    <div @click="setState(true)" class="switch-item" :class="{ active: state }">
+      <font-awesome-icon :icon="['fas', 'list']" class="fa-lg" />
     </div>
     <div
-      @click="teamStore.setLayout(false)"
+      @click="setState(false)"
       class="switch-item"
-      :class="{ active: !teamStore.layout }"
+      :class="{ active: !state }"
     >
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M0 0H7V7H0V0Z" />
-        <path d="M9 0H16V7H9V0Z" />
-        <path d="M0 9H7V16H0V9Z" />
-        <path d="M9 9H16V16H9V9Z" />
-      </svg>
+      <font-awesome-icon :icon="['fas', 'border-all']" class="fa-lg" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useTeamStore } from "@/store/team_store";
+import { onBeforeMount, ref, watch } from "vue";
 
-const teamStore = useTeamStore();
+const state = ref(true); //состояние лэйаута (сетка, лист)
+
+const props = defineProps<{
+  onEventChangeState: Function; //обработка события при смене представления
+}>();
+
+onBeforeMount(() => {
+  // set state of layout from storage
+  const stateStorage = localStorage.getItem("switchToggleLayout");
+  state.value = stateStorage ? parseInt(stateStorage) === 1 : true;
+  props.onEventChangeState( state.value );
+
+});
+
+function setState(st: boolean) {
+  state.value = st;
+}
+
+watch(state, (newValue: boolean) => {
+  localStorage.setItem("switchToggleLayout", newValue ? "1" : "0");
+  props.onEventChangeState(newValue);
+});
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/globals.scss";
-
 .switch {
   display: flex;
   align-items: center;
@@ -67,27 +58,10 @@ const teamStore = useTeamStore();
     width: 35px;
     border-radius: 100%;
     transition: 0.4s;
-
-    svg path {
-      fill: #f2e6e4;
-    }
-
-    &:hover svg path {
-      transition: 0.4s;
-      fill: #ffb3a6;
-    }
   }
 
   .active {
     background-color: #fbcfc7;
-
-    svg path {
-      fill: var(--main-color);
-    }
-
-    &:hover svg path {
-      fill: var(--main-color);
-    }
   }
 }
 </style>
