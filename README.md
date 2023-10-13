@@ -40,7 +40,7 @@ https://github.com/KomogortsevaYulia/knowledge_base_rating
 
 **не забывайте обновлять этот файл по методологии semantic versioning (semver)**
 
-коммитом с паттерном "update release tags: ${tag}"
+коммитом с паттерном "chore(release tags): ${tag}"
 это необходимо для контроля версий, в большую часть на vds/vps при обновлении деплоя
 ## CI/CD проекта
 нельзя мержить в мастер беспорядочно
