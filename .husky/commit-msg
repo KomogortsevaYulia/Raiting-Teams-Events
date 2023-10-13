@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# exec < /dev/tty && git cz --hook || true | TODO: integrate git-cz locally
+.git/hooks/commit-msg $1
