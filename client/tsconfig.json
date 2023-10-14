@@ -4,6 +4,7 @@
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "babel.config.js", "Tests/**/*.ts"],
   "compilerOptions": {
     "ignoreDeprecations": "5.0",
+//    "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]

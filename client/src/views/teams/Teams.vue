@@ -177,20 +177,20 @@
 </template>
 
 <script setup lang="ts">
-import Switch_toggle from "@/components/Switch_toggle.vue";
+import Switch_toggle from "@/components/SwitchToggle.vue";
 import { onBeforeMount, ref } from "vue";
 import { usePermissionsStore } from "@/store/permissions_store";
-import CheckBox_Menu from "@/components/CheckBox_Menu.vue";
-import Loading from "@/components/Loading.vue";
+import CheckBox_Menu from "@/components/CheckBoxMenu.vue";
+import Loading from "@/components/LoadingAnimation.vue";
 import _ from "lodash";
 import { DirectionName } from "@/store/enums/enum_teams";
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/PaginationElem.vue";
 import { useTeamStore } from "@/store/team_store";
 import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
 import { FilterTeam } from "@/store/models/teams.model";
 import ModalFull from "@/components/modals/ModalFull.vue";
-import Search from "@/components/Search.vue";
-import Tag from "@/components/Tag.vue";
+import Search from "@/components/SearchField.vue";
+import Tag from "@/components/TagElem.vue";
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();

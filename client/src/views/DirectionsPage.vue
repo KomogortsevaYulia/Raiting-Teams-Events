@@ -3,7 +3,7 @@
     <!-- Навигация -->
     <div class="wrapper-second__navigation">
       <a
-        @click="selectItem(index), (showCreate = false)"
+        @click="selectItem(index); (showCreate = false)"
         v-for="(direction, index) in directions"
         :key="index"
         :class="{ active: index == selectedItem }"
@@ -54,19 +54,6 @@
       </div>
     </div>
 
-    <!-- Форма с полями для создания -->
-    <!-- <div class="wrapper-team__create">
-        <form v-if="showCreate" class="form-team__create">
-            <div class="create-filds">
-                <div class="filds-area">
-                    <input type="text" placeholder="ФИО руководителя" required>
-                </div>
-                <div class="btn">
-                    <button @click="showCreate = false">Сохранить</button>
-                </div>
-            </div>
-        </form>
-    </div> -->
   </div>
 </template>
 

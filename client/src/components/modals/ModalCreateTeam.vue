@@ -1,11 +1,11 @@
 <template>
   <!-- Modal -->
   <div
-    class="modal fade bd-example-modal-lg"
-    id="exampleModal"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
+      class="modal fade bd-example-modal-lg"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
   >
     <div class="modal-dialog modal-lg">
       <div class="modal-content px-3 py-4">
@@ -17,8 +17,8 @@
 
             <!-- если коллектив в архиве -->
             <sup
-              v-if="team != null && team.is_archive != null && team.is_archive"
-              class="text-bg-danger"
+                v-if="team != null && team.is_archive != null && team.is_archive"
+                class="text-bg-danger"
             >
               (В архиве)</sup
             >
@@ -28,9 +28,9 @@
             >
           </h1>
           <div
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
           ></div>
         </div>
         <div class="modal-body">
@@ -48,45 +48,45 @@
 
             <!-- Форма с полями для создания -->
             <form
-              class="form-team__create"
-              @submit.prevent="isEditTeam ? updateTeam() : createTeam()"
+                class="form-team__create"
+                @submit.prevent="isEditTeam ? updateTeam() : createTeam()"
             >
               <div class="create-filds">
                 <div class="filds-area">
                   <input
-                    type="text"
-                    placeholder="Название коллектива"
-                    v-model="title"
-                    required
+                      type="text"
+                      placeholder="Название коллектива"
+                      v-model="title"
+                      required
                   />
                   <input
-                    type="text"
-                    placeholder="Краткое название"
-                    v-model="shortname"
-                    required
+                      type="text"
+                      placeholder="Краткое название"
+                      v-model="shortname"
+                      required
                   />
 
                   <v-select
-                    placeholder="ФИО Руководителя или email"
-                    class="v-select"
-                    label="data"
-                    @input="onTextChange"
-                    :options="foundUsers"
-                    v-model="optionSelect"
+                      placeholder="ФИО Руководителя или email"
+                      class="v-select"
+                      label="data"
+                      @input="onTextChange"
+                      :options="foundUsers"
+                      v-model="optionSelect"
                   ></v-select>
 
                   <div class="row">
                     <div class="col-auto">
                       <!-- select direction -->
                       <select
-                        class="form-select mb-3"
-                        style="min-width: 80px"
-                        aria-label="Default select example"
-                        v-model="selectedDirection"
+                          class="form-select mb-3"
+                          style="min-width: 80px"
+                          aria-label="Default select example"
+                          v-model="selectedDirection"
                       >
                         <option
-                          v-for="direction in directions"
-                          :value="direction.id"
+                            v-for="direction in directions"
+                            :value="direction.id"
                         >
                           {{ direction.shortname }}
                         </option>
@@ -95,52 +95,52 @@
 
                     <div class="col">
                       <input
-                        type="text"
-                        style="width: -webkit-fill-available"
-                        placeholder="Аудитория(кабинет)"
-                        v-model="cabinet"
+                          type="text"
+                          style="width: -webkit-fill-available"
+                          placeholder="Аудитория(кабинет)"
+                          v-model="cabinet"
                       />
                     </div>
                   </div>
 
                   <div class="mb-2">
                     <label for="formFile" class="form-label"
-                      >загрузить устав</label
+                    >загрузить устав</label
                     >
                     <input
-                      class="form-control"
-                      type="file"
-                      id="formFile"
-                      @change="(e) => handleFileUpload(e, false)"
+                        class="form-control"
+                        type="file"
+                        id="formFile"
+                        @change="(e) => handleFileUpload(e, false)"
                     />
                     <p v-if="isEditTeam && team != null">
                       {{ team.charter_team }}
                     </p>
                     <img
-                      v-if="isEditTeam"
-                      :src="charterTeamBase64"
-                      style="width: 100px; height: 100px"
-                      alt="Устав"
+                        v-if="isEditTeam"
+                        :src="charterTeamBase64"
+                        style="width: 100px; height: 100px"
+                        alt="Устав"
                     />
                   </div>
 
                   <div class="mb-2">
                     <label for="formFile1" class="form-label"
-                      >загрузить документ(ы)</label
+                    >загрузить документ(ы)</label
                     >
                     <input
-                      class="form-control"
-                      type="file"
-                      id="formFile1"
-                      @change="(e) => handleFileUpload(e, true)"
+                        class="form-control"
+                        type="file"
+                        id="formFile1"
+                        @change="(e) => handleFileUpload(e, true)"
                     />
                     <p v-if="isEditTeam && team != null">{{ team.document }}</p>
                   </div>
 
                   <textarea
-                    placeholder="Описание"
-                    v-model="description"
-                    required
+                      placeholder="Описание"
+                      v-model="description"
+                      required
                   ></textarea>
                 </div>
 
@@ -152,14 +152,14 @@
                     </div>
                     <div class="col-auto" v-if="isEditTeam">
                       <button
-                        type="button"
-                        class="btn btn-secondary"
-                        @click="archiveTeam(team.id, !team.is_archive)"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Архивировать коллектив"
+                          type="button"
+                          class="btn btn-secondary"
+                          @click="archiveTeam(team.id, !team.is_archive)"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="Архивировать коллектив"
                       >
-                        <font-awesome-icon icon="archive" />
+                        <font-awesome-icon icon="archive"/>
                       </button>
                     </div>
                   </div>
@@ -174,10 +174,10 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from "vue";
+import {onBeforeMount, ref, watch} from "vue";
 import _ from "lodash";
-import { useTeamStore } from "@/store/team_store";
-import { useUserStore } from "@/store/user_store";
+import {useTeamStore} from "@/store/team_store";
+import {useUserStore} from "@/store/user_store";
 import UpdateTeam from "./UpdateTeam";
 
 const teamStore = useTeamStore();
@@ -195,7 +195,7 @@ const shortname = ref("");
 const userLeader = ref();
 const cabinet = ref("");
 
-const charterTeamImg = ref();
+// const charterTeamImg = ref();
 // const document = ref();
 
 const description = ref("");
@@ -215,7 +215,7 @@ const responseMsg = ref();
 const foundUsers = ref();
 
 // найденные направления из системы
-const directions = ref([{ id: 0, shortname: "Все" }]); //дата
+const directions = ref([{id: 0, shortname: "Все"}]); //дата
 const selectedDirection = ref(0);
 
 //получить юзеров
@@ -233,15 +233,15 @@ async function onTextChange(e: any) {
 }
 
 watch(
-  () => props.team,
-  async (value, previousValue) => {
-    if (value) {
-      team.value = await teamStore.fetchTeam(value.id);
-    } else team.value = null;
+    () => props.team,
+    async (value, previousValue) => {
+      if (value) {
+        team.value = await teamStore.fetchTeam(value.id);
+      } else team.value = null;
 
-    responseMsg.value = "";
-    fillForm();
-  },
+      responseMsg.value = "";
+      fillForm();
+    },
 );
 
 onBeforeMount(async () => {
@@ -256,7 +256,7 @@ async function getDirections() {
 
   let dir = data[0];
   let arrayData = [];
-  arrayData[0] = { id: 0, shortname: "Все" };
+  arrayData[0] = {id: 0, shortname: "Все"};
 
   for (let i = 0; i < dir.length; i++) {
     arrayData[i + 1] = dir[i];
@@ -306,9 +306,9 @@ async function fillForm() {
 async function getUsers() {
   let limit = 5;
   let r = await useUserStore().getUsersByNameEmail(
-    limit,
-    userLeader.value,
-    userLeader.value,
+      limit,
+      userLeader.value,
+      userLeader.value,
   );
 
   //получить всех найденных юзеров
@@ -341,14 +341,14 @@ async function createTeam() {
 
   //create team
   responseMsg.value = await teamStore.createTeam(
-    selectedDirection.value,
-    title.value,
-    description.value,
-    shortname.value,
-    userId,
-    cabinet.value,
-    charterTeamFile.value,
-    documentFile.value,
+      selectedDirection.value,
+      title.value,
+      description.value,
+      shortname.value,
+      userId,
+      cabinet.value,
+      charterTeamFile.value,
+      documentFile.value,
   );
 
   // console.log(newTeam)
@@ -384,7 +384,7 @@ async function updateTeam() {
   const res = await teamStore.updateTeam(uT);
   responseMsg.value = res.responseMsg;
 
-  if (res.team != null) {
+  if (res.team) {
     team.value = res.team.data;
   }
 }
@@ -446,18 +446,17 @@ async function archiveTeam(id: number, isArchive: boolean) {
           min-width: 100%;
           max-width: max-content;
           margin-bottom: 1rem;
-          font-family:
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            "Open Sans",
-            "Helvetica Neue",
-            sans-serif;
+          font-family: system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          "Open Sans",
+          "Helvetica Neue",
+          sans-serif;
         }
 
         input {

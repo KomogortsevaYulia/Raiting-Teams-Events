@@ -19,7 +19,7 @@
         <template v-for="(item, index) in itemList" :key="index">
           <a
             v-if="item.permission"
-            @click="selectItem(index), (showCreate = false)"
+            @click="selectItem(index); (showCreate = false)"
             :class="{ active: index == selectedItem }"
             >{{ item.name }}</a
           >
@@ -67,14 +67,14 @@
 import "@/assets/nav-second.scss"
 import WIP from "@/components/WIP.vue";
 import { onBeforeMount, ref } from "vue";
-import Ankets from "@/views/teams/Questionnaire.vue";
+import Ankets from "@/views/teams/QuestionnairePage.vue";
 
 import axios from "axios";
 import { useRoute } from "vue-router";
 import { useTeamStore } from "@/store/team_store";
 import ModalQuestionnaire from "@/components/modals/ModalQuestionnaire.vue";
 import TeamNews from "./TeamNews.vue";
-import Participation from "./Participation.vue";
+import Participation from "./ParticipationPage.vue";
 import TeamRequests from "./TeamRequests.vue";
 import { usePermissionsStore } from "@/store/permissions_store";
 import TeamMain from "./TeamMain.vue";
@@ -103,7 +103,7 @@ async function fetchUsersOfTeam() {
 
 async function fetchCurrentTeam() {
   // я эту хуйню позже перепишу
-  await axios.get("/api/teams/" + route.params.id).then((respose: any) => {
+  await axios.get("/api/teams/" + route.params.id).then((respose) => {
     data.value = respose.data;
   });
 }

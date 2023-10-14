@@ -1,7 +1,7 @@
 <template>
   <!--Общие показатели  -->
 
-  <div class="col" v-for="i in props.data.length">
+  <div class="col" v-for="i in props.data.length" v-bind:key="i">
     <div :class="['colored-block-' + i]" class="my-2">
       <div class="row title">{{ props.data[i - 1].name }}</div>
       <div class="row value">{{ props.data[i - 1].value }}</div>

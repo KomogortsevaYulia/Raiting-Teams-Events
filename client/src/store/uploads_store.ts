@@ -1,10 +1,10 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import axios from "axios";
 
 export const useUploadsStore = defineStore("uploads", () => {
 
     // uploadFile in server
-    async function uploadFile(file: any): Promise<any> {
+    async function uploadFile(file: File) {
         let responseMsg = ""
 
         const formData = new FormData();
@@ -36,11 +36,10 @@ export const useUploadsStore = defineStore("uploads", () => {
     }
 
     // upload image on server
-    async function uploadImage(formData: FormData): Promise<any> {
+    async function uploadImage(formData: FormData) {
 
         let responseMsg = "сохранено"
-
-        const res = await axios.post(`/api/uploads/image`, formData, {
+        await axios.post(`/api/uploads/image`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -48,8 +47,7 @@ export const useUploadsStore = defineStore("uploads", () => {
             if (err.response) {
                 responseMsg = err.response.data.message[0]
             }
-        })
-
+        });
         return responseMsg
 
     }

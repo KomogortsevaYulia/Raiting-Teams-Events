@@ -1,13 +1,11 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import axios from "axios";
 
 export const useDictionaryStore = defineStore("dictionary", () => {
 
     async function getDictionary(id: number) {
-      const res = await axios.get("api/general/dictionary/" + id);
-      const data = res.data;
-
-      return data;
+        const res = await axios.get("api/general/dictionary/" + id);
+        return res.data;
     }
 
 // полуичить все записи по имени класса
@@ -19,9 +17,7 @@ export const useDictionaryStore = defineStore("dictionary", () => {
             }
         })
 
-        const data = res.data
-
-        return data
+        return res.data
     }
 
 // полуичить все записи по ид класса
@@ -33,9 +29,7 @@ export const useDictionaryStore = defineStore("dictionary", () => {
             }
         })
 
-        const data = res.data
-
-        return data
+        return res.data
     }
 
     return {

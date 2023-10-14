@@ -6,8 +6,6 @@ import router from "./router";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
-// import store from "./store";
-
 import "./assets/style.scss";
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -24,15 +22,14 @@ app.component('v-select', vSelect)
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 
-// app.use(store);
 app.use(createPinia())
 app.use(router);
 app.use(VCalendar, {})
 // Кастомная директива на clickOutside
 app.directive(
     'click-outside', {
-    beforeMount(el, binding, vnode) {
-        el.clickOutsideEvent = function (event: any) {
+    beforeMount(el, binding) {
+        el.clickOutsideEvent = function (event: MouseEvent) {
             if (!(el === event.target || el.contains(event.target))) {
                 binding.value(event, el);
             }

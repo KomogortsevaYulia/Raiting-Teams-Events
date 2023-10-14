@@ -39,7 +39,6 @@
             <h3 class="active">Коллективы</h3>
             <div
               class="row d-flex"
-              v-if="functions"
               v-for="(item, index) in functions.data"
               :key="index"
             >
@@ -120,7 +119,6 @@ import { ref, onBeforeMount } from "vue";
 import { useUserStore } from "@/store/user_store";
 import { useJournalStore } from "@/store/journals_store";
 
-const selectedColor = ref("blue");
 
 const user = ref();
 const functions = ref();
@@ -134,7 +132,7 @@ onBeforeMount(async () => {
   functions.value = await useUserStore().getUsersFunction(3);
   dateEvent.value = await useJournalStore().fetchJournalsByUserId(3);
   attrs.value[0].dates = dateEvent.value[0].map(
-    (x: any) => x.dateParticipation,
+    (x: { dateParticipation: string; }) => x.dateParticipation,
   );
 });
 
@@ -197,7 +195,7 @@ function editProfile() {
 
   button {
     background: none;
-    padding: 0em;
+    padding: 0;
     color: var(--main-color);
   }
 

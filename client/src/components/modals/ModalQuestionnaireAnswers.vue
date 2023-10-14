@@ -12,9 +12,9 @@
       <div class="modal-content">
         <div class="modal-title" id="exampleModalLabel">Анкета</div>
         <div
-          v-if="formAnswers"
           v-for="form_field in formAnswers.form_field"
           class="wrapper-questions"
+          v-bind:key="form_field.id"
         >
           <div class="wrapper-one-question">
             <div class="question-label">{{ form_field.title }}</div>

@@ -22,9 +22,9 @@
 
 <script lang="ts" setup>
 import axios from "axios";
-import { onBeforeMount, ref } from "vue";
-import { useFormStore } from "@/store/form_store";
-import { useRoute } from "vue-router";
+import {onBeforeMount, ref} from "vue";
+import {useFormStore} from "@/store/form_store";
+import {useRoute} from "vue-router";
 
 const route = useRoute();
 
@@ -103,10 +103,8 @@ async function createFormFields(
       required: required,
       form: form_id,
     });
-    const strId: string = response.data.id.toString();
-    //console.log(response.data.id)
-    return strId;
-  } catch (error: any) {
+    return response.data.id.toString();
+  } catch (error) {
     if (error.response) {
       responseMsg.value = error.response.data.message;
     }

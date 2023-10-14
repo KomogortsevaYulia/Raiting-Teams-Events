@@ -2,20 +2,19 @@ import { defineStore } from "pinia";
 import axios from "axios";
 
 export const useFormStore = defineStore("form", () => {
-  async function fetchFormFields(team_id: number): Promise<any> {
+  async function fetchFormFields(team_id: number) {
     const res = await axios.get("/api/forms/" + team_id);
     const data = res.data;
 
     return data.form_field;
   }
 
-  async function fetchFormId(team_id: number): Promise<any> {
-    const res: number = (await axios.get("/api/forms/id/" + team_id)).data;
-
+  async function fetchFormId(team_id: number){
+    (await axios.get("/api/forms/id/" + team_id)).data;
     return (await axios.get("/api/forms/id/" + team_id)).data;
   }
 
-  async function fetchRequisitionAnswers(req_id: number): Promise<any> {
+  async function fetchRequisitionAnswers(req_id: number) {
     const res = await axios.get("/api/forms/requisition/" + req_id);
 
     return res.data;

@@ -2,7 +2,6 @@
   <div v-if="props.func.title === 'Руководитель'" class="mt-5">
     <div class="about" style="margin-top: 20px">
       <div class="member-card">
-        <!-- <img class="member-image" src="../assets/icon/event1.png" alt="" /> -->
         <div class="member-info">
           <div>
             <h1>{{ props.user.fullname }}</h1>
@@ -20,7 +19,7 @@
         <div class="row ms-lg-3">
           <!-- image member -->
           <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
-            <img class="member-image" src="../assets/icon/user.png" alt="" />
+            <img class="member-image" src="@/assets/icon/user.png" alt="" />
           </div>
 
           <div class="col-lg-10 col-md-12">
@@ -58,23 +57,16 @@
                 <template v-if="isEditMode">
                   <div class="row g-2">
                     <label>Группа:</label>
-                    <input v-model="props.user.education_group" />
+                    <input/>
                   </div>
                   <div class="row g-2">
                     <label>Роль:</label>
-                    <input v-model="props.func.title" />
+                    <input  />
                   </div>
                   <div class="row g-2 d-flex justify-content-end mt-3">
                     <div class="col-auto">
                       <button
                         class="btn-custom-accept"
-                        @click="
-                          saveChanges(
-                            props.user.education_group,
-                            props.func.title,
-                            props.user.id,
-                          )
-                        "
                       >
                         Сохранить
                       </button>
@@ -94,30 +86,24 @@
 </template>
 
 <script setup lang="ts">
-import { useFunctionsStore } from "@/store/fucntion_store";
 import { useTeamStore } from "@/store/team_store";
 import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref } from "vue";
+import type {IUser} from "@/store/models/user/user.model";
 
-const userStore = useFunctionsStore();
 const teamStore = useTeamStore();
 const uFStore = useUserFunctionsStore();
 
-interface User {
-  id: number;
-  fullname: string;
-  education_group: string;
-}
 
 interface Func {
   title: string;
 }
 
 const props = defineProps<{
-  user: User;
+  user: IUser;
   func: Func;
   idTeam: number;
-  onDeleteMemberEvent: Function;
+  onDeleteMemberEvent: ()=>void;
 }>();
 
 const isEditMode = ref(false);
@@ -133,24 +119,25 @@ async function deleteUserFromTeam(status_name: string) {
     await teamStore.updateRequisition(requisitions[0].id, status_name);
 
   // remove user functions
-  let uFs = await uFStore.findUserFunctions(props.idTeam, props.user.id);
+  let uFs = await uFStore.findUserFunctions(props.idTeam, props.user.id ?? -1);
 
-  uFs.forEach(async (uF: any) => {
+  for (const uF of uFs) {
     // удалить роль в коллективе
     await uFStore.removeUserFunction(uF.id);
-  });
+  }
 
-  props.onDeleteMemberEvent();
+    props.onDeleteMemberEvent();
 }
 
-async function saveChanges(
-  education_group: string,
-  title_role: string,
-  id: number,
-) {
-  await userStore.update(education_group, title_role, id);
-  isEditMode.value = false;
-}
+// TODO реализовать метод для сохранения изменений
+// async function saveChanges(
+//   education_group: string,
+//   title_role: string,
+//   id: number,
+// ) {
+//   await userStore.update(education_group, title_role, id);
+//   isEditMode.value = false;
+// }
 
 async function cancelEditMode() {
   isEditMode.value = false;

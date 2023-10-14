@@ -84,9 +84,8 @@
         <p class="text-edit">Уровень</p>
         <select
           class="col form-select"
-          label="data"
           v-model="level"
-          :option.value="foundLevels"
+          :value="foundLevels"
         >
           <option disabled value="">Please select one</option>
           <option>Вузовский</option>
@@ -135,8 +134,7 @@
       <div class="col ps-0">
         <p class="text-edit">Контроль</p>
         <v-select class="form-select" v-model="control">
-          <!-- <option disabled value="">Please select one</option>
-          <option>Аносов С.С.</option> -->
+
         </v-select>
       </div>
       <div class="col">
@@ -197,11 +195,8 @@
 
 <script setup lang="ts">
 import axios from "axios";
-import { onBeforeMount, ref, computed } from "vue";
+import { onBeforeMount, ref } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
-import { useEventStore } from "@/store/event_store";
-
-const eventStore = useEventStore();
 
 const title = ref();
 const description = ref();
@@ -228,14 +223,14 @@ const tags = ref();
 const foundLevels = ref();
 
 onBeforeMount(async () => {
-  fetchEventLevel();
+  await fetchEventLevel();
 });
 
 async function fetchEventLevel() {
   // я эту хуйню позже перепишу
   await axios
     .get("/api/general/dictionary?class_name=уровень+мероприятия")
-    .then((respose: any) => {
+    .then((respose) => {
       let levels = respose.data;
       let arrayData = [];
       for (let i = 0; i < levels.length; i++) {
@@ -248,23 +243,7 @@ async function fetchEventLevel() {
 }
 
 const responseMsg = ref();
-const optionSelect = ref();
 
-const hoursArray = computed(() => {
-  const arr = [];
-  for (let i = 0; i < 24; i++) {
-    arr.push({ text: i < 10 ? `0${i}` : i, value: i });
-  }
-  return arr;
-});
-
-const minutesArray = computed(() => {
-  const arr = [];
-  for (let i = 0; i < 60; i++) {
-    arr.push({ text: i < 10 ? `0${i}` : i, value: i });
-  }
-  return arr;
-});
 
 async function createEvent() {
   responseMsg.value = "сохранено";

@@ -122,14 +122,13 @@
 </template>
 
 <script setup lang="ts">
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/PaginationElem.vue";
 import { useEventStore } from "@/store/events_store";
 
-import { onBeforeMount, ref } from "vue";
+import {onBeforeMount, ref} from "vue";
 import { useDictionaryStore } from "@/store/dictionary_store";
 import CardApprove from "@/components/CardApprove.vue";
 import { Status, Type } from "@/store/enums/enum_event";
-import { Event } from "@/store/models/events.model";
 
 const eventsStore = useEventStore();
 const dictionaryStore = useDictionaryStore();
@@ -159,13 +158,12 @@ const maxPages = ref(1);
 const visiblePages = 7;
 //pagination ---------------------------------------------------------------------
 
-const eventFilter = ref(new Event());
+const eventFilter = ref({limit: limit, offset:0});
 
 onBeforeMount(async () => {
   eventFilter.value.limit = limit;
   eventFilter.value.offset = 0;
   eventFilter.value.type = Type.OUTSIDE;
-  eventFilter.value.direction = null;
   eventFilter.value.user_id = props.idUser;
 
   await fetchEvents();

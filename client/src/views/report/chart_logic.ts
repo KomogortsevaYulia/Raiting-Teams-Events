@@ -2,23 +2,27 @@ import { Type } from "@/store/enums/enum_event";
 import { TypeSeason } from "@/views/report/enums_report";
 import { useEventStore } from "@/store/events_store";
 import { defineStore } from "pinia";
+import type {IEvent} from "@/store/models/event/events.model";
 
 export const useChartStore = defineStore("echarts", () => {
 
     const eventStore = useEventStore();
 
     // подсчет количества внутренних/внешних мероприятий
-    function countEventsInnerOuter(events: any) {
+    function countEventsInnerOuter(events:IEvent[]) {
 
         let inner = 0
         let outer = 0
 
-        for (let i = 0; i < events.length; i++) {
+        if(events && events.length){
+            for (let i = 0; i < events.length; i++) {
 
-            const event = events[i]
-            if (event.type != null && event.type.name == Type.INSIDE) inner += 1
-            else if (event.type != null && event.type.name == Type.OUTSIDE) outer += 1
+                const event = events[i]
+                if (event.type != null && event.type.name == Type.INSIDE) inner += 1
+                else if (event.type != null && event.type.name == Type.OUTSIDE) outer += 1
+            }
         }
+
 
 
         return [
@@ -28,7 +32,7 @@ export const useChartStore = defineStore("echarts", () => {
 
 
     // подсчет количества внутренних/внешних мероприятий
-    function countEventsBySeason(events: any) {
+    function countEventsBySeason(events: IEvent[]) {
 
         let spring = 0
         let summer = 0
@@ -38,7 +42,7 @@ export const useChartStore = defineStore("echarts", () => {
         for (let i = 0; i < events.length; i++) {
 
             const event = events[i]
-            const date = new Date(event.dateStart)
+            const date = new Date(event.dateStart as string)
             const month = date.getMonth()
             // console.log("event.date  " + new Date( event.dateStart))
 

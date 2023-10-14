@@ -66,7 +66,6 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     // разлогиниться
     async function logout() {
-        // @ts-ignore
         await axios.post("/api/users/logout")
 
         permissions.value = []
@@ -78,10 +77,9 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     }
 
     // Получение информации о юзере
-    async function fetchUser(): Promise<any> {
+    async function fetchUser(){
         const res = await axios.get('/api/users/check-login')
-        const data = res.data
-        return data
+        return res.data
     }
 
     return {

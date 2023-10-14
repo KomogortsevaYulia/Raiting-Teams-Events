@@ -1,5 +1,3 @@
-<!-- в БД в teams->direction->shortname должны быть
-   (НИД, КТД, УД, СД, ОД) хардкод, а как по другому определить вид направления? -->
 <template>
   <div class="row">
     <div class="col-lg-5">
@@ -20,11 +18,12 @@
                 class="btn-custom-secondary date border-block"
                 v-for="dt in dates"
                 @click="changeTimeViaButton(dt.timeRange)"
+                v-bind:key="dt.id"
               >
                 {{ dt.date }}
               </button>
 
-              <div class="my-dropdown" style="float: center">
+              <div class="my-dropdown" >
                 <button class="dropbtn btn-custom-secondary date">
                   <font-awesome-icon icon="calendar-days" />
                 </button>
@@ -40,7 +39,7 @@
 
         <!-- выбрать направление -->
         <div class="row my-4 d-flex justify-content-md-center directions">
-          <div v-for="direc in foundDirections" class="col-auto d-flex my-1">
+          <div v-for="direc in foundDirections" class="col-auto d-flex my-1" v-bind:key="direc.id">
             <div
               @click="changeDirection(direc)"
               :class="[
@@ -59,7 +58,7 @@
         <!-- team statistic or directions statistic -->
         <div class="row my-4 d-flex">
           <label class="form-label">тип отчетности</label>
-          <div class="form-check col-auto mx-2" v-for="drT in typeReports">
+          <div class="form-check col-auto mx-2" v-for="drT in typeReports" v-bind:key="drT.id">
             <input
               class="form-check-input"
               type="radio"
@@ -102,7 +101,7 @@
                 v-model="selectedParams.selectedLevel"
                 @change="getEvents()"
               >
-                <option v-for="lvl in levels" :value="lvl">
+                <option v-for="lvl in levels" :value="lvl" v-bind:key="lvl.id">
                   {{ lvl.name }}
                 </option>
               </select>
@@ -119,7 +118,7 @@
                 v-model="selectedParams.selectedType"
                 @change="getEvents()"
               >
-                <option v-for="tp in types" :value="tp">{{ tp.name }}</option>
+                <option v-for="tp in types" :value="tp" v-bind:key="tp.id">{{ tp.name }}</option>
               </select>
             </div>
           </div>
@@ -148,7 +147,7 @@
 
         <!-- checkboxes -->
         <div class="row">
-          <div v-for="g in typeGraphics">
+          <div v-for="g in typeGraphics" v-bind:key="g.id">
             <div
               class="form-check"
               v-if="
@@ -208,7 +207,8 @@ import {
   EVENT_LEVEL,
   EVENT_TYPE,
 } from "@/store/constants/constants_class_names";
-import Graphics from "./Graphics.vue";
+import Graphics from "./GraphicsElems.vue";
+import type {IDictionary} from "@/store/models/dictionary/dictionary.model";
 
 // store--------------------------------------------------------------
 const teamStore = useTeamStore();
@@ -306,11 +306,13 @@ const foundDirections = ref([
 ]); //дата
 
 // заполнить выпадающие списки
-function fillDropdowns(data: any) {
+function fillDropdowns(data: IDictionary[]) {
   let res = [{ id: 0, name: "Все" }];
 
-  for (let i = 0; i < data.length; i++) {
-    res.push({ id: data[i].id, name: data[i].name });
+  for (const element of data) {
+      if (element.id && element.name){
+          res.push({id: element.id, name: element.name });
+      }
   }
 
   return res;
@@ -324,14 +326,14 @@ onBeforeMount(async () => {
   types.value = fillDropdowns(tp);
 
   await getDirections();
-  getEvents();
+  await getEvents();
 });
 
 // если выбран коллектив то получить статистику с мероприятий
 watch(
   () => selectedParams.value.selectedTeam,
   async () => {
-    getEvents();
+    await getEvents();
   },
 );
 
@@ -354,7 +356,7 @@ async function getEvents() {
       break;
   }
 
-  updateCharts();
+  await updateCharts();
 }
 
 async function changeTimeViaButton(timeRange: TimeRange) {
@@ -378,7 +380,7 @@ async function changeTimeViaButton(timeRange: TimeRange) {
   selectedParams.value.dateRange.start = dStart;
   selectedParams.value.dateRange.end = dEnd;
 
-  getEvents();
+  await getEvents();
 }
 
 // получить мероприятия коллектива
@@ -507,7 +509,7 @@ async function getEventsViaJournalsByTeam(teamId: number) {
 
 // получить мероприятия
 async function getEventsByDirection() {
-  let direction = DirectionId.ALL;
+  let direction: DirectionId;
   direction =
     foundDirections.value[selectedParams.value.selectedDirection]
       .idDirectionEvent;
@@ -526,16 +528,16 @@ async function getEventsByDirection() {
   foundEvents.value = events;
 }
 
-async function changeDirection(direction: any) {
+async function changeDirection(direction: { id: number; idDB: number; }) {
   selectedParams.value.selectedDirection = direction.id;
 
   switch (selectedParams.value.selectedTypeReport) {
     case TypeReport.DIRECTION:
-      getEvents();
+      await getEvents();
       break;
     case TypeReport.TEAM:
       await getTeamsOfDirection(direction.idDB);
-      getEvents();
+      await getEvents();
       break;
   }
 }
