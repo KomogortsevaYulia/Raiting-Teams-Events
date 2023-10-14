@@ -1,5 +1,5 @@
 <template>
-  <div v-if="props.func.title === 'Руководитель'" class="mt-5">
+  <div v-if="props.func && props.func.title === 'Руководитель'" class="mt-5">
     <div class="about" style="margin-top: 20px">
       <div class="member-card">
         <div class="member-info">
@@ -90,18 +90,14 @@ import { useTeamStore } from "@/store/team_store";
 import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref } from "vue";
 import type {IUser} from "@/store/models/user/user.model";
+import type {IFunction} from "@/store/models/user/functions.model";
 
 const teamStore = useTeamStore();
 const uFStore = useUserFunctionsStore();
 
-
-interface Func {
-  title: string;
-}
-
 const props = defineProps<{
   user: IUser;
-  func: Func;
+  func?: IFunction;
   idTeam: number;
   onDeleteMemberEvent: ()=>void;
 }>();

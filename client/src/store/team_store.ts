@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {ref} from "vue";
 import axios from "axios";
 import type UpdateTeam from "@/components/modals/UpdateTeam";
-import type {FilterTeam} from "./models/teams.model";
+import type {FilterTeam} from "./models/teams/teams.model";
 
 export const useTeamStore = defineStore("teams", () => {
     const layout = ref(true);
@@ -39,7 +39,7 @@ export const useTeamStore = defineStore("teams", () => {
         return responseMsg;
     }
 
-    async function fetchUserOfTeam(id: number) {
+    async function fetchUsersOfTeam(id: number) {
         const res = await axios.get("/api/teams/" + id + "/users");
         return res.data;
     }
@@ -266,7 +266,7 @@ export const useTeamStore = defineStore("teams", () => {
         createTeam,
         setLayout,
         fetchTeamsOfDirection,
-        fetchUserOfTeam,
+        fetchUsersOfTeam: fetchUsersOfTeam,
         fetchTeam,
         updateTeam,
         archiveTeam,

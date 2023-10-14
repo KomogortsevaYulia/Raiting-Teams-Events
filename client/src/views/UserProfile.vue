@@ -118,9 +118,11 @@ import { usePermissionsStore } from "@/store/permissions_store";
 import { ref, onBeforeMount } from "vue";
 import { useUserStore } from "@/store/user_store";
 import { useJournalStore } from "@/store/journals_store";
+import type { Ref } from "vue";
+import type {IUser} from "@/store/models/user/user.model";
 
 
-const user = ref();
+const user:Ref<IUser> = ref({});
 const functions = ref();
 const dateEvent = ref();
 // let dates

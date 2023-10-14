@@ -5,9 +5,9 @@
     <div class="full-width">
       <div class="wrapper-team__top-panel">
         <div class="text-area">
-          <div class="container">
-            <p>{{ data.title }}</p>
-            <ModalQuestionnaire v-model="data.title" />
+          <div class="container"  v-if="team && team.title">
+            <p>{{ team.title }}</p>
+            <ModalQuestionnaire v-model="team.title" />
           </div>
         </div>
       </div>
@@ -27,12 +27,12 @@
       </div>
 
       <div v-if="selectedItem === 0">
-        <TeamMain :onUpdateTeam="handleUpdateTeam" :team="data" />
+        <TeamMain :onUpdateTeam="handleUpdateTeam" :team="team" />
       </div>
 
       <div v-if="selectedItem === 1">
         <!-- Блок с НОВОСТЯМИ -->
-        <TeamNews :team="team" />
+        <TeamNews :team="teamUsers" />
       </div>
 
       <div v-if="selectedItem === 2">
@@ -41,7 +41,7 @@
 
       <!-- участники -->
       <div v-if="selectedItem === 3">
-        <div v-for="item in team">
+        <div v-for="item in teamUsers" v-bind:key="item.id">
           <Participation
             :onDeleteMemberEvent="handleDeleteMemberEvent"
             :user="item.user"
@@ -89,8 +89,8 @@ const idTeam = Number(route.params.id);
 const teamStore = useTeamStore();
 const show = ref(true);
 
-const data = ref();
 const team = ref();
+const teamUsers = ref();
 
 onBeforeMount(async () => {
   await fetchCurrentTeam();
@@ -98,13 +98,13 @@ onBeforeMount(async () => {
 });
 
 async function fetchUsersOfTeam() {
-  team.value = await teamStore.fetchUserOfTeam(idTeam);
+  teamUsers.value = await teamStore.fetchUsersOfTeam(idTeam);
 }
 
 async function fetchCurrentTeam() {
   // я эту хуйню позже перепишу
   await axios.get("/api/teams/" + route.params.id).then((respose) => {
-    data.value = respose.data;
+    team.value = respose.data;
   });
 }
 

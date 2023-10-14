@@ -19,7 +19,7 @@
           <div class="alert alert-info">
             <div
               v-if="
-                direction.functions[0] &&
+                !(direction.functions) || direction.functions[0] &&
                 direction.functions[0].userFunctions[0]
               "
             >
@@ -62,10 +62,12 @@ import { onBeforeMount, ref } from "vue";
 import { useTeamStore } from "@/store/team_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import "@/assets/nav-second.scss"
+import type {ITeam} from "@/store/models/teams/team.model";
+import type { Ref } from "vue";
 
 const selectedItem = ref(0);
 const showCreate = ref(false);
-const directions = ref();
+const directions:Ref<ITeam[]> = ref([]);
 // store--------------------------------------------------------------
 const teamStore = useTeamStore();
 

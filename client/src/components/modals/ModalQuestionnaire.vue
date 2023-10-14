@@ -24,7 +24,7 @@
       <div class="modal-content">
         <div class="modal-title" id="exampleModalLabel">Заполните анкету</div>
         <div class="modal-subtitle" :value="modelValue">{{ modelValue }}</div>
-        <div v-for="form in data" class="wrapper-questions">
+        <div v-for="form in data" class="wrapper-questions" v-bind:key="form.id">
           <div class="wrapper-one-question">
             <div class="question-label">
               {{ form.title }}{{ form.required ? "*" : "" }}
@@ -50,6 +50,8 @@ import { useRoute } from "vue-router";
 import { useTeamStore } from "@/store/team_store";
 import { usePermissionsStore } from "@/store/permissions_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import type {IFormField} from "@/store/models/forms/form-field.model";
+import type { Ref } from "vue";
 
 const permissions_store = usePermissionsStore();
 
@@ -60,7 +62,7 @@ const idTeam = Number(route.params.id);
 
 const formStore = useFormStore();
 const userReq = ref(); //проверить не подавал ли уже юзер заявку в этот колелктив
-const data = ref();
+const data:Ref<IFormField[]> = ref([]);
 
 defineProps({
   modelValue: {
@@ -69,15 +71,14 @@ defineProps({
 });
 
 onBeforeMount(async () => {
-  fetchFormFields();
-  fetchRequisition(); //проверить не подавал ли уже юзер заявку в этот колелктив
+  await fetchFormFields();
+  await fetchRequisition(); //проверить не подавал ли уже юзер заявку в этот колелктив
 });
 
 async function fetchFormFields() {
   data.value = await formStore.fetchFormFields(idTeam);
 }
 
-async function checkRequired() {}
 
 async function fetchRequisition() {
   userReq.value = await teamStore.fetchRequisitions(
@@ -86,26 +87,6 @@ async function fetchRequisition() {
   );
 }
 
-//  export default {
-//   name: "ModalQuestionnaire",
-//   props: {
-//     inputs: {
-//       type: Array,
-//       required: true,
-//     },
-//   },
-//   data() {
-//     return {
-//       formValues: [],
-//     };
-//   },
-//   methods: {
-//     onSubmit() {
-//       const requiredFields = this.inputs.filter((input) => input.required);
-//       const hasEmptyFields = requiredFields.some((field, index) => !this.formValues[index]);
-//     },
-//   },
-//  };
 </script>
 
 <style lang="scss" scoped>

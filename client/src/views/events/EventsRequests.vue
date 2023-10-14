@@ -132,9 +132,7 @@
                                 принято
                             </div>
                             <div
-                                    v-else-if="
-                  event.status && event.status.name == Status.CANCELLED
-                "
+                                    v-else-if="event.status && event.status.name == Status.CANCELLED"
                             >
                                 <font-awesome-icon icon="circle-xmark" class="text-danger"/>
                                 отклонено
