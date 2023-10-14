@@ -20,7 +20,7 @@ export interface IEventSearch {
 export interface IEvent {
     type?: IDictionary;
     status?: IDictionary;
-    direction?: number;
+    direction?: IDictionary;
     title?: string;
     tags?: string[];
     description?: string

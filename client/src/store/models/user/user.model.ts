@@ -5,4 +5,7 @@ export interface IUser {
     education_group?:string;
     email?: string;
     phone?: string;
+    image?: string;
+    institute?: string;
+    course?: string;
 }
