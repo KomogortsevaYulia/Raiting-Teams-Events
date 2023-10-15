@@ -1,196 +1,228 @@
 <template>
   <!-- Навигация -->
-  <div class="wrapper-news__navigation">
-
+  <div class="navigation wrapper-second__navigation border-block">
     <router-link :to="'/event-create'" v-if="can('can view directions')">
-      <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <button
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
         Создать мероприятие
       </button>
     </router-link>
 
     <template v-for="(item, index) in itemList" :key="index">
-      <a @click="selectItem(index)" v-if="item.permission" :class="{ active: index == selectedItem }">{{ item.name }}</a>
+      <a
+        @click="selectItem(index)"
+        v-if="item.permission"
+        :class="{ active: index == selectedItem }"
+        >{{ item.name }}</a
+      >
     </template>
-
   </div>
 
   <!-- see events -->
-  <div v-if="(selectedItem === 0)">
+  <div v-if="selectedItem === 0">
     <div class="events__container">
       <!-- Фильтр вдимый-->
-      <div class="nav-collapse  collapse" id="collapseCkecker">
-        <div class="filters-block">
+      <div class="nav-collapse collapse" id="collapseCkecker">
+        <div class="filters-block border-block">
           <!-- Боковое меню -->
-          <CheckBox_Menu :menu_items="menu_items" :handle-event-set-filters="handleEventSetFilters"
-            :handle-event-reset-filters="handleEventResetFilters" />
+          <CheckBox_Menu
+            :menu_items="menu_items"
+            :handle-event-set-filters="handleEventSetFilters"
+            :handle-event-reset-filters="handleEventResetFilters"
+          />
         </div>
       </div>
-
 
       <!-- Правая часть контейнера -->
       <div class="cards__container ms-md-4">
         <!-- Поисковые строки -->
         <div class="cards__search">
-          <Search :handleTimerSearch="handleTimerSearch"/>
-          <input class="date__search" placeholder="Выберите дату" type="date" />
+          <Search :handleTimerSearch="handleTimerSearch" />
           <Switch_toggle />
           <div class="d-md-none">
-            <button type="button" class="btn-icon-rounded" data-bs-toggle="modal" data-bs-target="#filtersModal">
+            <button
+              type="button"
+              class="btn-icon-rounded"
+              data-bs-toggle="modal"
+              data-bs-target="#filtersModal"
+            >
               <font-awesome-icon class="ic" icon="filter" />
             </button>
           </div>
           <ModalFull modal-id="filtersModal">
-            <template #header>
-              Фильтры
-            </template>
+            <template #header> Фильтры</template>
             <template #body>
               <!-- Боковое меню -->
-              <CheckBox_Menu :menu_items="menu_items" :handle-event-set-filters="handleEventSetFilters"
-                :handle-event-reset-filters="handleEventResetFilters" />
+              <CheckBox_Menu
+                :menu_items="menu_items"
+                :handle-event-set-filters="handleEventSetFilters"
+                :handle-event-reset-filters="handleEventResetFilters"
+              />
             </template>
-
           </ModalFull>
         </div>
-        <div :class="[teamStore.layout === true ? 'wrapper-list' : 'wrapper-grid']" v-if="data && data.length > 0">
-          <div class="card" v-for="event in data" :key="event.id">
+        <div
+          :class="[teamStore.layout ? 'wrapper-list' : 'wrapper-grid']"
+          v-if="data && data.length > 0"
+        >
+          <div class="card border-block" v-for="event in data" :key="event.id">
             <div class="card__banner">
-              <img :src="event.images" class="d-block" style="width: 100%;object-fit: cover;">
+              <img
+                :src="event.images"
+                class="d-block"
+                style="width: 100%; object-fit: cover"
+              />
             </div>
             <router-link :to="'/event/' + event.id">
               <div class="card__content">
                 <div class="card__event-name">{{ event.title }}</div>
-                <div class="teg__container">
-                  <div v-for="el in event.tags" class="teg">{{ el }}</div>
+                <div class="row g-1 my-2">
+                  <Tag
+                    v-for="(item, index) in event.tags"
+                    class="col-auto me-2"
+                    :text="item"
+                    :key="index"
+                  />
                 </div>
+
                 <div class="card__text">
-                  <p v-if="event.description != null"> {{ event.description.slice(0, 150) }} </p>
-                  <p v-else> {{ event.description }}</p>
-                  <!-- <div class="btn__container">
-                  <button class="card__btn">Подать заявку</button>
-                </div> -->
+                  <p v-if="event.description != null">
+                    {{ event.description.slice(0, 150) }}
+                  </p>
+                  <p v-else>{{ event.description }}</p>
+                  <!-- @TODO: реализовать кнопку "Подать заявку" на участие в мероприятии -->
+
+<!--                  <div class="btn__container">-->
+<!--                    <button class="card__btn">Подать заявку</button>-->
+<!--                  </div>-->
                 </div>
               </div>
             </router-link>
           </div>
         </div>
 
-        <Pagination :max-page="maxPages" :visible-pages="visiblePages" :handleEventChangePage="handleEventChangePage" />
+        <div
+          v-else-if="loading"
+          class="d-flex align-items-center justify-content-center mt-4"
+        >
+          <Loading size-fa-icon="fa-3x" />
+        </div>
 
+        <Pagination
+          :max-page="maxPages"
+          :visible-pages="visiblePages"
+          :handleEventChangePage="handleEventChangePage"
+        />
       </div>
-
     </div>
   </div>
 
   <!-- see request for creation event -->
-  <div v-if="(selectedItem === 1)">
+  <div v-if="selectedItem === 1">
     <EventsRequests />
   </div>
 
-  <div v-if="(selectedItem === 2)">
+  <div v-if="selectedItem === 2">
     <UserEvents :idUser="permissions_store.user_id" />
   </div>
-
 </template>
 
 <script setup lang="ts">
-import Switch_toggle from '@/components/Switch_toggle.vue';
-import CheckBox_Menu from '@/components/CheckBox_Menu.vue';
+import "@/assets/nav-second.scss";
+import Switch_toggle from "@/components/Switch_toggle.vue";
+import CheckBox_Menu from "@/components/CheckBox_Menu.vue";
 import { useEventStore } from "@/store/events_store";
-import { onBeforeMount, ref } from 'vue';
-import { usePermissionsStore } from '@/store/permissions_store';
-import Pagination from '@/components/Pagination.vue';
-import EventsRequests from './EventsRequests.vue';
-import { useTeamStore } from '@/store/team_store';
-import ModalFull from '@/components/modals/ModalFull.vue';
-import { Event } from '@/store/models/events.model';
-import UserEvents from '../user/UserEvents.vue';
-import Search from '@/components/Search.vue';
+import { onBeforeMount, ref } from "vue";
+import { usePermissionsStore } from "@/store/permissions_store";
+import Pagination from "@/components/Pagination.vue";
+import EventsRequests from "./EventsRequests.vue";
+import { useTeamStore } from "@/store/team_store";
+import ModalFull from "@/components/modals/ModalFull.vue";
+import { Event } from "@/store/models/events.model";
+import UserEvents from "../user/UserEvents.vue";
+import Search from "@/components/Search.vue";
+import Loading from "@/components/Loading.vue";
+import Tag from "@/components/Tag.vue";
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
 const menu_items = eventStore.menu_items;
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
-const data = ref()
+const data = ref();
 
 // загрузка
-const loading = ref(false)
+const loading = ref(false);
 
 //pagination ---------------------------------------------------------------------
-const limit = 5 //сколько  отображается на странице
-const offset = ref(0) //сколько  пропустить прежде чем отобразить
+const limit = 5; //сколько  отображается на странице
+const offset = ref(0); //сколько  пропустить прежде чем отобразить
 
-const maxPages = ref(1)
-const visiblePages = 7
+const maxPages = ref(1);
+const visiblePages = 7;
 //pagination ---------------------------------------------------------------------
 
 const itemList = [
   { name: "Главная", permission: true },
-  { name: "Заявки на создание", permission: can('can edit status events') },
-  { name: "Мои мероприятия", permission: can('can create events') },
-]
+  { name: "Заявки на создание", permission: can("can edit status events") },
+  { name: "Мои мероприятия", permission: can("can create events") },
+];
 
 const selectedItem = ref(0);
-const findEventTxt = ref()
-
+const findEventTxt = ref();
 
 onBeforeMount(async () => {
-  await fetchEvents()
-})
+  await fetchEvents();
+});
 
 async function handleTimerSearch(eventTxt: string) {
-  findEventTxt.value = eventTxt
+  findEventTxt.value = eventTxt;
 
-  await fetchEvents()
+  await fetchEvents();
 }
 
 const selectItem = (i: number) => {
-  selectedItem.value = i
-}
+  selectedItem.value = i;
+};
 
 async function fetchEvents() {
+  loading.value = true;
 
-  loading.value = true
+  let event = new Event();
+  event.limit = limit;
+  event.offset = offset.value;
+  event.search_text = findEventTxt.value;
 
-  let event = new Event()
-    event.limit = limit
-    event.offset = offset.value
-    event.search_text = findEventTxt.value
+  let d = await eventStore.fetchEvents(event);
+  data.value = d[0];
 
-  let d = await eventStore.fetchEvents(event)
-  data.value = d[0]
-
-  const eventsCount = d[1]
-  maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1
-  loading.value = false
-
+  const eventsCount = d[1];
+  maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1;
+  loading.value = false;
 }
 
 async function handleEventChangePage(currentPage: number) {
-  offset.value = (currentPage - 1) * limit
+  offset.value = (currentPage - 1) * limit;
 
-  await fetchEvents()
+  await fetchEvents();
 }
 
 // задать фильтры
-async function handleEventSetFilters() {
-
-}
+async function handleEventSetFilters() {}
 
 // сбросить фильтры
-function handleEventResetFilters() {
-}
-
+function handleEventResetFilters() {}
 </script>
 
 <style lang="scss" scoped>
-
 .events__container {
   display: flex;
   padding-top: 1rem;
 
   .cards__container {
-   
     width: 100%;
 
     .cards__search {
@@ -208,22 +240,19 @@ function handleEventResetFilters() {
     }
 
     .wrapper-list {
-      padding-top: 2rem;
+      padding-top: 1rem;
 
       .card {
         width: 100%;
         background-color: #fff;
         height: 15rem;
         margin-bottom: 1rem;
-        border: none;
-        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: row;
-        transition: all .5s;
+        transition: all 0.5s;
 
         .card__banner {
           height: 100%;
-          width: 15rem;
           max-width: 15rem;
           border-radius: 5px 0 0 5px;
           width: 100%;
@@ -245,14 +274,6 @@ function handleEventResetFilters() {
             display: flex;
             padding-bottom: 1rem;
             margin-top: 0.5rem;
-
-            .teg {
-              margin-right: 1rem;
-              background-color: #B7EAED;
-              padding: 0.2rem 1rem;
-              color: #348498;
-              border-radius: 5px;
-            }
           }
 
           .card__text {
@@ -265,7 +286,7 @@ function handleEventResetFilters() {
             margin-top: 1rem;
 
             .card__btn {
-              background-color: #FF502F;
+              background-color: #ff502f;
               color: #fff;
               padding: 0.8rem 2rem;
             }
@@ -275,7 +296,7 @@ function handleEventResetFilters() {
 
       .card:hover {
         cursor: pointer;
-        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
       }
     }
 
@@ -285,26 +306,22 @@ function handleEventResetFilters() {
       flex-wrap: wrap;
 
       .card {
-        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
         width: 250px;
         background-color: #fff;
-        height: 350px auto;
+        height: 350px;
         margin: 0 1rem 1rem 0;
         flex-wrap: wrap;
         overflow: hidden;
-        border: none;
         display: flex;
         // flex-direction: row;
-        transition: all .5s;
+        transition: all 0.5s;
 
         .card__banner {
           height: 15rem;
-          max-width: 15rem;
           width: 100%;
           max-width: 100%;
           flex-wrap: wrap;
           border-radius: 5px 0 0 0;
-          width: 100%;
           overflow: hidden;
           background-position: center;
           display: flex;
@@ -323,14 +340,6 @@ function handleEventResetFilters() {
           .teg__container {
             display: flex;
             margin-top: 0.5rem;
-
-            .teg {
-              margin-right: 1rem;
-              background-color: #B7EAED;
-              padding: 0.2rem 1rem;
-              color: #348498;
-              border-radius: 5px;
-            }
           }
 
           .card__text {
@@ -343,7 +352,7 @@ function handleEventResetFilters() {
             margin-top: 1rem;
 
             .card__btn {
-              background-color: #FF502F;
+              background-color: #ff502f;
               color: #fff;
               padding: 0.8rem 2rem;
             }
@@ -397,7 +406,7 @@ function handleEventResetFilters() {
   padding-left: 30rem;
   text-align: center;
   opacity: 0;
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .mainBanner:hover .descr {
@@ -405,41 +414,15 @@ function handleEventResetFilters() {
   opacity: 1;
 }
 
-.wrapper-news__navigation {
-  padding-bottom: 2rem;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  border-radius: 5px;
+.navigation {
+  border-radius: var(--border-radius);
   padding: 20px;
   background: white;
-
-  a {
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.3s;
-    color: #348498;
-    margin-inline: 1rem;
-    padding-bottom: 0.75rem;
-
-    &:hover {
-      color: var(--main-color);
-    }
-  }
-
-  // Первому элементу ставим отступ = 0, чтобы не выпирал
-  a:first-child {
-    margin-left: 0;
-  }
-
-  .active {
-    color: var(--main-color);
-    border-bottom: var(--main-border-bottom);
-  }
 }
 
 .filters-block {
   background-color: #fff;
-  box-shadow: var(--box-shadow);
   padding: 2rem;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
 }
 </style>
