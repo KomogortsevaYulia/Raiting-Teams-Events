@@ -1,54 +1,53 @@
 <template>
-    <div class="checkbox__nav">
-        <div
-                class="checkbox__block"
-                v-for="menu_item in props.menu_items"
-                :key="menu_item.id"
-        >
-            <div class="checkbox__title">{{ menu_item.title }}</div>
-            <label
-                    class="checkbox__container"
-                    v-for="menu_type in menu_item.menu_types"
-                    :key="menu_type.id"
-                    :class="{ hidden: menu_item.hidden && menu_type.id > 4 }"
-            >
-                <input
-                        type="checkbox"
-                        class="checkbox"
-                        v-model="menu_type.checked"
-                        v-bind="menu_type.id"
-                />
-                <span class="fake"></span>
-                <span class="span__title">{{ menu_type.title }}</span>
-            </label>
-            <div
-                    class="btn__open"
-                    v-if="menu_item.menu_types.length > 4"
-                    @click="menu_item.hidden = !menu_item.hidden"
-            >
-                <div class="btn__text" v-if="menu_item.hidden">Развернуть</div>
-                <div v-else class="btn__text">Свернуть</div>
-                <div class="btn__img" :class="{ closed: menu_item.hidden }"></div>
-            </div>
-        </div>
-        <button class="apply__btn" @click="handleEventSetFilters()">
-            Применить
-        </button>
-        <button class="refuse__btn" @click="handleEventResetFilters()">
-            Сбросить
-        </button>
+  <div class="checkbox__nav">
+    <div
+      class="checkbox__block"
+      v-for="menu_item in props.menu_items"
+      :key="menu_item.id"
+    >
+      <div class="checkbox__title">{{ menu_item.title }}</div>
+      <label
+        class="checkbox__container"
+        v-for="menu_type in menu_item.menu_types"
+        :key="menu_type.id"
+        :class="{ hidden: menu_item.hidden && menu_type.id > 4 }"
+      >
+        <input
+          type="checkbox"
+          class="checkbox"
+          v-model="menu_type.checked"
+          v-bind="menu_type.id"
+        />
+        <span class="fake"></span>
+        <span class="span__title">{{ menu_type.title }}</span>
+      </label>
+      <div
+        class="btn__open"
+        v-if="menu_item.menu_types.length > 4"
+        @click="menu_item.hidden = !menu_item.hidden"
+      >
+        <div class="btn__text" v-if="menu_item.hidden">Развернуть</div>
+        <div v-else class="btn__text">Свернуть</div>
+        <div class="btn__img" :class="{ closed: menu_item.hidden }"></div>
+      </div>
     </div>
+    <button class="apply__btn" @click="handleEventSetFilters()">
+      Применить
+    </button>
+    <button class="refuse__btn" @click="handleEventResetFilters()">
+      Сбросить
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
 const props = defineProps<{
-    menu_items: unknown;
-    handleEventSetFilters: () => void; //обработчик отправки фильтров
-    handleEventResetFilters: () => void;
+  menu_items: unknown;
+  handleEventSetFilters: () => void; //обработчик отправки фильтров
+  handleEventResetFilters: () => void;
 }>();
 
 // const filtersVisivle = ref(false)
-
 </script>
 
 <style scoped lang="scss">

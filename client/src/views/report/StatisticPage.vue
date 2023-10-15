@@ -23,7 +23,7 @@
                 {{ dt.date }}
               </button>
 
-              <div class="my-dropdown" >
+              <div class="my-dropdown">
                 <button class="dropbtn btn-custom-secondary date">
                   <font-awesome-icon icon="calendar-days" />
                 </button>
@@ -39,7 +39,11 @@
 
         <!-- выбрать направление -->
         <div class="row my-4 d-flex justify-content-md-center directions">
-          <div v-for="direc in foundDirections" class="col-auto d-flex my-1" v-bind:key="direc.id">
+          <div
+            v-for="direc in foundDirections"
+            class="col-auto d-flex my-1"
+            v-bind:key="direc.id"
+          >
             <div
               @click="changeDirection(direc)"
               :class="[
@@ -58,7 +62,11 @@
         <!-- team statistic or directions statistic -->
         <div class="row my-4 d-flex">
           <label class="form-label">тип отчетности</label>
-          <div class="form-check col-auto mx-2" v-for="drT in typeReports" v-bind:key="drT.id">
+          <div
+            class="form-check col-auto mx-2"
+            v-for="drT in typeReports"
+            v-bind:key="drT.id"
+          >
             <input
               class="form-check-input"
               type="radio"
@@ -118,7 +126,9 @@
                 v-model="selectedParams.selectedType"
                 @change="getEvents()"
               >
-                <option v-for="tp in types" :value="tp" v-bind:key="tp.id">{{ tp.name }}</option>
+                <option v-for="tp in types" :value="tp" v-bind:key="tp.id">
+                  {{ tp.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -208,7 +218,7 @@ import {
   EVENT_TYPE,
 } from "@/store/constants/constants_class_names";
 import Graphics from "./GraphicsElems.vue";
-import type {IDictionary} from "@/store/models/dictionary/dictionary.model";
+import type { IDictionary } from "@/store/models/dictionary/dictionary.model";
 
 // store--------------------------------------------------------------
 const teamStore = useTeamStore();
@@ -310,9 +320,9 @@ function fillDropdowns(data: IDictionary[]) {
   let res = [{ id: 0, name: "Все" }];
 
   for (const element of data) {
-      if (element.id && element.name){
-          res.push({id: element.id, name: element.name });
-      }
+    if (element.id && element.name) {
+      res.push({ id: element.id, name: element.name });
+    }
   }
 
   return res;
@@ -528,7 +538,7 @@ async function getEventsByDirection() {
   foundEvents.value = events;
 }
 
-async function changeDirection(direction: { id: number; idDB: number; }) {
+async function changeDirection(direction: { id: number; idDB: number }) {
   selectedParams.value.selectedDirection = direction.id;
 
   switch (selectedParams.value.selectedTypeReport) {

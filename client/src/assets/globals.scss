@@ -1,10 +1,9 @@
 @import "constants";
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('./fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+  font-family: "Montserrat";
+  src: url("./fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
 }
-
 
 // для элемента формы
 @mixin form-elem {
@@ -14,13 +13,11 @@
   background-color: #fff;
   font-family: var(--font-family-primary);
 
-
   &:focus {
     box-shadow: var(--hover-elem);
     outline: 0;
   }
 }
-
 
 body {
   font-family: var(--font-family-primary);
@@ -69,7 +66,6 @@ button {
   color: #fff;
   font-family: var(--font-family-title);
   font-weight: 400;
-
 
   &:hover {
     opacity: 0.8;
@@ -127,9 +123,7 @@ textarea {
   }
 }
 
-
 // кнопки ------------------------------------------------------------------------------------------
-
 
 a {
   font-size: 14px;
@@ -152,7 +146,6 @@ a {
 .v-select {
   min-width: 200px;
 
-
   .vs__dropdown-toggle {
     @include form-elem();
     transition: 0.3s;
@@ -168,7 +161,6 @@ a {
     border: 0;
   }
 }
-
 
 .form-check {
   .form-check-input:checked {
@@ -187,7 +179,6 @@ a {
     color: black;
   }
 }
-
 
 // form-select, accordion
 
@@ -212,9 +203,7 @@ a {
 
 .accordion-item {
   .accordion-header {
-
     .accordion-button {
-
       &:focus,
       &:hover {
         color: black;
@@ -225,7 +214,6 @@ a {
       }
     }
   }
-
 }
 
 // media

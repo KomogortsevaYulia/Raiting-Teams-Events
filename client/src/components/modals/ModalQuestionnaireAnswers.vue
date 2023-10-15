@@ -22,7 +22,11 @@
               disabled
               class="input-answer"
               type="text"
-              :placeholder="form_field.requisition_field ? form_field.requisition_field[0].value : '-' "
+              :placeholder="
+                form_field.requisition_field
+                  ? form_field.requisition_field[0].value
+                  : '-'
+              "
             />
           </div>
         </div>
@@ -40,10 +44,10 @@
 import { onBeforeMount, ref, watch } from "vue";
 import { useFormStore } from "@/store/form_store";
 import type { Ref } from "vue";
-import type {IForm} from "@/store/models/forms/form.model";
+import type { IForm } from "@/store/models/forms/form.model";
 
 const formStore = useFormStore();
-const formAnswers:Ref<IForm> = ref({});
+const formAnswers: Ref<IForm> = ref({});
 
 const props = defineProps<{
   requisition: IForm;

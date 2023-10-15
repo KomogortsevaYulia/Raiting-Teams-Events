@@ -82,11 +82,7 @@
     <div class="margins-edit row d-flex align-items-end">
       <div class="col ps-0 col">
         <p class="text-edit">Уровень</p>
-        <select
-          class="col form-select"
-          v-model="level"
-          :value="foundLevels"
-        >
+        <select class="col form-select" v-model="level" :value="foundLevels">
           <option disabled value="">Please select one</option>
           <option>Вузовский</option>
         </select>
@@ -133,9 +129,7 @@
     <div class="margins-edit row d-flex align-items-end">
       <div class="col ps-0">
         <p class="text-edit">Контроль</p>
-        <v-select class="form-select" v-model="control">
-
-        </v-select>
+        <v-select class="form-select" v-model="control"> </v-select>
       </div>
       <div class="col">
         <div class="row">
@@ -243,7 +237,6 @@ async function fetchEventLevel() {
 }
 
 const responseMsg = ref();
-
 
 async function createEvent() {
   responseMsg.value = "сохранено";

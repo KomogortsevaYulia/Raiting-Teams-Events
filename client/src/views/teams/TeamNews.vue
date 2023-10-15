@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import type {ITeam} from "@/store/models/teams/team.model";
+import type { ITeam } from "@/store/models/teams/team.model";
 
 defineProps<{
   team: ITeam; //коллектив

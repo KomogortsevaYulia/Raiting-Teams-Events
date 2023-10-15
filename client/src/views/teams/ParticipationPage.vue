@@ -57,19 +57,15 @@
                 <template v-if="isEditMode">
                   <div class="row g-2">
                     <label>Группа:</label>
-                    <input/>
+                    <input />
                   </div>
                   <div class="row g-2">
                     <label>Роль:</label>
-                    <input  />
+                    <input />
                   </div>
                   <div class="row g-2 d-flex justify-content-end mt-3">
                     <div class="col-auto">
-                      <button
-                        class="btn-custom-accept"
-                      >
-                        Сохранить
-                      </button>
+                      <button class="btn-custom-accept">Сохранить</button>
                     </div>
                     <div class="col-auto">
                       <button @click="cancelEditMode">Отмена</button>
@@ -89,8 +85,8 @@
 import { useTeamStore } from "@/store/team_store";
 import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref } from "vue";
-import type {IUser} from "@/store/models/user/user.model";
-import type {IFunction} from "@/store/models/user/functions.model";
+import type { IUser } from "@/store/models/user/user.model";
+import type { IFunction } from "@/store/models/user/functions.model";
 
 const teamStore = useTeamStore();
 const uFStore = useUserFunctionsStore();
@@ -99,7 +95,7 @@ const props = defineProps<{
   user: IUser;
   func?: IFunction;
   idTeam: number;
-  onDeleteMemberEvent: ()=>void;
+  onDeleteMemberEvent: () => void;
 }>();
 
 const isEditMode = ref(false);
@@ -122,7 +118,7 @@ async function deleteUserFromTeam(status_name: string) {
     await uFStore.removeUserFunction(uF.id);
   }
 
-    props.onDeleteMemberEvent();
+  props.onDeleteMemberEvent();
 }
 
 // TODO реализовать метод для сохранения изменений

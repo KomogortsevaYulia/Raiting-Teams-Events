@@ -5,7 +5,7 @@
     <div class="full-width">
       <div class="wrapper-team__top-panel">
         <div class="text-area">
-          <div class="container"  v-if="team && team.title">
+          <div class="container" v-if="team && team.title">
             <p>{{ team.title }}</p>
             <ModalQuestionnaire v-model="team.title" />
           </div>
@@ -19,7 +19,10 @@
         <template v-for="(item, index) in itemList" :key="index">
           <a
             v-if="item.permission"
-            @click="selectItem(index); (showCreate = false)"
+            @click="
+              selectItem(index);
+              showCreate = false;
+            "
             :class="{ active: index == selectedItem }"
             >{{ item.name }}</a
           >
@@ -64,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import "@/assets/nav-second.scss"
+import "@/assets/nav-second.scss";
 import WIP from "@/components/WIP.vue";
 import { onBeforeMount, ref } from "vue";
 import Ankets from "@/views/teams/QuestionnairePage.vue";
@@ -143,7 +146,6 @@ async function handleUpdateTeam() {
 </script>
 
 <style lang="scss" scoped>
-
 .wrapper {
   display: flex;
   height: 89px;

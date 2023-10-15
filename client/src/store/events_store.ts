@@ -1,7 +1,7 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import axios from "axios";
-import {Status, Type} from "./enums/enum_event";
-import type {IEventSearch} from "./models/event/events.model";
+import { Status, Type } from "./enums/enum_event";
+import type { IEventSearch } from "./models/event/events.model";
 
 export const useEventStore = defineStore("events", () => {
   // type 4 is external
@@ -31,7 +31,7 @@ export const useEventStore = defineStore("events", () => {
     dateEnd: Date,
     type: number = 0,
     level: number = 0,
-  ){
+  ) {
     const lvl = level != 0 ? level : null;
     const tp = type != 0 ? type : null;
 
@@ -52,8 +52,7 @@ export const useEventStore = defineStore("events", () => {
     dateEnd: Date,
     level: number = 0,
     type: number = 0,
-  ){
-
+  ) {
     const lvl = level != 0 ? level : null;
     const tp = type != 0 ? type : null;
     const dr = direction != 0 ? direction : null;
@@ -79,7 +78,6 @@ export const useEventStore = defineStore("events", () => {
     level: number = 0,
     type: number = 0,
   ) {
-
     const lvl = level != 0 ? level : null;
     const tp = type != 0 ? type : null;
     const dr = direction != 0 ? direction : null;

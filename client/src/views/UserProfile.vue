@@ -119,10 +119,9 @@ import { ref, onBeforeMount } from "vue";
 import { useUserStore } from "@/store/user_store";
 import { useJournalStore } from "@/store/journals_store";
 import type { Ref } from "vue";
-import type {IUser} from "@/store/models/user/user.model";
+import type { IUser } from "@/store/models/user/user.model";
 
-
-const user:Ref<IUser> = ref({});
+const user: Ref<IUser> = ref({});
 const functions = ref();
 const dateEvent = ref();
 // let dates
@@ -134,7 +133,7 @@ onBeforeMount(async () => {
   functions.value = await useUserStore().getUsersFunction(3);
   dateEvent.value = await useJournalStore().fetchJournalsByUserId(3);
   attrs.value[0].dates = dateEvent.value[0].map(
-    (x: { dateParticipation: string; }) => x.dateParticipation,
+    (x: { dateParticipation: string }) => x.dateParticipation,
   );
 });
 

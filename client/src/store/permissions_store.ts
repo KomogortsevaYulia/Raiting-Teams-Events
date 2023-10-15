@@ -1,98 +1,105 @@
 import axios from "axios";
-import {ref} from "vue";
-import type {Permission} from "@/types";
-import {defineStore} from "pinia";
-import {useRouter} from "vue-router";
+import { ref } from "vue";
+import type { Permission } from "@/types";
+import { defineStore } from "pinia";
+import { useRouter } from "vue-router";
 
 export const usePermissionsStore = defineStore("permissionsStore", () => {
-    const router = useRouter();
+  const router = useRouter();
 
-    const user_id = ref(-1)
-    const username = ref("")
-    const fullname = ref("")
-    const permissions = ref<Array<Permission>>([])
-    const isLogged = ref(false)
+  const user_id = ref(-1);
+  const username = ref("");
+  const fullname = ref("");
+  const permissions = ref<Array<Permission>>([]);
+  const isLogged = ref(false);
 
-    // проверить есть ли у залогиненого юзера данное разрешение
-    function can(permission: Permission) {
-        // проверить наличие данного разрешения у пользователя
-        return permissions.value && permissions.value.includes(permission)
+  // проверить есть ли у залогиненого юзера данное разрешение
+  function can(permission: Permission) {
+    // проверить наличие данного разрешения у пользователя
+    return permissions.value && permissions.value.includes(permission);
+  }
+
+  // получить нужные данные от юзера
+  async function checkLogin() {
+    const response = await axios.get("api/users/check-login");
+
+    if (isLogged.value) {
+      isLogged.value = true;
+      permissions.value = response.data.permissions;
+      username.value = response.data.username;
+      fullname.value = response.data.fullname;
+      user_id.value = response.data.id;
+
+      let nextUrl = "/news";
+      if (
+        typeof router.options.history.state.current == "string" &&
+        router.options.history.state.current != "/" &&
+        router.options.history.state.current != "/#/"
+      ) {
+        nextUrl = router.options.history.state.current;
+      }
+      await router.push(nextUrl);
+    } else {
+      permissions.value = [];
+      username.value = "";
+      fullname.value = "";
     }
+  }
 
-    // получить нужные данные от юзера
-    async function checkLogin() {
-        const response = await axios.get("api/users/check-login")
+  // отправка данных юзера при входе на проверку на сервер
+  async function login({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }) {
+    const response = await axios.post("/api/users/login", {
+      user: {
+        username: username,
+        password: password,
+      },
+    });
 
-        if (isLogged.value) {
-            isLogged.value = true;
-            permissions.value = response.data.permissions
-            username.value = response.data.username
-            fullname.value = response.data.fullname
-            user_id.value = response.data.id
+    if (response) {
+      isLogged.value = true;
+      // router.push('/news')
+    } else isLogged.value = false;
 
-            let nextUrl = "/news";
-            if (typeof router.options.history.state.current == 'string' && router.options.history.state.current != '/' && router.options.history.state.current != '/#/') {
-                nextUrl = router.options.history.state.current
-            }
-            await router.push(nextUrl)
+    await checkLogin();
 
-        } else {
-            permissions.value = []
-            username.value = ''
-            fullname.value = ''
-        }
-    }
+    return isLogged;
+  }
 
-    // отправка данных юзера при входе на проверку на сервер
-    async function login({username, password}: { username: string, password: string }) {
+  // разлогиниться
+  async function logout() {
+    await axios.post("/api/users/logout");
 
-        const response = await axios.post("/api/users/login", {
-            "user": {
-                username: username,
-                password: password
-            }
-        })
+    permissions.value = [];
+    fullname.value = "";
+    isLogged.value = false;
 
-        if (response) {
-            isLogged.value = true;
-            // router.push('/news')
-        } else isLogged.value = false;
+    await router.push("/news");
+    await checkLogin();
+  }
 
+  // Получение информации о юзере
+  async function fetchUser() {
+    const res = await axios.get("/api/users/check-login");
+    return res.data;
+  }
 
-        await checkLogin();
+  return {
+    permissions,
+    username,
+    fullname,
+    isLogged,
+    user_id,
 
-        return isLogged;
-    }
-
-    // разлогиниться
-    async function logout() {
-        await axios.post("/api/users/logout")
-
-        permissions.value = []
-        fullname.value = ''
-        isLogged.value = false
-
-        await router.push('/news')
-        await checkLogin()
-    }
-
-    // Получение информации о юзере
-    async function fetchUser(){
-        const res = await axios.get('/api/users/check-login')
-        return res.data
-    }
-
-    return {
-        permissions,
-        username,
-        fullname,
-        isLogged,
-        user_id,
-
-        fetchUser,
-        checkLogin,
-        login,
-        logout,
-        can
-    }
-})
+    fetchUser,
+    checkLogin,
+    login,
+    logout,
+    can,
+  };
+});

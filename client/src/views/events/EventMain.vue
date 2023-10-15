@@ -15,8 +15,8 @@
 
       <div class="eventInfo row border-block">
         <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
         />
 
         <h1 class="">{{ data.title }}</h1>
@@ -24,10 +24,10 @@
         <div class="header__info">
           <div class="row g-1 my-2">
             <Tag
-                v-for="(item, index) in data.tags"
-                class="col-auto me-2"
-                :text="item"
-                :key="index"
+              v-for="(item, index) in data.tags"
+              class="col-auto me-2"
+              :text="item"
+              :key="index"
             />
           </div>
         </div>
@@ -64,9 +64,9 @@
               <div class="user d-flex align-items-center">
                 <i class="fa-brands fa-vk fa-xl me-2"></i>
                 <p
-                    v-for="(social_link, index) in data.social_links"
-                    :key="index"
-                    class="mb-0 ms-3 fs-5"
+                  v-for="(social_link, index) in data.social_links"
+                  :key="index"
+                  class="mb-0 ms-3 fs-5"
                 >
                   {{ social_link }}
                 </p>
@@ -79,7 +79,7 @@
           </div>
 
           <div class="map col">
-            <img :src="data.images" class="rounded mx-auto d-block" alt=""/>
+            <img :src="data.images" class="rounded mx-auto d-block" alt="" />
           </div>
 
           <div class="down">
@@ -89,28 +89,28 @@
         </div>
       </div>
     </div>
-    <div v-else-if="loading"  class="justify-content-center d-flex">
-     <LoadingAnimation  size-fa-icon="fa-2x"/>
+    <div v-else-if="loading" class="justify-content-center d-flex">
+      <LoadingAnimation size-fa-icon="fa-2x" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref} from "vue";
-import {useRoute} from "vue-router";
+import { onBeforeMount, ref } from "vue";
+import { useRoute } from "vue-router";
 import Tag from "@/components/TagElem.vue";
-import {useEventStore} from "@/store/event_store";
+import { useEventStore } from "@/store/event_store";
 import moment from "moment";
 import LoadingAnimation from "@/components/LoadingAnimation.vue";
-import type {IEvent} from "@/store/models/event/events.model";
-import type {Ref} from "vue";
+import type { IEvent } from "@/store/models/event/events.model";
+import type { Ref } from "vue";
 
-const eventStore = useEventStore()
+const eventStore = useEventStore();
 
 const route = useRoute();
 const loading = ref(true);
 
-const data:Ref<IEvent> = ref({});
+const data: Ref<IEvent> = ref({});
 const dateStart = ref();
 const dateEnd = ref();
 const dateStartRegistration = ref();
@@ -119,22 +119,20 @@ const dateEndRegistration = ref();
 onBeforeMount(async () => {
   loading.value = true;
   await fetchCurrentEvent();
-  loading.value = false
+  loading.value = false;
 });
 
 async function fetchCurrentEvent() {
-  const id = parseInt(route.params.id as string)
+  const id = parseInt(route.params.id as string);
 
-  data.value = await eventStore.fetchEvent(id) as IEvent;
-  dateStart.value = moment(data.value.dateStart).format(
-      "DD-MM-YYYY, HH:mm",
-  );
+  data.value = (await eventStore.fetchEvent(id)) as IEvent;
+  dateStart.value = moment(data.value.dateStart).format("DD-MM-YYYY, HH:mm");
   dateEnd.value = moment(data.value.dateEnd).format("DD-MM-YYYY, HH:mm");
-  dateStartRegistration.value = moment(
-      data.value.dateStartRegistration,
-  ).format("DD-MM-YYYY, HH:mm");
+  dateStartRegistration.value = moment(data.value.dateStartRegistration).format(
+    "DD-MM-YYYY, HH:mm",
+  );
   dateEndRegistration.value = moment(data.value.dateEndRegistration).format(
-      "DD-MM-YYYY, HH:mm",
+    "DD-MM-YYYY, HH:mm",
   );
 }
 </script>
@@ -164,13 +162,13 @@ async function fetchCurrentEvent() {
 
   .wrapper-team__top-panel {
     background-image: linear-gradient(
-            to right,
-            rgba(255, 255, 255, 1) 0%,
-            rgba(255, 255, 255, 0.6) 10%,
-            rgba(255, 255, 255, 0.5) 50%,
-            rgba(255, 255, 255, 0) 100%
-    ),
-    url("https://kartinkin.net/uploads/posts/2022-03/1646938402_7-kartinkin-net-p-armrestling-kartinki-7.jpg");
+        to right,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(255, 255, 255, 0.6) 10%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0) 100%
+      ),
+      url("https://kartinkin.net/uploads/posts/2022-03/1646938402_7-kartinkin-net-p-armrestling-kartinki-7.jpg");
     background-size: 100% auto;
     background-color: rgba(0, 0, 0, 0.5);
     background-position: center;

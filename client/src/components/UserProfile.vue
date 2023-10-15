@@ -1,69 +1,69 @@
 <template>
-    <section class="DropdownWrapper__menu" v-click-outside="ClickOutside">
-        <div
-                class="dropDownMenuButton align-items-center d-flex px-3 text-center"
-                @click="openClose"
-                tabindex="0"
-        >
-            <label class="pe-3">{{ permissions_store.fullname }}</label>
+  <section class="DropdownWrapper__menu" v-click-outside="ClickOutside">
+    <div
+      class="dropDownMenuButton align-items-center d-flex px-3 text-center"
+      @click="openClose"
+      tabindex="0"
+    >
+      <label class="pe-3">{{ permissions_store.fullname }}</label>
 
-            <font-awesome-icon icon="circle-user" class="fa-2x"/>
-            <!-- Сюда аватарку пихать надо -->
-        </div>
-        <section class="dropdownMenu" v-if="isOpen">
-            <RouterLink
-                    @click="openClose"
-                    v-if="permissions_store.isLogged"
-                    :to="'/personal/' + username"
-            >
-                <p>
-                    <font-awesome-icon icon="user"/>
-                    Личный кабинет
-                </p>
-            </RouterLink>
-            <RouterLink
-                    @click="openClose"
-                    v-if="permissions_store.isLogged"
-                    :to="{
+      <font-awesome-icon icon="circle-user" class="fa-2x" />
+      <!-- Сюда аватарку пихать надо -->
+    </div>
+    <section class="dropdownMenu" v-if="isOpen">
+      <RouterLink
+        @click="openClose"
+        v-if="permissions_store.isLogged"
+        :to="'/personal/' + username"
+      >
+        <p>
+          <font-awesome-icon icon="user" />
+          Личный кабинет
+        </p>
+      </RouterLink>
+      <RouterLink
+        @click="openClose"
+        v-if="permissions_store.isLogged"
+        :to="{
           name: 'Requests',
           query: { user_id: permissions_store.user_id },
         }"
-            >
-                <p>
-                    <font-awesome-icon icon="envelope"/>
-                    Мои заявки
-                </p>
-            </RouterLink>
-            <p v-if="permissions_store.isLogged" @click.prevent="OnExitSubmit">
-                <font-awesome-icon :icon="['fas', 'right-from-bracket']"/>
-                Выход
-            </p>
-        </section>
+      >
+        <p>
+          <font-awesome-icon icon="envelope" />
+          Мои заявки
+        </p>
+      </RouterLink>
+      <p v-if="permissions_store.isLogged" @click.prevent="OnExitSubmit">
+        <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+        Выход
+      </p>
     </section>
+  </section>
 </template>
 
 <script setup lang="ts">
-import {storeToRefs} from "pinia";
-import {RouterLink} from "vue-router";
-import {usePermissionsStore} from "@/store/permissions_store";
-import {ref} from "vue";
+import { storeToRefs } from "pinia";
+import { RouterLink } from "vue-router";
+import { usePermissionsStore } from "@/store/permissions_store";
+import { ref } from "vue";
 
 const permissions_store = usePermissionsStore();
 
-const {username} = storeToRefs(permissions_store);
+const { username } = storeToRefs(permissions_store);
 
 const isOpen = ref(false);
 
 function openClose() {
-    isOpen.value = !isOpen.value;
+  isOpen.value = !isOpen.value;
 }
 
 function ClickOutside() {
-    isOpen.value = false;
+  isOpen.value = false;
 }
 
 function OnExitSubmit() {
-    permissions_store.logout();
+  permissions_store.logout();
 }
 </script>
 

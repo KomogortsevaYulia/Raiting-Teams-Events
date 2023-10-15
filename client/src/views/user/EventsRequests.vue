@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import "@/assets/nav-second.scss"
+import "@/assets/nav-second.scss";
 import { ref, onBeforeMount } from "vue";
 // import { useRoute } from "vue-router";
 
@@ -40,7 +40,6 @@ const selectItem = (i: number) => {
 </script>
 
 <style lang="scss" scoped>
-
 .navigation {
   padding: 20px;
   background: white;

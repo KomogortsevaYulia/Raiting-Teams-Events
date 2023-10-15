@@ -11,7 +11,6 @@ export enum Type {
   ALL = "Все",
 }
 
-
 export enum DirectionId {
   NID = 6,
   KTD = 7,

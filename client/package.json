@@ -11,7 +11,7 @@
     "test": "jest",
     "lint:script": "eslint --fix src/**/*.{js,ts,json,jsx,tsx,vue} --no-error-on-unmatched-pattern",
     "lint:styles": "eslint --fix src/**/*.{css,scss} --no-error-on-unmatched-pattern",
-    "format:all": "prettier --write '**/*.{md,ts,html,css,scss,json}'",
+    "format:all": "prettier --write '**/*.{md,ts,html,css,scss,json,vue}'",
     "format": "prettier --write"
   },
   "dependencies": {

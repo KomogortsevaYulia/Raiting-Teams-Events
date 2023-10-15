@@ -1,15 +1,20 @@
 {
-  
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "babel.config.js", "Tests/**/*.ts"],
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.vue",
+    "babel.config.js",
+    "Tests/**/*.ts"
+  ],
   "compilerOptions": {
     "ignoreDeprecations": "5.0",
-//    "noImplicitAny": false,
+    //    "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["jest", "node",  "@types/vue"]
+    "types": ["jest", "node", "@types/vue"]
   },
 
   "references": [

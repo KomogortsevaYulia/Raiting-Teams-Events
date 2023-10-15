@@ -24,7 +24,11 @@
       <div class="modal-content">
         <div class="modal-title" id="exampleModalLabel">Заполните анкету</div>
         <div class="modal-subtitle" :value="modelValue">{{ modelValue }}</div>
-        <div v-for="form in data" class="wrapper-questions" v-bind:key="form.id">
+        <div
+          v-for="form in data"
+          class="wrapper-questions"
+          v-bind:key="form.id"
+        >
           <div class="wrapper-one-question">
             <div class="question-label">
               {{ form.title }}{{ form.required ? "*" : "" }}
@@ -50,7 +54,7 @@ import { useRoute } from "vue-router";
 import { useTeamStore } from "@/store/team_store";
 import { usePermissionsStore } from "@/store/permissions_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import type {IFormField} from "@/store/models/forms/form-field.model";
+import type { IFormField } from "@/store/models/forms/form-field.model";
 import type { Ref } from "vue";
 
 const permissions_store = usePermissionsStore();
@@ -62,7 +66,7 @@ const idTeam = Number(route.params.id);
 
 const formStore = useFormStore();
 const userReq = ref(); //проверить не подавал ли уже юзер заявку в этот колелктив
-const data:Ref<IFormField[]> = ref([]);
+const data: Ref<IFormField[]> = ref([]);
 
 defineProps({
   modelValue: {
@@ -79,14 +83,12 @@ async function fetchFormFields() {
   data.value = await formStore.fetchFormFields(idTeam);
 }
 
-
 async function fetchRequisition() {
   userReq.value = await teamStore.fetchRequisitions(
     idTeam,
     permissions_store.user_id,
   );
 }
-
 </script>
 
 <style lang="scss" scoped>

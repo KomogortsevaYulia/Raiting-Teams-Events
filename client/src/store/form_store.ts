@@ -9,7 +9,7 @@ export const useFormStore = defineStore("form", () => {
     return data.form_field;
   }
 
-  async function fetchFormId(team_id: number){
+  async function fetchFormId(team_id: number) {
     (await axios.get("/api/forms/id/" + team_id)).data;
     return (await axios.get("/api/forms/id/" + team_id)).data;
   }
