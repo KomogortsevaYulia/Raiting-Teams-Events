@@ -41,7 +41,7 @@ import { User } from "src/general/decorators/user.decorator";
 import { PermissionsGuard } from "src/users/guard/check-permissions.guard";
 import { CreateRequisitionDto } from './dto/create-requisition.dto';
 
-@ApiTags("teams") // <---- Отдельная секция в Swagger для всех методов контроллера
+@ApiTags("teams") //<---- Отдельная секция в Swagger для всех методов контроллера
 @Controller("teams")
 export class TeamsController {
   constructor(

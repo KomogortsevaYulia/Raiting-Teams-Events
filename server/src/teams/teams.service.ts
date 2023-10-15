@@ -467,7 +467,7 @@ export class TeamsService {
 
     return createdRequisition;
   }
-  // requisition --------------------------------------------------------------------
+  // requisition ------------------------------------------------------------------
 
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя
