@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BE_PM2_ID=0
-FE_PM2_ID=2
+FE_PM2_ID=1
 
 echo "restarting processes by pm2..."
 
