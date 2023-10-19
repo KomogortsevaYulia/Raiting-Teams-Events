@@ -14,7 +14,17 @@ import { GeneralService } from '../general/general.service';
 import { Form } from '../forms/entities/form.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions, Dictionary, Form])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Team,
+      User,
+      UserFunction,
+      Function,
+      Requisitions,
+      Dictionary,
+      Form,
+    ]),
+  ],
   controllers: [TeamsController],
   providers: [TeamsService, UsersService, UploadsService, GeneralService],
 })

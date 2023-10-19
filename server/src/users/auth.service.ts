@@ -14,7 +14,6 @@
 //     // check permissions
 //     async hasPermissions(userId: number, requiredPermissions: string[]) {
 
-
 //         let userHaveAllPermissions = true
 //         //  get user and its permissions
 //         const user = await this.usersRepository.findOne({ where: { id: userId } })
@@ -41,6 +40,3 @@
 //     }
 
 // }
-
-
-

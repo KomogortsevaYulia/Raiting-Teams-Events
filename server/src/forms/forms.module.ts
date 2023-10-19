@@ -11,8 +11,18 @@ import { Team } from 'src/teams/entities/team.entity';
 import { UserFunction } from 'src/users/entities/user_function.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FormField, Form, RequisitionFields, Team, User, UserFunction, Function])],
+  imports: [
+    TypeOrmModule.forFeature([
+      FormField,
+      Form,
+      RequisitionFields,
+      Team,
+      User,
+      UserFunction,
+      Function,
+    ]),
+  ],
   controllers: [FormsController],
-  providers: [FormsService, UsersService]
+  providers: [FormsService, UsersService],
 })
 export class FormsModule {}

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventsController } from './events.controller';
-import {Event} from './entities/event.entity'
+import { Event } from './entities/event.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Team } from 'src/teams/entities/team.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -12,8 +12,18 @@ import { UsersService } from 'src/users/users.service';
 import { GeneralService } from 'src/general/general.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Event,Journal, Dictionary, Team, User, UserFunction, Function])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Event,
+      Journal,
+      Dictionary,
+      Team,
+      User,
+      UserFunction,
+      Function,
+    ]),
+  ],
   controllers: [EventsController],
-  providers: [EventsService, UsersService, GeneralService]
+  providers: [EventsService, UsersService, GeneralService],
 })
 export class EventsModule {}

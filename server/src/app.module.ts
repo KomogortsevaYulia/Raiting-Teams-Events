@@ -19,13 +19,12 @@ import { join } from 'path';
       ...CONNECTION,
       synchronize: false,
       autoLoadEntities: true,
-      
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public/'),
       exclude: ['/api/(.*)'],
-      serveRoot: '/public/' //last slash was important, otherwise he is looking for index.html
-  }),
+      serveRoot: '/public/', //last slash was important, otherwise he is looking for index.html
+    }),
     UsersModule,
     TeamsModule,
     EventsModule,
@@ -35,6 +34,5 @@ import { join } from 'path';
   ],
   controllers: [AppController],
   providers: [AppService],
-
 })
-export class AppModule { }
+export class AppModule {}

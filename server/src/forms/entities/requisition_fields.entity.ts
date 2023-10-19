@@ -1,27 +1,32 @@
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { FormField } from './form_field.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { Requisitions } from '../../teams/entities/requisition.entity';
 
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-import { FormField } from "./form_field.entity";
-import { ApiProperty } from "@nestjs/swagger";
-import { Requisitions } from "../../teams/entities/requisition.entity";
-
-@Entity("requisition_fields")
+@Entity('requisition_fields')
 export class RequisitionFields {
+  @ApiProperty()
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @ApiProperty() 
-    @PrimaryGeneratedColumn()
-    id: number
+  @ApiProperty()
+  @Column()
+  value: string;
 
-    @ApiProperty() 
-    @Column()
-    value: string
+  @ManyToOne(() => FormField, (form_field) => form_field.id, { cascade: true })
+  @JoinColumn([{ name: 'form_fields_id' }])
+  form_field: FormField;
 
-
-
-    @ManyToOne(()=>FormField, (form_field)=> form_field.id,  {cascade:true})
-    @JoinColumn([{ name: "form_fields_id" }])
-    form_field:FormField
-
-    @ManyToOne(()=>Requisitions, (requisition)=> requisition.id, {cascade:true})
-    @JoinColumn([{ name: "requisition_id" }])
-    requisition:Requisitions
+  @ManyToOne(() => Requisitions, (requisition) => requisition.id, {
+    cascade: true,
+  })
+  @JoinColumn([{ name: 'requisition_id' }])
+  requisition: Requisitions;
 }
