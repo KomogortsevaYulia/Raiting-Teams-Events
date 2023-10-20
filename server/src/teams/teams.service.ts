@@ -13,6 +13,10 @@ import { RequisitionDto } from './dto/update-requisition.dto';
 import { GeneralService } from '../general/general.service';
 import { DictionaryDto } from 'src/general/dto/dictionary.dto';
 import { UserFunctionDto } from 'src/users/dto/user-functions.dto';
+import { CreateRequisitionFieldDto } from './dto/create-requisition-field.dto';
+import { RequisitionFields } from 'src/forms/entities/requisition_fields.entity';
+import { CreateRequisitionDto } from './dto/create-requisition.dto';
+import { FormsService } from 'src/forms/forms.service';
 import { TeamFunction } from '../users/entities/function.entity';
 
 @Injectable()
@@ -28,12 +32,17 @@ export class TeamsService {
     private readonly functionsRepository: Repository<TeamFunction>,
     private readonly usersService: UsersService,
     private readonly dictionaryService: GeneralService,
+    private readonly formService: FormsService,
     @InjectRepository(Requisitions)
     private readonly requisitionsRepository: Repository<Requisitions>,
+    @InjectRepository(RequisitionFields)
+    private readonly requisitionsFieldsRepository: Repository<RequisitionFields>,
   ) {}
 
   async findOne(id: number) {
     const head = 'Руководитель';
+
+    // .addSelect("user.title_role")
 
     return await this.teamsRepository
       .createQueryBuilder('teams')
@@ -93,7 +102,7 @@ export class TeamsService {
       });
 
       // назначить нового пользвоателя
-      await this.usersService.assignRole(
+      const newUserFunction = await this.usersService.assignRole(
         team.id,
         updateTeamDto.newLeaderId,
         'Руководитель',
@@ -125,7 +134,10 @@ export class TeamsService {
 
   // get all teams with leadeaders
   async findAll(params: SearchTeamDto): Promise<[Team[], number]> {
-    let query = this.teamsRepository
+    const head = 'Руководитель';
+    // console.log(params)
+
+    let query = await this.teamsRepository
       .createQueryBuilder('teams')
 
       .select([
@@ -410,7 +422,51 @@ export class TeamsService {
       .getMany();
   }
 
-  // requisition --------------------------------------------------------------------
+  async createRequisitionField(
+    dto: CreateRequisitionFieldDto,
+  ): Promise<RequisitionFields> {
+    const { value, requisition, form_field } = dto;
+
+    const requisitionField = new RequisitionFields();
+    requisitionField.value = value;
+    requisitionField.requisition = requisition;
+    requisitionField.form_field = form_field;
+
+    return await this.requisitionsFieldsRepository.save(requisitionField);
+  }
+
+  async createRequisition(dto: CreateRequisitionDto): Promise<Requisitions> {
+    const { userId, teamId, fields } = dto;
+    const user = await this.usersService.findById(userId);
+    const team = await this.findOne(teamId);
+    const form = await this.formService.findOnFormFields(teamId);
+    const status = await this.dictionaryService.findOne(18);
+
+    const requisition = new Requisitions();
+    requisition.fullname = '-';
+    requisition.user = user;
+    requisition.team = team;
+    requisition.status = status;
+
+    const createdRequisition = await this.requisitionsRepository.save(
+      requisition,
+    );
+
+    if (createdRequisition) {
+      for (let i = 0; i < fields.length; i++) {
+        const requisitionFieldDto = new CreateRequisitionFieldDto();
+        requisitionFieldDto.value = fields[i];
+        requisitionFieldDto.requisition = createdRequisition;
+        requisitionFieldDto.form_field = form.form_field[i];
+
+        this.createRequisitionField(requisitionFieldDto);
+      }
+    }
+
+    return createdRequisition;
+  }
+
+  // requisition ------------------------------------------------------------------
 
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя

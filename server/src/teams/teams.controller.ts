@@ -1,19 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Put,
-  Param,
+  Controller,
+  ForbiddenException,
+  Get,
   HttpStatus,
+  Param,
+  Post,
+  Put,
   Query,
-  UploadedFile,
-  UseInterceptors,
-  UploadedFiles,
   Req,
   SetMetadata,
+  UploadedFile,
+  UploadedFiles,
   UseGuards,
-  ForbiddenException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
@@ -39,6 +39,7 @@ import { RequisitionDto } from './dto/update-requisition.dto';
 import { LocalAuthGuard } from 'src/users/guard/local-auth.guard';
 import { User } from 'src/general/decorators/user.decorator';
 import { PermissionsGuard } from 'src/users/guard/check-permissions.guard';
+import { CreateRequisitionDto } from './dto/create-requisition.dto';
 
 @ApiTags('teams') // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -430,6 +431,22 @@ export class TeamsController {
     const userRequisitions =
       await this.teamsService.findAllRequisitionsByUserId(userId);
     return userRequisitions;
+  }
+
+  @Post('requisitions/new')
+  @ApiOperation({ summary: 'Создание заяки на вступление в коллектив' })
+  @ApiBody({
+    type: CreateRequisitionDto,
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Заявка успешно создана',
+    type: Requisitions,
+  })
+  async createRequisition(
+    @Body() dto: CreateRequisitionDto,
+  ): Promise<Requisitions> {
+    return await this.teamsService.createRequisition(dto);
   }
 
   // requisition --------------------------------------------------------------------
