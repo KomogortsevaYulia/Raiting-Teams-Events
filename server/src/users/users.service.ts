@@ -110,7 +110,7 @@ export class UsersService {
   async create(dto: CreateUserDto): Promise<User> {
     // check uniqueness of username/email
     const { username, email, password } = dto;
-    const qb = await this.usersRepository
+    const qb = this.usersRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username })
       .orWhere('user.email = :email', { email });

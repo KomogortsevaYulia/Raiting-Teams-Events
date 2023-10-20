@@ -1,14 +1,14 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpStatus,
-  Query,
+  Param,
+  Patch,
+  Post,
   Put,
+  Query,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
@@ -189,9 +189,7 @@ export class EventsController {
     @Query() searchEventDto: SearchEventDto,
   ) {
     searchEventDto.teamId = teamId;
-    const res = this.eventsService.getEventsViaJournalsByTeam(searchEventDto);
-
-    return res;
+    return this.eventsService.getEventsViaJournalsByTeam(searchEventDto);
   }
 
   @Get('journal/user/:id')

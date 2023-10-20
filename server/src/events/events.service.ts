@@ -30,21 +30,6 @@ export class EventsService {
       .getMany();
   }
 
-  findTitle(title: string) {
-    return this.eventsRepository
-
-      .createQueryBuilder('events')
-      .select([
-        'events.title',
-        'events.images',
-        'events.tags',
-        'events.description',
-        'events.dateStart',
-      ])
-      .where('events.title like :title', { title: `%${title}%` })
-      .getMany();
-  }
-
   findTags(tags: string) {
     return this.eventsRepository
 
@@ -188,14 +173,12 @@ export class EventsService {
       )
     )[0];
 
-    const event = await this.eventsRepository.save({
+    return await this.eventsRepository.save({
       id,
       date_update: new Date(),
       ...updateEventDto,
       status: status,
     });
-
-    return event;
   }
 
   remove(id: number) {
@@ -249,13 +232,6 @@ export class EventsService {
             .andWhere('journals.event_id = :event_id', { event_id: event_id })
             .andWhere('journals.is_registered = true')
         : buildQuery;
-
-    //     //title
-    // buildQuery = title != null ? buildQuery
-    //   .andWhere("events.title like :title" , { title: `%${title}%`}) : buildQuery
-
-    // buildQuery = team != null ? buildQuery
-    //   .where("journals.team_id = :team", { team: team }) : buildQuery
 
     return buildQuery.getManyAndCount();
   }
@@ -311,9 +287,7 @@ export class EventsService {
     for (let i = 0; i < journals.length; i++) {
       const journal = journals[i];
 
-      const eventId = journal.event.id;
-
-      searchEventDto.id = eventId;
+      searchEventDto.id = journal.event.id;
       const event = (await this.findAllEvents(searchEventDto))[0];
 
       if (event != null && event[0] != null) {
@@ -327,15 +301,13 @@ export class EventsService {
   }
 
   async createJournal(createJournalDto: CreateJournalDto): Promise<Journal> {
-    const journal = await this.journalsRepository.save({
+    return await this.journalsRepository.save({
       ...createJournalDto,
       // image: [],
       // tags: [],
       // type_team: "teams",
       // creation_date: new Date()
     });
-    // console.log(journal)
-    return journal;
   }
 
   async create(createEventDto: CreateEventDto): Promise<Event> {
@@ -343,7 +315,7 @@ export class EventsService {
       await this.dictionaryService.findAll(new DictionaryDto('Создана', 6))
     )[0];
 
-    const event = await this.eventsRepository.save({
+    return await this.eventsRepository.save({
       ...createEventDto,
       status: status,
       // image: [],
@@ -351,8 +323,6 @@ export class EventsService {
       // type_team: "teams",
       // creation_date: new Date()
     });
-
-    return event;
   }
 
   async updateJournal(event_id: number, user_id: number) {

@@ -28,14 +28,12 @@ export class FormsService {
 
   async findOnFormFields(team_id: number) {
     const archive = false;
-    const res_forms = await this.formRepository
+    return await this.formRepository
       .createQueryBuilder('form')
       .where('team_id = :team_id', { team_id: team_id })
       .leftJoinAndSelect('form.form_field', 'form_field')
       .andWhere('form_field.archive = :archive', { archive: archive })
       .getOne();
-
-    return res_forms;
   }
 
   // TODO feat make create user form
@@ -66,11 +64,9 @@ export class FormsService {
   //   }
 
   async createFormField(createFormFieldsDto: CreateFormFieldsDto) {
-    const field = await this.formFieldsRepository.save({
+    return await this.formFieldsRepository.save({
       ...createFormFieldsDto,
     });
-
-    return field;
   }
 
   async updateFormField(field_id: number, updateFieldDto: UpdateFieldDto) {
@@ -85,14 +81,12 @@ export class FormsService {
 
   // получить ответы пользователей на анкету
   async fetchRequisitionForm(req_id: number) {
-    const users = await this.formRepository
+    return await this.formRepository
       .createQueryBuilder('form')
       .leftJoinAndSelect('form.form_field', 'form_fields')
       .leftJoinAndSelect('form_fields.requisition_field', 'req_field')
       .leftJoin('req_field.requisition', 'requisition')
       .where('requisition.id = :id', { id: req_id })
       .getOne();
-
-    return users;
   }
 }

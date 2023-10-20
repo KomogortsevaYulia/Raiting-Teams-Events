@@ -14,7 +14,6 @@ import { join } from 'path';
 
 @Module({
   imports: [
-    //@ts-ignore
     TypeOrmModule.forRoot({
       ...CONNECTION,
       synchronize: false,
