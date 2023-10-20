@@ -1,8 +1,7 @@
-@import "./globals.scss";
-
+@import "./globals";
 @import "vue-select/dist/vue-select.css";
 @import "v-calendar/dist/style.css";
-@import "@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss";
+@import "@vuepic/vue-datepicker/src/VueDatePicker/style/main";
 
 body {
   margin: 0;

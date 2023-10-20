@@ -1,7 +1,7 @@
 @import "constants";
 
 @font-face {
-  font-family: "Montserrat";
+  font-family: Montserrat;
   src: url("./fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
 }
 
@@ -59,7 +59,7 @@ label {
 }
 
 button {
-  padding: 0.5rem 2rem 0.5rem 2rem;
+  padding: 0.5rem 2rem;
   border: 0;
   border-radius: 10px;
   background-color: var(--main-color);
@@ -72,19 +72,16 @@ button {
     transition: 0.3s;
   }
 
-  //&:focus {
-  //  outline: none;
-  //  box-shadow: 0 0 0 2px var(--main-color-hover);
-  //}
 }
 
 input {
-  @include form-elem();
+  @include form-elem;
+
   transition: 0.3s;
 }
 
 textarea {
-  @include form-elem();
+  @include form-elem;
 }
 
 .form-control {
@@ -142,12 +139,13 @@ a {
   }
 }
 
-//выпадающий список с поиском
+// выпадающий список с поиском
 .v-select {
   min-width: 200px;
 
   .vs__dropdown-toggle {
-    @include form-elem();
+    @include form-elem;
+
     transition: 0.3s;
   }
 
@@ -175,7 +173,7 @@ a {
 .vc-popover-content-wrapper {
   button {
     background: none;
-    padding: 0em;
+    padding: 0;
     color: black;
   }
 }
@@ -217,7 +215,7 @@ a {
 }
 
 // media
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .nav-collapse {
     display: block !important;
   }
