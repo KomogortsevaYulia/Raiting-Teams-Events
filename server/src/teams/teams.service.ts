@@ -102,7 +102,7 @@ export class TeamsService {
       });
 
       // назначить нового пользвоателя
-      const newUserFunction = await this.usersService.assignRole(
+      await this.usersService.assignRole(
         team.id,
         updateTeamDto.newLeaderId,
         'Руководитель',
@@ -134,10 +134,7 @@ export class TeamsService {
 
   // get all teams with leadeaders
   async findAll(params: SearchTeamDto): Promise<[Team[], number]> {
-    const head = 'Руководитель';
-    // console.log(params)
-
-    let query = await this.teamsRepository
+    let query = this.teamsRepository
       .createQueryBuilder('teams')
 
       .select([
@@ -171,8 +168,7 @@ export class TeamsService {
       .take(params.limit) // Set the limit
       .skip(params.offset); // Set the offset
 
-    const team = await query.getManyAndCount();
-    return team;
+    return await query.getManyAndCount();
   }
 
   // отфильтровать колелктивы
@@ -302,7 +298,7 @@ export class TeamsService {
 
   //вывести команду
   async teamWithUsers(id: number): Promise<UserFunction[]> {
-    const users = await this.userFunctionsRepository
+    return await this.userFunctionsRepository
 
       .createQueryBuilder('user_functions')
       .select(['user_functions.dateStart', 'user_functions.dateEnd'])
@@ -312,8 +308,6 @@ export class TeamsService {
       .innerJoin('function.team', 'team')
       .where('team.id = :id', { id })
       .getMany();
-
-    return users;
   }
 
   // requisition --------------------------------------------------------------------
@@ -342,9 +336,7 @@ export class TeamsService {
     };
 
     // сохранить новые данные заявки
-    const req = await this.requisitionsRepository.save(body);
-
-    return req;
+    return await this.requisitionsRepository.save(body);
   }
 
   async findAllRequisitions(
@@ -385,7 +377,7 @@ export class TeamsService {
   }
 
   async findRequisition(req_id: number): Promise<Requisitions> {
-    const req = await this.requisitionsRepository.findOne({
+    return await this.requisitionsRepository.findOne({
       where: { id: req_id },
       relations: {
         user: true,
@@ -399,8 +391,6 @@ export class TeamsService {
         },
       },
     });
-
-    return req;
   }
 
   async findAllRequisitionsByUserId(userId: number): Promise<Requisitions[]> {
@@ -470,14 +460,12 @@ export class TeamsService {
 
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя
-    const teamsFunctions = await this.functionsRepository
+    return await this.functionsRepository
       .createQueryBuilder('functions')
       .innerJoin('functions.team', 'team')
       .addSelect('team.title')
       .where('functions.team_id = :id', { id: id })
       .getMany();
-
-    return teamsFunctions;
   }
 
   //архивировать или наоборот
