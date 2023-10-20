@@ -43,6 +43,7 @@ export class MailService {
       console.log('to: ', to);
       console.log('Subject: ', subject);
       console.log('content: ', html);
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const previewEmail = require('preview-email');
 
       previewEmail(message).then(console.log).catch(console.error);

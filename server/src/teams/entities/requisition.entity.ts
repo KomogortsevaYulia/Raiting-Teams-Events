@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -57,7 +56,7 @@ export class Requisitions {
   status: Dictionary; // формат проведения
 
   @OneToMany(
-    (type) => RequisitionFields,
+    () => RequisitionFields,
     (requisitionFields) => requisitionFields.requisition,
   )
   requisition_fields: RequisitionFields[];

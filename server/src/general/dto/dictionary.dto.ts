@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, registerDecorator } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class DictionaryDto {
   @IsOptional()

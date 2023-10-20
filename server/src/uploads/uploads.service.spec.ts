@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UploadsService } from './uploads.service';
-import { createReadStream } from 'fs';
 import { Readable } from 'stream';
 import { HttpException, HttpStatus } from '@nestjs/common';
 describe('UploadsService', () => {

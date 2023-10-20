@@ -7,17 +7,7 @@ import {
 
 @Injectable()
 export class FileSizeValidationPipe implements PipeTransform<any> {
-  // extends  FileValidator
-
-  // https://thecodeway.hashnode.dev/mastering-file-upload-and-validation-in-nestjs-with-multer
-
-  // isValid(file?: any): boolean | Promise<boolean> {
-  //   throw new Error('Method not implemented.');
-  // }
-  // buildErrorMessage(file: any): string {
-  //   throw new Error('Method not implemented.');
-  // }
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   transform(value: Express.Multer.File[], metadata: ArgumentMetadata) {
     const maxSize = 1024 * 1024 * 20; //byte
 

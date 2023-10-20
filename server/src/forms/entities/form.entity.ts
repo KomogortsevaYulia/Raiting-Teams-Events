@@ -33,7 +33,7 @@ export class Form {
   @JoinColumn([{ name: 'team_id' }])
   team: Team;
 
-  @OneToMany((type) => FormField, (formField) => formField.form, {
+  @OneToMany(() => FormField, (formField) => formField.form, {
     onDelete: 'CASCADE',
   })
   form_field: FormField[];

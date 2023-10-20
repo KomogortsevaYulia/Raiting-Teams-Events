@@ -66,15 +66,15 @@ export class Journal {
   @Column({ nullable: true })
   result_place: number;
 
-  @ManyToOne((type) => Event, (event) => event.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Event, (event) => event.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'event_id' }])
   event: Event;
 
-  @ManyToOne((type) => Team, (team) => team.id)
+  @ManyToOne(() => Team, (team) => team.id)
   @JoinColumn([{ name: 'team_id' }])
   team: Team;
 
-  @ManyToOne((type) => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id)
   @JoinColumn([{ name: 'user_id' }])
   user: User;
 }

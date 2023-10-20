@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  CreateFormDto,
-  CreateFormFieldsDto,
-  createUserFormDto,
-} from './dto/create-form.dto';
+import { CreateFormDto, CreateFormFieldsDto } from './dto/create-form.dto';
 import { Form } from './entities/form.entity';
 import { FormField } from './entities/form_field.entity';
 import { RequisitionFields } from './entities/requisition_fields.entity';
@@ -39,42 +35,30 @@ export class FormsService {
       .andWhere('form_field.archive = :archive', { archive: archive })
       .getOne();
 
-    // let res_form_str = res_forms.fields_id[0].toString()
-    // let fieldsIds = res_form_str
-    // .split('\n')
-    // .map(value => {
-    //   let parsedValue = parseInt(value, 10);
-    //   return isNaN(parsedValue) ? null : parsedValue;
-    // });
-    // let res_fields_form = await this.formFieldsRepository
-    //   .createQueryBuilder("form_fields")
-    //   .where("id = any(:ids)", {ids:fieldsIds})
-    //   .getMany()
     return res_forms;
   }
 
-  async createFormUser(
-    createUserFormDto: createUserFormDto,
-  ): Promise<RequisitionFields> {
-    const userForm = await this.userFormRepository.save({
-      // ...createUserFormDto,
-      // value: createUserFormDto.value,
-      // user: createUserFormDto.user,
-      // field: createUserFormDto.field,
-      // date: new Date()
-    });
-
-    return userForm;
-  }
+  // TODO feat make create user form
+  // async createFormUser(
+  //   createUserFormDto: createUserFormDto,
+  // ): Promise<RequisitionFields> {
+  //   const userForm = await this.userFormRepository.save({
+  //     // ...createUserFormDto,
+  //     // value: createUserFormDto.value,
+  //     // user: createUserFormDto.user,
+  //     // field: createUserFormDto.field,
+  //     // date: new Date()
+  //   });
+  //
+  //   return userForm;
+  // }
 
   async createForm(createFormDto: CreateFormDto): Promise<Form> {
-    const form = await this.formRepository.save({
+    return await this.formRepository.save({
       ...createFormDto,
       date: new Date(),
       description: 'description',
     });
-
-    return form;
   }
 
   // async updateForm(id: number, UpdateFormDto: UpdateFormDto) {

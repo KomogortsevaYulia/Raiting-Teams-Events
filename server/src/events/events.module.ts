@@ -10,6 +10,7 @@ import { Dictionary } from 'src/general/entities/dictionary.entity';
 import { UserFunction } from 'src/users/entities/user_function.entity';
 import { UsersService } from 'src/users/users.service';
 import { GeneralService } from 'src/general/general.service';
+import { TeamFunction } from '../users/entities/function.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { GeneralService } from 'src/general/general.service';
       Team,
       User,
       UserFunction,
-      Function,
+      TeamFunction,
     ]),
   ],
   controllers: [EventsController],

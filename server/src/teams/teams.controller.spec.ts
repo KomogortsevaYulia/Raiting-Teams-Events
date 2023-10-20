@@ -3,24 +3,19 @@ import { TeamsController } from './teams.controller';
 import { TeamsService } from './teams.service';
 import { UploadsService } from '../uploads/uploads.service';
 import { UsersService } from '../users/users.service';
-import { getCustomRepositoryToken, getRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Team } from './entities/team.entity';
-import { Repository } from 'typeorm';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Function } from '../users/entities/function.entity';
+import { TeamFunction } from '../users/entities/function.entity';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { plainToInstance } from 'class-transformer';
 import { ValidationError, validate } from 'class-validator';
 
-// @ts-ignore
-// export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
-//   findOne: jest.fn(entity => entity),
-//   // ...
-// }));
-
 describe('TeamsController', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let controller: TeamsController;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let service: TeamsService;
 
   beforeEach(async () => {
@@ -45,7 +40,7 @@ describe('TeamsController', () => {
           useValue: {},
         },
         {
-          provide: getRepositoryToken(Function),
+          provide: getRepositoryToken(TeamFunction),
           useValue: {},
         },
       ],

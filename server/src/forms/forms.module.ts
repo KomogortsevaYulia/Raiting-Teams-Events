@@ -9,6 +9,7 @@ import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { Team } from 'src/teams/entities/team.entity';
 import { UserFunction } from 'src/users/entities/user_function.entity';
+import { TeamFunction } from '../users/entities/function.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { UserFunction } from 'src/users/entities/user_function.entity';
       Team,
       User,
       UserFunction,
-      Function,
+      TeamFunction,
     ]),
   ],
   controllers: [FormsController],

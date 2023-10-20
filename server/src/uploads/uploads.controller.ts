@@ -119,7 +119,7 @@ export class UploadsController {
   ) {
     // получить все мероприятия по заданным параметрам
     const events = await this.eventsService.findAllEvents(searchEventDto);
-    await this.uploadsService.getReportEvents(res, events[0], events[1]);
+    await this.uploadsService.getReportEvents(res, events[0]);
   }
 
   //get excel file about events
@@ -143,6 +143,6 @@ export class UploadsController {
       searchEventDto,
     );
 
-    await this.uploadsService.getReportEvents(res, events[0], events[1]);
+    await this.uploadsService.getReportEvents(res, events[0]);
   }
 }

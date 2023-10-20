@@ -13,6 +13,7 @@ import { RequisitionDto } from './dto/update-requisition.dto';
 import { GeneralService } from '../general/general.service';
 import { DictionaryDto } from 'src/general/dto/dictionary.dto';
 import { UserFunctionDto } from 'src/users/dto/user-functions.dto';
+import { TeamFunction } from '../users/entities/function.entity';
 
 @Injectable()
 export class TeamsService {
@@ -23,12 +24,10 @@ export class TeamsService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(UserFunction)
     private readonly userFunctionsRepository: Repository<UserFunction>,
-    @InjectRepository(Function)
-    private readonly functionsRepository: Repository<Function>,
-
+    @InjectRepository(TeamFunction)
+    private readonly functionsRepository: Repository<TeamFunction>,
     private readonly usersService: UsersService,
     private readonly dictionaryService: GeneralService,
-
     @InjectRepository(Requisitions)
     private readonly requisitionsRepository: Repository<Requisitions>,
   ) {}
@@ -36,7 +35,7 @@ export class TeamsService {
   async findOne(id: number) {
     const head = 'Руководитель';
 
-    const res = await this.teamsRepository
+    return await this.teamsRepository
       .createQueryBuilder('teams')
 
       .select([
@@ -67,9 +66,6 @@ export class TeamsService {
       .addSelect('user_functions.id')
       .leftJoinAndSelect('user_functions.user', 'user')
       .getOne();
-    // .addSelect("user.title_role")
-
-    return res;
   }
 
   // Обновить коллектив
@@ -97,7 +93,7 @@ export class TeamsService {
       });
 
       // назначить нового пользвоателя
-      const newUserFunction = await this.usersService.assignRole(
+      await this.usersService.assignRole(
         team.id,
         updateTeamDto.newLeaderId,
         'Руководитель',
@@ -129,10 +125,7 @@ export class TeamsService {
 
   // get all teams with leadeaders
   async findAll(params: SearchTeamDto): Promise<[Team[], number]> {
-    const head = 'Руководитель';
-    // console.log(params)
-
-    let query = await this.teamsRepository
+    let query = this.teamsRepository
       .createQueryBuilder('teams')
 
       .select([
@@ -416,6 +409,7 @@ export class TeamsService {
       .orderBy('status.name', 'DESC')
       .getMany();
   }
+
   // requisition --------------------------------------------------------------------
 
   async teamsFunctions(id: number) {

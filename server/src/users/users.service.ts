@@ -12,7 +12,7 @@ import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Function } from './entities/function.entity';
+import { TeamFunction } from './entities/function.entity';
 import { User } from './entities/user.entity';
 import { UserFunction } from './entities/user_function.entity';
 import * as argon2 from 'argon2';
@@ -21,8 +21,6 @@ import { Team } from '../teams/entities/team.entity';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { FunctionDto } from './dto/functions.dto';
 
-const jwt = require('jsonwebtoken');
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -30,8 +28,8 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(UserFunction)
     private readonly userFunctionsRepository: Repository<UserFunction>,
-    @InjectRepository(Function)
-    private readonly functionsRepository: Repository<Function>,
+    @InjectRepository(TeamFunction)
+    private readonly functionsRepository: Repository<TeamFunction>,
 
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
@@ -93,6 +91,7 @@ export class UsersService {
       .getOne();
 
     if (user && (await argon2.verify(user.password, pass))) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;
     } else {

@@ -11,7 +11,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserFunction } from './user_function.entity';
 
 @Entity('functions')
-export class Function {
+export class TeamFunction {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -33,8 +33,6 @@ export class Function {
   @JoinColumn([{ name: 'team_id' }])
   team: Team;
 
-  @OneToMany((type) => UserFunction, (uf) => uf.function, { cascade: true })
+  @OneToMany(() => UserFunction, (uf) => uf.function, { cascade: true })
   userFunctions: UserFunction[];
-
-  usersCount: number;
 }

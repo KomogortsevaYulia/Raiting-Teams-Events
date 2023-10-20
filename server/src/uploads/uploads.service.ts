@@ -148,7 +148,7 @@ export class UploadsService {
   }
 
   // install excel file for events in direction
-  async getReportEvents(res: Response, events: Event[], countEvents: number) {
+  async getReportEvents(res: Response, events: Event[]) {
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

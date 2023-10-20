@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Function } from '../../users/entities/function.entity';
+import { TeamFunction } from '../../users/entities/function.entity';
 import { Journal } from '../../events/entities/journal.entity';
 import { Form } from '../../forms/entities/form.entity';
 import { Requisitions } from './requisition.entity';
@@ -79,8 +79,8 @@ export class Team {
   @JoinColumn([{ name: 'id_parent' }])
   id_parent: Team;
 
-  @OneToMany(() => Function, (func) => func.team, { cascade: true })
-  functions: Function[];
+  @OneToMany(() => TeamFunction, (func) => func.team, { cascade: true })
+  functions: TeamFunction[];
 
   @OneToMany(() => Journal, (journal) => journal.team, { cascade: true })
   journal: Journal[];

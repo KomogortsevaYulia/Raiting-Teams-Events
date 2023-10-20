@@ -74,6 +74,7 @@ export class UsersController {
   @Get('/check-login')
   async checkLogin(@Request() req): Promise<any> {
     const user = await this.usersService.findById(req.session.user_id);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...res } = user;
     return res;
   }
@@ -84,7 +85,6 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
     @Request() req,
   ) {
-    const userData = new CreateUserDto();
     return this.usersService.update(req.body, +id);
   }
 
@@ -136,7 +136,6 @@ export class UsersController {
   @Post('/logout')
   async logout(@Request() req) {
     req.session.logged = false;
-    return;
   }
 
   // function--------------------------------------------------------------------

@@ -8,6 +8,7 @@ import { extname } from 'path';
 
 @Injectable()
 export class FileImageValidationPipe implements PipeTransform<any> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   transform(file: Express.Multer.File, metadata: ArgumentMetadata) {
     this.checkSize(file);
     this.checkType(file);

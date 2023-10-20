@@ -117,17 +117,17 @@ export class Event {
   social_links: string[]; //соц сети
 
   @ApiProperty()
-  @OneToMany((type) => Journal, (journal) => journal.event, { cascade: true })
+  @OneToMany(() => Journal, (journal) => journal.event, { cascade: true })
   journal: Journal[]; // журнал
 
   @ApiProperty()
-  @OneToMany((type) => Achievement, (achievement) => achievement.event, {
+  @OneToMany(() => Achievement, (achievement) => achievement.event, {
     cascade: true,
   })
   achievement: Achievement;
 
   // creator
-  @ManyToOne((type) => User, (user) => user.id, { onDelete: 'SET NULL' })
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'SET NULL' })
   @JoinColumn([{ name: 'user_id' }])
   user: User;
 

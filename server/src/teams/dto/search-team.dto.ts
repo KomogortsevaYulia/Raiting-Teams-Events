@@ -1,11 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsNumber,
-  IsOptional,
-  isArray,
-} from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsOptional } from 'class-validator';
 
 export class SearchTeamDto {
   @Transform(({ value }) => value.toLowerCase())
