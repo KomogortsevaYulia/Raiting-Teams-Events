@@ -4,13 +4,13 @@
   </div>
   <hr />
   <div class="block-title">О коллективе</div>
-  <div class="middle-panel">
-    <div class="column-left">
+  <div class="middle-panel row g-3">
+    <div class="column-left col-md-7 col-sm-12">
       <div class="description">
         {{ team.description }}
       </div>
     </div>
-    <div class="column-right">
+    <div class="column-right col-md-5 col-sm-12">
       <div class="image-box">
         <div class="arrow-left" @click="previousPage">
           <FontAwesomeIcon icon="angle-left" />
@@ -142,8 +142,6 @@ function previousPage() {
   }
 
   .column-right {
-    max-width: fill-available;
-
     .image-box {
       display: flex;
       flex-direction: row;
@@ -200,24 +198,6 @@ function previousPage() {
       color: #ababab;
       font-size: 18px;
     }
-
-    // .page-buttons {
-    //   display: flex;
-    //   justify-content: center;
-    // }
-
-    // .page-buttons button {
-    //   border: none;
-    //   border-radius: 10px;
-    //   margin: 0 5px;
-    //   width: 1px;
-    //   height: 1px;
-    //   background-color: #ccc;
-    // }
-
-    // .page-buttons button.active {
-    //   background-color: var(--main-color);
-    // }
   }
 }
 
@@ -225,11 +205,16 @@ function previousPage() {
   display: flex;
   margin: 2rem -2.5rem -1.5rem -2.5rem;
 
+  @media screen and (max-width: 768px) {
+    .info {
+      font-size: 10px;
+    }
+  }
+
   .info {
     position: absolute;
-    width: 290px;
     padding: 25px;
-    margin: 2rem 0 0 2rem;
+    margin: 1rem 0 0 1rem;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(61, 61, 61, 0.2);
     border-radius: 20px;

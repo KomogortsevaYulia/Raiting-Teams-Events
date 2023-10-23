@@ -118,7 +118,7 @@ const itemList = [
   { name: "Расписание занятий", permission: true },
   { name: "Участники", permission: true },
   { name: "Редактор анкеты", permission: can("can create questionnaires") },
-  { name: "Заявки", permission: can("can edit status requisitions") },
+  { name: "Заявки", permission: can("can create questionnaires") },
 ];
 ///////////////////////////////////////////////////////////
 const selectItem = (i: number) => {

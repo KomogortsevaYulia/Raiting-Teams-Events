@@ -3,7 +3,7 @@
   <div class="news-panel">
     <div class="filters">
       <div class="block search">
-        <div class="icon"> 
+        <div class="icon">
           <FontAwesomeIcon icon="search" />
         </div>
         Поиск по новостям
@@ -19,14 +19,20 @@
         <FontAwesomeIcon icon="angle-down" />
       </div>
     </div>
-    <div class="news-card" v-for="news in newsList" :key="news.id">
-      <div class="image-container">
-        <img :src="news.imageUrl" alt="" />
-      </div>
-      <div class="text-container">
-        <div class="title">{{ news.title }}</div>
-        <div class="description">{{ news.description }}</div>
-        <div class="date">07.03.2022</div>
+    <div>
+      <div class="card mb-3 rounded-3" v-for="news in newsList" :key="news.id">
+        <div class="row g-0">
+          <div class="col-lg-4">
+            <img :src="news.imageUrl" class="img-fluid rounded-3" alt="">
+          </div>
+          <div class="col-lg-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ news.title }}</h5>
+              <p class="card-text">{{ news.description }}</p>
+              <p class="card-text"><small class="text-muted">07.03.2022</small></p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -66,12 +72,7 @@ const newsList = [
 
 <style lang="scss" scoped>
 .news-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
   .filters {
-    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -83,7 +84,7 @@ const newsList = [
       border: 1.5px solid rgba(61, 61, 61, 0.1);
       border-radius: 15px;
     }
-    
+
     .search {
       .icon {
         margin-right: 10px;
@@ -91,7 +92,6 @@ const newsList = [
 
       display: flex;
       align-items: center;
-      width: 40%;
     }
 
     .date {
@@ -99,7 +99,6 @@ const newsList = [
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      width: 25%;
     }
 
     .order {
@@ -107,27 +106,17 @@ const newsList = [
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      width: 25%;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    .news-card {
+      display: flex;
+      align-items: center;
     }
   }
 
   .news-card {
-    display: flex;
-    align-items: center;
-    height: 200px;
-    border: 1px solid #d8d8d8;
-
-    margin-bottom: 20px;
-    border-radius: 15px;
-
-    img {
-      height: 200px;
-      width: 300px;
-      border-radius: 15px;
-      object-fit: cover;
-      overflow: hidden;
-    }
-
     .date {
       text-align: right;
       font-weight: bold;
@@ -137,17 +126,11 @@ const newsList = [
 
     .title {
       font-weight: bold;
-      margin-bottom: 10px;
     }
 
     .description {
       text-align: justify;
       font-size: 12px;
-    }
-
-    .text-container {
-      flex: 1;
-      padding: 25px;
     }
   }
 }
