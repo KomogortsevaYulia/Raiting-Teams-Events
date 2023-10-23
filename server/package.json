@@ -34,6 +34,7 @@
     "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/typeorm": "^9.0.1",
+    "@types/sharp": "^0.32.0",
     "argon2": "^0.30.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
