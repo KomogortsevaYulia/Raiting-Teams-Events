@@ -94,6 +94,6 @@ export class User {
   @OneToMany((type) => Event, (event) => event.user, { cascade: true })
   events: Event[];
 
-  // keep it
+  // use it as object class in classes
   userId: number;
 }

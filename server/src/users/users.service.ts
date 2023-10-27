@@ -1,11 +1,9 @@
 import {
-  forwardRef,
+  ForbiddenException,
   HttpCode,
   HttpException,
   HttpStatus,
-  Inject,
   Injectable,
-  Request,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
@@ -23,9 +21,7 @@ import { validate } from 'class-validator';
 import { Team } from '../teams/entities/team.entity';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { FunctionDto } from './dto/functions.dto';
-import { AssignDirectionTeamLeaderDto } from './dto/direction-leader.dto';
 import { Permissions } from '../shared/permissions';
-import { TeamsService } from '../teams/teams.service';
 
 @Injectable()
 export class UsersService {
@@ -135,30 +131,62 @@ export class UsersService {
 
   // checkers---------------------------------------------------------------------------
   // check permissions
-  async hasPermissions(user: User, requiredPermissions: Permissions[]) {
+  async checkPermissions(
+    user: User,
+    requiredPermissions: Permissions[],
+    throwErrIfHavent = true,
+  ) {
     let userHaveAllPermissions = true;
     //  get user and its permissions
     user = await this.usersRepository.findOne({ where: { id: user.userId } });
-    // console.log("user", user.permissions, "req ", requiredPermissions)
 
+    // check if it is admin
+    const isAdmin = user.permissions.includes(Permissions.CAN_ALL);
     // go through req permissions (with AND checking for perms)
-    requiredPermissions.forEach((reqPermission) => {
-      let havePermission = false;
-      //  go through user permissions
-      for (let i = 0; i < user.permissions.length; i++) {
-        if (user.permissions[i] === reqPermission) {
-          havePermission = true;
-          break;
+    if (!isAdmin)
+      requiredPermissions.forEach((reqPermission) => {
+        const havePermission = user.permissions.includes(reqPermission);
+
+        //if one from permissions not granted then return false
+        if (!havePermission) {
+          userHaveAllPermissions = false;
+          if (throwErrIfHavent)
+            throw new ForbiddenException(
+              `you haven't permission(s) ${requiredPermissions}`,
+            );
+          else return userHaveAllPermissions;
         }
-      }
-      // if one from permissions not granted then return false
-      if (!havePermission) {
-        userHaveAllPermissions = false;
-        return userHaveAllPermissions;
-      }
-    });
+      });
 
     return userHaveAllPermissions;
+  }
+
+  // add/revoke permissions to user
+  async changePermissions(
+    user: User,
+    permissions: Permissions[],
+    grant = true,
+  ) {
+    user = await this.usersRepository.findOne({ where: { id: user.userId } });
+    const newPerms: string[] = [];
+    permissions.forEach((reqPermission) => {
+      const havePermission = user.permissions.includes(reqPermission);
+      // if perm need grant
+      if (grant && !havePermission) newPerms.push(reqPermission);
+      // if perm need revoke
+      else if (!grant && havePermission) newPerms.push(reqPermission);
+    });
+
+    // need grant, add perms to user
+    if (grant) user.permissions.push(...newPerms);
+    // need revoke, del perms from user
+    else {
+      user.permissions = user.permissions.filter((perm) => {
+        !newPerms.includes(perm);
+      });
+    }
+    // save user with new perms
+    await this.usersRepository.save(user);
   }
 
   // проверить есть ли у юзера специальные
@@ -275,10 +303,6 @@ export class UsersService {
   }
 
   // function--------------------------------------------------------------------
-
-  // TODO I AM HERE
-  //назначить роль юзеру в коллективе
-  // id loged user
 
   //user functions---------------------------------------------------------------
   @HttpCode(400)

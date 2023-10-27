@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
@@ -21,6 +26,8 @@ import { AssignDirectionTeamLeaderDto } from '../users/dto/direction-leader.dto'
 import { Permissions } from '../shared/permissions';
 import { CreateFunctionDto } from '../users/dto/create-functions.dto';
 import { CreateUserFunctionDto } from '../users/dto/create-user-function.dto';
+import { PermissionsRoles, Roles } from '../shared/permissionsRoles';
+import { TeamRoles } from '../shared/teamRoles';
 
 @Injectable()
 export class TeamsService {
@@ -505,37 +512,104 @@ export class TeamsService {
     });
   }
 
-  //   some roles
-
+  // ----------------------------------------------------------------------------
+  // add role and user in team
+  // ----------------------------------------------------------------------------
   async assignTeamRole(
     user: User,
-    directionTeamLeaderDto: AssignDirectionTeamLeaderDto,
+    teamLeaderDto: AssignDirectionTeamLeaderDto,
   ) {
-    let permission: Permissions;
+    // required permissions of initiator user
+    let reqInitiatorPermission: Permissions;
     const directions = await this.findDirections();
     const dirIds = directions[0].map((team) => team.id);
 
-    // check if it is directions not usual team
-    if (dirIds.includes(directionTeamLeaderDto.teamId))
-      permission = Permissions.CAN_ASSIGN_LEADER_DIRECTIONS;
-    else {
-      permission = Permissions.CAN_ASSIGN_LEADER_TEAM;
+    // check if it is direction
+    if (dirIds.includes(teamLeaderDto.teamId)) {
+      if (teamLeaderDto.roleName != TeamRoles.Leader) {
+        throw new BadRequestException(
+          'Нельзя добавлять участников в направления, только руководителей',
+        );
+      } else {
+        reqInitiatorPermission = Permissions.CAN_ASSIGN_LEADER_DIRECTIONS;
+        // check permissions of user for specific team or throw err
+        await this.usersService.checkPermissions(
+          user,
+          [reqInitiatorPermission],
+          true,
+        );
+        await this.assignTeamLeader(teamLeaderDto, Roles.LEADER_DIRECTION);
+      }
+      //   if it is team and want to assign leader
+    } else if (teamLeaderDto.roleName == TeamRoles.Leader) {
+      reqInitiatorPermission = Permissions.CAN_ASSIGN_LEADER_TEAM;
+      // check permissions of user for specific team or throw err
+      await this.usersService.checkPermissions(
+        user,
+        [reqInitiatorPermission],
+        true,
+      );
+      await this.assignTeamLeader(teamLeaderDto, Roles.LEADER_TEAM);
     }
 
-    await this.usersService.hasPermissions(user, [permission]);
-
     const funcDto = new CreateFunctionDto();
-    funcDto.team = directionTeamLeaderDto.teamId;
-    funcDto.title = directionTeamLeaderDto.roleName;
+    funcDto.team = teamLeaderDto.teamId;
+    funcDto.title = teamLeaderDto.roleName;
 
-    // find existing function with role or update
+    // find existing function with role or create new
     const func = await this.usersService.createFunctionIfNotExist(funcDto);
 
     const ufDto = new CreateUserFunctionDto();
     ufDto.function = func.id;
-    ufDto.user = directionTeamLeaderDto.userId;
+    ufDto.user = teamLeaderDto.userId;
 
     // find existing user function or update
-    return await this.usersService.createUserFunctionOrUpdate(ufDto);
+    const userFunc = await this.usersService.createUserFunctionOrUpdate(ufDto);
+
+    return true;
+  }
+
+  // назначить лидера направления, коллектива или по ирниту
+  private async assignTeamLeader(
+    teamLeaderDto: AssignDirectionTeamLeaderDto,
+    typeGrantRole: Roles,
+  ) {
+    const team = await this.findOne(teamLeaderDto.teamId);
+
+    // add new perms to new user
+    const assignPermsUser = new User();
+    assignPermsUser.userId = teamLeaderDto.userId;
+
+    // revoke perms old leader
+    team.functions.forEach((func) => {
+      if (func.title == TeamRoles.Leader)
+        func.userFunctions.forEach(async (userFunc) => {
+          const oldLeader = new User();
+          oldLeader.userId = userFunc.user;
+
+          await this.usersService.changePermissions(
+            oldLeader,
+            PermissionsRoles.LEADER_TEAM,
+            false,
+          );
+        });
+    });
+
+    let grantPerms: Permissions[] = [];
+    // set permissions
+    switch (typeGrantRole) {
+      case Roles.LEADER_TEAM:
+        grantPerms = PermissionsRoles.LEADER_TEAM;
+        break;
+      case Roles.LEADER_DIRECTION:
+        grantPerms = PermissionsRoles.LEADER_DIRECTION;
+        break;
+    }
+
+    await this.usersService.changePermissions(
+      assignPermsUser,
+      grantPerms,
+      true,
+    );
   }
 }
