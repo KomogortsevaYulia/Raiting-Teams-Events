@@ -49,7 +49,7 @@ export class TeamsService {
   ) {}
 
   async findOne(id: number) {
-    const head = 'Руководитель';
+    const head = TeamRoles.Leader;
 
     const res = await this.teamsRepository
       .createQueryBuilder('teams')
@@ -70,19 +70,20 @@ export class TeamsService {
         'teams.id_parent',
       ])
       .where('teams.id = :id', { id: id })
-      .andWhere('teams.type_team = :type', { type: 'teams' })
-      .leftJoin('teams.functions', 'functions')
+      // .andWhere('teams.type_team = :type', { type: 'teams' })
       // select direction
       .leftJoin('teams.id_parent', 'direction')
       .addSelect('direction.id')
-      .addSelect('functions.title')
-      .andWhere('functions.title = :head', { head: head })
-
+      .leftJoinAndSelect(
+        'teams.functions',
+        'functions',
+        'functions.title = :head',
+        { head: head },
+      )
       .leftJoin('functions.userFunctions', 'user_functions')
       .addSelect('user_functions.id')
       .leftJoinAndSelect('user_functions.user', 'user')
       .getOne();
-    // .addSelect("user.title_role")
 
     return res;
   }
@@ -570,22 +571,23 @@ export class TeamsService {
     assignPermsUser.userId = teamLeaderDto.userId;
 
     // revoke perms old leader
-    team.functions.forEach((func) => {
-      if (func.title == TeamRoles.Leader) {
-        func.userFunctions.forEach(async (userFunc) => {
-          const oldLeader = new User();
-          oldLeader.userId = userFunc.user.id;
+    if (team.functions)
+      team.functions.forEach((func) => {
+        if (func.title == TeamRoles.Leader && func.userFunctions) {
+          func.userFunctions.forEach(async (userFunc) => {
+            const oldLeader = new User();
+            oldLeader.userId = userFunc.user.id;
 
-          await this.usersService.changePermissions(
-            oldLeader,
-            PermissionsRoles.LEADER_TEAM,
-            false,
-          );
+            await this.usersService.changePermissions(
+              oldLeader,
+              PermissionsRoles.LEADER_TEAM,
+              false,
+            );
 
-          await this.usersService.removeUserFunction(userFunc.id);
-        });
-      }
-    });
+            await this.usersService.removeUserFunction(userFunc.id);
+          });
+        }
+      });
 
     let grantPerms: Permissions[] = [];
     // set permissions
