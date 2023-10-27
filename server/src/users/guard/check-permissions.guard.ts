@@ -26,6 +26,6 @@ export class PermissionsGuard implements CanActivate {
       return true; // no permissions required, allow access
     }
 
-    return this.usersService.hasPermissions(user, requiredPermissions);
+    return this.usersService.checkPermissions(user, requiredPermissions);
   }
 }
