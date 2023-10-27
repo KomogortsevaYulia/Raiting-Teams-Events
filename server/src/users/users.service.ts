@@ -1,6 +1,14 @@
-import { Body, HttpCode, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Request,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, getRepository, Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
@@ -15,100 +23,61 @@ import { validate } from 'class-validator';
 import { Team } from '../teams/entities/team.entity';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { FunctionDto } from './dto/functions.dto';
-
-const jwt = require('jsonwebtoken');
+import { AssignDirectionTeamLeaderDto } from './dto/direction-leader.dto';
+import { Permissions } from '../shared/permissions';
+import { TeamsService } from '../teams/teams.service';
 
 @Injectable()
 export class UsersService {
-
   constructor(
-    @InjectRepository(User)  // user //,
+    @InjectRepository(User) // user //,
     private readonly usersRepository: Repository<User>,
     @InjectRepository(UserFunction)
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
-
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
-  ) { }
+  ) {}
 
   async findByName(limit: number, name: string, email: string) {
-
     return await this.usersRepository.find({
       take: limit,
-      where: [
-        { fullname: Like(`%${name}%`) },
-        { email: Like(`%${email}%`) }
-      ]
-    })
-
+      where: [{ fullname: Like(`%${name}%`) }, { email: Like(`%${email}%`) }],
+    });
   }
+
   async update(updateUserDto: UpdateUserDto, id: number) {
     return this.usersRepository.update(+id, updateUserDto);
   }
 
-  async addRole(education_group, title_role) {
-
-  }
+  // async addRole(education_group, title_role) {}
 
   async findAllWithLimit(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });
   }
 
   async findAll(): Promise<User[]> {
-    return await this.usersRepository.createQueryBuilder("users").getMany();
+    return await this.usersRepository.createQueryBuilder('users').getMany();
   }
 
-  // modernize function user if user not exist
-  // @HttpCode(400)
-  // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-
-  //   // if(isNaN(id)){
-  //   //   throw new HttpException("такого юзера не существует " + id, 400)
-  //   // }
-
-  //   const userExist = await this.usersRepository
-  //     .createQueryBuilder("users")
-  //     .where("users.id = :id", { id })
-  //     .leftJoin("users.user_function", "user_function")
-  //     .addSelect("user_function")
-  //     .leftJoin("user_function.functions", "functions")
-  //     .addSelect("functions")
-  //     .leftJoinAndSelect("functions.team", "teams")
-  //     .addSelect("teams")
-  //     .getOne();
-
-  //   // console.log("userExist " + userExist)
-  //   if (!userExist) {
-  //     throw new HttpException("такого юзера не существует ", 400)
-  //   }
-
-  //   return userExist
-
-  // }
-
   async login(username: string, pass: string): Promise<any> {
-
     const user = await this.usersRepository
-      .createQueryBuilder("users")
-      .where("users.username = :username", { username })
+      .createQueryBuilder('users')
+      .where('users.username = :username', { username })
       .getOne();
 
-    if (user && await argon2.verify(user.password, pass)) {
+    if (user && (await argon2.verify(user.password, pass))) {
       const { password, ...result } = user;
       return result;
     } else {
-      return null
+      return null;
     }
   }
 
   async findOne(email: string): Promise<any> {
     return this.usersRepository.findOneBy({ email: email });
   }
-
-
-
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
@@ -126,12 +95,14 @@ export class UsersService {
 
     if (user) {
       const errors = { username: 'Username and email must be unique.' };
-      throw new HttpException({ message: 'Input data validation failed', errors }, HttpStatus.BAD_REQUEST);
-
+      throw new HttpException(
+        { message: 'Input data validation failed', errors },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     // create new user
-    let newUser = new User();
+    const newUser = new User();
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
@@ -139,19 +110,20 @@ export class UsersService {
     const errors = await validate(newUser);
     if (errors.length > 0) {
       const _errors = { username: 'Userinput is not valid.' };
-      throw new HttpException({ message: 'Input data validation failed', _errors }, HttpStatus.BAD_REQUEST);
-
+      throw new HttpException(
+        { message: 'Input data validation failed', _errors },
+        HttpStatus.BAD_REQUEST,
+      );
     } else {
       const savedUser = await this.usersRepository.save(newUser);
       return savedUser;
     }
-
   }
 
   async findById(id: number): Promise<User> {
-    const user = await this.usersRepository.
-      createQueryBuilder("users")
-      .where("users.id = :id", { id })
+    const user = await this.usersRepository
+      .createQueryBuilder('users')
+      .where('users.id = :id', { id })
       .getOne();
 
     if (!user) {
@@ -161,187 +133,168 @@ export class UsersService {
     return user;
   }
 
-
-
-
-
   // checkers---------------------------------------------------------------------------
   // check permissions
-  async hasPermissions(userId: number, requiredPermissions: string[]) {
-
-
-    let userHaveAllPermissions = true
+  async hasPermissions(user: User, requiredPermissions: Permissions[]) {
+    let userHaveAllPermissions = true;
     //  get user and its permissions
-    const user = await this.usersRepository.findOne({ where: { id: userId } })
+    user = await this.usersRepository.findOne({ where: { id: user.userId } });
     // console.log("user", user.permissions, "req ", requiredPermissions)
 
-    // go throught req permissions
+    // go through req permissions (with AND checking for perms)
     requiredPermissions.forEach((reqPermission) => {
-      let havePermission = false
-      //  go throught user permissions
+      let havePermission = false;
+      //  go through user permissions
       for (let i = 0; i < user.permissions.length; i++) {
         if (user.permissions[i] === reqPermission) {
-          havePermission = true
-          break
+          havePermission = true;
+          break;
         }
       }
       // if one from permissions not granted then return false
       if (!havePermission) {
-        userHaveAllPermissions = false
-        return userHaveAllPermissions
+        userHaveAllPermissions = false;
+        return userHaveAllPermissions;
       }
-    })
+    });
 
-    return userHaveAllPermissions
+    return userHaveAllPermissions;
   }
 
   // проверить есть ли у юзера специальные
-  async hasPermissionsInTeam(userId: number, teamId: number, permissions: string[]) {
-
+  async hasPermissionsInTeam(
+    userId: number,
+    teamId: number,
+    permissions: string[],
+  ) {
     const permissisonsInTeam = await this.userFunctionsRepository
-      .createQueryBuilder("user_function")
-      .leftJoin("user_function.function", "function")
-      .leftJoin("user_function.user", "user")
-      .leftJoin("function.team", "team")
-      .where("user.id = :user_id", { user_id: userId })
-      .andWhere("team.id = :team_id", { team_id: teamId })
-      .andWhere("function.type_function in (:...type_functions) ", { type_functions: permissions })
-      // special for admin
-      .orWhere("user.username = :name", {name:'admin'})
+      .createQueryBuilder('user_function')
+      .leftJoin('user_function.function', 'function')
+      .leftJoin('user_function.user', 'user')
+      .leftJoin('function.team', 'team')
+      .where('user.id = :user_id', { user_id: userId })
+      .andWhere('team.id = :team_id', { team_id: teamId })
+      .andWhere('function.type_function in (:...type_functions) ', {
+        type_functions: permissions,
+      })
       .getMany();
 
-    return permissisonsInTeam && permissisonsInTeam.length > 0
+    return permissisonsInTeam && permissisonsInTeam.length > 0;
   }
+
   // checkers---------------------------------------------------------------------------
 
-
-
   // function--------------------------------------------------------------------
-  async createFunctionIfNotExist(createFunctionDto: CreateFunctionDto): Promise<Function> {
-
+  async createFunctionIfNotExist(
+    createFunctionDto: CreateFunctionDto,
+  ): Promise<Function> {
     // find existing function for team
-    const fD = new FunctionDto()
-    fD.team = createFunctionDto.team
-    fD.title = createFunctionDto.title
+    const fD = new FunctionDto();
+    fD.team = createFunctionDto.team;
+    fD.title = createFunctionDto.title;
 
-    const existFs = await this.findFunctions(fD)
-    let func = existFs ? existFs[0] : null
+    const existFs = await this.findFunctions(fD);
+    let func = existFs ? existFs[0] : null;
 
-    const team = await this.teamRepository.findOneOrFail({ where: { id: createFunctionDto.team } })
+    const team = await this.teamRepository.findOneOrFail({
+      where: { id: createFunctionDto.team },
+    });
     // если не существует функции, то создать новую
     if (!func) {
-      //создать фукнцию 
+      //создать фукнцию
       func = await this.functionsRepository.save({
         ...createFunctionDto,
-        team: team
-      })
+        team: team,
+      });
     }
 
     return func;
   }
 
-
-  async updateFunction(idFunction: number, createFunctionDto: CreateFunctionDto) {
-
-    const team = await this.teamRepository.findOneOrFail({ where: { id: createFunctionDto.team } })
+  async updateFunction(
+    idFunction: number,
+    createFunctionDto: CreateFunctionDto,
+  ) {
+    const team = await this.teamRepository.findOneOrFail({
+      where: { id: createFunctionDto.team },
+    });
 
     await this.functionsRepository.update(idFunction, {
       ...createFunctionDto,
-      team: team
+      team: team,
     });
   }
 
-
   // найти функции по ид команды
   async findFunctions(functionDto: FunctionDto) {
-
-    let query = this.functionsRepository.
-      createQueryBuilder("functions")
-      .leftJoin("functions.team", "team")
-      .addSelect("team.id")
+    const query = this.functionsRepository
+      .createQueryBuilder('functions')
+      .leftJoin('functions.team', 'team')
+      .addSelect('team.id');
 
     // team
-    functionDto.team ? query.andWhere("team.id = :id", { id: functionDto.team }) : query
+    functionDto.team
+      ? query.andWhere('team.id = :id', { id: functionDto.team })
+      : query;
     // title
-    functionDto.title ? query.andWhere("functions.title = :title", { title: functionDto.title }) : query
+    functionDto.title
+      ? query.andWhere('functions.title = :title', { title: functionDto.title })
+      : query;
 
     return await query.getMany();
   }
 
-
-
   async removeFunction(id: number) {
+    const res = await this.functionsRepository.delete(id);
 
-    const res = await this.functionsRepository.delete(id)
-
-    return res
+    return res;
   }
-
 
   // modernize function user if user not exist
   @HttpCode(400)
-  async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+  async findOneWithFunction(id: number) {
+    // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
 
     if (isNaN(id)) {
-      throw new HttpException("такого юзера не существует " + id, 400)
+      throw new HttpException('такого юзера не существует ' + id, 400);
     }
 
     const userExist = await this.userFunctionsRepository
-      .createQueryBuilder("user_function")
-      .leftJoin("user_function.function", "functions")
-      .addSelect("functions")
-      .leftJoinAndSelect("functions.team", "teams")
-      .addSelect("teams")
-      .where("user_function.user = :id", { id })
+      .createQueryBuilder('user_function')
+      .leftJoin('user_function.function', 'functions')
+      .addSelect('functions')
+      .leftJoinAndSelect('functions.team', 'teams')
+      .addSelect('teams')
+      .where('user_function.user = :id', { id })
       .getMany();
 
     if (!userExist) {
-      throw new HttpException("такого юзера не существует ", 400)
+      throw new HttpException('такого юзера не существует ', 400);
     }
-    return userExist
+    return userExist;
   }
 
   // function--------------------------------------------------------------------
 
-
+  // TODO I AM HERE
   //назначить роль юзеру в коллективе
-  async assignRole(teamId: number, userId: number, roleName: string) {
-
-    const funcDto = new CreateFunctionDto()
-    funcDto.team = teamId
-    funcDto.title = roleName
-
-    // find existing function with role or update
-    let func = await this.createFunctionIfNotExist(funcDto)
-
-
-    const ufDto = new CreateUserFunctionDto()
-    ufDto.function = func.id
-    ufDto.user = userId
-
-    // find existing user function or update
-    const existUFs = await this.createUserFunctionOrUpdate(ufDto)
-
-
-    return existUFs
-  }
-
+  // id loged user
 
   //user functions---------------------------------------------------------------
   @HttpCode(400)
-  async createUserFunctionOrUpdate(createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
+  async createUserFunctionOrUpdate(
+    createUserFunctionDto: CreateUserFunctionDto,
+  ): Promise<UserFunction> {
+    const uFDto = new UserFunctionDto();
+    uFDto.function = createUserFunctionDto.function;
+    uFDto.user = createUserFunctionDto.user;
 
-    let uFDto = new UserFunctionDto()
-    uFDto.function = createUserFunctionDto.function
-    uFDto.user = createUserFunctionDto.user
+    const uFs = await this.findUserFunctions(uFDto);
+    let uF = uFs ? uFs[0] : null;
 
-    let uFs = await this.findUserFunctions(uFDto)
-
-    let uF = uFs ? uFs[0] : null
-
-    let dateStart = new Date();
-    let dateEnd = new Date();
-    dateEnd.setFullYear(dateEnd.getFullYear() + 1) //only on one year set 
+    const dateStart = new Date();
+    const dateEnd = new Date();
+    dateEnd.setFullYear(dateEnd.getFullYear() + 1); //only on one year set
 
     // const user = await this.usersRepository.findOneOrFail({where:{id:createUserFunctionDto.user}})
 
@@ -349,42 +302,44 @@ export class UsersService {
       id: uF ? uF.id : null,
       ...createUserFunctionDto,
       dateStart: dateStart,
-      dateEnd: dateEnd
+      dateEnd: dateEnd,
     });
 
-    return uF
+    return uF;
   }
 
-
   async removeUserFunction(id: number) {
-
-    let query = this.userFunctionsRepository.
-      createQueryBuilder("user_functions")
-      .where("user_functions.id = :id", { id })
+    const query = this.userFunctionsRepository
+      .createQueryBuilder('user_functions')
+      .where('user_functions.id = :id', { id });
 
     return await query.delete().execute();
   }
 
-
   async findUserFunctions(userFDto: UserFunctionDto) {
-
-    let query = this.userFunctionsRepository.
-      createQueryBuilder("user_functions")
-      .leftJoin("user_functions.function", "function")
-      .leftJoin("user_functions.user", "user")
-      .leftJoin("function.team", "team")
+    const query = this.userFunctionsRepository
+      .createQueryBuilder('user_functions')
+      .leftJoin('user_functions.function', 'function')
+      .leftJoin('user_functions.user', 'user')
+      .leftJoin('function.team', 'team');
 
     // function
-    userFDto.function ? query.andWhere("function.id = :function_id", { function_id: userFDto.function }) : query
+    userFDto.function
+      ? query.andWhere('function.id = :function_id', {
+          function_id: userFDto.function,
+        })
+      : query;
     // user
-    userFDto.user ? query.andWhere("user.id = :user_id", { user_id: userFDto.user }) : query
+    userFDto.user
+      ? query.andWhere('user.id = :user_id', { user_id: userFDto.user })
+      : query;
     // team
-    userFDto.team ? query.andWhere("team.id = :team_id", { team_id: userFDto.team }) : query
+    userFDto.team
+      ? query.andWhere('team.id = :team_id', { team_id: userFDto.team })
+      : query;
 
     return await query.getMany();
   }
+
   //user functions---------------------------------------------------------------
-
 }
-
-

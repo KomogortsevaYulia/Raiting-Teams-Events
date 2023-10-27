@@ -1,78 +1,79 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "../users/entities/user.entity";
-import { UserFunction } from "../users/entities/user_function.entity";
-import { Repository, SelectQueryBuilder } from "typeorm";
-import { CreateTeamDto } from "./dto/create-team.dto";
-import { UpdateTeamDto } from "./dto/update-team.dto";
-import { Team } from "./entities/team.entity";
-import { UsersService } from "../users/users.service";
-import { SearchTeamDto } from "./dto/search-team.dto";
-import { Requisitions } from "./entities/requisition.entity";
-import { RequisitionDto } from "./dto/update-requisition.dto";
-import { GeneralService } from "../general/general.service";
-import { DictionaryDto } from "src/general/dto/dictionary.dto";
-import { UserFunctionDto } from "src/users/dto/user-functions.dto";
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../users/entities/user.entity';
+import { UserFunction } from '../users/entities/user_function.entity';
+import { Repository, SelectQueryBuilder } from 'typeorm';
+import { CreateTeamDto } from './dto/create-team.dto';
+import { UpdateTeamDto } from './dto/update-team.dto';
+import { Team } from './entities/team.entity';
+import { UsersService } from '../users/users.service';
+import { SearchTeamDto } from './dto/search-team.dto';
+import { Requisitions } from './entities/requisition.entity';
+import { RequisitionDto } from './dto/update-requisition.dto';
+import { GeneralService } from '../general/general.service';
+import { DictionaryDto } from 'src/general/dto/dictionary.dto';
+import { UserFunctionDto } from 'src/users/dto/user-functions.dto';
 import { CreateRequisitionFieldDto } from './dto/create-requisition-field.dto';
 import { RequisitionFields } from 'src/forms/entities/requisition_fields.entity';
 import { CreateRequisitionDto } from './dto/create-requisition.dto';
 import { FormsService } from 'src/forms/forms.service';
+import { AssignDirectionTeamLeaderDto } from '../users/dto/direction-leader.dto';
+import { Permissions } from '../shared/permissions';
+import { CreateFunctionDto } from '../users/dto/create-functions.dto';
+import { CreateUserFunctionDto } from '../users/dto/create-user-function.dto';
 
 @Injectable()
 export class TeamsService {
   constructor(
     @InjectRepository(Team) // user //,
     private readonly teamsRepository: Repository<Team>,
-    @InjectRepository(User) // user //,
-    private readonly usersRepository: Repository<User>,
     @InjectRepository(UserFunction)
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
-
-    private readonly usersService: UsersService,
-    private readonly dictionaryService: GeneralService,
-    private readonly formService: FormsService,
-
     @InjectRepository(Requisitions)
     private readonly requisitionsRepository: Repository<Requisitions>,
     @InjectRepository(RequisitionFields)
     private readonly requisitionsFieldsRepository: Repository<RequisitionFields>,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
+    private readonly dictionaryService: GeneralService,
+    private readonly formService: FormsService,
   ) {}
 
   async findOne(id: number) {
-    const head = "Руководитель";
+    const head = 'Руководитель';
 
-    let res = await this.teamsRepository
-      .createQueryBuilder("teams")
+    const res = await this.teamsRepository
+      .createQueryBuilder('teams')
 
       .select([
-        "teams.id",
-        "teams.title",
-        "teams.tags",
-        "teams.image",
-        "teams.description",
-        "teams.short_description",
-        "teams.type_team",
-        "teams.cabinet",
-        "teams.is_archive",
-        "teams.document",
-        "teams.shortname",
-        "teams.charter_team",
-        "teams.id_parent",
+        'teams.id',
+        'teams.title',
+        'teams.tags',
+        'teams.image',
+        'teams.description',
+        'teams.short_description',
+        'teams.type_team',
+        'teams.cabinet',
+        'teams.is_archive',
+        'teams.document',
+        'teams.shortname',
+        'teams.charter_team',
+        'teams.id_parent',
       ])
-      .where("teams.id = :id", { id: id })
-      .andWhere("teams.type_team = :type", { type: "teams" })
-      .leftJoin("teams.functions", "functions")
+      .where('teams.id = :id', { id: id })
+      .andWhere('teams.type_team = :type', { type: 'teams' })
+      .leftJoin('teams.functions', 'functions')
       // select direction
-      .leftJoin("teams.id_parent", "direction")
-      .addSelect("direction.id")
-      .addSelect("functions.title")
-      .andWhere("functions.title = :head", { head: head })
+      .leftJoin('teams.id_parent', 'direction')
+      .addSelect('direction.id')
+      .addSelect('functions.title')
+      .andWhere('functions.title = :head', { head: head })
 
-      .leftJoin("functions.userFunctions", "user_functions")
-      .addSelect("user_functions.id")
-      .leftJoinAndSelect("user_functions.user", "user")
+      .leftJoin('functions.userFunctions', 'user_functions')
+      .addSelect('user_functions.id')
+      .leftJoinAndSelect('user_functions.user', 'user')
       .getOne();
     // .addSelect("user.title_role")
 
@@ -80,9 +81,9 @@ export class TeamsService {
   }
 
   // Обновить коллектив
-  async update(id: number, updateTeamDto: UpdateTeamDto) {
+  async update(user: User, id: number, updateTeamDto: UpdateTeamDto) {
     updateTeamDto.id_parent = updateTeamDto.id_parent ?? null;
-    let team = await this.teamsRepository.save({
+    const team = await this.teamsRepository.save({
       id,
       ...updateTeamDto,
       charter_team: updateTeamDto.charterTeam,
@@ -97,17 +98,21 @@ export class TeamsService {
       ufDto.team = team.id;
       ufDto.user = updateTeamDto.oldLeaderId;
 
-      let uFs = await this.usersService.findUserFunctions(ufDto);
+      const uFs = await this.usersService.findUserFunctions(ufDto);
 
       uFs.forEach(async (uF) => {
         await this.usersService.removeUserFunction(uF.id);
       });
 
+      const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
+      directionTeamLeaderDto.teamId = team.id;
+      directionTeamLeaderDto.userId = updateTeamDto.newLeaderId;
+      directionTeamLeaderDto.roleName = 'Руководитель';
+
       // назначить нового пользвоателя
-      let newUserFunction = await this.usersService.assignRole(
-        team.id,
-        updateTeamDto.newLeaderId,
-        "Руководитель"
+      const newUserFunction = await this.assignTeamRole(
+        user,
+        directionTeamLeaderDto,
       );
     }
 
@@ -115,20 +120,25 @@ export class TeamsService {
   }
 
   //создать коллектив, с учетом, что есь минимум 1 лидер
-  async create(createTeamDto: CreateTeamDto): Promise<Team> {
-    let team = await this.teamsRepository.save({
+  async create(user: User, createTeamDto: CreateTeamDto): Promise<Team> {
+    const team = await this.teamsRepository.save({
       ...createTeamDto,
       charter_team: createTeamDto.charterTeam,
       image: [],
       tags: [],
-      type_team: "teams",
+      type_team: 'teams',
       creation_date: new Date(),
     });
 
-    await this.usersService.assignRole(
-      team.id,
-      createTeamDto.userID,
-      "Руководитель"
+    const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
+    directionTeamLeaderDto.teamId = team.id;
+    directionTeamLeaderDto.userId = createTeamDto.userID;
+    directionTeamLeaderDto.roleName = 'Руководитель';
+
+    // назначить нового пользвоателя
+    const newUserFunction = await this.assignTeamRole(
+      user,
+      directionTeamLeaderDto,
     );
 
     return team;
@@ -136,44 +146,44 @@ export class TeamsService {
 
   // get all teams with leadeaders
   async findAll(params: SearchTeamDto): Promise<[Team[], number]> {
-    const head = "Руководитель";
+    const head = 'Руководитель';
     // console.log(params)
 
-    let query = await this.teamsRepository
-      .createQueryBuilder("teams")
+    let query = this.teamsRepository
+      .createQueryBuilder('teams')
 
       .select([
-        "teams.id",
-        "teams.title",
-        "teams.tags",
-        "teams.image",
-        "teams.description",
-        "teams.short_description",
-        "teams.type_team",
-        "teams.cabinet",
-        "teams.is_archive",
-        "teams.document",
-        "teams.shortname",
-        "teams.charter_team",
-        "teams.id_parent",
-        "teams.set_open",
+        'teams.id',
+        'teams.title',
+        'teams.tags',
+        'teams.image',
+        'teams.description',
+        'teams.short_description',
+        'teams.type_team',
+        'teams.cabinet',
+        'teams.is_archive',
+        'teams.document',
+        'teams.shortname',
+        'teams.charter_team',
+        'teams.id_parent',
+        'teams.set_open',
       ])
-      .where("teams.type_team = :type", { type: "teams" })
-      .leftJoin("teams.functions", "functions")
+      .where('teams.type_team = :type', { type: 'teams' })
+      .leftJoin('teams.functions', 'functions')
       // select direction
-      .leftJoin("teams.id_parent", "direction")
+      .leftJoin('teams.id_parent', 'direction')
       // .andWhere("functions.title = :head", { head: head })
-      .leftJoin("functions.userFunctions", "user_functions")
-      .leftJoin("user_functions.user", "user")
+      .leftJoin('functions.userFunctions', 'user_functions')
+      .leftJoin('user_functions.user', 'user')
 
-      .orderBy("teams.id", "DESC");
+      .orderBy('teams.id', 'DESC');
 
     query = await this.filterTeam(params, query);
     query = query
       .take(params.limit) // Set the limit
       .skip(params.offset); // Set the offset
 
-    let team = await query.getManyAndCount();
+    const team = await query.getManyAndCount();
     return team;
   }
 
@@ -192,26 +202,26 @@ export class TeamsService {
           title: `%${params.title}%`,
           description: `%${params.description}%`,
           tags: `%${params.tags}%`,
-        }
+        },
       );
     } else {
       //если не все параметры, то ищем через 'и'
 
       //if title (если у нас есть тайтл то ищем по нему)
       params.title
-        ? query.andWhere("LOWER(teams.title) like :title", {
+        ? query.andWhere('LOWER(teams.title) like :title', {
             title: `%${params.title}%`,
           })
         : query;
       //if description
       params.description
-        ? query.andWhere("LOWER(teams.description) like :description", {
+        ? query.andWhere('LOWER(teams.description) like :description', {
             description: `%${params.description}%`,
           })
         : query;
       //if description
       params.tags
-        ? query.andWhere("LOWER(teams.tags) like :tags", {
+        ? query.andWhere('LOWER(teams.tags) like :tags', {
             tags: `%${params.tags}%`,
           })
         : query;
@@ -219,21 +229,21 @@ export class TeamsService {
 
     //отфильтровать по направлению
     params.directions
-      ? query.andWhere("teams.id_parent in (:...id_parents)", {
+      ? query.andWhere('teams.id_parent in (:...id_parents)', {
           id_parents: params.directions,
         })
       : query;
 
     if (params.is_archive != null) {
       //отфильтровать по типу коллектива
-      query.andWhere("teams.is_archive = :is_archive", {
+      query.andWhere('teams.is_archive = :is_archive', {
         is_archive: params.is_archive,
       });
     }
 
     // набор
     if (params.set_open != null) {
-      query.andWhere("teams.set_open = :set_open", {
+      query.andWhere('teams.set_open = :set_open', {
         set_open: params.set_open,
       });
     }
@@ -243,27 +253,27 @@ export class TeamsService {
 
   // get all teams of specific direction for statistic
   async findAllTeamsOfDirection(id_parent = -1): Promise<[Team[], number]> {
-    const type_team = "teams";
+    const type_team = 'teams';
 
-    let teams = this.teamsRepository
-      .createQueryBuilder("teams")
+    const teams = this.teamsRepository
+      .createQueryBuilder('teams')
 
       .select([
-        "teams.id",
-        "teams.title",
-        "teams.image",
-        "teams.description",
-        "teams.type_team",
-        "teams.shortname",
+        'teams.id',
+        'teams.title',
+        'teams.image',
+        'teams.description',
+        'teams.type_team',
+        'teams.shortname',
       ])
-      .where("teams.type_team = :type", { type: type_team });
+      .where('teams.type_team = :type', { type: type_team });
 
     // с учетом направления
     if (id_parent > 0) {
       teams
-        .andWhere("teams.id_parent = :id_parent ", { id_parent: id_parent })
-        .leftJoin("teams.id_parent", "id_parent")
-        .addSelect(["id_parent.id", "id_parent.shortname"]);
+        .andWhere('teams.id_parent = :id_parent ', { id_parent: id_parent })
+        .leftJoin('teams.id_parent', 'id_parent')
+        .addSelect(['id_parent.id', 'id_parent.shortname']);
     }
 
     return await teams.getManyAndCount();
@@ -273,30 +283,30 @@ export class TeamsService {
     // const head = "Руководитель"
 
     const directionsAndUsers = this.teamsRepository
-      .createQueryBuilder("teams")
+      .createQueryBuilder('teams')
       .select([
-        "teams.shortname",
-        "teams.type_team",
-        "teams.id",
-        "teams.title",
-        "teams.short_description",
-        "teams.description",
-        "teams.cabinet",
+        'teams.shortname',
+        'teams.type_team',
+        'teams.id',
+        'teams.title',
+        'teams.short_description',
+        'teams.description',
+        'teams.cabinet',
       ])
-      .andWhere("teams.type_team = :type", { type: "direction" })
-      .leftJoinAndSelect("teams.functions", "functions")
-      .addSelect(["functions.title"])
-      .leftJoin("functions.userFunctions", "user_functions")
-      .addSelect("user_functions.id")
-      .leftJoin("user_functions.user", "user")
-      .addSelect(["user.fullname", "user.email", "user.phone", "user.image"]);
+      .andWhere('teams.type_team = :type', { type: 'direction' })
+      .leftJoinAndSelect('teams.functions', 'functions')
+      .addSelect(['functions.title'])
+      .leftJoin('functions.userFunctions', 'user_functions')
+      .addSelect('user_functions.id')
+      .leftJoin('user_functions.user', 'user')
+      .addSelect(['user.fullname', 'user.email', 'user.phone', 'user.image']);
 
     // с учетом направления
     if (id_parent > 0) {
       directionsAndUsers
-        .andWhere("teams.id_parent = :id_parent ", { id_parent: id_parent })
-        .leftJoin("teams.id_parent", "id_parent")
-        .addSelect(["id_parent.id", "id_parent.shortname"]);
+        .andWhere('teams.id_parent = :id_parent ', { id_parent: id_parent })
+        .leftJoin('teams.id_parent', 'id_parent')
+        .addSelect(['id_parent.id', 'id_parent.shortname']);
     }
 
     return await directionsAndUsers.getManyAndCount();
@@ -304,18 +314,16 @@ export class TeamsService {
 
   //вывести команду
   async teamWithUsers(id: number): Promise<UserFunction[]> {
-    const users = await this.userFunctionsRepository
+    return await this.userFunctionsRepository
 
-      .createQueryBuilder("user_functions")
-      .select(["user_functions.dateStart", "user_functions.dateEnd"])
-      .leftJoinAndSelect("user_functions.user", "user")
-      .innerJoin("user_functions.function", "function")
-      .addSelect("function.title")
-      .innerJoin("function.team", "team")
-      .where("team.id = :id", { id })
+      .createQueryBuilder('user_functions')
+      .select(['user_functions.dateStart', 'user_functions.dateEnd'])
+      .leftJoinAndSelect('user_functions.user', 'user')
+      .innerJoin('user_functions.function', 'function')
+      .addSelect('function.title')
+      .innerJoin('function.team', 'team')
+      .where('team.id = :id', { id })
       .getMany();
-
-    return users;
   }
 
   // requisition --------------------------------------------------------------------
@@ -328,7 +336,7 @@ export class TeamsService {
 
     const dd = new DictionaryDto(
       updateRequisitionDto.status_name,
-      dict_class_id
+      dict_class_id,
     );
 
     // найти знаечние в словаре,чтобы ид получить
@@ -344,42 +352,42 @@ export class TeamsService {
     };
 
     // сохранить новые данные заявки
-    let req = await this.requisitionsRepository.save(body);
+    const req = await this.requisitionsRepository.save(body);
 
     return req;
   }
 
   async findAllRequisitions(
     team_id: number = null,
-    reqDto: RequisitionDto
+    reqDto: RequisitionDto,
   ): Promise<Requisitions[]> {
-    const rejectStatus = "Принята";
+    const rejectStatus = 'Принята';
 
-    let query = this.requisitionsRepository
-      .createQueryBuilder("requisition")
+    const query = this.requisitionsRepository
+      .createQueryBuilder('requisition')
       .select([
-        "requisition.date_create",
-        "requisition.date_update",
-        "requisition.status",
-        "requisition.id",
+        'requisition.date_create',
+        'requisition.date_update',
+        'requisition.status',
+        'requisition.id',
       ])
-      .leftJoinAndSelect("requisition.user", "user")
+      .leftJoinAndSelect('requisition.user', 'user')
       // взять статус со словаря
-      .leftJoinAndSelect("requisition.status", "status")
+      .leftJoinAndSelect('requisition.status', 'status')
 
-      .leftJoin("requisition.requisition_fields", "rf")
-      .leftJoin("rf.form_field", "form_field")
-      .leftJoin("form_field.form", "form")
+      .leftJoin('requisition.requisition_fields', 'rf')
+      .leftJoin('rf.form_field', 'form_field')
+      .leftJoin('form_field.form', 'form')
       // .addSelect(["form.id"])
-      .where("form.team_id = :team_id", { team_id })
-      .orWhere("requisition.team_id = :team_id", { team_id })
+      .where('form.team_id = :team_id', { team_id })
+      .orWhere('requisition.team_id = :team_id', { team_id })
       // пользователей с этим статусом н показывать
 
-      .orderBy("status.name", "DESC");
+      .orderBy('status.name', 'DESC');
 
     reqDto.user_id
-      ? query.andWhere("user.id = :user_id", { user_id: reqDto.user_id })
-      : query.andWhere("status.name != :rejectStatus", {
+      ? query.andWhere('user.id = :user_id', { user_id: reqDto.user_id })
+      : query.andWhere('status.name != :rejectStatus', {
           rejectStatus: rejectStatus,
         });
 
@@ -407,20 +415,20 @@ export class TeamsService {
 
   async findAllRequisitionsByUserId(userId: number): Promise<Requisitions[]> {
     return await this.requisitionsRepository
-      .createQueryBuilder("requisition")
+      .createQueryBuilder('requisition')
       .select([
-        "requisition.date_create",
-        "requisition.date_update",
-        "requisition.status",
-        "requisition.id",
+        'requisition.date_create',
+        'requisition.date_update',
+        'requisition.status',
+        'requisition.id',
       ])
-      .leftJoinAndSelect("requisition.status", "status")
-      .leftJoin("requisition.requisition_fields", "rf")
-      .leftJoin("rf.form_field", "form_field")
-      .leftJoin("form_field.form", "form")
-      .leftJoinAndSelect("requisition.team", "team")
-      .where("requisition.user.id = :userId", { userId })
-      .orderBy("status.name", "DESC")
+      .leftJoinAndSelect('requisition.status', 'status')
+      .leftJoin('requisition.requisition_fields', 'rf')
+      .leftJoin('rf.form_field', 'form_field')
+      .leftJoin('form_field.form', 'form')
+      .leftJoinAndSelect('requisition.team', 'team')
+      .where('requisition.user.id = :userId', { userId })
+      .orderBy('status.name', 'DESC')
       .getMany();
   }
 
@@ -467,15 +475,16 @@ export class TeamsService {
 
     return createdRequisition;
   }
+
   // requisition ------------------------------------------------------------------
 
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя
     const teamsFunctions = await this.functionsRepository
-      .createQueryBuilder("functions")
-      .innerJoin("functions.team", "team")
-      .addSelect("team.title")
-      .where("functions.team_id = :id", { id: id })
+      .createQueryBuilder('functions')
+      .innerJoin('functions.team', 'team')
+      .addSelect('team.title')
+      .where('functions.team_id = :id', { id: id })
       .getMany();
 
     return teamsFunctions;
@@ -487,12 +496,46 @@ export class TeamsService {
   }
 
   async addImage(id: number, filePath: string): Promise<Team> {
-    let team = await this.findOne(id);
+    const team = await this.findOne(id);
     team.image.push(filePath);
 
     return await this.teamsRepository.save({
       id: team.id,
       image: team.image,
     });
+  }
+
+  //   some roles
+
+  async assignTeamRole(
+    user: User,
+    directionTeamLeaderDto: AssignDirectionTeamLeaderDto,
+  ) {
+    let permission: Permissions;
+    const directions = await this.findDirections();
+    const dirIds = directions[0].map((team) => team.id);
+
+    // check if it is directions not usual team
+    if (dirIds.includes(directionTeamLeaderDto.teamId))
+      permission = Permissions.CAN_ASSIGN_LEADER_DIRECTIONS;
+    else {
+      permission = Permissions.CAN_ASSIGN_LEADER_TEAM;
+    }
+
+    await this.usersService.hasPermissions(user, [permission]);
+
+    const funcDto = new CreateFunctionDto();
+    funcDto.team = directionTeamLeaderDto.teamId;
+    funcDto.title = directionTeamLeaderDto.roleName;
+
+    // find existing function with role or update
+    const func = await this.usersService.createFunctionIfNotExist(funcDto);
+
+    const ufDto = new CreateUserFunctionDto();
+    ufDto.function = func.id;
+    ufDto.user = directionTeamLeaderDto.userId;
+
+    // find existing user function or update
+    return await this.usersService.createUserFunctionOrUpdate(ufDto);
   }
 }
