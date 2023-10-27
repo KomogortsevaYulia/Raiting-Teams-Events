@@ -6,6 +6,18 @@
 # get all users from specific team
 GET http://localhost:3000/api/users?limit=4&email=mail
 
+###
+# login
+POST http://localhost:3000/api/users/login
+content-type: application/json
+
+{
+  "user":{
+    "username": "admin",
+    "password":"123"
+}
+}
+
 
 
 
@@ -43,11 +55,10 @@ GET http://localhost:3000/api/events/external
 ###
 # TEAMS--------------------------------------------------------
 # TEAMS--------------------------------------------------------
-# get all users from specific team
-GET http://localhost:3000/api/teams/51
+### get team by id
+GET http://localhost:3000/api/teams/64
 
-###
-# get team by id
+### get teams
 GET http://localhost:3000/api/teams?limit=4&offset=0
 
 ###
@@ -55,12 +66,11 @@ GET http://localhost:3000/api/teams?limit=4&offset=0
 GET http://localhost:3000/api/teams/directions
 
 
-###
-# select head user and teams
+### select head user and teams
 GET http://localhost:3000/api/teams?limit=2&offset=3
 
 
-###
+### archive
 PUT  http://localhost:3000/api/teams/37/change_archive HTTP/1.1
 content-type: application/json
 
@@ -68,36 +78,24 @@ content-type: application/json
     "isArchive":true
     
 }
-###
-# create new team
-POST http://localhost:3000/api/teams HTTP/1.1
+
+### update team
+PUT http://localhost:3000/api/teams/65 HTTP/1.1
 content-type: application/json
 
 {
-    "userID":4,
-    "shortname": "dddd2",
-    "description": "Хотим подняться на гору",
-    "title":"hddddhh",
-    "cabinet":"8",
-    "id_parent":4
-   
+  "cabinet": "dcd",
+  "charterTeam": "http://localhost:3000/public/media/2023.10/27/1698374663418_b1jy51ustav.docx",
+  "charter_team": "http://localhost:3000/public/media/2023.10/27/1698374663418_b1jy51ustav.docx",
+  "description": "g",
+  "document": "http://localhost:3000/public/media/2023.10/27/1698374663423_82cvdtdocument.docx",
+  "id_parent": 5,
+  "newLeaderId": 16,
+  "short_description": null,
+  "shortname": "jjjkk",
+  "title": "d"
 }
 
-###
-PUT http://localhost:3000/api/teams/17 HTTP/1.1
-content-type: application/json
-
-{
-    "oldLeaderId":63,
-    "newLeaderId":54,
-    "shortname": "train1",
-    "description": "Хотим подняться на гору",
-    "title":"hddddhh",
-    "document":"hddddhh",
-    "charterTeam":"dddddd",
-    "cabinet":"8"
-   
-}
 
 ###
 # student-------------------------------------------------------

@@ -141,7 +141,7 @@ export class TeamsController {
     // console.log("ustav1 " + ustavPath)
     // console.log("doc1 " + docPath)
 
-    if (files.length < 3) {
+    if (files && files.length < 3) {
       for (const f in files) {
         //оставить только начало файла без расширения
         if (files[f].originalname.split('.').shift() == 'ustav') {

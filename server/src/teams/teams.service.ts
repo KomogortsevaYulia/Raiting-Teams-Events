@@ -90,31 +90,19 @@ export class TeamsService {
   // Обновить коллектив
   async update(user: User, id: number, updateTeamDto: UpdateTeamDto) {
     updateTeamDto.id_parent = updateTeamDto.id_parent ?? null;
-    const team = await this.teamsRepository.save({
+    const updatedTeam = await this.teamsRepository.save({
       id,
       ...updateTeamDto,
       charter_team: updateTeamDto.charterTeam,
     });
 
-    // удалить прошлого лидера
-    if (
-      updateTeamDto.oldLeaderId != null &&
-      updateTeamDto.newLeaderId != null
-    ) {
-      const ufDto = new UserFunctionDto();
-      ufDto.team = team.id;
-      ufDto.user = updateTeamDto.oldLeaderId;
+    const team = await this.findOne(id);
 
-      const uFs = await this.usersService.findUserFunctions(ufDto);
-
-      uFs.forEach(async (uF) => {
-        await this.usersService.removeUserFunction(uF.id);
-      });
-
+    if (updateTeamDto.newLeaderId != null) {
       const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
-      directionTeamLeaderDto.teamId = team.id;
+      directionTeamLeaderDto.teamId = updatedTeam.id;
       directionTeamLeaderDto.userId = updateTeamDto.newLeaderId;
-      directionTeamLeaderDto.roleName = 'Руководитель';
+      directionTeamLeaderDto.roleName = TeamRoles.Leader;
 
       // назначить нового пользвоателя
       const newUserFunction = await this.assignTeamRole(
@@ -123,7 +111,7 @@ export class TeamsService {
       );
     }
 
-    return team;
+    return updatedTeam;
   }
 
   //создать коллектив, с учетом, что есь минимум 1 лидер
@@ -562,6 +550,7 @@ export class TeamsService {
     const ufDto = new CreateUserFunctionDto();
     ufDto.function = func.id;
     ufDto.user = teamLeaderDto.userId;
+    ufDto.team = teamLeaderDto.teamId;
 
     // find existing user function or update
     const userFunc = await this.usersService.createUserFunctionOrUpdate(ufDto);
@@ -582,17 +571,20 @@ export class TeamsService {
 
     // revoke perms old leader
     team.functions.forEach((func) => {
-      if (func.title == TeamRoles.Leader)
+      if (func.title == TeamRoles.Leader) {
         func.userFunctions.forEach(async (userFunc) => {
           const oldLeader = new User();
-          oldLeader.userId = userFunc.user;
+          oldLeader.userId = userFunc.user.id;
 
           await this.usersService.changePermissions(
             oldLeader,
             PermissionsRoles.LEADER_TEAM,
             false,
           );
+
+          await this.usersService.removeUserFunction(userFunc.id);
         });
+      }
     });
 
     let grantPerms: Permissions[] = [];

@@ -152,7 +152,7 @@ export class UsersService {
           userHaveAllPermissions = false;
           if (throwErrIfHavent)
             throw new ForbiddenException(
-              `you haven't permission(s) ${requiredPermissions}`,
+              `У Вас нет разрешений: ${requiredPermissions}`,
             );
           else return userHaveAllPermissions;
         }
@@ -169,20 +169,28 @@ export class UsersService {
   ) {
     user = await this.usersRepository.findOne({ where: { id: user.userId } });
     const newPerms: string[] = [];
-    permissions.forEach((reqPermission) => {
-      const havePermission = user.permissions.includes(reqPermission);
-      // if perm need grant
-      if (grant && !havePermission) newPerms.push(reqPermission);
-      // if perm need revoke
-      else if (!grant && havePermission) newPerms.push(reqPermission);
-    });
+    // user can have no perms
+    user.permissions = user.permissions ?? [];
+    if (user.permissions.length > 0) {
+      permissions.forEach((reqPermission) => {
+        // console.log(reqPermission, user.id, newPerms, user.permissions, grant);
+
+        const havePermission = user.permissions.includes(reqPermission);
+        // if perm need grant
+        if (grant && !havePermission) newPerms.push(reqPermission);
+        // if perm need revoke
+        else if (!grant && havePermission) newPerms.push(reqPermission);
+      });
+    } else newPerms.push(...permissions);
 
     // need grant, add perms to user
     if (grant) user.permissions.push(...newPerms);
     // need revoke, del perms from user
-    else {
+    else if (!grant && user.permissions.length > 0) {
+      // console.log(user.permissions, user.id, newPerms);
+
       user.permissions = user.permissions.filter((perm) => {
-        !newPerms.includes(perm);
+        return !newPerms.includes(perm);
       });
     }
     // save user with new perms
@@ -322,9 +330,17 @@ export class UsersService {
 
     // const user = await this.usersRepository.findOneOrFail({where:{id:createUserFunctionDto.user}})
 
+    const user = await this.findById(createUserFunctionDto.user);
+    const func = await this.findFunction(createUserFunctionDto.function);
+    const team = await this.teamRepository.findOneBy({
+      id: createUserFunctionDto.team,
+    });
+
     uF = await this.userFunctionsRepository.save({
       id: uF ? uF.id : null,
-      ...createUserFunctionDto,
+      user,
+      function: func,
+      team,
       dateStart: dateStart,
       dateEnd: dateEnd,
     });
@@ -338,6 +354,14 @@ export class UsersService {
       .where('user_functions.id = :id', { id });
 
     return await query.delete().execute();
+  }
+
+  async findFunction(id: number) {
+    const query = this.functionsRepository
+      .createQueryBuilder('functions')
+      .where('functions.id = :id', { id });
+
+    return await query.getOne();
   }
 
   async findUserFunctions(userFDto: UserFunctionDto) {
