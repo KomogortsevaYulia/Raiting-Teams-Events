@@ -17,7 +17,6 @@ import { Requisitions } from './entities/requisition.entity';
 import { RequisitionDto } from './dto/update-requisition.dto';
 import { GeneralService } from '../general/general.service';
 import { DictionaryDto } from 'src/general/dto/dictionary.dto';
-import { UserFunctionDto } from 'src/users/dto/user-functions.dto';
 import { CreateRequisitionFieldDto } from './dto/create-requisition-field.dto';
 import { RequisitionFields } from 'src/forms/entities/requisition_fields.entity';
 import { CreateRequisitionDto } from './dto/create-requisition.dto';
@@ -142,9 +141,6 @@ export class TeamsService {
 
   // get all teams with leadeaders
   async findAll(params: SearchTeamDto): Promise<[Team[], number]> {
-    const head = 'Руководитель';
-    // console.log(params)
-
     let query = this.teamsRepository
       .createQueryBuilder('teams')
 
@@ -164,23 +160,37 @@ export class TeamsService {
         'teams.id_parent',
         'teams.set_open',
       ])
-      .where('teams.type_team = :type', { type: 'teams' })
-      .leftJoin('teams.functions', 'functions')
+      .where('teams.type_team = :type', { type: params.type })
       // select direction
       .leftJoin('teams.id_parent', 'direction')
       // .andWhere("functions.title = :head", { head: head })
-      .leftJoin('functions.userFunctions', 'user_functions')
-      .leftJoin('user_functions.user', 'user')
 
       .orderBy('teams.id', 'DESC');
+
+    if (params.fields.includes('leaders')) {
+      query
+        .leftJoinAndSelect(
+          'teams.functions',
+          'functions',
+          'functions.title = :head',
+          { head: TeamRoles.Leader },
+        )
+        .leftJoinAndSelect('functions.userFunctions', 'user_functions')
+        .leftJoin('user_functions.user', 'user')
+        .addSelect([
+          'user.id',
+          'user.fullname',
+          'user.email',
+          'user.permissions',
+        ]);
+    }
 
     query = await this.filterTeam(params, query);
     query = query
       .take(params.limit) // Set the limit
       .skip(params.offset); // Set the offset
 
-    const team = await query.getManyAndCount();
-    return team;
+    return await query.getManyAndCount();
   }
 
   // отфильтровать колелктивы
@@ -188,16 +198,18 @@ export class TeamsService {
     let query = q;
 
     //если у нас все параметры то через 'или' все ищем
-    if (params.title && params.description && params.tags) {
+    if (params.searchTxt) {
       //делаем все столбцы в нижнем регистре и ищем по всем столбцам через предлог "или"
       query = query.andWhere(
         `(LOWER(teams.title) like :title 
          or LOWER(teams.description) like :description 
-         or LOWER(teams.tags) like :tags)`,
+         or LOWER(teams.tags) like :tags
+         or LOWER(teams.shortname) like :shortname)`,
         {
-          title: `%${params.title}%`,
-          description: `%${params.description}%`,
-          tags: `%${params.tags}%`,
+          title: `%${params.searchTxt}%`,
+          description: `%${params.searchTxt}%`,
+          tags: `%${params.searchTxt}%`,
+          shortname: `%${params.searchTxt}%`,
         },
       );
     } else {
@@ -215,7 +227,7 @@ export class TeamsService {
             description: `%${params.description}%`,
           })
         : query;
-      //if description
+      //if tags
       params.tags
         ? query.andWhere('LOWER(teams.tags) like :tags', {
             tags: `%${params.tags}%`,
