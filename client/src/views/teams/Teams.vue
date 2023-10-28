@@ -53,7 +53,7 @@
                   data-bs-toggle="modal"
                   data-bs-target="#filtersModal"
                 >
-                  <font-awesome-icon class="ic" icon="filter" />
+                  <font-awesome-icon class="ic fa-lg" icon="filter"  />
                 </button>
               </div>
 
@@ -137,7 +137,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                   >
-                    <font-awesome-icon class="ic" icon="pencil-square" />
+                    <font-awesome-icon class="ic fa-2x" icon="pencil-square" />
                   </div>
                 </div>
               </div>
@@ -232,7 +232,7 @@ onBeforeMount(async () => {
 function editTeam(editT: boolean, team: any) {
   // редактируем колектив или создаем новый
   isEditTeam.value = editT;
-  teamId.value = team.id;
+  teamId.value = team ? team.id : null;
 }
 
 // вытащить коллективы из бд
@@ -582,8 +582,6 @@ async function handleTimerSearch(seachText: string) {
         }
 
         .ic {
-          width: 30px;
-          height: 30px;
           color: grey;
 
           &:hover {

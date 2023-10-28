@@ -6,7 +6,7 @@
           <template v-for="(item, index) in itemList" :key="index">
             <div class="row mb-3 nav-item">
               <a
-                @click="selectItem(index)"
+                @click="setSelectItem(index)"
                 :class="{ active: index == selectedItem }"
               >
                 <span>
@@ -43,9 +43,10 @@ const itemList = [
   { name: "Разрешения", icon: "lock-open" },
 ];
 
-const selectItem = (i: number) => {
+const setSelectItem = (i: number) => {
   selectedItem.value = i;
 };
+
 </script>
 
 <style scoped lang="scss">
@@ -57,6 +58,10 @@ const selectItem = (i: number) => {
   .wrapper-navigation {
     .nav-item {
       cursor: pointer;
+    }
+
+    .active {
+      color: var(--main-color);
     }
   }
 }

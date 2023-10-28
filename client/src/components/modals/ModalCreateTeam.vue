@@ -1,5 +1,4 @@
 <template>
-
   <!-- Modal -->
   <div
     class="modal fade bd-example-modal-lg"
@@ -12,6 +11,7 @@
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">
+
             <!-- редактирование или создание нвого колелктива -->
             <b v-if="isEditTeam"> Редактировать коллектив </b>
             <b v-else>Создать коллектив </b>
@@ -180,6 +180,7 @@ import _ from "lodash";
 import { useTeamStore } from "@/store/team_store";
 import { useUserStore } from "@/store/user_store";
 import UpdateTeam from "./UpdateTeam";
+import { TeamRoles } from "@/store/enums/team_roles";
 
 const teamStore = useTeamStore();
 
@@ -226,6 +227,8 @@ const func = _.debounce(() => {
 
 const optionSelect = ref();
 
+const teamLeaders = ref();
+
 //отслеживать изменение текста для v-select
 async function onTextChange(e: any) {
   userLeader.value = e.target.value;
@@ -236,17 +239,20 @@ async function onTextChange(e: any) {
 watch(
   () => props.teamId,
   async (value) => {
-     await fetchTeam(value)
+    await fetchTeam(value);
   },
 );
 
-async function fetchTeam(id:number){
-    if (id) {
-        team.value = await teamStore.fetchTeam(id);
-    } else team.value = null;
+async function fetchTeam(id: number) {
+  if (id) {
+    team.value = await teamStore.fetchTeam(id);
+  } else team.value = null;
 
-    responseMsg.value = "";
-    await fillForm();
+  responseMsg.value = "";
+
+  teamLeaders.value = getLeader(team.value);
+
+  await fillForm();
 }
 
 onBeforeMount(async () => {
@@ -286,7 +292,7 @@ async function fillForm() {
 
     //если есть руководитель коллектива
 
-    let uF = t?.functions[0]?.userFunctions[0]?.user;
+    let uF = teamLeaders.value[0];
     if (uF) {
       optionSelect.value = {
         name: uF.fullname,
@@ -336,12 +342,8 @@ async function getUsers() {
 async function createTeam() {
   let userId = -1;
   //проверить является id числом или нет и выбрана ли опция
-  if (!optionSelect.value || isNaN(optionSelect.value.id)) {
-    responseMsg.value = "такого пользователя нет " + userId;
-    return;
-  } else {
-    userId = optionSelect.value.id;
-  }
+
+  userId = optionSelect.value.id;
 
   //create team
   responseMsg.value = await teamStore.createTeam(
@@ -362,12 +364,8 @@ async function createTeam() {
 async function updateTeam() {
   let newUserId = -1;
   //проверить является id числом или нет и выбрана ли опция
-  if (!optionSelect.value || isNaN(optionSelect.value.id)) {
-    responseMsg.value = "такого пользователя нет " + newUserId;
-    return;
-  } else {
-    newUserId = optionSelect.value.id;
-  }
+
+  newUserId = optionSelect.value ? optionSelect.value.id : -1;
 
   //create team
   const uT = new UpdateTeam();
@@ -408,6 +406,22 @@ async function archiveTeam(id: number, isArchive: boolean) {
   responseMsg.value = res.responseMsg;
 
   if (res.isOK) team.value.is_archive = isArchive;
+}
+
+function getLeader(team) {
+  const leaders = [];
+  if (!team && !team.functions) return [];
+  for (let i = 0; i < team.functions.length; i++) {
+    const func = team.functions[i];
+    if (func.title === TeamRoles.Leader) {
+      for (let io = 0; io < func.userFunctions.length; io++) {
+        const userFunc = func.userFunctions[io];
+        leaders.push(userFunc.user);
+      }
+    }
+  }
+
+  return leaders;
 }
 </script>
 

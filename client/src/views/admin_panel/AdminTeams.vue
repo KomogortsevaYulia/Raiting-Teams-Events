@@ -2,12 +2,12 @@
   <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId" />
 
   <div class="wrapper-admin-teams">
-    <div class="row mb-4 align-items-end ">
+    <div class="row mb-4 align-items-end">
       <div class="col-auto">
         <Search :handle-timer-search="handleTimerSearch" />
       </div>
-      <div class="col justify-content-end d-flex ">
-        <div >
+      <div class="col justify-content-end d-flex">
+        <div>
           <label class="form-label">Типы коллективов</label>
           <select
             class="form-select"
@@ -32,6 +32,7 @@
           <th scope="col">№</th>
           <th scope="col">ФИО руководителя</th>
           <th scope="col">Назавание</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -39,14 +40,8 @@
           v-for="(team, index) in data"
           :class="[{ selectedItem: selectedItem == index }, 'table-elem']"
           v-bind:key="team.id"
-          @click="
-            setSelectedItem(index as number);
-            editTeam(true, team.id);
-          "
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
         >
-          <th scope="row">{{ offset + index }}</th>
+          <th scope="row">{{ offset + index + 1 }}</th>
           <td>
             <div
               v-for="leader in teamLeaders[index]"
@@ -56,12 +51,25 @@
             >
               <TagElem
                 :text="leader.fullname + ' (' + leader.email + ')'"
-                :background-color="'#c7b1b1'"
+                :background-color="'#86bd77'"
                 :text-color="'#ffffff'"
               />
             </div>
           </td>
           <td>{{ team.title }}</td>
+          <td
+            @click="
+              setSelectedItem(index as number);
+              editTeam(true, team.id);
+            "
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+            class="text-end"
+          >
+            <button class="btn-icon-rounded">
+              <font-awesome-icon :icon="['fas', 'gear']" class="fa-lg" />
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -104,7 +112,7 @@ const data = ref();
 const teamLeaders = ref();
 
 //pagination ---------------------------------------------------------------------
-const limit = 5; //сколько колелктивов отображается на странице
+const limit = 8; //сколько  отображается на странице
 const offset = ref(0); //сколько коллективов пропустить прежде чем отобразить
 
 const maxPages = ref(1);
@@ -123,6 +131,7 @@ const selectedTypeTeam = ref(typeTeams[0]); //тип коллективв
 
 onBeforeMount(async () => {
   filterTeam.value.fields = ["leaders"];
+  filterTeam.value.limit = limit;
   await fetchTeams();
 });
 
@@ -205,6 +214,10 @@ async function handleEventChangePage(currentPage: number) {
     td {
       background: #ececec;
     }
+  }
+
+  tbody {
+    vertical-align: middle;
   }
 }
 </style>
