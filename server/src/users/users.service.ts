@@ -35,7 +35,6 @@ export class UsersService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
-
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
   ) {}
@@ -109,6 +108,7 @@ export class UsersService {
       where: [{ fullname: Like(`%${name}%`) }, { email: Like(`%${email}%`) }],
     });
   }
+
   async update(updateUserDto: UpdateUserDto, id: number) {
     return this.usersRepository.update(+id, updateUserDto);
   }
@@ -273,6 +273,7 @@ export class UsersService {
 
     return permissisonsInTeam && permissisonsInTeam.length > 0;
   }
+
   // checkers---------------------------------------------------------------------------
 
   // function--------------------------------------------------------------------
@@ -447,5 +448,6 @@ export class UsersService {
 
     return await query.getMany();
   }
+
   //user functions---------------------------------------------------------------
 }
