@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   HttpCode,
   HttpException,
@@ -124,7 +125,7 @@ export class UsersService {
 
     if (!user) {
       const errors = { User: 'Not found' };
-      throw new HttpException({ errors }, 401);
+      throw new BadRequestException({ errors });
     }
     return user;
   }
@@ -170,6 +171,7 @@ export class UsersService {
     user = await this.usersRepository.findOne({ where: { id: user.userId } });
     const newPerms: string[] = [];
     // user can have no perms
+    if (!user) return false;
     user.permissions = user.permissions ?? [];
     if (user.permissions.length > 0) {
       permissions.forEach((reqPermission) => {
@@ -195,6 +197,7 @@ export class UsersService {
     }
     // save user with new perms
     await this.usersRepository.save(user);
+    return true;
   }
 
   // проверить есть ли у юзера специальные

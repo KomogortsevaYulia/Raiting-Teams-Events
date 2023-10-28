@@ -566,7 +566,11 @@ export class TeamsService {
     ufDto.team = teamLeaderDto.teamId;
 
     // find existing user function or update
-    const userFunc = await this.usersService.createUserFunctionOrUpdate(ufDto);
+    try {
+      const userFunc = await this.usersService.createUserFunctionOrUpdate(
+        ufDto,
+      );
+    } catch (e) {}
 
     return true;
   }

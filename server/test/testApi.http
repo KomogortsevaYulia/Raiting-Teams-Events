@@ -75,7 +75,7 @@ content-type: application/json
 }
 
 ### update team
-PUT http://localhost:3000/api/teams/65 HTTP/1.1
+PUT http://localhost:3000/api/teams/62 HTTP/1.1
 content-type: application/json
 
 {
@@ -85,7 +85,7 @@ content-type: application/json
   "description": "g",
   "document": "http://localhost:3000/public/media/2023.10/27/1698374663423_82cvdtdocument.docx",
   "id_parent": 5,
-  "newLeaderId": 16,
+  "newLeaderId": -1,
   "short_description": null,
   "shortname": "jjjkk",
   "title": "d"
