@@ -7,7 +7,14 @@ export class FilterTeam {
   title?: string;
   description?: string;
   tags?: string;
+  shortname?: string;
+
+  type?: string;
 
   limit = 5;
   offset = 0;
+
+  //   optional
+  fields: string[] = [];
+  searchTxt?: string;
 }

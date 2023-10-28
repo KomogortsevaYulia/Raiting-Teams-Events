@@ -1,4 +1,5 @@
 <template>
+
   <!-- Modal -->
   <div
     class="modal fade bd-example-modal-lg"
@@ -184,7 +185,7 @@ const teamStore = useTeamStore();
 
 const props = defineProps<{
   isEditTeam: boolean; //если модальное окно вызвано для редактирования (не создание нового коллектива)
-  team: any;
+  teamId: number;
 }>();
 
 const team = ref();
@@ -233,20 +234,23 @@ async function onTextChange(e: any) {
 }
 
 watch(
-  () => props.team,
-  async (value, previousValue) => {
-    if (value) {
-      team.value = await teamStore.fetchTeam(value.id);
-    } else team.value = null;
-
-    responseMsg.value = "";
-    fillForm();
+  () => props.teamId,
+  async (value) => {
+     await fetchTeam(value)
   },
 );
 
+async function fetchTeam(id:number){
+    if (id) {
+        team.value = await teamStore.fetchTeam(id);
+    } else team.value = null;
+
+    responseMsg.value = "";
+    await fillForm();
+}
+
 onBeforeMount(async () => {
   await getUsers();
-  team.value = props.team;
 
   await getDirections();
 });

@@ -14,7 +14,7 @@
         >
           Создать коллектив
         </button>
-        <ModalCreateTeam :is-edit-team="isEditTeam" :team="teamEdit" />
+        <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId" />
       </div>
     </div>
 
@@ -162,7 +162,7 @@
             v-else-if="loading"
             class="d-flex align-items-center justify-content-center mt-4"
           >
-            <Loading size-fa-icon="fa-3x" />
+            <LoadingElem size-fa-icon="fa-3x" />
           </div>
         </div>
 
@@ -181,7 +181,6 @@ import Switch_toggle from "@/components/Switch_toggle.vue";
 import { onBeforeMount, ref } from "vue";
 import { usePermissionsStore } from "@/store/permissions_store";
 import CheckBox_Menu from "@/components/CheckBox_Menu.vue";
-import Loading from "@/components/Loading.vue";
 import _ from "lodash";
 import { DirectionName } from "@/store/enums/enum_teams";
 import Pagination from "@/components/Pagination.vue";
@@ -190,7 +189,8 @@ import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
 import { FilterTeam } from "@/store/models/teams.model";
 import ModalFull from "@/components/modals/ModalFull.vue";
 import Search from "@/components/Search.vue";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/TagElem.vue";
+import LoadingElem from "@/components/LoadingElem.vue";
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -203,7 +203,7 @@ const data = ref();
 
 // переключить на редактирвоание коллектива или на создание новаого
 const isEditTeam = ref(false);
-const teamEdit = ref();
+const teamId = ref(-1);
 
 const findTeamTxt = ref();
 
@@ -232,19 +232,14 @@ onBeforeMount(async () => {
 function editTeam(editT: boolean, team: any) {
   // редактируем колектив или создаем новый
   isEditTeam.value = editT;
-  teamEdit.value = team;
+  teamId.value = team.id;
 }
 
 // вытащить коллективы из бд
 async function fetchTeams() {
   loading.value = true;
 
-  let txt = findTeamTxt.value;
-
-  filterTeam.value.description =
-    filterTeam.value.title =
-    filterTeam.value.tags =
-      txt;
+  filterTeam.value.searchTxt = findTeamTxt.value;
 
   let d = await teamStore.fetchTeamsSearch(filterTeam.value);
 

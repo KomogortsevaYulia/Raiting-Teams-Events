@@ -10,7 +10,7 @@
 @mixin form-elem {
   border: var(--border-block);
   border-radius: 10px;
-  padding: 0.6rem;
+  padding: var(--padding-form);
   background-color: #fff;
   font-family: var(--font-family-primary);
 

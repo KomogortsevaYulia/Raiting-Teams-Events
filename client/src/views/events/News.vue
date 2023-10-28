@@ -144,8 +144,8 @@ import ModalFull from "@/components/modals/ModalFull.vue";
 import { Event } from "@/store/models/events.model";
 import UserEvents from "../user/UserEvents.vue";
 import Search from "@/components/Search.vue";
-import Loading from "@/components/Loading.vue";
-import Tag from "@/components/Tag.vue";
+import Loading from "@/components/LoadingElem.vue";
+import Tag from "@/components/TagElem.vue";
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
