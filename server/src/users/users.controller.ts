@@ -62,9 +62,9 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async findAll(@Query() params: any) {
-    let limit: number = params.limit;
-    let fullname: string = params.fullname;
-    let email: string = params.email;
+    const limit: number = params.limit;
+    const fullname: string = params.fullname;
+    const email: string = params.email;
 
     // console.log(" email " + params.fullname)
     let users: User[] = null;
@@ -91,8 +91,9 @@ export class UsersController {
   @UseGuards(LocalAuthGuard)
   @Get('/check-login')
   async checkLogin(@Request() req): Promise<any> {
+    // console.log(req.session);
     const user = await this.usersService.findById(req.session.user_id);
-    let { password, ...res } = user;
+    const { password, ...res } = user;
     return res;
   }
 
@@ -226,7 +227,7 @@ export class UsersController {
     uFDto.user = idUser;
     uFDto.team = idTeam;
 
-    let uFs = await this.usersService.findUserFunctions(uFDto);
+    const uFs = await this.usersService.findUserFunctions(uFDto);
 
     uFs.forEach(async (uF) => {
       await this.usersService.removeUserFunction(uF.id);
