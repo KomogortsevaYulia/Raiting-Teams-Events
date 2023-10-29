@@ -13,4 +13,6 @@ content-type: application/json
 ### bitrix-auth
 GET http://localhost:3000/api/users/bitrix-auth?code=8b263d650067eafa003c21de000074750000039b8d259587acc9999ac206f9e6fda066
 
+### check-login
+GET http://localhost:3000/api/users/check-login
 
