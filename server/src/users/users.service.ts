@@ -274,6 +274,12 @@ export class UsersService {
     teamId: number,
     permissions: string[],
   ) {
+    const user = new User();
+    user.userId = userId;
+
+    const isAdmin = await this.checkPermissions(user, []);
+    if (isAdmin) return true;
+
     const permissisonsInTeam = await this.userFunctionsRepository
       .createQueryBuilder('user_function')
       .leftJoin('user_function.function', 'function')

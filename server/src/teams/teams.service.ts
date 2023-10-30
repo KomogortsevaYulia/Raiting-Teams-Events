@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
@@ -371,6 +371,7 @@ export class TeamsService {
   ): Promise<Requisitions[]> {
     const rejectStatus = 'Принята';
 
+    console.log(reqDto);
     const query = this.requisitionsRepository
       .createQueryBuilder('requisition')
       .select([
@@ -387,8 +388,13 @@ export class TeamsService {
       .leftJoin('rf.form_field', 'form_field')
       .leftJoin('form_field.form', 'form')
       // .addSelect(["form.id"])
-      .where('form.team_id = :team_id', { team_id })
-      .orWhere('requisition.team_id = :team_id', { team_id })
+      .andWhere(
+        new Brackets((sqb) => {
+          sqb.where('form.team_id = :team_id', { team_id });
+          sqb.orWhere('requisition.team_id = :team_id', { team_id });
+        }),
+      )
+
       // пользователей с этим статусом н показывать
 
       .orderBy('status.name', 'DESC');

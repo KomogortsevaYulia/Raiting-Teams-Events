@@ -44,6 +44,8 @@ import { UserDecorator } from '../shared/user.decorator';
 import { User } from '../users/entities/user.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { AssignDirectionTeamLeaderDto } from '../users/dto/direction-leader.dto';
+import {Roles} from "../shared/permissionsRoles";
+import {TeamRoles} from "../shared/teamRoles";
 
 @ApiTags('teams') //<---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -430,7 +432,7 @@ export class TeamsController {
 
     directionTeamLeaderDto.teamId = userFDto.team;
     directionTeamLeaderDto.userId = userFDto.user;
-    directionTeamLeaderDto.roleName = 'Участник';
+    directionTeamLeaderDto.roleName = TeamRoles.Member;
 
     // назначить нового пользвоателя
     const newUserFunction = await this.teamsService.assignTeamRole(
