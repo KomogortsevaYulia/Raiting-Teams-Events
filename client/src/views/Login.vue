@@ -74,7 +74,8 @@ function OnRegistrationSubmit() {
 }
 
 function OnLoginCampusSubmit() {
-  console.log("Campus login is clicked!");
+  window.location.href =
+    `${String(process.env.CAMPUS_LOGIN)}/?client_id=${String(process.env.BITRIX_CLIENT_ID)}`;
 }
 
 async function OnLoginSubmit() {

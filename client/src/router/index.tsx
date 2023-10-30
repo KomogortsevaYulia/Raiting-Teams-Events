@@ -96,6 +96,17 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    // {
+    //   //различные заяки, которые формировал юзер
+    //   path: "/bitrix-auth",
+    //   name: "BitrixAuth",
+    //   props: (route) => ({ code: route.query.code }),
+    //
+    //   component: () => import("@/views/user/BitrixAuth.vue"),
+    //   meta: {
+    //     requiresAuth: true
+    //   },
+    // },
   ],
 });
 
