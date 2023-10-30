@@ -1,10 +1,12 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Body,
   HttpCode,
   HttpException,
   HttpStatus,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
@@ -23,6 +25,9 @@ import { Team } from '../teams/entities/team.entity';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { FunctionDto } from './dto/functions.dto';
 import { Permissions } from '../shared/permissions';
+import axios from 'axios';
+
+const jwt = require('jsonwebtoken');
 
 @Injectable()
 export class UsersService {
@@ -37,6 +42,69 @@ export class UsersService {
     private readonly teamRepository: Repository<Team>,
   ) {}
 
+  async authorizeBitrix(code: string) {
+    const client_id = process.env.BITRIX_CLIENT_ID;
+    const client_secret = process.env.BITRIX_CLIENT_SECRET;
+
+    try {
+      const tokenResponse = await axios.get(
+        'https://int.istu.edu/oauth/token/?grant_type=authorization_code',
+        {
+          params: {
+            code,
+            client_id,
+            client_secret,
+          },
+        },
+      );
+
+      const tokenData = tokenResponse.data;
+
+      if (tokenData.error) {
+        throw new Error(tokenData.error_description);
+      }
+
+      const userInfoResponse = await axios.get(
+        tokenData.client_endpoint + 'user.info.json',
+        {
+          params: {
+            auth: tokenData.access_token,
+          },
+        },
+      );
+
+      const userInfoData = userInfoResponse.data;
+
+      if (userInfoData.error) {
+        throw new Error(userInfoData.error_description);
+      }
+      return userInfoData.result;
+    } catch (error) {
+      throw new Error(`Bitrix authorization failed: ${error}`);
+    }
+  }
+
+  async loginBitrix(code: string) {
+    const userBitrixData = await this.authorizeBitrix(code);
+    const user = await this.findByBitrixId(userBitrixData.id);
+
+    if (user) {
+      return user;
+    } else {
+      const newUser = new User();
+      newUser.bitrix_id = userBitrixData.id;
+      newUser.email = userBitrixData.email;
+      newUser.username = userBitrixData.email;
+      newUser.password = 'stud';
+      newUser.fullname = `${userBitrixData.last_name} ${userBitrixData.name} ${userBitrixData.second_name}`;
+      return this.usersRepository.save(newUser);
+    }
+  }
+
+  async findByBitrixId(bitrix_id: number): Promise<User> {
+    return this.usersRepository.findOneBy({ bitrix_id: bitrix_id });
+  }
+
   async findByName(limit: number, name: string, email: string) {
     return await this.usersRepository.find({
       take: limit,
@@ -48,7 +116,7 @@ export class UsersService {
     return this.usersRepository.update(+id, updateUserDto);
   }
 
-  // async addRole(education_group, title_role) {}
+  async addRole(education_group, title_role) {}
 
   async findAllWithLimit(limit: number): Promise<User[]> {
     return await this.usersRepository.find({ take: limit });

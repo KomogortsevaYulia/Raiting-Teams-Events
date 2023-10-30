@@ -77,6 +77,10 @@ export class User {
   @Column({ nullable: true })
   course: number;
 
+  @ApiProperty()
+  @Column({ nullable: true, unique: true })
+  bitrix_id: number;
+
   @OneToMany((type) => UserFunction, (user_func) => user_func.function, {
     cascade: true,
   })

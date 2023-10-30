@@ -15,6 +15,7 @@ import {
   HttpCode,
   Put,
   SetMetadata,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,13 +29,27 @@ import { UserFunction } from './entities/user_function.entity';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { PermissionsGuard } from './guard/check-permissions.guard';
-import { AssignDirectionTeamLeaderDto } from './dto/direction-leader.dto';
-import { UserDecorator } from '../shared/user.decorator';
 
 @ApiTags('users') // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('bitrix-auth')
+  async authBitrix(@Query('code') code: string, @Res() res, @Request() req) {
+    try {
+      const user = await this.usersService.loginBitrix(code);
+      if (user) {
+        req.session.user_id = user.id;
+        req.session.logged = true;
+        return user;
+      } else {
+        throw new UnauthorizedException('Ошибка авторизации');
+      }
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 
   @Get()
   @ApiOperation({ summary: 'Получение списка пользователей' })
@@ -261,6 +276,4 @@ export class UsersController {
   }
 
   //user functions---------------------------------------------------------------
-
-  //assign roles ----------------------------------------------------------------
 }

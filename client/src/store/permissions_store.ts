@@ -21,9 +21,9 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
 
     // получить нужные данные от юзера
     async function checkLogin() {
-        const response = await axios.get("api/users/check-login")
+        const response = await axios.get("/api/users/check-login", {withCredentials:true})
 
-        if (isLogged.value) {
+        if (response?.data) {
             isLogged.value = true;
             permissions.value = response.data.permissions
             username.value = response.data.username
