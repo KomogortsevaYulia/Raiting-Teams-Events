@@ -27,6 +27,7 @@ import { CreateFunctionDto } from '../users/dto/create-functions.dto';
 import { CreateUserFunctionDto } from '../users/dto/create-user-function.dto';
 import { PermissionsRoles, Roles } from '../shared/permissionsRoles';
 import { TeamRoles } from '../shared/teamRoles';
+import {PermissionsActions} from "../general/enums/action-permissions";
 
 @Injectable()
 export class TeamsService {
@@ -603,7 +604,7 @@ export class TeamsService {
             await this.usersService.changePermissions(
               oldLeader,
               PermissionsRoles.LEADER_TEAM,
-              false,
+                PermissionsActions.REVOKE,
             );
 
             await this.usersService.removeUserFunction(userFunc.id);
@@ -625,7 +626,7 @@ export class TeamsService {
     await this.usersService.changePermissions(
       assignPermsUser,
       grantPerms,
-      true,
+        PermissionsActions.GRANT,
     );
   }
 }

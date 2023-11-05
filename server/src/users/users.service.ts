@@ -26,6 +26,7 @@ import { UserFunctionDto } from './dto/user-functions.dto';
 import { FunctionDto } from './dto/functions.dto';
 import { Permissions } from '../shared/permissions';
 import axios from 'axios';
+import { PermissionsActions } from '../general/enums/action-permissions';
 
 const jwt = require('jsonwebtoken');
 
@@ -80,7 +81,9 @@ export class UsersService {
       }
       return userInfoData.result;
     } catch (error) {
-      throw new UnauthorizedException(`Не удалось авторизоваться через Кампус: ${error}`);
+      throw new UnauthorizedException(
+        `Не удалось авторизоваться через Кампус: ${error}`,
+      );
     }
   }
 
@@ -230,39 +233,61 @@ export class UsersService {
     return userHaveAllPermissions;
   }
 
+  // TODO: переделать запрос changePermissions, плохо читать
   // add/revoke permissions to user
   async changePermissions(
     user: User,
     permissions: Permissions[],
-    grant = true,
+    permissionActions = PermissionsActions.GRANT,
   ) {
     user = await this.usersRepository.findOne({ where: { id: user.userId } });
     const newPerms: string[] = [];
     // user can have no perms
     if (!user) return false;
     user.permissions = user.permissions ?? [];
-    if (user.permissions.length > 0) {
-      permissions.forEach((reqPermission) => {
-        // console.log(reqPermission, user.id, newPerms, user.permissions, grant);
 
-        const havePermission = user.permissions.includes(reqPermission);
-        // if perm need grant
-        if (grant && !havePermission) newPerms.push(reqPermission);
-        // if perm need revoke
-        else if (!grant && havePermission) newPerms.push(reqPermission);
+    const validPerms = Object.values(Permissions);
+    if (user.permissions.length > 0) {
+      permissions.forEach((reqPermission: Permissions) => {
+        // console.log(reqPermission, user.id, newPerms, user.permissions, permissionActions);
+
+        // if permission exist in system
+        const permIsValid = validPerms.includes(reqPermission);
+
+        if (permIsValid) {
+          const havePermission = user.permissions.includes(reqPermission);
+          // GRANT
+          if (permissionActions == PermissionsActions.GRANT && !havePermission)
+            newPerms.push(reqPermission);
+          // REVOKE
+          else if (
+            permissionActions == PermissionsActions.REVOKE &&
+            havePermission
+          )
+            newPerms.push(reqPermission);
+          // REPLACE
+          else if (permissionActions == PermissionsActions.REPLACE)
+            newPerms.push(reqPermission);
+        }
       });
     } else newPerms.push(...permissions);
 
-    // need grant, add perms to user
-    if (grant) user.permissions.push(...newPerms);
-    // need revoke, del perms from user
-    else if (!grant && user.permissions.length > 0) {
-      // console.log(user.permissions, user.id, newPerms);
-
+    // GRANT need permissionActions, add perms to user
+    if (permissionActions == PermissionsActions.GRANT)
+      user.permissions.push(...newPerms);
+    // REVOKE need revoke, del perms from user
+    else if (
+      permissionActions == PermissionsActions.REVOKE &&
+      user.permissions.length > 0
+    ) {
       user.permissions = user.permissions.filter((perm) => {
         return !newPerms.includes(perm);
       });
     }
+    // REPLACE
+    else if (permissionActions == PermissionsActions.REPLACE)
+      user.permissions = newPerms;
+
     // save user with new perms
     await this.usersRepository.save(user);
     return true;
