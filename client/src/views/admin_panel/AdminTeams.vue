@@ -26,52 +26,52 @@
         </div>
       </div>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">№</th>
-          <th scope="col">ФИО руководителя</th>
-          <th scope="col">Назавание</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(team, index) in data"
-          :class="['table-elem']"
-          v-bind:key="team.id"
-        >
-          <th scope="row">{{ offset + index + 1 }}</th>
-          <td>
-            <div
-              v-for="leader in teamLeaders[index]"
-              v-bind:key="leader.id"
-              class="row-cols-auto"
-              style="width: fit-content"
-            >
-              <TagElem
-                :text="leader.fullname + ' (' + leader.email + ')'"
-                :background-color="'#86bd77'"
-                :text-color="'#ffffff'"
-              />
-            </div>
-          </td>
-          <td>{{ team.title }}</td>
-          <td
-            @click="
-              editTeam(true, team.id);
-            "
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-            class="text-end"
+    <div class="overflow-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">№</th>
+            <th scope="col">ФИО руководителя</th>
+            <th scope="col">Назавание</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(team, index) in data"
+            :class="['table-elem']"
+            v-bind:key="team.id"
           >
-            <button class="btn-icon-rounded">
-              <font-awesome-icon :icon="['fas', 'gear']" class="fa-lg" />
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <th scope="row">{{ offset + index + 1 }}</th>
+            <td>
+              <div
+                v-for="leader in teamLeaders[index]"
+                v-bind:key="leader.id"
+                class="row-cols-auto"
+                style="width: fit-content"
+              >
+                <TagElem
+                  :text="leader.fullname + ' (' + leader.email + ')'"
+                  :background-color="'#86bd77'"
+                  :text-color="'#ffffff'"
+                />
+              </div>
+            </td>
+            <td>{{ team.title }}</td>
+            <td
+              @click="editTeam(true, team.id)"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              class="text-end"
+            >
+              <button class="btn-icon-rounded">
+                <font-awesome-icon :icon="['fas', 'gear']" class="fa-lg" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div
       v-if="loading"
       class="d-flex align-items-center justify-content-center mt-4"
@@ -167,7 +167,7 @@ async function fetchTeams() {
   loading.value = false;
 }
 
-function getLeader(team:any) {
+function getLeader(team: any) {
   const leaders = [];
   for (let i = 0; i < team.functions.length; i++) {
     const func = team.functions[i];

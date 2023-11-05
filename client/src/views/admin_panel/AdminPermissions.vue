@@ -1,52 +1,58 @@
 <template>
-<ModalEditPermissions :user-id="userId" modal-id="modalEditPerms"/>
+  <ModalEditPermissions
+    :user-id="userId"
+    modal-id="modalEditPerms"
+    :on-save-changes="handleSaveChanges"
+  />
   <div class="wrapper-admin-teams">
     <div class="row mb-4 align-items-end">
       <div class="col-auto">
         <Search :handle-timer-search="handleTimerSearch" />
       </div>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">№</th>
-          <th scope="col">ФИО руководителя</th>
-          <th scope="col">Почта</th>
-          <th scope="col">Разрешения</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(user, index) in data"
-          :class="['table-elem']"
-          v-bind:key="user.id"
-        >
-          <th scope="row">{{ offset + index + 1 }}</th>
-          <td>
-            {{ user.fullname }}
-          </td>
-          <td>{{ user.email }}</td>
-          <td>
-            <div class="row g-2">
-              <div v-for="permission in user.permissions" class="col-auto">
-                <TagElem :text="permission" />
-              </div>
-            </div>
-          </td>
-          <td
-            @click="editUser(user.id)"
-            data-bs-toggle="modal"
-            data-bs-target="#modalEditPerms"
-            class="text-end"
+    <div class="overflow-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">№</th>
+            <th scope="col">ФИО руководителя</th>
+            <th scope="col">Почта</th>
+            <th scope="col">Разрешения</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(user, index) in data"
+            :class="['table-elem']"
+            v-bind:key="user.id"
           >
-            <button class="btn-icon-rounded">
-              <font-awesome-icon :icon="['fas', 'gear']" class="fa-lg" />
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <th scope="row">{{ offset + index + 1 }}</th>
+            <td>
+              {{ user.fullname }}
+            </td>
+            <td>{{ user.email }}</td>
+            <td>
+              <div class="row g-2">
+                <div v-for="permission in user.permissions" class="col-auto">
+                  <TagElem :text="permission" />
+                </div>
+              </div>
+            </td>
+            <td
+              @click="editUser(user.id)"
+              data-bs-toggle="modal"
+              data-bs-target="#modalEditPerms"
+              class="text-end"
+            >
+              <button class="btn-icon-rounded">
+                <font-awesome-icon :icon="['fas', 'gear']" class="fa-lg" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div
       v-if="loading"
       class="d-flex align-items-center justify-content-center mt-4"
@@ -97,7 +103,11 @@ onBeforeMount(async () => {
 });
 
 function editUser(id: number) {
- userId.value = id
+  userId.value = id;
+}
+
+async function handleSaveChanges() {
+  await fetchUsers();
 }
 
 async function handleTimerSearch(userTxt: string) {

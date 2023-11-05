@@ -26,6 +26,6 @@ content-type: application/json
 
 {
     "userId":11,
-    "permissions":["can create events"]
+    "permissions":["kk"]
 
 }

@@ -113,18 +113,17 @@ export class UsersService {
       .limit(limit)
       .offset(offset);
 
-    if (searchTxt){
-      searchTxt = searchTxt.toLowerCase()
+    if (searchTxt) {
+      searchTxt = searchTxt.toLowerCase();
       query = query.andWhere(
-          `(LOWER(users.fullname) like :fullname 
+        `(LOWER(users.fullname) like :fullname 
          or LOWER(users.email) like :email)`,
-          {
-            fullname: `%${searchTxt}%`,
-            email: `%${searchTxt}%`,
-          },
+        {
+          fullname: `%${searchTxt}%`,
+          email: `%${searchTxt}%`,
+        },
       );
     }
-
 
     return await query.getManyAndCount();
   }
@@ -153,7 +152,7 @@ export class UsersService {
     }
   }
 
-  async findOne(id:number) {
+  async findOne(id: number) {
     return await this.usersRepository.findOne({ where: { id: id } });
   }
 
@@ -257,30 +256,29 @@ export class UsersService {
     user.permissions = user.permissions ?? [];
 
     const validPerms = Object.values(Permissions);
-    if (user.permissions.length > 0) {
-      permissions.forEach((reqPermission: Permissions) => {
-        // console.log(reqPermission, user.id, newPerms, user.permissions, permissionActions);
 
-        // if permission exist in system
-        const permIsValid = validPerms.includes(reqPermission);
+    permissions.forEach((reqPermission: Permissions) => {
+      // console.log(reqPermission, user.id, newPerms, user.permissions, permissionActions);
 
-        if (permIsValid) {
-          const havePermission = user.permissions.includes(reqPermission);
-          // GRANT
-          if (permissionActions == PermissionsActions.GRANT && !havePermission)
-            newPerms.push(reqPermission);
-          // REVOKE
-          else if (
-            permissionActions == PermissionsActions.REVOKE &&
-            havePermission
-          )
-            newPerms.push(reqPermission);
-          // REPLACE
-          else if (permissionActions == PermissionsActions.REPLACE)
-            newPerms.push(reqPermission);
-        }
-      });
-    } else newPerms.push(...permissions);
+      // if permission exist in system
+      const permIsValid = validPerms.includes(reqPermission);
+
+      if (permIsValid) {
+        const havePermission = user.permissions.includes(reqPermission);
+        // GRANT
+        if (permissionActions == PermissionsActions.GRANT && !havePermission)
+          newPerms.push(reqPermission);
+        // REVOKE
+        else if (
+          permissionActions == PermissionsActions.REVOKE &&
+          havePermission
+        )
+          newPerms.push(reqPermission);
+        // REPLACE
+        else if (permissionActions == PermissionsActions.REPLACE)
+          newPerms.push(reqPermission);
+      }
+    });
 
     // GRANT need permissionActions, add perms to user
     if (permissionActions == PermissionsActions.GRANT)
