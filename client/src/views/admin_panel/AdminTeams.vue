@@ -50,11 +50,7 @@
                 class="row-cols-auto"
                 style="width: fit-content"
               >
-                <TagElem
-                  :text="leader.fullname + ' (' + leader.email + ')'"
-                  :background-color="'#86bd77'"
-                  :text-color="'#ffffff'"
-                />
+              <span class="text-secondary"><strong>{{leader.fullname}}({{leader.email}})</strong></span>
               </div>
             </td>
             <td>{{ team.title }}</td>
