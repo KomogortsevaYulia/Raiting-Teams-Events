@@ -8,6 +8,12 @@ export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
+    define:{
+      'process.env':{
+        BITRIX_CLIENT_ID:env.BITRIX_CLIENT_ID,
+        CAMPUS_LOGIN:env.CAMPUS_LOGIN
+      }
+    },
     plugins: [vue(), vueJsx()],
     resolve: {
       alias: {
