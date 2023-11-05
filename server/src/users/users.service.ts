@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ForbiddenException,
-  Body,
   HttpCode,
   HttpException,
   HttpStatus,
@@ -9,7 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
@@ -108,11 +107,26 @@ export class UsersService {
     return this.usersRepository.findOneBy({ bitrix_id: bitrix_id });
   }
 
-  async findByName(limit: number, name: string, email: string) {
-    return await this.usersRepository.find({
-      take: limit,
-      where: [{ fullname: Like(`%${name}%`) }, { email: Like(`%${email}%`) }],
-    });
+  async findUser(limit: number, offset: number, searchTxt: string) {
+    let query = this.usersRepository
+      .createQueryBuilder('users')
+      .limit(limit)
+      .offset(offset);
+
+    if (searchTxt){
+      searchTxt = searchTxt.toLowerCase()
+      query = query.andWhere(
+          `(LOWER(users.fullname) like :fullname 
+         or LOWER(users.email) like :email)`,
+          {
+            fullname: `%${searchTxt}%`,
+            email: `%${searchTxt}%`,
+          },
+      );
+    }
+
+
+    return await query.getManyAndCount();
   }
 
   async update(updateUserDto: UpdateUserDto, id: number) {
@@ -120,10 +134,6 @@ export class UsersService {
   }
 
   async addRole(education_group, title_role) {}
-
-  async findAllWithLimit(limit: number): Promise<User[]> {
-    return await this.usersRepository.find({ take: limit });
-  }
 
   async findAll(): Promise<User[]> {
     return await this.usersRepository.createQueryBuilder('users').getMany();
@@ -143,8 +153,8 @@ export class UsersService {
     }
   }
 
-  async findOne(email: string): Promise<any> {
-    return this.usersRepository.findOneBy({ email: email });
+  async findOne(id:number) {
+    return await this.usersRepository.findOne({ where: { id: id } });
   }
 
   async remove(id: string): Promise<void> {

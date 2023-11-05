@@ -1,21 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Request,
-  Param,
+  Controller,
   Delete,
+  Get,
+  HttpCode,
   HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Put,
   Query,
-  UsePipes,
+  Request,
+  SetMetadata,
   UnauthorizedException,
   UseGuards,
-  HttpCode,
-  Put,
-  SetMetadata,
-  Res,
+  UsePipes,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,8 +28,8 @@ import { UserFunction } from './entities/user_function.entity';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { PermissionsGuard } from './guard/check-permissions.guard';
-import {Permissions} from "../shared/permissions";
-import {PermissionsActions} from "../general/enums/action-permissions";
+import { Permissions } from '../shared/permissions';
+import { PermissionsActions } from '../general/enums/action-permissions';
 
 @ApiTags('users') // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('users')
@@ -53,39 +52,15 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: 'Получение списка пользователей' })
-  @ApiParam({
-    name: 'limit',
-    required: false,
-    description: 'ограничить число получаемых записей',
-  })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async findAll(@Query() params: any) {
     const limit: number = params.limit;
-    const fullname: string = params.fullname;
-    const email: string = params.email;
+    const offset: number = params.offset;
+    const searchTxt: string = params.searchTxt;
 
-    // console.log(" email " + params.fullname)
-    let users: User[] = null;
-    if (fullname || email) {
-      // console.log("name")
-      users = await this.usersService.findByName(limit, fullname, email);
-    } else {
-      // console.log("findAll")
-      users = await this.usersService.findAllWithLimit(limit);
-    }
-    return users;
+    return await this.usersService.findUser(limit, offset, searchTxt);
   }
-
-  // @Get('id/:id')
-  // @ApiOperation({ summary: "Получение пользователя" })
-  // @ApiParam({ name: "id", required: true, description: "Идентификатор пользователя" })
-  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: User })
-  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  // async findOne(@Param('id') id: string) {
-  //   //пытается выполниться, при вызове метода checkLogin????
-  //   return this.usersService.findOneWithFunction(+id);
-  // }
 
   @UseGuards(LocalAuthGuard)
   @Get('/check-login')
@@ -165,11 +140,20 @@ export class UsersController {
     status: HttpStatus.OK,
     description: 'Успешно',
   })
-  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'You are not admin' })
-  async changePermissions(@Body() params: {userId:number, permissions:Permissions[]}) {
-    let user = new User()
-    user.userId = params.userId
-    return await this.usersService.changePermissions(user, params.permissions,  PermissionsActions.REPLACE);
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'You are not admin',
+  })
+  async changePermissions(
+    @Body() params: { userId: number; permissions: Permissions[] },
+  ) {
+    let user = new User();
+    user.userId = params.userId;
+    return await this.usersService.changePermissions(
+      user,
+      params.permissions,
+      PermissionsActions.REPLACE,
+    );
   }
 
   // function--------------------------------------------------------------------
@@ -292,4 +276,12 @@ export class UsersController {
   }
 
   //user functions---------------------------------------------------------------
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Получение пользователя' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: User })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+  async findOne(@Param("id") id:number) {
+    return await this.usersService.findOne(id);
+  }
 }

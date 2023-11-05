@@ -17,6 +17,9 @@ GET http://localhost:3000/api/users/bitrix-auth?code=553147650067eafa003c21de000
 ### check-login
 GET http://localhost:3000/api/users/check-login
 
+### user
+GET http://localhost:3000/api/users/3
+
 ### permissions
 POST http://localhost:3000/api/users/permissions HTTP/1.1
 content-type: application/json
