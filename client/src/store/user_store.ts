@@ -34,18 +34,9 @@ export const useUserStore = defineStore("user", () => {
     return await axios.get("/api/users/functions/" + id);
   }
 
-  async function loginBitrix(code: string) {
-    return await axios.get("/api/users/bitrix-auth/", {
-      params: {
-        code: code,
-      },
-    });
-  }
-
   return {
     getUsersByNameEmail,
     update,
     getUsersFunction,
-    loginBitrix,
   };
 });

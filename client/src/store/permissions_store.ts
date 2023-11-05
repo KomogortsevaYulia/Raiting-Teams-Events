@@ -78,8 +78,9 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
   }
 
   async function loginCampus(code: string) {
-    const response = await axios.post("/api/users/bitrix-auth", {
-      code: code,
+    const response = await axios.get("/api/users/bitrix-auth", { params:{
+        code: code
+      }
     });
 
     isLogged.value = !!response;

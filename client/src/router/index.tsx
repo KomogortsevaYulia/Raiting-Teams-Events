@@ -14,12 +14,14 @@ const router = createRouter({
     {
       // Авторизация
       path: "/login",
+      name:"Login",
       component: () => import("@/views/Login.vue"),
       meta: {},
     },
     {
       // Страница с мероприятиями (кто её news назвал??)
       path: "/news",
+      name:"News",
       component: () => import("@/views/events/News.vue"),
       meta: {},
     },
