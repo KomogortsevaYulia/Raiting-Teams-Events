@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <table class="table table-hover">
+    <table class="table">
       <thead>
         <tr>
           <th scope="col">№</th>
@@ -38,7 +38,7 @@
       <tbody>
         <tr
           v-for="(team, index) in data"
-          :class="[{ selectedItem: selectedItem == index }, 'table-elem']"
+          :class="['table-elem']"
           v-bind:key="team.id"
         >
           <th scope="row">{{ offset + index + 1 }}</th>
@@ -59,7 +59,6 @@
           <td>{{ team.title }}</td>
           <td
             @click="
-              setSelectedItem(index as number);
               editTeam(true, team.id);
             "
             data-bs-toggle="modal"
@@ -120,7 +119,6 @@ const visiblePages = 7;
 //pagination ---------------------------------------------------------------------
 
 const teamId = ref(-1);
-const selectedItem = ref(0);
 
 const typeTeams = [
   { id: 0, name: "Коллективы", type: "teams" },
@@ -139,10 +137,6 @@ function editTeam(editT: boolean, id: number) {
   // редактируем колектив или создаем новый
   isEditTeam.value = editT;
   teamId.value = id;
-}
-
-function setSelectedItem(item: number) {
-  selectedItem.value = item;
 }
 
 async function handleTimerSearch(eventTxt: string) {
@@ -173,7 +167,7 @@ async function fetchTeams() {
   loading.value = false;
 }
 
-function getLeader(team) {
+function getLeader(team:any) {
   const leaders = [];
   for (let i = 0; i < team.functions.length; i++) {
     const func = team.functions[i];
@@ -191,7 +185,6 @@ function getLeader(team) {
 async function handleEventChangePage(currentPage: number) {
   offset.value = (currentPage - 1) * limit;
   filterTeam.value.offset = offset.value;
-  selectedItem.value = -1;
 
   await fetchTeams();
 }
@@ -205,16 +198,9 @@ async function handleEventChangePage(currentPage: number) {
     border: 1.5px solid var(--border-color);
   }
 
-  .table-elem {
-    cursor: pointer;
-  }
-
-  .selectedItem {
-    th,
-    td {
-      background: #ececec;
-    }
-  }
+  //.table-elem {
+  //  cursor: pointer;
+  //}
 
   tbody {
     vertical-align: middle;

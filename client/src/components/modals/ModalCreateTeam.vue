@@ -11,7 +11,6 @@
       <div class="modal-content px-3 py-4">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">
-
             <!-- редактирование или создание нвого колелктива -->
             <b v-if="isEditTeam"> Редактировать коллектив </b>
             <b v-else>Создать коллектив </b>
@@ -181,6 +180,7 @@ import { useTeamStore } from "@/store/team_store";
 import { useUserStore } from "@/store/user_store";
 import UpdateTeam from "./UpdateTeam";
 import { TeamRoles } from "@/store/enums/team_roles";
+import { FilterUser } from "@/store/models/user.model";
 
 const teamStore = useTeamStore();
 
@@ -314,15 +314,13 @@ async function fillForm() {
 
 // получить всех пользователей и выбрать из них нужных
 async function getUsers() {
-  let limit = 5;
-  let r = await useUserStore().getUsersByNameEmail(
-    limit,
-    userLeader.value,
-    userLeader.value,
-  );
+  let filterUser = new FilterUser();
+  filterUser.limit = 5;
+  filterUser.searchTxt = userLeader.value;
+  let r = await useUserStore().getUsersByNameEmail(filterUser);
 
   //получить всех найденных юзеров
-  let users = r.data;
+  let users = r.data[0];
 
   let arrayData = [];
   for (let i = 0; i < users.length; i++) {
