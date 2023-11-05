@@ -1,10 +1,18 @@
+# USERS--------------------------------------------------------
 
-###
-# USERS--------------------------------------------------------
-###
-# USERS--------------------------------------------------------
-# get all users from specific team
+### get all users from specific team
 GET http://localhost:3000/api/users?limit=4&email=mail
+
+### login
+POST http://localhost:3000/api/users/login
+content-type: application/json
+
+{
+  "user": {
+    "username": "admin",
+    "password": "123"
+  }
+}
 
 
 
@@ -18,86 +26,71 @@ GET http://localhost:3000/api/events/5
 
 ### events_of_team
 GET http://localhost:3000/api/events/events_of_team/7?level=
+
+
 ###
-GET http://localhost:3000/api/events?limit=5&offset=0&dateStart=2018-08-17T02:27:52.713Z&dateEnd=2023-08-17T07:33:52.713Z
+GET http://localhost:3000/api/events?limit=5&offset=0&dateStart=2018-08-17T02:27:52.713Z&
+    dateEnd=2023-08-17T07:33:52.713Z
 
 ### update event
 PUT  http://localhost:3000/api/events/20 HTTP/1.1
 content-type: application/json
 
 {
-    "status":true
-    
+  "status": true
 }
 
 
 ###
 # journals
 GET http://localhost:3000/api/events/journal
+
 ###
 GET http://localhost:3000/api/events/external
 
 
 
 
-###
 # TEAMS--------------------------------------------------------
-# TEAMS--------------------------------------------------------
-# get all users from specific team
-GET http://localhost:3000/api/teams/51
+### get team by id
+GET http://localhost:3000/api/teams/5
 
-###
-# get team by id
+### get teams
 GET http://localhost:3000/api/teams?limit=4&offset=0
 
-###
-#directions
+### directions
 GET http://localhost:3000/api/teams/directions
 
 
-###
-# select head user and teams
-GET http://localhost:3000/api/teams?limit=2&offset=3
+### select head user and teams
+GET http://localhost:3000/api/teams?limit=72&offset=3&fields[]=leaders
 
 
-###
+### archive
 PUT  http://localhost:3000/api/teams/37/change_archive HTTP/1.1
 content-type: application/json
 
 {
-    "isArchive":true
-    
+  "isArchive": true
 }
-###
-# create new team
-POST http://localhost:3000/api/teams HTTP/1.1
+
+### update team
+PUT http://localhost:3000/api/teams/62 HTTP/1.1
 content-type: application/json
 
 {
-    "userID":4,
-    "shortname": "dddd2",
-    "description": "Хотим подняться на гору",
-    "title":"hddddhh",
-    "cabinet":"8",
-    "id_parent":4
-   
+  "cabinet": "dcd",
+  "charterTeam": "http://localhost:3000/public/media/2023.10/27/1698374663418_b1jy51ustav.docx",
+  "charter_team": "http://localhost:3000/public/media/2023.10/27/1698374663418_b1jy51ustav.docx",
+  "description": "g",
+  "document": "http://localhost:3000/public/media/2023.10/27/1698374663423_82cvdtdocument.docx",
+  "id_parent": 5,
+  "newLeaderId": -1,
+  "short_description": null,
+  "shortname": "jjjkk",
+  "title": "d"
 }
 
-###
-PUT http://localhost:3000/api/teams/17 HTTP/1.1
-content-type: application/json
-
-{
-    "oldLeaderId":63,
-    "newLeaderId":54,
-    "shortname": "train1",
-    "description": "Хотим подняться на гору",
-    "title":"hddddhh",
-    "document":"hddddhh",
-    "charterTeam":"dddddd",
-    "cabinet":"8"
-   
-}
 
 ###
 # student-------------------------------------------------------
@@ -105,16 +98,16 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-    "studnumber": "9",
-    "fullname": "psmsokmgoksmbk",
-    "email": "string",
-    "education_group": "string",  
-    "institute": "string",
-    "gender": "string" ,
-    "phone": "string",
-    "birthdate": "24-07-2001",
-    "type_time_study": "string",
-    "permissions":[]
+  "studnumber": "9",
+  "fullname": "psmsokmgoksmbk",
+  "email": "string",
+  "education_group": "string",
+  "institute": "string",
+  "gender": "string",
+  "phone": "string",
+  "birthdate": "24-07-2001",
+  "type_time_study": "string",
+  "permissions": []
 }
 
 
@@ -129,22 +122,24 @@ POST http://localhost:3000/api/users/functions HTTP/1.1
 content-type: application/json
 
 {
-    "title": "shit2",
-    "team": 31
-   
+  "title": "shit2",
+  "team": 31
 }
 
 ###
 DELETE  http://localhost:3000/api/users/team/17/leader/54 HTTP/1.1
 
-# update
+###
+GET  http://localhost:3000/api/teams/6/requisition HTTP/1.1
+
+
 ###
 PUT http://localhost:3000/api/users/functions/59 HTTP/1.1
 content-type: application/json
 
 {
-    "title": "shit4",
-    "team":30
+  "title": "shit4",
+  "team": 30
 }
 
 
@@ -162,21 +157,9 @@ POST http://localhost:3000/api/users/userFunctions HTTP/1.1
 content-type: application/json
 
 {
-    "user": "300",
-    "function": "21"
-   
+  "user": "300",
+  "function": "21"
 }
-
-###
-# login
-POST https://rating-teams-events.ovz1.j37315531.m1yvm.vps.myjino.ru/api/users/login HTTP/1.1
-content-type: application/json
-
-{
-    "password":123,
-    "username": "bossTeam"
-}
-
 
 
 ### general
@@ -188,13 +171,14 @@ POST http://localhost:3000/api/general/mail HTTP/1.1
 content-type: application/json
 
 {
-    "to":"AkitaSpam@gmail.com"
+  "to": "AkitaSpam@gmail.com"
 }
 
 
 
 
 # UPLOAD
+
 ###
 GET http://localhost:3000/api/uploads/file_buffer?path=./public/media/6b3620e359194339a2bc2409fb8de569.png
 
@@ -216,13 +200,14 @@ DELETE  http://localhost:3000/api/uploads HTTP/1.1
 content-type: application/json
 
 {
-    "pathUrl":"http://localhost:3000/public/media/2023.06/16/1686917327458_3y9kiw0d17b9c073259231460d65043eb882ef.jpeg"
+  "pathUrl": "http://localhost:3000/public/media/2023.06/16/1686917327458_3y9kiw0d17b9c073259231460d65043eb882ef.jpeg"
 }
 
 
 
 
 # forms
+
 ### get requisition
 GET http://localhost:3000/api/forms/requisition/6
 

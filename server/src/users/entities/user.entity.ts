@@ -97,4 +97,7 @@ export class User {
   @ApiProperty()
   @OneToMany((type) => Event, (event) => event.user, { cascade: true })
   events: Event[];
+
+  // use it as object class in classes
+  userId: number;
 }

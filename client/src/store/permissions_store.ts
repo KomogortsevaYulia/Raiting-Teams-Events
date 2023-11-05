@@ -16,7 +16,11 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
   // проверить есть ли у залогиненого юзера данное разрешение
   function can(permission: Permission) {
     // проверить наличие данного разрешения у пользователя
-    return permissions.value && permissions.value.includes(permission);
+    return (
+      permissions.value &&
+      (permissions.value.includes(permission) ||
+        permissions.value.includes("can all"))
+    );
   }
 
   // получить нужные данные от юзера
@@ -73,7 +77,7 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     return isLogged;
   }
 
-  async function loginCampus(code:string) {
+  async function loginCampus(code: string) {
     const response = await axios.post("/api/users/bitrix-auth", {
       code: code,
     });

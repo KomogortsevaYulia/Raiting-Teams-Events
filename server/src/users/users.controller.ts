@@ -12,7 +12,6 @@ import {
   UsePipes,
   UnauthorizedException,
   UseGuards,
-  Session,
   HttpCode,
   Put,
   SetMetadata,
@@ -91,7 +90,6 @@ export class UsersController {
   @UseGuards(LocalAuthGuard)
   @Get('/check-login')
   async checkLogin(@Request() req): Promise<any> {
-    // console.log(req.session);
     const user = await this.usersService.findById(req.session.user_id);
     const { password, ...res } = user;
     return res;
@@ -277,22 +275,5 @@ export class UsersController {
     return this.usersService.findUserFunctions(userFDto);
   }
 
-  @Post('user-functions/new-participant')
-  @UseGuards(LocalAuthGuard, PermissionsGuard)
-  @SetMetadata('permissions', ['can edit status requisitions'])
-  @ApiOperation({ summary: 'создать нового учатстника коллектива' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Успешно',
-    type: UserFunction,
-  })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-  async assignRole(@Body() userFDto: UserFunctionDto) {
-    return await this.usersService.assignRole(
-      userFDto.team,
-      userFDto.user,
-      'Участник',
-    );
-  }
   //user functions---------------------------------------------------------------
 }

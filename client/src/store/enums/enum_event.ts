@@ -7,12 +7,12 @@
 //   ALL = "Все"
 // }
 
-export enum Level {
-  UNIVERSITY = "Вузовский",
-  CITY = "Городской",
-  REGION = "Региональный",
-  ALL = "Все",
-}
+// export enum Level {
+//   UNIVERSITY = "Вузовский",
+//   CITY = "Городской",
+//   REGION = "Региональный",
+//   ALL = "Все",
+// }
 
 export enum Status {
   CREATED = "Создана",
@@ -27,14 +27,14 @@ export enum Type {
   ALL = "Все",
 }
 
-export enum Direction {
-  NID = "НИД",
-  KTD = "КТД",
-  UD = "УД",
-  SD = "СД",
-  OD = "ОД",
-  ALL = "Все",
-}
+// export enum Direction {
+//   NID = "НИД",
+//   KTD = "КТД",
+//   UD = "УД",
+//   SD = "СД",
+//   OD = "ОД",
+//   ALL = "Все",
+// }
 
 export enum DirectionId {
   NID = 6,

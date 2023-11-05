@@ -107,6 +107,18 @@ const router = createRouter({
             requiresAuth: true
           },
         },
+    {
+      //различные заяки, которые формировал юзер
+      path: "/admin-panel",
+      name: "AdminMain",
+      props: (route) => ({ userId: route.query.user_id }),
+
+      component: () => import("@/views/admin_panel/AdminMain.vue"),
+      meta: {
+        requiresAuth: true,
+        permission: "can all",
+      },
+    },
   ],
 });
 
