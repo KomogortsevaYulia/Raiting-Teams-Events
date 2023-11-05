@@ -36,19 +36,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('bitrix-auth')
-  async authBitrix(@Query('code') code: string, @Res() res, @Request() req) {
-    try {
-      const user = await this.usersService.loginBitrix(code);
-      if (user) {
-        req.session.user_id = user.id;
-        req.session.logged = true;
-        return user;
-      } else {
-        throw new UnauthorizedException('Ошибка авторизации');
-      }
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+  async authBitrix(@Query('code') code: string, @Request() req) {
+    const user = await this.usersService.loginBitrix(code);
+
+    if (user) {
+      req.session.user_id = user.id;
+      req.session.logged = true;
+    } else {
+      throw new UnauthorizedException();
     }
+
+    return user;
   }
 
   @Get()

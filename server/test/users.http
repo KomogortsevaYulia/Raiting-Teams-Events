@@ -11,7 +11,7 @@ content-type: application/json
 }
 
 ### bitrix-auth
-GET http://localhost:3000/api/users/bitrix-auth?code=29b83f650067eafa003c21de000074750000036e7894052c907eac33ca7664d9b10686
+GET http://localhost:3000/api/users/bitrix-auth?code=553147650067eafa003c21de00007475000003e82aed5dcaaaa8cf625e5584e442695a
 
 
 # int.istu.edu/oauth/authorize/?client_id=local.65367fd5848af7.93871536
