@@ -80,7 +80,7 @@ export class UsersService {
       }
       return userInfoData.result;
     } catch (error) {
-      throw new Error(`Bitrix authorization failed: ${error}`);
+      throw new UnauthorizedException(`Не удалось авторизоваться через Кампус: ${error}`);
     }
   }
 
@@ -97,7 +97,7 @@ export class UsersService {
       newUser.username = userBitrixData.email;
       newUser.password = 'stud';
       newUser.fullname = `${userBitrixData.last_name} ${userBitrixData.name} ${userBitrixData.second_name}`;
-      return this.usersRepository.save(newUser);
+      return await this.usersRepository.save(newUser);
     }
   }
 

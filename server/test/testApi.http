@@ -177,7 +177,6 @@ content-type: application/json
 
 
 
-# UPLOAD
 
 ###
 GET http://localhost:3000/api/uploads/file_buffer?path=./public/media/6b3620e359194339a2bc2409fb8de569.png

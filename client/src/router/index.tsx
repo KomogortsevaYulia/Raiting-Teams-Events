@@ -14,12 +14,14 @@ const router = createRouter({
     {
       // Авторизация
       path: "/login",
+      name:"Login",
       component: () => import("@/views/Login.vue"),
       meta: {},
     },
     {
       // Страница с мероприятиями (кто её news назвал??)
       path: "/news",
+      name:"News",
       component: () => import("@/views/events/News.vue"),
       meta: {},
     },
@@ -96,6 +98,17 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+          //различные заяки, которые формировал юзер
+          path: "/bitrix-auth",
+          name: "BitrixAuth",
+          props: (route) => ({ code: route.query.code }),
+
+          component: () => import("@/views/user/BitrixAuth.vue"),
+          meta: {
+            requiresAuth: true
+          },
+        },
     {
       //различные заяки, которые формировал юзер
       path: "/admin-panel",
