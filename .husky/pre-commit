@@ -3,9 +3,8 @@
 
 npx validate-branch-name
 
- cd client
- npm run lint:script
-# TODO: fix eslint errors styles
-# npm run lint:styles
- cd ../server
- npm run lint
+cd client
+npm run lint:script
+npm run lint:styles
+cd ../server
+npm run lint
