@@ -110,6 +110,7 @@ export class UsersService {
   async findUser(limit: number, offset: number, searchTxt: string) {
     let query = this.usersRepository
       .createQueryBuilder('users')
+      .orderBy('users.fullname', 'ASC')
       .limit(limit)
       .offset(offset);
 
@@ -257,7 +258,7 @@ export class UsersService {
 
     const validPerms = Object.values(Permissions);
 
-    permissions.forEach((reqPermission: Permissions) => {
+    permissions?.forEach((reqPermission: Permissions) => {
       // console.log(reqPermission, user.id, newPerms, user.permissions, permissionActions);
 
       // if permission exist in system
@@ -275,8 +276,10 @@ export class UsersService {
         )
           newPerms.push(reqPermission);
         // REPLACE
-        else if (permissionActions == PermissionsActions.REPLACE)
-          newPerms.push(reqPermission);
+        else if (permissionActions == PermissionsActions.REPLACE) {
+          const havePermission = newPerms.includes(reqPermission);
+          if (!havePermission) newPerms.push(reqPermission);
+        }
       }
     });
 
