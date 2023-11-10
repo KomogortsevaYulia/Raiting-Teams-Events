@@ -39,7 +39,7 @@
                 <font-awesome-icon :icon="['fas', 'circle-plus']" class="btn-icon fa-lg" @click="addPermission()" />
             </div>
           <div
-            class="col-auto position-relative"
+            class="col-auto position-relative align-items-center d-flex"
             v-for="(perm, index) in user?.permissions"
           >
             <TagElem :text="perm" />
