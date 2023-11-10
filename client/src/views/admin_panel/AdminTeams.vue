@@ -1,5 +1,5 @@
 <template>
-  <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId" />
+  <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId"  :on-save-changes="handleSaveChanges" />
 
   <div class="wrapper-admin-teams">
     <div class="row mb-4 align-items-end">
@@ -93,6 +93,7 @@ import LoadingElem from "@/components/LoadingElem.vue";
 import { TeamRoles } from "@/store/enums/team_roles";
 import TagElem from "@/components/TagElem.vue";
 import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
+import ModalEditPermissions from "@/components/modals/ModalEditPermissions.vue";
 
 const teamStore = useTeamStore();
 
@@ -184,6 +185,11 @@ async function handleEventChangePage(currentPage: number) {
 
   await fetchTeams();
 }
+
+async function handleSaveChanges() {
+    await fetchTeams();
+}
+
 </script>
 
 <style scoped lang="scss">

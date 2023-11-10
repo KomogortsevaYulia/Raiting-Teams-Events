@@ -187,6 +187,7 @@ const teamStore = useTeamStore();
 const props = defineProps<{
   isEditTeam: boolean; //если модальное окно вызвано для редактирования (не создание нового коллектива)
   teamId: number;
+  onSaveChanges: () => void;
 }>();
 
 const team = ref();
@@ -344,7 +345,7 @@ async function createTeam() {
   userId = optionSelect.value.id;
 
   //create team
-  responseMsg.value = await teamStore.createTeam(
+  await teamStore.createTeam(
     selectedDirection.value,
     title.value,
     description.value,
@@ -353,9 +354,14 @@ async function createTeam() {
     cabinet.value,
     charterTeamFile.value,
     documentFile.value,
-  );
+  ).then((msg) => {
+      if (msg) responseMsg.value = msg;
+      else {
+          responseMsg.value = "Сохранено";
+          props.onSaveChanges();
+      }
+  });
 
-  // console.log(newTeam)
 }
 
 // обночить коллектив
@@ -381,12 +387,14 @@ async function updateTeam() {
   uT.fileUstav = charterTeamFile.value;
   uT.fileDocument = documentFile.value;
 
-  const res = await teamStore.updateTeam(uT);
-  responseMsg.value = res.responseMsg;
-
-  if (res.team != null) {
-    team.value = res.team.data;
-  }
+  await teamStore.updateTeam(uT).then((res) => {
+    if (res.responseMsg) responseMsg.value = res.responseMsg;
+    else {
+      responseMsg.value = "Сохранено";
+      team.value = res.team?.data;
+      props.onSaveChanges();
+    }
+  });
 }
 
 async function handleFileUpload(event: any, document: boolean) {

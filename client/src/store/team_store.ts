@@ -82,7 +82,7 @@ export const useTeamStore = defineStore("teams", () => {
     fileUstav: any,
     fileDocument: any,
   ) {
-    let responseMsg = "сохранено";
+    let responseMsg = "";
 
     const formData = new FormData();
     if (direction > 0) {
@@ -128,7 +128,7 @@ export const useTeamStore = defineStore("teams", () => {
 
   // обновить коллектив
   async function updateTeam(uT: UpdateTeam) {
-    let responseMsg = "сохранено";
+    let responseMsg = "";
 
     const formData = new FormData();
     if (uT.id_parent > 0) {

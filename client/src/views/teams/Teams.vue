@@ -14,7 +14,7 @@
         >
           Создать коллектив
         </button>
-        <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId" />
+        <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId"  :on-save-changes="handleModalSaveChanges"/>
       </div>
     </div>
 
@@ -228,6 +228,10 @@ onBeforeMount(async () => {
   await getDirections();
   await handleEventSetFilters();
 });
+
+async function handleModalSaveChanges() {
+    await fetchTeams();
+}
 
 function editTeam(editT: boolean, team: any) {
   // редактируем колектив или создаем новый

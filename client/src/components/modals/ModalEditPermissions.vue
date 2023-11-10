@@ -123,10 +123,10 @@ async function deletePermission(perm: string, index: number) {
 async function saveChanges() {
   await permissionsStore
     .changePermissions(user.value.id, user.value.permissions)
-    .then(() => {
-      responseMsg.value = "Сохранено";
-      // fetchUser();
-      props.onSaveChanges();
+    .then(async () => {
+        responseMsg.value = "Сохранено";
+        await fetchUser();
+        props.onSaveChanges();
     })
     .catch((err) => {
       responseMsg.value = err;
