@@ -102,7 +102,7 @@ async function updateRequisition(req: any, status_name: string) {
   await fetchRequisitions();
 
   if (status_name == "Принята") {
-    await uFStore.assignNewParticipant(props.idTeam, req.user.id);
+    await teamStore.assignNewParticipant(props.idTeam, req.user.id);
   }
 }
 

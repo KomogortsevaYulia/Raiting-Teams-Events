@@ -20,7 +20,7 @@
                   class="icon"
                   width="150"
                   height="150"
-                  :src="user.image"
+                  :src="user?.image"
                   alt="icon"
                 />
                 <div v-if="isEditing" class="middle">
@@ -30,10 +30,10 @@
             </div>
           </div>
           <div class="row">
-            <p class="FIO row-auto">{{ user.fullname }}</p>
-            <p class="row-auto">{{ user.institute }}</p>
-            <p class="row-auto">{{ user.course }} курс</p>
-            <p class="row-auto">{{ user.education_group }}</p>
+            <p class="FIO row-auto">{{ user?.fullname }}</p>
+            <p class="row-auto">{{ user?.institute }}</p>
+            <p class="row-auto">{{ user?.course }} курс</p>
+            <p class="row-auto">{{ user?.education_group }}</p>
           </div>
           <div class="row">
             <h3 class="active">Коллективы</h3>

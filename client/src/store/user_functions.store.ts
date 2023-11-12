@@ -21,19 +21,8 @@ export const useUserFunctionsStore = defineStore("user_function", () => {
     return res.data;
   }
 
-  //задать нового участника
-  async function assignNewParticipant(team_id: number, user_id: number) {
-    const res = await axios.post("/api/users/user-functions/new-participant", {
-      user: user_id,
-      team: team_id,
-    });
-
-    return res.data;
-  }
-
   return {
     removeUserFunction,
     findUserFunctions,
-    assignNewParticipant,
   };
 });

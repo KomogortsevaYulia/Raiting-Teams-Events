@@ -39,9 +39,14 @@
       <!-- Правая часть контейнера -->
       <div class="cards__container ms-md-4">
         <!-- Поисковые строки -->
-        <div class="cards__search">
-          <Search :handleTimerSearch="handleTimerSearch" />
-          <Switch_toggle />
+        <div class="row g-2">
+          <div class="col">
+            <Search :handleTimerSearch="handleTimerSearch" />
+          </div>
+          <div class="col-auto">
+            <Switch_toggle />
+          </div>
+
           <div class="d-md-none">
             <button
               type="button"
@@ -95,9 +100,9 @@
                   <p v-else>{{ event.description }}</p>
                   <!-- @TODO: реализовать кнопку "Подать заявку" на участие в мероприятии -->
 
-<!--                  <div class="btn__container">-->
-<!--                    <button class="card__btn">Подать заявку</button>-->
-<!--                  </div>-->
+                  <!--                  <div class="btn__container">-->
+                  <!--                    <button class="card__btn">Подать заявку</button>-->
+                  <!--                  </div>-->
                 </div>
               </div>
             </router-link>
@@ -108,7 +113,7 @@
           v-else-if="loading"
           class="d-flex align-items-center justify-content-center mt-4"
         >
-          <Loading size-fa-icon="fa-3x" />
+          <LoadingElem size-fa-icon="fa-3x" />
         </div>
 
         <Pagination
@@ -144,8 +149,8 @@ import ModalFull from "@/components/modals/ModalFull.vue";
 import { Event } from "@/store/models/events.model";
 import UserEvents from "../user/UserEvents.vue";
 import Search from "@/components/Search.vue";
-import Loading from "@/components/Loading.vue";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/TagElem.vue";
+import LoadingElem from "@/components/LoadingElem.vue";
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
@@ -224,15 +229,6 @@ function handleEventResetFilters() {}
 
   .cards__container {
     width: 100%;
-
-    .cards__search {
-      display: flex;
-      justify-content: space-between;
-
-      .title__search {
-        width: 70%;
-      }
-    }
 
     .cards__wrap {
       background-color: #fff;

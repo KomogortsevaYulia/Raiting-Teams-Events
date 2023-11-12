@@ -1,6 +1,14 @@
-import { Body, HttpCode, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, getRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
@@ -15,100 +23,139 @@ import { validate } from 'class-validator';
 import { Team } from '../teams/entities/team.entity';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { FunctionDto } from './dto/functions.dto';
+import { Permissions } from '../shared/permissions';
+import axios from 'axios';
+import { PermissionsActions } from '../general/enums/action-permissions';
 
 const jwt = require('jsonwebtoken');
 
 @Injectable()
 export class UsersService {
-
   constructor(
-    @InjectRepository(User)  // user //,
+    @InjectRepository(User) // user //,
     private readonly usersRepository: Repository<User>,
     @InjectRepository(UserFunction)
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(Function)
     private readonly functionsRepository: Repository<Function>,
-
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
-  ) { }
+  ) {}
 
-  async findByName(limit: number, name: string, email: string) {
+  async authorizeBitrix(code: string) {
+    const client_id = process.env.BITRIX_CLIENT_ID;
+    const client_secret = process.env.BITRIX_CLIENT_SECRET;
 
-    return await this.usersRepository.find({
-      take: limit,
-      where: [
-        { fullname: Like(`%${name}%`) },
-        { email: Like(`%${email}%`) }
-      ]
-    })
+    try {
+      const tokenResponse = await axios.get(
+        'https://int.istu.edu/oauth/token/?grant_type=authorization_code',
+        {
+          params: {
+            code,
+            client_id,
+            client_secret,
+          },
+        },
+      );
 
+      const tokenData = tokenResponse.data;
+
+      if (tokenData.error) {
+        throw new Error(tokenData.error_description);
+      }
+
+      const userInfoResponse = await axios.get(
+        tokenData.client_endpoint + 'user.info.json',
+        {
+          params: {
+            auth: tokenData.access_token,
+          },
+        },
+      );
+
+      const userInfoData = userInfoResponse.data;
+
+      if (userInfoData.error) {
+        throw new Error(userInfoData.error_description);
+      }
+      return userInfoData.result;
+    } catch (error) {
+      throw new UnauthorizedException(
+        `Не удалось авторизоваться через Кампус: ${error}`,
+      );
+    }
   }
+
+  async loginBitrix(code: string) {
+    const userBitrixData = await this.authorizeBitrix(code);
+    const user = await this.findByBitrixId(userBitrixData.id);
+
+    if (user) {
+      return user;
+    } else {
+      const newUser = new User();
+      newUser.bitrix_id = userBitrixData.id;
+      newUser.email = userBitrixData.email;
+      newUser.username = userBitrixData.email;
+      newUser.password = 'stud';
+      newUser.fullname = `${userBitrixData.last_name} ${userBitrixData.name} ${userBitrixData.second_name}`;
+      return await this.usersRepository.save(newUser);
+    }
+  }
+
+  async findByBitrixId(bitrix_id: number): Promise<User> {
+    return this.usersRepository.findOneBy({ bitrix_id: bitrix_id });
+  }
+
+  async findUser(limit: number, offset: number, searchTxt: string) {
+    let query = this.usersRepository
+      .createQueryBuilder('users')
+      .orderBy('users.fullname', 'ASC')
+      .limit(limit)
+      .offset(offset);
+
+    if (searchTxt) {
+      searchTxt = searchTxt.toLowerCase();
+      query = query.andWhere(
+        `(LOWER(users.fullname) like :fullname 
+         or LOWER(users.email) like :email)`,
+        {
+          fullname: `%${searchTxt}%`,
+          email: `%${searchTxt}%`,
+        },
+      );
+    }
+
+    return await query.getManyAndCount();
+  }
+
   async update(updateUserDto: UpdateUserDto, id: number) {
     return this.usersRepository.update(+id, updateUserDto);
   }
 
-  async addRole(education_group, title_role) {
-
-  }
-
-  async findAllWithLimit(limit: number): Promise<User[]> {
-    return await this.usersRepository.find({ take: limit });
-  }
+  async addRole(education_group, title_role) {}
 
   async findAll(): Promise<User[]> {
-    return await this.usersRepository.createQueryBuilder("users").getMany();
+    return await this.usersRepository.createQueryBuilder('users').getMany();
   }
 
-  // modernize function user if user not exist
-  // @HttpCode(400)
-  // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-
-  //   // if(isNaN(id)){
-  //   //   throw new HttpException("такого юзера не существует " + id, 400)
-  //   // }
-
-  //   const userExist = await this.usersRepository
-  //     .createQueryBuilder("users")
-  //     .where("users.id = :id", { id })
-  //     .leftJoin("users.user_function", "user_function")
-  //     .addSelect("user_function")
-  //     .leftJoin("user_function.functions", "functions")
-  //     .addSelect("functions")
-  //     .leftJoinAndSelect("functions.team", "teams")
-  //     .addSelect("teams")
-  //     .getOne();
-
-  //   // console.log("userExist " + userExist)
-  //   if (!userExist) {
-  //     throw new HttpException("такого юзера не существует ", 400)
-  //   }
-
-  //   return userExist
-
-  // }
-
   async login(username: string, pass: string): Promise<any> {
-
     const user = await this.usersRepository
-      .createQueryBuilder("users")
-      .where("users.username = :username", { username })
+      .createQueryBuilder('users')
+      .where('users.username = :username', { username })
       .getOne();
 
-    if (user && await argon2.verify(user.password, pass)) {
+    if (user && (await argon2.verify(user.password, pass))) {
       const { password, ...result } = user;
       return result;
     } else {
-      return null
+      return null;
     }
   }
 
-  async findOne(email: string): Promise<any> {
-    return this.usersRepository.findOneBy({ email: email });
+  async findOne(id: number) {
+    return await this.usersRepository.findOne({ where: { id: id } });
   }
-
-
-
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
@@ -126,12 +173,14 @@ export class UsersService {
 
     if (user) {
       const errors = { username: 'Username and email must be unique.' };
-      throw new HttpException({ message: 'Input data validation failed', errors }, HttpStatus.BAD_REQUEST);
-
+      throw new HttpException(
+        { message: 'Input data validation failed', errors },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     // create new user
-    let newUser = new User();
+    const newUser = new User();
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
@@ -139,252 +188,319 @@ export class UsersService {
     const errors = await validate(newUser);
     if (errors.length > 0) {
       const _errors = { username: 'Userinput is not valid.' };
-      throw new HttpException({ message: 'Input data validation failed', _errors }, HttpStatus.BAD_REQUEST);
-
+      throw new HttpException(
+        { message: 'Input data validation failed', _errors },
+        HttpStatus.BAD_REQUEST,
+      );
     } else {
       const savedUser = await this.usersRepository.save(newUser);
       return savedUser;
     }
-
   }
 
   async findById(id: number): Promise<User> {
-    const user = await this.usersRepository.
-      createQueryBuilder("users")
-      .where("users.id = :id", { id })
+    const user = await this.usersRepository
+      .createQueryBuilder('users')
+      .where('users.id = :id', { id })
       .getOne();
 
     if (!user) {
       const errors = { User: 'Not found' };
-      throw new HttpException({ errors }, 401);
+      throw new BadRequestException({ errors });
     }
     return user;
   }
 
-
-
-
-
   // checkers---------------------------------------------------------------------------
   // check permissions
-  async hasPermissions(userId: number, requiredPermissions: string[]) {
-
-
-    let userHaveAllPermissions = true
+  async checkPermissions(
+    user: User,
+    requiredPermissions: Permissions[],
+    throwErrIfHavent = true,
+  ) {
+    let userHaveAllPermissions = true;
     //  get user and its permissions
-    const user = await this.usersRepository.findOne({ where: { id: userId } })
-    // console.log("user", user.permissions, "req ", requiredPermissions)
+    user = await this.usersRepository.findOne({ where: { id: user.userId } });
 
-    // go throught req permissions
-    requiredPermissions.forEach((reqPermission) => {
-      let havePermission = false
-      //  go throught user permissions
-      for (let i = 0; i < user.permissions.length; i++) {
-        if (user.permissions[i] === reqPermission) {
-          havePermission = true
-          break
+    // check if it is admin
+    const isAdmin = user.permissions.includes(Permissions.CAN_ALL);
+    // go through req permissions (with AND checking for perms)
+    if (!isAdmin)
+      requiredPermissions.forEach((reqPermission) => {
+        const havePermission = user.permissions.includes(reqPermission);
+
+        //if one from permissions not granted then return false
+        if (!havePermission) {
+          userHaveAllPermissions = false;
+          if (throwErrIfHavent)
+            throw new ForbiddenException(
+              `У Вас нет разрешений: ${requiredPermissions}`,
+            );
+          else return userHaveAllPermissions;
+        }
+      });
+
+    return userHaveAllPermissions;
+  }
+
+  // TODO: переделать запрос changePermissions, плохо читать
+  // add/revoke permissions to user
+  async changePermissions(
+    user: User,
+    permissions: Permissions[],
+    permissionActions = PermissionsActions.GRANT,
+  ) {
+    user = await this.usersRepository.findOne({ where: { id: user.userId } });
+    const newPerms: string[] = [];
+    // user can have no perms
+    if (!user) return false;
+    user.permissions = user.permissions ?? [];
+
+    const validPerms = Object.values(Permissions);
+
+    permissions?.forEach((reqPermission: Permissions) => {
+      // console.log(reqPermission, user.id, newPerms, user.permissions, permissionActions);
+
+      // if permission exist in system
+      const permIsValid = validPerms.includes(reqPermission);
+
+      if (permIsValid) {
+        const havePermission = user.permissions.includes(reqPermission);
+        // GRANT
+        if (permissionActions == PermissionsActions.GRANT && !havePermission)
+          newPerms.push(reqPermission);
+        // REVOKE
+        else if (
+          permissionActions == PermissionsActions.REVOKE &&
+          havePermission
+        )
+          newPerms.push(reqPermission);
+        // REPLACE
+        else if (permissionActions == PermissionsActions.REPLACE) {
+          const havePermission = newPerms.includes(reqPermission);
+          if (!havePermission) newPerms.push(reqPermission);
         }
       }
-      // if one from permissions not granted then return false
-      if (!havePermission) {
-        userHaveAllPermissions = false
-        return userHaveAllPermissions
-      }
-    })
+    });
 
-    return userHaveAllPermissions
+    // GRANT need permissionActions, add perms to user
+    if (permissionActions == PermissionsActions.GRANT)
+      user.permissions.push(...newPerms);
+    // REVOKE need revoke, del perms from user
+    else if (
+      permissionActions == PermissionsActions.REVOKE &&
+      user.permissions.length > 0
+    ) {
+      user.permissions = user.permissions.filter((perm) => {
+        return !newPerms.includes(perm);
+      });
+    }
+    // REPLACE
+    else if (permissionActions == PermissionsActions.REPLACE)
+      user.permissions = newPerms;
+
+    // save user with new perms
+    await this.usersRepository.save(user);
+    return true;
   }
 
   // проверить есть ли у юзера специальные
-  async hasPermissionsInTeam(userId: number, teamId: number, permissions: string[]) {
+  async hasPermissionsInTeam(
+    userId: number,
+    teamId: number,
+    permissions: string[],
+  ) {
+    const user = new User();
+    user.userId = userId;
+
+    const isAdmin = await this.checkPermissions(user, []);
+    if (isAdmin) return true;
 
     const permissisonsInTeam = await this.userFunctionsRepository
-      .createQueryBuilder("user_function")
-      .leftJoin("user_function.function", "function")
-      .leftJoin("user_function.user", "user")
-      .leftJoin("function.team", "team")
-      .where("user.id = :user_id", { user_id: userId })
-      .andWhere("team.id = :team_id", { team_id: teamId })
-      .andWhere("function.type_function in (:...type_functions) ", { type_functions: permissions })
-      // special for admin
-      .orWhere("user.username = :name", {name:'admin'})
+      .createQueryBuilder('user_function')
+      .leftJoin('user_function.function', 'function')
+      .leftJoin('user_function.user', 'user')
+      .leftJoin('function.team', 'team')
+      .where('user.id = :user_id', { user_id: userId })
+      .andWhere('team.id = :team_id', { team_id: teamId })
+      .andWhere('function.type_function in (:...type_functions) ', {
+        type_functions: permissions,
+      })
       .getMany();
 
-    return permissisonsInTeam && permissisonsInTeam.length > 0
+    return permissisonsInTeam && permissisonsInTeam.length > 0;
   }
+
   // checkers---------------------------------------------------------------------------
 
-
-
   // function--------------------------------------------------------------------
-  async createFunctionIfNotExist(createFunctionDto: CreateFunctionDto): Promise<Function> {
-
+  async createFunctionIfNotExist(
+    createFunctionDto: CreateFunctionDto,
+  ): Promise<Function> {
     // find existing function for team
-    const fD = new FunctionDto()
-    fD.team = createFunctionDto.team
-    fD.title = createFunctionDto.title
+    const fD = new FunctionDto();
+    fD.team = createFunctionDto.team;
+    fD.title = createFunctionDto.title;
 
-    const existFs = await this.findFunctions(fD)
-    let func = existFs ? existFs[0] : null
+    const existFs = await this.findFunctions(fD);
+    let func = existFs ? existFs[0] : null;
 
-    const team = await this.teamRepository.findOneOrFail({ where: { id: createFunctionDto.team } })
+    const team = await this.teamRepository.findOneOrFail({
+      where: { id: createFunctionDto.team },
+    });
     // если не существует функции, то создать новую
     if (!func) {
-      //создать фукнцию 
+      //создать фукнцию
       func = await this.functionsRepository.save({
         ...createFunctionDto,
-        team: team
-      })
+        team: team,
+      });
     }
 
     return func;
   }
 
-
-  async updateFunction(idFunction: number, createFunctionDto: CreateFunctionDto) {
-
-    const team = await this.teamRepository.findOneOrFail({ where: { id: createFunctionDto.team } })
+  async updateFunction(
+    idFunction: number,
+    createFunctionDto: CreateFunctionDto,
+  ) {
+    const team = await this.teamRepository.findOneOrFail({
+      where: { id: createFunctionDto.team },
+    });
 
     await this.functionsRepository.update(idFunction, {
       ...createFunctionDto,
-      team: team
+      team: team,
     });
   }
 
-
   // найти функции по ид команды
   async findFunctions(functionDto: FunctionDto) {
-
-    let query = this.functionsRepository.
-      createQueryBuilder("functions")
-      .leftJoin("functions.team", "team")
-      .addSelect("team.id")
+    const query = this.functionsRepository
+      .createQueryBuilder('functions')
+      .leftJoin('functions.team', 'team')
+      .addSelect('team.id');
 
     // team
-    functionDto.team ? query.andWhere("team.id = :id", { id: functionDto.team }) : query
+    functionDto.team
+      ? query.andWhere('team.id = :id', { id: functionDto.team })
+      : query;
     // title
-    functionDto.title ? query.andWhere("functions.title = :title", { title: functionDto.title }) : query
+    functionDto.title
+      ? query.andWhere('functions.title = :title', { title: functionDto.title })
+      : query;
 
     return await query.getMany();
   }
 
-
-
   async removeFunction(id: number) {
+    const res = await this.functionsRepository.delete(id);
 
-    const res = await this.functionsRepository.delete(id)
-
-    return res
+    return res;
   }
-
 
   // modernize function user if user not exist
   @HttpCode(400)
-  async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
+  async findOneWithFunction(id: number) {
+    // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
 
     if (isNaN(id)) {
-      throw new HttpException("такого юзера не существует " + id, 400)
+      throw new HttpException('такого юзера не существует ' + id, 400);
     }
 
     const userExist = await this.userFunctionsRepository
-      .createQueryBuilder("user_function")
-      .leftJoin("user_function.function", "functions")
-      .addSelect("functions")
-      .leftJoinAndSelect("functions.team", "teams")
-      .addSelect("teams")
-      .where("user_function.user = :id", { id })
+      .createQueryBuilder('user_function')
+      .leftJoin('user_function.function', 'functions')
+      .addSelect('functions')
+      .leftJoinAndSelect('functions.team', 'teams')
+      .addSelect('teams')
+      .where('user_function.user = :id', { id })
       .getMany();
 
     if (!userExist) {
-      throw new HttpException("такого юзера не существует ", 400)
+      throw new HttpException('такого юзера не существует ', 400);
     }
-    return userExist
+    return userExist;
   }
 
   // function--------------------------------------------------------------------
 
-
-  //назначить роль юзеру в коллективе
-  async assignRole(teamId: number, userId: number, roleName: string) {
-
-    const funcDto = new CreateFunctionDto()
-    funcDto.team = teamId
-    funcDto.title = roleName
-
-    // find existing function with role or update
-    let func = await this.createFunctionIfNotExist(funcDto)
-
-
-    const ufDto = new CreateUserFunctionDto()
-    ufDto.function = func.id
-    ufDto.user = userId
-
-    // find existing user function or update
-    const existUFs = await this.createUserFunctionOrUpdate(ufDto)
-
-
-    return existUFs
-  }
-
-
   //user functions---------------------------------------------------------------
   @HttpCode(400)
-  async createUserFunctionOrUpdate(createUserFunctionDto: CreateUserFunctionDto): Promise<UserFunction> {
+  async createUserFunctionOrUpdate(
+    createUserFunctionDto: CreateUserFunctionDto,
+  ): Promise<UserFunction> {
+    const uFDto = new UserFunctionDto();
+    uFDto.function = createUserFunctionDto.function;
+    uFDto.user = createUserFunctionDto.user;
 
-    let uFDto = new UserFunctionDto()
-    uFDto.function = createUserFunctionDto.function
-    uFDto.user = createUserFunctionDto.user
+    const uFs = await this.findUserFunctions(uFDto);
+    let uF = uFs ? uFs[0] : null;
 
-    let uFs = await this.findUserFunctions(uFDto)
-
-    let uF = uFs ? uFs[0] : null
-
-    let dateStart = new Date();
-    let dateEnd = new Date();
-    dateEnd.setFullYear(dateEnd.getFullYear() + 1) //only on one year set 
+    const dateStart = new Date();
+    const dateEnd = new Date();
+    dateEnd.setFullYear(dateEnd.getFullYear() + 1); //only on one year set
 
     // const user = await this.usersRepository.findOneOrFail({where:{id:createUserFunctionDto.user}})
 
-    uF = await this.userFunctionsRepository.save({
-      id: uF ? uF.id : null,
-      ...createUserFunctionDto,
-      dateStart: dateStart,
-      dateEnd: dateEnd
+    const user = await this.findById(createUserFunctionDto.user);
+    const func = await this.findFunction(createUserFunctionDto.function);
+    const team = await this.teamRepository.findOneBy({
+      id: createUserFunctionDto.team,
     });
 
-    return uF
+    uF = await this.userFunctionsRepository.save({
+      id: uF ? uF.id : null,
+      user,
+      function: func,
+      team,
+      dateStart: dateStart,
+      dateEnd: dateEnd,
+    });
+
+    return uF;
   }
 
-
   async removeUserFunction(id: number) {
-
-    let query = this.userFunctionsRepository.
-      createQueryBuilder("user_functions")
-      .where("user_functions.id = :id", { id })
+    const query = this.userFunctionsRepository
+      .createQueryBuilder('user_functions')
+      .where('user_functions.id = :id', { id });
 
     return await query.delete().execute();
   }
 
+  async findFunction(id: number) {
+    const query = this.functionsRepository
+      .createQueryBuilder('functions')
+      .where('functions.id = :id', { id });
+
+    return await query.getOne();
+  }
 
   async findUserFunctions(userFDto: UserFunctionDto) {
-
-    let query = this.userFunctionsRepository.
-      createQueryBuilder("user_functions")
-      .leftJoin("user_functions.function", "function")
-      .leftJoin("user_functions.user", "user")
-      .leftJoin("function.team", "team")
+    const query = this.userFunctionsRepository
+      .createQueryBuilder('user_functions')
+      .leftJoin('user_functions.function', 'function')
+      .leftJoin('user_functions.user', 'user')
+      .leftJoin('function.team', 'team');
 
     // function
-    userFDto.function ? query.andWhere("function.id = :function_id", { function_id: userFDto.function }) : query
+    userFDto.function
+      ? query.andWhere('function.id = :function_id', {
+          function_id: userFDto.function,
+        })
+      : query;
     // user
-    userFDto.user ? query.andWhere("user.id = :user_id", { user_id: userFDto.user }) : query
+    userFDto.user
+      ? query.andWhere('user.id = :user_id', { user_id: userFDto.user })
+      : query;
     // team
-    userFDto.team ? query.andWhere("team.id = :team_id", { team_id: userFDto.team }) : query
+    userFDto.team
+      ? query.andWhere('team.id = :team_id', { team_id: userFDto.team })
+      : query;
 
     return await query.getMany();
   }
+
   //user functions---------------------------------------------------------------
-
 }
-
-

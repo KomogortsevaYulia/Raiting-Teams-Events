@@ -96,7 +96,7 @@ import { onBeforeMount, ref } from "vue";
 
 import { useRoute } from "vue-router";
 import moment from "moment";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/TagElem.vue";
 
 const route = useRoute();
 const data = ref();
