@@ -71,44 +71,85 @@
               </div>
         <div v-for="item in team">
           <div v-if="isTable == false" class="members-list row g-2" >
-            <div class="col-md-12 col-lg-6">
+            <div class="col-md-6 col-lg-6">
               <div class="member-card border rounded">
                 <div class="image-container">
                   <img class="rounded" src="../../assets/icon/event3.png" alt="" />
                 </div>
                 <div class="text-container">
                   <div class="title">{{ item.user.fullname }}</div>
-                  <div class="description">{{ item.func?.title }}</div>
+                  <div class="description">{{ item.function?.title }}</div>
                   <div class="group">{{ item.user.education_group }}</div>
                 </div>
+                <div class="row g-2 justify-content-end">
+                  <div class="col-auto">
+                    <button
+                      class="btn-custom-secondary"
+                      @click="isEditMode = true"
+                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 18 16">
+    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10ZM11.207 2.5 13.5 4.793 4.793 13.5l-2-2L11.207 2.5zm1.586 3L10.5 3.207 12.793 1l2 2L12.793 5.5z"/>
+  </svg>
+                    </button>
+                  </div>
               </div>
             </div>
+                  <div v-if="isEditMode">
+                        <div class="row g-2">
+                          <label>Группа:</label>
+                          <input v-model="item.user.education_group" />
+                        </div>
+                        <div class="row g-2">
+                          <label>Роль:</label>
+                          <input v-model="item.function.title" />
+                        </div>
+                        <div class="row g-2 d-flex justify-content-end mt-3">
+                          <div class="col-auto">
+                            <button
+                              class="btn-custom-accept"
+                              @click="
+                                saveChanges(
+                                  item.user.education_group,
+                                  item.function?.title,
+                                  item.user.id,
+                                )
+                              "
+                            >
+                              Сохранить
+                            </button>
+                          </div>
+                          <div class="col-auto">
+                            <button @click="cancelEditMode">Отмена</button>
+                          </div>
+                        </div>
+                      </div>
           </div>
+          
         </div>          
-        <div v-if="isTable==true">
-                    <table class="table table-hover">
-                        <thead>
-                          <tr>
-                            <th scope="col">№</th>
-                            <th scope="col">ФИО</th>
-                            <th scope="col">Роль</th>
-                            <th scope="col">Группа</th>
-                            <th scope="col">Дата вступления</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(it, index) in team">
-                            <th scope="row">{{ index + 1 }}</th>
-                            <td>{{ it.user.fullname }}</td>
-                            <td>{{it.func?.title }}</td>
-                            <td>{{ it.user.education_group }}</td>
-                            <td>01.01.2023</td>
-                          </tr>
-                        </tbody>
-                      </table>       
-         </div>  
+              <div v-if="isTable==true">
+                          <table class="table table-hover">
+                              <thead>
+                                <tr>
+                                  <th scope="col">№</th>
+                                  <th scope="col">ФИО</th>
+                                  <th scope="col">Роль</th>
+                                  <th scope="col">Группа</th>
+                                  <th scope="col">Дата вступления</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="(it, index) in team">
+                                  <th scope="row">{{ index + 1 }}</th>
+                                  <td>{{ it.user.fullname }}</td>
+                                  <td>{{it.function?.title }}</td>
+                                  <td>{{ it.user.education_group }}</td>
+                                  <td>01.01.2023</td>
+                                </tr>
+                              </tbody>
+                            </table>       
+              </div>  
          
-        
+        </div>
                 
                   
        
@@ -131,6 +172,7 @@
 <script setup lang="ts">
 import "@/assets/nav-second.scss"
 import WIP from "@/components/WIP.vue";
+
 import { onBeforeMount, ref } from "vue";
 import Ankets from "@/views/teams/Questionnaire.vue";
 import Pagination from "@/components/Pagination.vue";
@@ -153,24 +195,29 @@ const idTeam = Number(route.params.id);
 const isTable = ref(false);
 const teamStore = useTeamStore();
 const show = ref(true);
-
+const isEditMode = ref(false);
 const data = ref();
 const team = ref();
+
 
 onBeforeMount(async () => {
   await fetchCurrentTeam();
   await fetchUsersOfTeam();
 });
-interface User {
-  id: number;
-  fullname: string;
-  education_group: string;
+
+async function saveChanges(
+  education_group: string,
+  title_role: string,
+  id: number,
+) {
+  await userStore.update(education_group, title_role, id);
+  isEditMode.value = false;
+}
+async function cancelEditMode() {
+  isEditMode.value = false;
 }
 
 
-interface Func {
-  title: string;
-}
 
 async function fetchUsersOfTeam() {
   team.value = await teamStore.fetchUserOfTeam(idTeam);
