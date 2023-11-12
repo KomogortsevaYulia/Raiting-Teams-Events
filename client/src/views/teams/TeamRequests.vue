@@ -12,14 +12,65 @@
       </div>
       Поиск по новостям
     </div>
-    <div class="block date">
-      Фильтрация заявок
-      <FontAwesomeIcon icon="angle-down" />
+    <div class="dropdown">
+      <div class="block filter" @click="isFilterExpanded = !isFilterExpanded" type="button" id="dropdownFilter" data-bs-toggle="dropdown" aria-expanded="false">
+        <FontAwesomeIcon icon="sort" />
+        Фильтрация заявок
+        <FontAwesomeIcon v-if="!isFilterExpanded" icon="angle-down" />
+        <FontAwesomeIcon v-if="isFilterExpanded" icon="angle-up" />
+      </div>
+      <ul class="block dropdown-menu" aria-labelledby="dropdownFilter">
+        <li><a class="dropdown-item" href="#">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+              Утверждённые
+            </label>
+          </div>
+        </a></li>
+        <li><a class="dropdown-item" href="#">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+          <label class="form-check-label" for="flexCheckDefault">
+            Отклонённые
+          </label>
+        </div>
+        </a></li>
+        <li><a class="dropdown-item" href="#">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+              Не просмотренные
+            </label>
+          </div>
+        </a></li>
+        <li><a class="dropdown-item" href="#">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+              Приглашены на собеседование
+            </label>
+          </div>
+        </a></li>
+      </ul>
     </div>
-    <div class="block order">
-      <FontAwesomeIcon icon="sort" />
-      Сначала новые
-      <FontAwesomeIcon icon="angle-down" />
+    <div class="dropdown">
+      <div class="block order" @click="isOrderExpanded = !isOrderExpanded" type="button" id="dropdownOrder" data-bs-toggle="dropdown" aria-expanded="false">
+        <FontAwesomeIcon icon="sort" />
+        Сначала новые
+        <FontAwesomeIcon v-if="!isOrderExpanded" icon="angle-down" />
+        <FontAwesomeIcon v-if="isOrderExpanded" icon="angle-up" />
+      </div>
+      <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
+        <li><a class="dropdown-item" href="#">
+          <FontAwesomeIcon icon="sort" />
+          Сначала новые
+        </a></li>
+        <li><a class="dropdown-item" href="#">
+          <FontAwesomeIcon icon="sort" />
+          Сначала старые
+        </a></li>
+      </ul>
     </div>
   </div>
   <div v-for="item in req">
@@ -67,6 +118,10 @@ const uFStore = useUserFunctionsStore();
 const props = defineProps<{
   idTeam: number;
 }>();
+
+
+const isFilterExpanded = ref(false);
+const isOrderExpanded = ref(false);
 
 const req = ref();
 const currentRequisition = ref();
@@ -187,7 +242,7 @@ function setCurrentRequisition(req: any) {
     align-items: center;
   }
 
-  .date {
+  .filter {
     display: flex;
     flex-direction: row;
     justify-content: space-between;

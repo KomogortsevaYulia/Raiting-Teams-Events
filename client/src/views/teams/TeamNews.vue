@@ -8,15 +8,36 @@
         </div>
         Поиск по новостям
       </div>
-      <div class="block date">
-        <FontAwesomeIcon icon="calendar" />
-        25 сен - 1 окт 2023
-        <FontAwesomeIcon icon="angle-down" />
+      <div class="dropdown">
+        <div class="block date" @click="isCalendarExpanded = !isCalendarExpanded" type="button" id="dropdownCalendar" data-bs-toggle="dropdown" aria-expanded="false">
+          <FontAwesomeIcon icon="calendar" />
+          25 сен - 1 окт 2023
+          <FontAwesomeIcon v-if="!isCalendarExpanded" icon="angle-down" />
+          <FontAwesomeIcon v-if="isCalendarExpanded" icon="angle-up" />
+        </div>
+        <ul class="block dropdown-menu" aria-labelledby="dropdownCalendar">
+          <li><a class="dropdown-item" href="#">
+            <Datepicker v-model="picked" />
+          </a></li>
+        </ul>
       </div>
-      <div class="block order">
-        <FontAwesomeIcon icon="sort" />
-        Сначала новые
-        <FontAwesomeIcon icon="angle-down" />
+      <div class="dropdown">
+        <div class="block order" @click="isOrderExpanded = !isOrderExpanded" type="button" id="dropdownOrder" data-bs-toggle="dropdown" aria-expanded="false">
+          <FontAwesomeIcon icon="sort" />
+          Сначала новые
+           <FontAwesomeIcon v-if="!isOrderExpanded" icon="angle-down" />
+          <FontAwesomeIcon v-if="isOrderExpanded" icon="angle-up" />
+        </div>
+        <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
+          <li><a class="dropdown-item" href="#">
+            <FontAwesomeIcon icon="sort" />
+            Сначала новые
+          </a></li>
+          <li><a class="dropdown-item" href="#">
+            <FontAwesomeIcon icon="sort" />
+            Сначала старые
+          </a></li>
+        </ul>
       </div>
     </div>
     <div>
@@ -39,8 +60,15 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import Datepicker from "vue3-datepicker";
 const props = defineProps<{ team: any; }>();
+
+const isCalendarExpanded = ref(false);
+const picked = ref(new Date())
+
+const isOrderExpanded = ref(false);
 
 const newsList = [
   {
