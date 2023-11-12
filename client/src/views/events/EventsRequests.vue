@@ -215,7 +215,7 @@ let limit = 5; //сколько  отображается на странице
 const offset = ref(0); //сколько  пропустить прежде чем отобразить
 
 const maxPages = ref(1);
-const visiblePages = 7;
+const visiblePages = 5;
 //pagination ---------------------------------------------------------------------
 
 onBeforeMount(async () => {

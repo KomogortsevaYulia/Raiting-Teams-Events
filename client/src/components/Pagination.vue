@@ -1,14 +1,16 @@
 <template>
-  <!-- current {{ current }}
-  maxPage {{ maxPage }}
-  startPage {{ startPage }}
-  endPage {{ endPage }} -->
+<!--  current {{ current }}-->
+<!--      maxPage {{ maxPage }}-->
+<!--      startPage {{ startPage }}-->
+<!--      endPage {{ endPage }}-->
+<!--    visiblePages {{ visiblePages }}-->
+<!--    halfPages = {{ Math.floor(props.visiblePages / 2)}}-->
   <div class="my-4 container-pagination">
     <div class="wrapper-pagination border-block">
       <nav aria-label="Pagination">
-        <ul class="pagination">
+        <div class="pagination row">
           <!-- prev page -->
-          <li class="page-item">
+          <div class="page-item col-auto">
             <a
               class="page-link-custom"
               @click="changePage(current - 1)"
@@ -17,19 +19,19 @@
             >
               <span aria-hidden="true">&laquo;</span>
             </a>
-          </li>
+          </div>
           <!-- start page -->
-          <li v-if="startPage >= 2" class="page-item">
+          <div v-if="startPage >= 2" class="page-item col-auto">
             <a class="page-link-custom" href="#" @click="changePage(1)">1</a>
-          </li>
-          <li v-if="startPage >= 2" class="page-item">
+          </div>
+          <div v-if="startPage >= 2" class="page-item col-auto">
             <a class="page-link-custom">...</a>
-          </li>
+          </div>
           <!-- pages -->
-          <li
+          <div
             v-for="index in range(startPage, endPage)"
             :key="index"
-            class="page-item"
+            class="page-item col-auto"
             @click="changePage(index)"
           >
             <a
@@ -40,18 +42,18 @@
               href="#"
               >{{ index }}</a
             >
-          </li>
+          </div>
           <!-- end page -->
-          <li v-if="endPage < maxPage" class="page-item">
+          <div v-if="endPage < maxPage" class="page-item col-auto">
             <a class="page-link-custom">...</a>
-          </li>
-          <li v-if="endPage < maxPage" class="page-item">
+          </div>
+          <div v-if="endPage < maxPage" class="page-item col-auto">
             <a class="page-link-custom" href="#" @click="changePage(maxPage)">{{
               maxPage
             }}</a>
-          </li>
+          </div>
           <!-- nest page -->
-          <li class="page-item">
+          <div class="page-item col-auto">
             <a
               class="page-link-custom"
               @click="changePage(current + 1)"
@@ -60,8 +62,8 @@
             >
               <span aria-hidden="true">&raquo;</span>
             </a>
-          </li>
-        </ul>
+          </div>
+        </div>
       </nav>
     </div>
   </div>
@@ -105,7 +107,8 @@ function changePage(goToPage: number) {
 // задать начальную и конечную страницы
 function setEndStartPages() {
   // start page
-  const halfPages = Math.floor(props.visiblePages / 2);
+  let halfPages = Math.floor(props.visiblePages / 2);
+
   if (current.value <= halfPages) {
     startPage.value = 1;
   } else {
