@@ -179,12 +179,15 @@ import _ from "lodash";
 import { useTeamStore } from "@/store/team_store";
 import { useUserStore } from "@/store/user_store";
 import UpdateTeam from "./UpdateTeam";
+import { TeamRoles } from "@/store/enums/team_roles";
+import { FilterUser } from "@/store/models/user.model";
 
 const teamStore = useTeamStore();
 
 const props = defineProps<{
   isEditTeam: boolean; //если модальное окно вызвано для редактирования (не создание нового коллектива)
-  team: any;
+  teamId: number;
+  onSaveChanges: () => void;
 }>();
 
 const team = ref();
@@ -225,6 +228,8 @@ const func = _.debounce(() => {
 
 const optionSelect = ref();
 
+const teamLeaders = ref();
+
 //отслеживать изменение текста для v-select
 async function onTextChange(e: any) {
   userLeader.value = e.target.value;
@@ -233,20 +238,26 @@ async function onTextChange(e: any) {
 }
 
 watch(
-  () => props.team,
-  async (value, previousValue) => {
-    if (value) {
-      team.value = await teamStore.fetchTeam(value.id);
-    } else team.value = null;
-
-    responseMsg.value = "";
-    fillForm();
+  () => props.teamId,
+  async (value) => {
+    await fetchTeam(value);
   },
 );
 
+async function fetchTeam(id: number) {
+  if (id) {
+    team.value = await teamStore.fetchTeam(id);
+  } else team.value = null;
+
+  responseMsg.value = "";
+
+  teamLeaders.value = getLeader(team.value);
+
+  await fillForm();
+}
+
 onBeforeMount(async () => {
   await getUsers();
-  team.value = props.team;
 
   await getDirections();
 });
@@ -282,7 +293,7 @@ async function fillForm() {
 
     //если есть руководитель коллектива
 
-    let uF = t?.functions[0]?.userFunctions[0]?.user;
+    let uF = teamLeaders.value[0];
     if (uF) {
       optionSelect.value = {
         name: uF.fullname,
@@ -304,15 +315,13 @@ async function fillForm() {
 
 // получить всех пользователей и выбрать из них нужных
 async function getUsers() {
-  let limit = 5;
-  let r = await useUserStore().getUsersByNameEmail(
-    limit,
-    userLeader.value,
-    userLeader.value,
-  );
+  let filterUser = new FilterUser();
+  filterUser.limit = 5;
+  filterUser.searchTxt = userLeader.value;
+  let r = await useUserStore().getUsersByNameEmail(filterUser);
 
   //получить всех найденных юзеров
-  let users = r.data;
+  let users = r.data[0];
 
   let arrayData = [];
   for (let i = 0; i < users.length; i++) {
@@ -332,15 +341,11 @@ async function getUsers() {
 async function createTeam() {
   let userId = -1;
   //проверить является id числом или нет и выбрана ли опция
-  if (!optionSelect.value || isNaN(optionSelect.value.id)) {
-    responseMsg.value = "такого пользователя нет " + userId;
-    return;
-  } else {
-    userId = optionSelect.value.id;
-  }
+
+  userId = optionSelect.value.id;
 
   //create team
-  responseMsg.value = await teamStore.createTeam(
+  await teamStore.createTeam(
     selectedDirection.value,
     title.value,
     description.value,
@@ -349,21 +354,22 @@ async function createTeam() {
     cabinet.value,
     charterTeamFile.value,
     documentFile.value,
-  );
+  ).then((msg) => {
+      if (msg) responseMsg.value = msg;
+      else {
+          responseMsg.value = "Сохранено";
+          props.onSaveChanges();
+      }
+  });
 
-  // console.log(newTeam)
 }
 
 // обночить коллектив
 async function updateTeam() {
   let newUserId = -1;
   //проверить является id числом или нет и выбрана ли опция
-  if (!optionSelect.value || isNaN(optionSelect.value.id)) {
-    responseMsg.value = "такого пользователя нет " + newUserId;
-    return;
-  } else {
-    newUserId = optionSelect.value.id;
-  }
+
+  newUserId = optionSelect.value ? optionSelect.value.id : -1;
 
   //create team
   const uT = new UpdateTeam();
@@ -381,12 +387,14 @@ async function updateTeam() {
   uT.fileUstav = charterTeamFile.value;
   uT.fileDocument = documentFile.value;
 
-  const res = await teamStore.updateTeam(uT);
-  responseMsg.value = res.responseMsg;
-
-  if (res.team != null) {
-    team.value = res.team.data;
-  }
+  await teamStore.updateTeam(uT).then((res) => {
+    if (res.responseMsg) responseMsg.value = res.responseMsg;
+    else {
+      responseMsg.value = "Сохранено";
+      team.value = res.team?.data;
+      props.onSaveChanges();
+    }
+  });
 }
 
 async function handleFileUpload(event: any, document: boolean) {
@@ -404,6 +412,22 @@ async function archiveTeam(id: number, isArchive: boolean) {
   responseMsg.value = res.responseMsg;
 
   if (res.isOK) team.value.is_archive = isArchive;
+}
+
+function getLeader(team) {
+  const leaders = [];
+  if (!team && !team.functions) return [];
+  for (let i = 0; i < team.functions.length; i++) {
+    const func = team.functions[i];
+    if (func.title === TeamRoles.Leader) {
+      for (let io = 0; io < func.userFunctions.length; io++) {
+        const userFunc = func.userFunctions[io];
+        leaders.push(userFunc.user);
+      }
+    }
+  }
+
+  return leaders;
 }
 </script>
 

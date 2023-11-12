@@ -13,7 +13,9 @@ export class LocalAuthGuard implements CanActivate {
 
         // console.log(context.switchToHttp().getRequest().session)
         const session = context.switchToHttp().getRequest().session
-        const user = await this.usersService.findById(session.user_id);
+        const user = await this.usersService.findById(session.user_id).catch((err)=>{
+            throw new UnauthorizedException()
+        });
         // вошел ли юзер?
         if (user && session.logged) {
             return true

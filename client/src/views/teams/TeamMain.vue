@@ -39,7 +39,7 @@
 import { useTeamStore } from "@/store/team_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/TagElem.vue";
 
 const props = defineProps<{
   team: any; //коллектив
