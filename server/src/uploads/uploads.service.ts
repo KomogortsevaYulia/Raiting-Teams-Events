@@ -81,13 +81,13 @@ export class UploadsService {
   // generators---------------------------------------------------------------------------------
 
   //загрузить изображение
-  async uploadImage(startPathUrl: string, file: Buffer, formatImg: string) {
+  async uploadImage(startPathUrl: string, file: Buffer) {
     const imgFormatTo = 'webp';
-    const compressedImg = await this.convertToWebP(file, 600, 300);
+    const compressedImg = await this.convertImgToWebp(file, 600, 300);
     return await this.uploadFile(startPathUrl, compressedImg, imgFormatTo);
   }
 
-  async convertToWebP(
+  async convertImgToWebp(
     buffer: Buffer,
     width: number,
     height: number,
@@ -203,13 +203,5 @@ export class UploadsService {
 
     await workbook.xlsx.write(res);
     res.end();
-  }
-
-  //  сжать изображение перед тем как вывести
-  async compressImg(filepath: string, width: number, height: number) {
-    // const imageBuffer = fs.readFileSync(filepath);
-    const image = sharp(filepath);
-    // Adjust dimensions as needed
-    return image.resize({ width: width, height: height });
   }
 }

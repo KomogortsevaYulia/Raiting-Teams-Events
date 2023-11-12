@@ -69,7 +69,7 @@ export class UploadsController {
     const startPathUrl = `${request.protocol}://${request.get('host')}`;
 
     // convert to webp format
-    const webPImageBuffer = await this.uploadsService.convertToWebP(
+    const webPImageBuffer = await this.uploadsService.convertImgToWebp(
       file.buffer,
       800,
       300,
@@ -146,21 +146,5 @@ export class UploadsController {
     );
 
     await this.uploadsService.getReportEvents(res, events[0], events[1]);
-  }
-
-  @Get('compress-img')
-  async compressImg(
-    @Body()
-    params: {
-      filepath: string;
-    },
-    @Res() res: Response,
-  ) {
-    const compressedImg = await this.uploadsService.compressImg(
-      params.filepath,
-      800,
-      300,
-    );
-    compressedImg.pipe(res);
   }
 }

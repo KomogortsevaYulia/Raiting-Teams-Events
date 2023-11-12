@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import sharp from "sharp";
 
 export const useUploadsStore = defineStore("uploads", () => {
   // uploadFile in server
@@ -38,14 +37,18 @@ export const useUploadsStore = defineStore("uploads", () => {
     let responseMsg = "сохранено";
 
     // Read the image file as a buffer
-    const compressedImageData = await compressImage(file, 700, 300);
+    // const compressedImageData = await compressImage(file, 700, 300);
+
+    // const formData = new FormData();
+    // formData.append(
+    //   "file",
+    //   new Blob([compressedImageData], { type: "image/webp" }),
+    //   "image.webp",
+    // );
 
     const formData = new FormData();
     formData.append(
-      "file",
-      new Blob([compressedImageData], { type: "image/webp" }),
-      "image.webp",
-    );
+        "file",file);
 
     await axios
       .post(`/api/uploads/image`, formData, {
@@ -62,13 +65,14 @@ export const useUploadsStore = defineStore("uploads", () => {
     return responseMsg;
   }
 
-  async function compressImage(file: File, width: number, height: number) {
-    const buff = await file.arrayBuffer();
-    return await sharp(buff)
-      .resize({ width: width, height: height }) // Set the maximum width of the compressed image
-      .webp({ quality: 80 }) // Set the webp quality to 80%
-      .toBuffer();
-  }
+  // TODO: maybe img compression is needed only on backend?
+  // async function compressImage(file: File, width: number, height: number) {
+  //   const buff = await file.arrayBuffer();
+  //   return await sharp(buff)
+  //     .resize({ width: width, height: height }) // Set the maximum width of the compressed image
+  //     .webp({ quality: 80 }) // Set the webp quality to 80%
+  //     .toBuffer();
+  // }
 
   return {
     uploadFile,

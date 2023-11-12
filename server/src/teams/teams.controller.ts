@@ -319,7 +319,7 @@ export class TeamsController {
       const path = await this.uploadsService.uploadImage(
         startPathUrl,
         file.buffer,
-        extname(file.originalname),
+        // extname(file.originalname),
       );
       return this.teamsService.addImage(id, path);
     } else
@@ -327,24 +327,6 @@ export class TeamsController {
         'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
       );
   }
-
-  // @Post(':id/image')
-  // @ApiOperation({ summary: "Загрузить изображение коллектива" })
-  // @ApiParam({ name: "id", required: true, description: "Идентификатор коллектива" })
-  // @ApiResponse({ status: HttpStatus.OK, description: "Успешно", type: Function })
-  // @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-  // @UseInterceptors(FileInterceptor('file'))
-  // async addImsage(@Req() request: Request, @Param('id') id: number, @UploadedFile(new FileImageValidationPipe())
-  // file: Express.Multer.File) {
-
-  //   const startPathUrl = `${request.protocol}://${request.get('host')}`;
-
-  //   let path = await this.uploadsService.uploadFile(startPathUrl, file)
-  //   return this.teamsService.addImage(id, path);
-  // }
-
-  // @UseInterceptors(FileInterceptor('file'))
-  // async uploadFile(@UploadedFile() file) {
 
   // requisition --------------------------------------------------------------------
   @Get('/:team_id/requisition')
