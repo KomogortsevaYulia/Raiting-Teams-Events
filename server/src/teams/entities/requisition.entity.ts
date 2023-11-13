@@ -28,14 +28,9 @@ export class Requisitions {
   @Column()
   fullname: string;
 
-  // @ApiProperty()
-  // @Column({
-  //     type: "enum",
-  //     enum: ["создана", "принята", "отклонена"],
-  //     default: "создана",
-  //     nullable: true
-  // })
-  // status: string
+  @ApiProperty()
+  @Column({ nullable: true })
+  comment_leader: string;
 
   @ApiProperty()
   @CreateDateColumn({ default: () => 'now()' })
