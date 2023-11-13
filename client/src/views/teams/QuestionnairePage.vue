@@ -1,16 +1,20 @@
 <template>
   <div class="form">
-    <div class="wrapper-question" v-for="(form, index) in data">
+    <div
+      class="wrapper-question"
+      v-for="(field, index) in fields"
+      v-bind:key="index"
+    >
       <div class="question-label">
         <div class="num-question">Вопрос {{ index + 1 }}</div>
         <label class="checkbox-label">
-          <input type="checkbox" v-model="form.required" />
+          <input type="checkbox" v-model="field.required" />
           <div class="checkbox-custom"></div>
           <span class="checkbox-text">Обязательный</span>
         </label>
       </div>
       <div class="wrap-input">
-        <textarea class="input-question" v-model="form.title" />
+        <textarea class="input-question" v-model="field.title" />
         <button class="remove-btn" @click="removeInput(index)">Удалить</button>
       </div>
     </div>
@@ -25,6 +29,8 @@ import axios from "axios";
 import { onBeforeMount, ref } from "vue";
 import { useFormStore } from "@/store/form_store";
 import { useRoute } from "vue-router";
+import type { IFormField } from "@/store/models/forms/form-field.model";
+import type { Ref } from "vue";
 
 const route = useRoute();
 
@@ -34,7 +40,7 @@ let idForm: number;
 
 const formStore = useFormStore();
 
-const data = ref();
+const fields: Ref<IFormField[]> = ref([]);
 const deletedFields = ref();
 
 const responseMsg = ref();
@@ -45,48 +51,41 @@ onBeforeMount(async () => {
 });
 
 async function fetchFormFields() {
-  data.value = await formStore.fetchFormFields(idTeam);
+  fields.value = (await formStore.fetchFormFields(idTeam)) as IFormField[];
   idForm = await formStore.fetchFormId(idTeam);
 }
 
 const addInput = () => {
-  if (!data.value) {
-    data.value = []; // Initialize data.value as an empty array
+  if (!fields.value) {
+    fields.value = []; // Initialize data.value as an empty array
   }
-  data.value.push({ title: "", required: true });
+  fields.value.push({ title: "", required: true });
 };
 
 const submit = async () => {
   const promises = [];
 
-  for (let i = data.value.length - 1; i >= 0; i--) {
-    const form = data.value[i];
-    // if (!form.title.trim()) {
-    //   removeInput(i);
-    // } else {
-    if (form.id == null) {
-      const promise = createFormFields(form.title, idForm, form.required);
+  for (let i = fields.value.length - 1; i >= 0; i--) {
+    const field = fields.value[i];
+
+    if (field.id == null && field.title && field.required) {
+      const promise = createFormFields(field.title, idForm, field.required);
       promises.push(promise);
     }
   }
-
-  // const results = await Promise.all(promises);
-  // const idFields = results.filter((result) => result !== null).join("\n");
 
   if (idForm == undefined) {
     await createForm(idTeam);
   } else {
     await archiveFields(deletedFields.value, true);
-
     // updateForm(idForm)
   }
-  //console.log(idFields);
 };
 
 const removeInput = (index: number) => {
-  if (data.value[index]) {
-    deletedFields.value.push(data.value[index]);
-    data.value.splice(index, 1);
+  if (fields.value[index]) {
+    deletedFields.value.push(fields.value[index]);
+    fields.value.splice(index, 1);
   }
 };
 
@@ -103,10 +102,8 @@ async function createFormFields(
       required: required,
       form: form_id,
     });
-    const strId: string = response.data.id.toString();
-    //console.log(response.data.id)
-    return strId;
-  } catch (error: any) {
+    return response.data.id.toString();
+  } catch (error) {
     if (error.response) {
       responseMsg.value = error.response.data.message;
     }
@@ -128,12 +125,9 @@ async function createForm(idTeam: number) {
     });
 }
 
-async function archiveFields(deletedFields: [], is_archive: boolean) {
-  console.log("deletedFields");
-  console.log(deletedFields);
-  for (let i = 0; i < deletedFields.length; i++) {
-    console.log(deletedFields[i]);
-    let f: any = deletedFields[i];
+async function archiveFields(deletedFields: IFormField[], is_archive: boolean) {
+  for (const element of deletedFields) {
+    let f = element;
     if (f.id) {
       await axios
         .put(`/api/forms/field/${f.id}`, {
@@ -147,19 +141,6 @@ async function archiveFields(deletedFields: [], is_archive: boolean) {
     }
   }
 }
-
-//  async function updateForm(id: number, fields_id: string) {
-
-// responseMsg.value = "сохранено";
-// await axios.put("/api/forms/" + id, {
-//     fields_id: fields_id,
-// })
-//     .catch((err) => {
-//         if (err.response) {
-//             responseMsg.value = err.response.data.message
-//         }
-//     })
-// }
 </script>
 
 <style lang="scss" scoped>
@@ -312,7 +293,7 @@ async function archiveFields(deletedFields: [], is_archive: boolean) {
     height: 80px;
 
     color: #ffffff;
-    background:var(--second-accept);
+    background: var(--second-accept);
   }
 }
 </style>

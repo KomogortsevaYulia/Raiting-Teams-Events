@@ -189,9 +189,7 @@ export class EventsController {
     @Query() searchEventDto: SearchEventDto,
   ) {
     searchEventDto.teamId = teamId;
-    let res = this.eventsService.getEventsViaJournalsByTeam(searchEventDto);
-
-    return res;
+    return this.eventsService.getEventsViaJournalsByTeam(searchEventDto);
   }
 
   @Get('journal/user/:id')

@@ -3,12 +3,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { Function } from './function.entity';
+import { TeamFunction } from './function.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('user_functions')
@@ -25,11 +23,11 @@ export class UserFunction {
   @Column({ nullable: true })
   dateEnd: Date;
 
-  @ManyToOne((type) => Function, (func) => func.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => TeamFunction, (func) => func.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'function_id' }])
-  function: Function;
+  function: TeamFunction;
 
-  @ManyToOne((type) => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'user_id' }])
   user: User;
 }

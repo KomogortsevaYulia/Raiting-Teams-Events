@@ -14,8 +14,10 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  team: any; //коллектив
+import type { ITeam } from "@/store/models/teams/team.model";
+
+defineProps<{
+  team: ITeam; //коллектив
 }>();
 
 const newsList = [

@@ -12,9 +12,9 @@
       <div class="modal-content">
         <div class="modal-title" id="exampleModalLabel">Анкета</div>
         <div
-          v-if="formAnswers"
           v-for="form_field in formAnswers.form_field"
           class="wrapper-questions"
+          v-bind:key="form_field.id"
         >
           <div class="wrapper-one-question">
             <div class="question-label">{{ form_field.title }}</div>
@@ -22,7 +22,11 @@
               disabled
               class="input-answer"
               type="text"
-              :placeholder="form_field.requisition_field[0].value"
+              :placeholder="
+                form_field.requisition_field
+                  ? form_field.requisition_field[0].value
+                  : '-'
+              "
             />
           </div>
         </div>
@@ -39,12 +43,14 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from "vue";
 import { useFormStore } from "@/store/form_store";
+import type { Ref } from "vue";
+import type { IForm } from "@/store/models/forms/form.model";
 
 const formStore = useFormStore();
-const formAnswers = ref();
+const formAnswers: Ref<IForm> = ref({});
 
 const props = defineProps<{
-  requisition: any;
+  requisition: IForm;
 }>();
 
 watch(
@@ -60,7 +66,7 @@ onBeforeMount(async () => {
 
 async function fetchRequisitionAnswers() {
   formAnswers.value = await formStore.fetchRequisitionAnswers(
-    props.requisition.id,
+    props.requisition?.id ?? -1,
   );
 }
 </script>

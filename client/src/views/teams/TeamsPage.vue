@@ -74,10 +74,10 @@
         <!-- Сами карточки -->
         <div :class="[teamStore.layout ? 'wrapper-list' : 'wrapper-grid']">
           <div
-            v-if="!loading"
             v-for="team in data"
             :class="[{ cardEvent__archive: team.is_archive }]"
             class="cardEvent border-block row justify-content-center"
+            v-bind:key="team.id"
           >
             <router-link
               class="col-lg-auto p-0 col-md-auto d-flex justify-content-center"
@@ -85,16 +85,18 @@
             >
               <div class="card__banner">
                 <img
-                  v-if="team.image.length > 0"
-                  :src="team.image[0]"
+                  v-if="team.image?.length && team.image?.length > 0"
+                  :src="team.image?.[0]"
                   class="d-block"
                   style="width: 100%; object-fit: cover"
+                  alt="card__banner"
                 />
                 <img
                   v-else
                   src="@/assets/icon/empty_photo.jpg"
                   class="d-block"
                   style="width: 100%; object-fit: cover"
+                  alt="empty_photo"
                 />
               </div>
             </router-link>
@@ -159,7 +161,7 @@
           </div>
 
           <div
-            v-else-if="loading"
+            v-if="loading"
             class="d-flex align-items-center justify-content-center mt-4"
           >
             <LoadingElem size-fa-icon="fa-3x" />
@@ -177,19 +179,21 @@
 </template>
 
 <script setup lang="ts">
-import Switch_toggle from "@/components/Switch_toggle.vue";
+import Switch_toggle from "@/components/SwitchToggle.vue";
 import { onBeforeMount, ref } from "vue";
 import { usePermissionsStore } from "@/store/permissions_store";
-import CheckBox_Menu from "@/components/CheckBox_Menu.vue";
+import CheckBox_Menu from "@/components/CheckBoxMenu.vue";
 import _ from "lodash";
 import { DirectionName } from "@/store/enums/enum_teams";
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/PaginationElem.vue";
 import { useTeamStore } from "@/store/team_store";
 import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
-import { FilterTeam } from "@/store/models/teams.model";
+import { FilterTeam } from "@/store/models/teams/teams.model";
 import ModalFull from "@/components/modals/ModalFull.vue";
-import Search from "@/components/Search.vue";
+import Search from "@/components/SearchField.vue";
 import Tag from "@/components/TagElem.vue";
+import type { ITeam } from "@/store/models/teams/team.model";
+import type { Ref } from "vue";
 import LoadingElem from "@/components/LoadingElem.vue";
 
 const permissions_store = usePermissionsStore();
@@ -199,7 +203,7 @@ const can = permissions_store.can;
 const menu_items = ref(_.cloneDeep(teamStore.menu_items));
 
 const show = ref(true);
-const data = ref();
+const data: Ref<ITeam[]> = ref([]);
 
 // переключить на редактирвоание коллектива или на создание новаого
 const isEditTeam = ref(false);
@@ -233,10 +237,10 @@ async function handleModalSaveChanges() {
     await fetchTeams();
 }
 
-function editTeam(editT: boolean, team: any) {
+function editTeam(editT: boolean, team: ITeam | null) {
   // редактируем колектив или создаем новый
   isEditTeam.value = editT;
-  teamId.value = team ? team.id : null;
+  teamId.value = team?.id ? team.id : -1;
 }
 
 // вытащить коллективы из бд
@@ -257,10 +261,12 @@ async function fetchTeams() {
 
 async function handleEventSetFilters() {
   menu_items.value.forEach((el) => {
+    let open = undefined;
+    let directions: number[] = [];
+
     switch (el.id) {
       // is open
       case 1:
-        let open = undefined;
         if (el.menu_types[0].checked && el.menu_types[1].checked) {
           open = undefined;
         } else if (el.menu_types[0].checked) {
@@ -273,7 +279,6 @@ async function handleEventSetFilters() {
         break;
       // directions
       case 2:
-        let directions: number[] = [];
         // пройтись по элементам меню
         el.menu_types.forEach((elType) => {
           // пройтись по направлениям

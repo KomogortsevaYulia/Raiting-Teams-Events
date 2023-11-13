@@ -73,7 +73,7 @@ import { onBeforeMount, ref, watch } from "vue";
 const props = defineProps<{
   visiblePages: number; //сколько страниц для переключения может видеть юзер
   maxPage: number; //макс число страниц
-  handleEventChangePage: Function; //обработка события при переходе на другую страницу
+  handleEventChangePage: (pageNumber: number) => void; //обработка события при переходе на другую страницу
 }>();
 
 const current = ref(1); //текущая  страница
@@ -88,7 +88,7 @@ onBeforeMount(() => {
 
 watch(
   () => props.maxPage,
-  async (prev) => {
+  async () => {
     changePage(1);
   },
 );
@@ -156,7 +156,7 @@ function range(from: number, to: number) {
     }
 
     &:last-child .page-link-custom {
-      border-radius: 0px 10px 10px 0px;
+      border-radius: 0 10px 10px 0;
 
       &:hover {
         color: var(--main-color);
@@ -164,7 +164,7 @@ function range(from: number, to: number) {
     }
 
     &:first-child .page-link-custom {
-      border-radius: 10px 0px 0px 10px;
+      border-radius: 10px 0 0 10px;
 
       &:hover {
         color: var(--main-color);

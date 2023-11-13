@@ -5,9 +5,9 @@
     <div class="full-width">
       <div class="wrapper-team__top-panel">
         <div class="text-area">
-          <div class="container">
-            <p>{{ data.title }}</p>
-            <ModalQuestionnaire v-model="data.title" />
+          <div class="container" v-if="team && team.title">
+            <p>{{ team.title }}</p>
+            <ModalQuestionnaire v-model="team.title" />
           </div>
         </div>
       </div>
@@ -19,7 +19,10 @@
         <template v-for="(item, index) in itemList" :key="index">
           <a
             v-if="item.permission"
-            @click="selectItem(index), (showCreate = false)"
+            @click="
+              selectItem(index);
+              showCreate = false;
+            "
             :class="{ active: index == selectedItem }"
             >{{ item.name }}</a
           >
@@ -27,12 +30,12 @@
       </div>
 
       <div v-if="selectedItem === 0">
-        <TeamMain :onUpdateTeam="handleUpdateTeam" :team="data" />
+        <TeamMain :onUpdateTeam="handleUpdateTeam" :team="team" />
       </div>
 
       <div v-if="selectedItem === 1">
         <!-- Блок с НОВОСТЯМИ -->
-        <TeamNews :team="team" />
+        <TeamNews :team="teamUsers" />
       </div>
 
       <div v-if="selectedItem === 2">
@@ -41,7 +44,7 @@
 
       <!-- участники -->
       <div v-if="selectedItem === 3">
-        <div v-for="item in team">
+        <div v-for="item in teamUsers" v-bind:key="item.id">
           <Participation
             :onDeleteMemberEvent="handleDeleteMemberEvent"
             :user="item.user"
@@ -64,17 +67,17 @@
 </template>
 
 <script setup lang="ts">
-import "@/assets/nav-second.scss"
+import "@/assets/nav-second.scss";
 import WIP from "@/components/WIP.vue";
 import { onBeforeMount, ref } from "vue";
-import Ankets from "@/views/teams/Questionnaire.vue";
+import Ankets from "@/views/teams/QuestionnairePage.vue";
 
 import axios from "axios";
 import { useRoute } from "vue-router";
 import { useTeamStore } from "@/store/team_store";
 import ModalQuestionnaire from "@/components/modals/ModalQuestionnaire.vue";
 import TeamNews from "./TeamNews.vue";
-import Participation from "./Participation.vue";
+import Participation from "./ParticipationPage.vue";
 import TeamRequests from "./TeamRequests.vue";
 import { usePermissionsStore } from "@/store/permissions_store";
 import TeamMain from "./TeamMain.vue";
@@ -89,8 +92,8 @@ const idTeam = Number(route.params.id);
 const teamStore = useTeamStore();
 const show = ref(true);
 
-const data = ref();
 const team = ref();
+const teamUsers = ref();
 
 onBeforeMount(async () => {
   await fetchCurrentTeam();
@@ -98,13 +101,13 @@ onBeforeMount(async () => {
 });
 
 async function fetchUsersOfTeam() {
-  team.value = await teamStore.fetchUserOfTeam(idTeam);
+  teamUsers.value = await teamStore.fetchUsersOfTeam(idTeam);
 }
 
 async function fetchCurrentTeam() {
   // я эту хуйню позже перепишу
-  await axios.get("/api/teams/" + route.params.id).then((respose: any) => {
-    data.value = respose.data;
+  await axios.get("/api/teams/" + route.params.id).then((respose) => {
+    team.value = respose.data;
   });
 }
 
@@ -143,7 +146,6 @@ async function handleUpdateTeam() {
 </script>
 
 <style lang="scss" scoped>
-
 .wrapper {
   display: flex;
   height: 89px;

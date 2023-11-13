@@ -7,10 +7,8 @@
     >
       <label class="pe-3">{{ permissions_store.fullname }}</label>
 
-      <!--  -->
       <font-awesome-icon icon="circle-user" class="fa-2x" />
       <!-- Сюда аватарку пихать надо -->
-      <!-- <img width="40" height="40" src="@/assets/icon/77ddd4b13964c93ab31bc99566e58b14c4880c3a69e7bd87e0bfa4656ac274de_1.jpg" alt="icon"/> -->
     </div>
     <section class="dropdownMenu" v-if="isOpen">
       <RouterLink
@@ -51,7 +49,6 @@ import { usePermissionsStore } from "@/store/permissions_store";
 import { ref } from "vue";
 
 const permissions_store = usePermissionsStore();
-const can = permissions_store.can;
 
 const { username } = storeToRefs(permissions_store);
 
@@ -59,7 +56,6 @@ const isOpen = ref(false);
 
 function openClose() {
   isOpen.value = !isOpen.value;
-  // console.log(isOpen.value);
 }
 
 function ClickOutside() {
@@ -131,7 +127,7 @@ function OnExitSubmit() {
       margin: 0;
 
       &:hover {
-        background-color: var(--second-color) ;
+        background-color: var(--second-color);
         border-radius: 5px;
         transition: 0.2s ease;
         color: white;

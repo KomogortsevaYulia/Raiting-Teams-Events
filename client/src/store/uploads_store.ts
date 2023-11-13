@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const useUploadsStore = defineStore("uploads", () => {
   // uploadFile in server
-  async function uploadFile(file: any): Promise<any> {
+  async function uploadFile(file: File) {
     let responseMsg = "";
 
     const formData = new FormData();
@@ -33,7 +33,7 @@ export const useUploadsStore = defineStore("uploads", () => {
 
   // TODO not checked
   // upload image on server
-  async function uploadImage(file: File): Promise<any> {
+  async function uploadImage(file: File){
     let responseMsg = "сохранено";
 
     // Read the image file as a buffer

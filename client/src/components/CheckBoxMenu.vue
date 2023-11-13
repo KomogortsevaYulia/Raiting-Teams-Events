@@ -42,16 +42,12 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  menu_items: {};
-  handleEventSetFilters: Function; //обработчик отправки фильтров
-  handleEventResetFilters: Function;
+  menu_items: unknown;
+  handleEventSetFilters: () => void; //обработчик отправки фильтров
+  handleEventResetFilters: () => void;
 }>();
 
 // const filtersVisivle = ref(false)
-
-// function setFiltersVisivle(fV: boolean) {
-//   filtersVisivle.value = fV
-// }
 </script>
 
 <style scoped lang="scss">

@@ -79,6 +79,7 @@
                 :src="event.images"
                 class="d-block"
                 style="width: 100%; object-fit: cover"
+                alt="banner"
               />
             </div>
             <router-link :to="'/event/' + event.id">
@@ -137,18 +138,19 @@
 
 <script setup lang="ts">
 import "@/assets/nav-second.scss";
-import Switch_toggle from "@/components/Switch_toggle.vue";
-import CheckBox_Menu from "@/components/CheckBox_Menu.vue";
+import Switch_toggle from "@/components/SwitchToggle.vue";
+import CheckBox_Menu from "@/components/CheckBoxMenu.vue";
 import { useEventStore } from "@/store/events_store";
 import { onBeforeMount, ref } from "vue";
 import { usePermissionsStore } from "@/store/permissions_store";
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/PaginationElem.vue";
 import EventsRequests from "./EventsRequests.vue";
 import { useTeamStore } from "@/store/team_store";
 import ModalFull from "@/components/modals/ModalFull.vue";
-import { Event } from "@/store/models/events.model";
+import type { IEventSearch } from "@/store/models/event/events.model";
 import UserEvents from "../user/UserEvents.vue";
-import Search from "@/components/Search.vue";
+import Search from "@/components/SearchField.vue";
+import { Status, Type } from "@/store/enums/enum_event";
 import Tag from "@/components/TagElem.vue";
 import LoadingElem from "@/components/LoadingElem.vue";
 
@@ -196,10 +198,13 @@ const selectItem = (i: number) => {
 async function fetchEvents() {
   loading.value = true;
 
-  let event = new Event();
-  event.limit = limit;
-  event.offset = offset.value;
-  event.search_text = findEventTxt.value;
+  let event: IEventSearch = {
+    limit: limit,
+    offset: offset.value,
+    search_text: findEventTxt.value,
+    type: Type.OUTSIDE,
+    status: Status.ACCEPTED,
+  };
 
   let d = await eventStore.fetchEvents(event);
   data.value = d[0];
@@ -216,10 +221,14 @@ async function handleEventChangePage(currentPage: number) {
 }
 
 // задать фильтры
-async function handleEventSetFilters() {}
+async function handleEventSetFilters() {
+  // TODO document why this async function 'handleEventSetFilters' is empty
+}
 
 // сбросить фильтры
-function handleEventResetFilters() {}
+function handleEventResetFilters() {
+  // TODO document why this function 'handleEventResetFilters' is empty
+}
 </script>
 
 <style lang="scss" scoped>
@@ -358,7 +367,7 @@ function handleEventResetFilters() {}
 
       .card:hover {
         cursor: pointer;
-        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
       }
     }
   }
@@ -379,7 +388,7 @@ function handleEventResetFilters() {}
   width: 100%;
   overflow: hidden;
   height: 15rem;
-  background-image: url("../assets/icon/banner.png");
+  background-image: url("@/assets/icon/banner.png");
   position: relative;
 }
 

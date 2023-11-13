@@ -27,7 +27,8 @@ import { CreateFunctionDto } from '../users/dto/create-functions.dto';
 import { CreateUserFunctionDto } from '../users/dto/create-user-function.dto';
 import { PermissionsRoles, Roles } from '../shared/permissionsRoles';
 import { TeamRoles } from '../shared/teamRoles';
-import {PermissionsActions} from "../general/enums/action-permissions";
+import { PermissionsActions } from '../general/enums/action-permissions';
+import { TeamFunction } from '../users/entities/function.entity';
 
 @Injectable()
 export class TeamsService {
@@ -36,8 +37,8 @@ export class TeamsService {
     private readonly teamsRepository: Repository<Team>,
     @InjectRepository(UserFunction)
     private readonly userFunctionsRepository: Repository<UserFunction>,
-    @InjectRepository(Function)
-    private readonly functionsRepository: Repository<Function>,
+    @InjectRepository(TeamFunction)
+    private readonly functionsRepository: Repository<TeamFunction>,
     @InjectRepository(Requisitions)
     private readonly requisitionsRepository: Repository<Requisitions>,
     @InjectRepository(RequisitionFields)
@@ -97,7 +98,7 @@ export class TeamsService {
       charter_team: updateTeamDto.charterTeam,
     });
 
-    const team = await this.findOne(id);
+    await this.findOne(id);
 
     if (updateTeamDto.newLeaderId != null) {
       const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
@@ -106,10 +107,7 @@ export class TeamsService {
       directionTeamLeaderDto.roleName = TeamRoles.Leader;
 
       // назначить нового пользвоателя
-      const newUserFunction = await this.assignTeamRole(
-        user,
-        directionTeamLeaderDto,
-      );
+      await this.assignTeamRole(user, directionTeamLeaderDto);
     }
 
     return updatedTeam;
@@ -132,10 +130,7 @@ export class TeamsService {
     directionTeamLeaderDto.roleName = 'Руководитель';
 
     // назначить нового пользвоателя
-    const newUserFunction = await this.assignTeamRole(
-      user,
-      directionTeamLeaderDto,
-    );
+    await this.assignTeamRole(user, directionTeamLeaderDto);
 
     return team;
   }
@@ -361,9 +356,7 @@ export class TeamsService {
     };
 
     // сохранить новые данные заявки
-    const req = await this.requisitionsRepository.save(body);
-
-    return req;
+    return await this.requisitionsRepository.save(body);
   }
 
   async findAllRequisitions(
@@ -372,7 +365,6 @@ export class TeamsService {
   ): Promise<Requisitions[]> {
     const rejectStatus = 'Принята';
 
-    console.log(reqDto);
     const query = this.requisitionsRepository
       .createQueryBuilder('requisition')
       .select([
@@ -410,7 +402,7 @@ export class TeamsService {
   }
 
   async findRequisition(req_id: number): Promise<Requisitions> {
-    const req = await this.requisitionsRepository.findOne({
+    return await this.requisitionsRepository.findOne({
       where: { id: req_id },
       relations: {
         user: true,
@@ -424,8 +416,6 @@ export class TeamsService {
         },
       },
     });
-
-    return req;
   }
 
   async findAllRequisitionsByUserId(userId: number): Promise<Requisitions[]> {
@@ -495,14 +485,12 @@ export class TeamsService {
 
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя
-    const teamsFunctions = await this.functionsRepository
+    await this.functionsRepository
       .createQueryBuilder('functions')
       .innerJoin('functions.team', 'team')
       .addSelect('team.title')
       .where('functions.team_id = :id', { id: id })
       .getMany();
-
-    return teamsFunctions;
   }
 
   //архивировать или наоборот
@@ -574,9 +562,7 @@ export class TeamsService {
 
     // find existing user function or update
     try {
-      const userFunc = await this.usersService.createUserFunctionOrUpdate(
-        ufDto,
-      );
+      await this.usersService.createUserFunctionOrUpdate(ufDto);
     } catch (e) {}
 
     return true;
@@ -604,7 +590,7 @@ export class TeamsService {
             await this.usersService.changePermissions(
               oldLeader,
               PermissionsRoles.LEADER_TEAM,
-                PermissionsActions.REVOKE,
+              PermissionsActions.REVOKE,
             );
 
             await this.usersService.removeUserFunction(userFunc.id);
@@ -626,7 +612,7 @@ export class TeamsService {
     await this.usersService.changePermissions(
       assignPermsUser,
       grantPerms,
-        PermissionsActions.GRANT,
+      PermissionsActions.GRANT,
     );
   }
 }

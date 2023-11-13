@@ -84,16 +84,15 @@
 </template>
 
 <script setup lang="ts">
-import Search from "@/components/Search.vue";
+import Search from "@/components/SearchField.vue";
 import { onBeforeMount, ref } from "vue";
-import { FilterTeam } from "@/store/models/teams.model";
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/PaginationElem.vue";
 import { useTeamStore } from "@/store/team_store";
 import LoadingElem from "@/components/LoadingElem.vue";
 import { TeamRoles } from "@/store/enums/team_roles";
-import TagElem from "@/components/TagElem.vue";
 import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
-import ModalEditPermissions from "@/components/modals/ModalEditPermissions.vue";
+import {FilterTeam} from "@/store/models/teams/teams.model";
+import type {ITeam} from "@/store/models/teams/team.model";
 
 const teamStore = useTeamStore();
 
@@ -164,11 +163,12 @@ async function fetchTeams() {
   loading.value = false;
 }
 
-function getLeader(team: any) {
+function getLeader(team: ITeam) {
   const leaders = [];
+  if(team.functions)
   for (let i = 0; i < team.functions.length; i++) {
     const func = team.functions[i];
-    if (func.title === TeamRoles.Leader) {
+    if (func.title === TeamRoles.Leader && func.userFunctions) {
       for (let io = 0; io < func.userFunctions.length; io++) {
         const userFunc = func.userFunctions[io];
         leaders.push(userFunc.user);

@@ -1,7 +1,6 @@
 import { IsArray, IsInt, IsString } from 'class-validator';
 
 export class CreateRequisitionDto {
-  
   @IsInt()
   userId: number;
 

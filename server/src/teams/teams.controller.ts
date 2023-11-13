@@ -44,7 +44,6 @@ import { UserDecorator } from '../shared/user.decorator';
 import { User } from '../users/entities/user.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { AssignDirectionTeamLeaderDto } from '../users/dto/direction-leader.dto';
-import {Roles} from "../shared/permissionsRoles";
 import {TeamRoles} from "../shared/teamRoles";
 import { extname } from 'path';
 
@@ -450,10 +449,7 @@ export class TeamsController {
     directionTeamLeaderDto.roleName = TeamRoles.Member;
 
     // назначить нового пользвоателя
-    const newUserFunction = await this.teamsService.assignTeamRole(
-      user,
-      directionTeamLeaderDto,
-    );
+    await this.teamsService.assignTeamRole(user, directionTeamLeaderDto);
 
     return await this.teamsService.assignTeamRole(user, directionTeamLeaderDto);
   }

@@ -22,7 +22,7 @@ import { ref, watch } from "vue";
 const findTeamTxt = ref("");
 
 const props = defineProps<{
-  handleTimerSearch: Function;
+  handleTimerSearch: (eventTxt: string) => void;
 }>();
 
 const fetchTimer = _.debounce(() => {

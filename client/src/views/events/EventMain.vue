@@ -110,10 +110,10 @@ onBeforeMount(async () => {
 });
 
 async function fetchCurrentEvent() {
-  // я эту хуйню позже перепишу
+
   await axios
     .get("/api/events/external/" + route.params.id)
-    .then((respose: any) => {
+    .then((respose) => {
       data.value = respose.data;
       dateStart.value = moment(data.value.dateStart).format(
         "DD-MM-YYYY, HH:mm",

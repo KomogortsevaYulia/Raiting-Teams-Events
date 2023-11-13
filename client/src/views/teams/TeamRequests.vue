@@ -1,16 +1,12 @@
 <template>
-  <div
-    v-if="req == null || req[0] == null"
-    class="alert alert-warning"
-    role="alert"
-  >
+  <div v-if="req.length <= 0" class="alert alert-warning" role="alert">
     Заявок нет
   </div>
 
   <!-- анкета -->
   <ModalQuestionnaireAnswers :requisition="currentRequisition" />
 
-  <div v-for="item in req">
+  <div v-for="item in req" v-bind:key="item.id">
     <div class="member-card">
       <div class="row ms-lg-3">
         <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
@@ -24,13 +20,13 @@
           <div class="member-info p-3">
             <div class="col">
               <div class="row">
-                <h1>{{ item.user.fullname }}</h1>
+                <h1>{{ item?.user?.fullname }}</h1>
               </div>
               <div class="row">
                 <h2>Дата последнего рассмотрения: {{ item.date_update }}</h2>
               </div>
               <div class="row">
-                <h2>Статус: {{ item.status.name }}</h2>
+                <h2>Статус: {{ item?.status?.name }}</h2>
               </div>
               <div class="row d-flex justify-content-end g-2">
                 <div class="col-auto">
@@ -78,15 +74,16 @@ import ModalQuestionnaireAnswers from "@/components/modals/ModalQuestionnaireAns
 import { useTeamStore } from "@/store/team_store";
 import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref, onBeforeMount } from "vue";
+import type { IRequisition } from "@/store/models/forms/requisition.model";
+import type { Ref } from "vue";
 
 const teamStore = useTeamStore();
-const uFStore = useUserFunctionsStore();
-
+useUserFunctionsStore();
 const props = defineProps<{
   idTeam: number;
 }>();
 
-const req = ref();
+const req: Ref<IRequisition[]> = ref([]);
 const currentRequisition = ref();
 
 onBeforeMount(async () => {
@@ -97,21 +94,16 @@ async function fetchRequisitions() {
   req.value = await teamStore.fetchRequisitions(props.idTeam);
 }
 
-async function updateRequisition(req: any, status_name: string) {
-  await teamStore.updateRequisition(req.id, status_name);
+async function updateRequisition(req: IRequisition, status_name: string) {
+  await teamStore.updateRequisition(req.id ?? -1, status_name);
   await fetchRequisitions();
 
   if (status_name == "Принята") {
-    await teamStore.assignNewParticipant(props.idTeam, req.user.id);
+    await teamStore.assignNewParticipant(props.idTeam, req.user?.id ?? -1);
   }
 }
 
-async function getRequisitions(req_id: number, status_name: string) {
-  await teamStore.updateRequisition(req_id, status_name);
-}
-
-function setCurrentRequisition(req: any) {
-  // редактируем колектив или создаем новый
+function setCurrentRequisition(req: IRequisition) {
   currentRequisition.value = req;
 }
 </script>

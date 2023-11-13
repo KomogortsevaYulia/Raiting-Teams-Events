@@ -3,7 +3,10 @@
     <!-- Навигация -->
     <div class="wrapper-second__navigation">
       <a
-        @click="selectItem(index), (showCreate = false)"
+        @click="
+          selectItem(index);
+          showCreate = false;
+        "
         v-for="(direction, index) in directions"
         :key="index"
         :class="{ active: index == selectedItem }"
@@ -11,7 +14,8 @@
       >
     </div>
 
-    <div class="wrapper-team__create">
+    <div class="wrapper-team__c
+    reate">
       <div v-for="(direction, index) in directions" :key="index">
         <div class="content" v-if="index == selectedItem && !showCreate">
           <!--description  -->
@@ -19,8 +23,9 @@
           <div class="alert alert-info">
             <div
               v-if="
-                direction.functions[0] &&
-                direction.functions[0].userFunctions[0]
+                !direction.functions ||
+                (direction.functions[0] &&
+                  direction.functions[0].userFunctions[0])
               "
             >
               <p>
@@ -53,20 +58,6 @@
         </button>
       </div>
     </div>
-
-    <!-- Форма с полями для создания -->
-    <!-- <div class="wrapper-team__create">
-        <form v-if="showCreate" class="form-team__create">
-            <div class="create-filds">
-                <div class="filds-area">
-                    <input type="text" placeholder="ФИО руководителя" required>
-                </div>
-                <div class="btn">
-                    <button @click="showCreate = false">Сохранить</button>
-                </div>
-            </div>
-        </form>
-    </div> -->
   </div>
 </template>
 
@@ -74,11 +65,13 @@
 import { onBeforeMount, ref } from "vue";
 import { useTeamStore } from "@/store/team_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import "@/assets/nav-second.scss"
+import "@/assets/nav-second.scss";
+import type { ITeam } from "@/store/models/teams/team.model";
+import type { Ref } from "vue";
 
 const selectedItem = ref(0);
 const showCreate = ref(false);
-const directions = ref();
+const directions: Ref<ITeam[]> = ref([]);
 // store--------------------------------------------------------------
 const teamStore = useTeamStore();
 
@@ -99,7 +92,6 @@ async function getDirections() {
 </script>
 
 <style lang="scss" scoped>
-
 .btn {
   padding-top: 1rem;
 }

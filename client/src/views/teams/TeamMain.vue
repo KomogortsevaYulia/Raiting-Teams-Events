@@ -1,35 +1,42 @@
 <template>
-  <div class="navigation-tags row g-1">
-    <Tag v-for="(item, index) in team.tags" class="col-auto me-2" :text="item" :key="index" />
-  </div>
-  <hr />
-  <div class="middle-panel">
-    <div class="column-left">
-      <h2>О коллективе</h2>
-      {{ team.description }}
+  <div v-if="team">
+    <div class="navigation-tags row g-1">
+      <Tag
+        v-for="(item, index) in team.tags"
+        class="col-auto me-2"
+        :text="item"
+        :key="index"
+      />
     </div>
-    <div class="column-right">
-      <div class="image-container">
-        <div v-for="(item, index) in team.image" :key="index">
-          <img :src="item" v-if="currentPage === index" />
-        </div>
+    <hr />
+    <div class="middle-panel">
+      <div class="column-left">
+        <h2>О коллективе</h2>
+        {{ team.description }}
       </div>
-      <div class="page-arrows" v-iv="team.image.length > 0">
-        <div class="arrow-left" @click="previousPage">
-          <FontAwesomeIcon icon="angle-left" />
+      <div class="column-right">
+        <div class="image-container">
+          <div v-for="(item, index) in team.image" :key="index">
+            <img :src="item" v-if="currentPage === index" alt="" />
+          </div>
         </div>
-        <div class="arrow-right" @click="nextPage">
-          <FontAwesomeIcon icon="angle-right" />
+        <div class="page-arrows" v-if="team.image && team.image.length > 0">
+          <div class="arrow-left" @click="previousPage">
+            <FontAwesomeIcon icon="angle-left" />
+          </div>
+          <div class="arrow-right" @click="nextPage">
+            <FontAwesomeIcon icon="angle-right" />
+          </div>
         </div>
-      </div>
-      <div class="add-container">
-        <input
-          ref="image"
-          class="form-control"
-          type="file"
-          @change="uploadImage"
-        />
-        <button @click="addImage()">Добавить изображение</button>
+        <div class="add-container">
+          <input
+            ref="image"
+            class="form-control"
+            type="file"
+            @change="uploadImage"
+          />
+          <button @click="addImage()">Добавить изображение</button>
+        </div>
       </div>
     </div>
   </div>
@@ -40,10 +47,11 @@ import { useTeamStore } from "@/store/team_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
 import Tag from "@/components/TagElem.vue";
+import type { ITeam } from "@/store/models/teams/team.model";
 
 const props = defineProps<{
-  team: any; //коллектив
-  onUpdateTeam: Function;
+  team: ITeam; //коллектив
+  onUpdateTeam: () => void;
 }>();
 
 const teamStore = useTeamStore();
@@ -52,12 +60,8 @@ const currentPage = ref(0);
 
 const image = ref<File>();
 
-function setCurrentPage(page: number) {
-  currentPage.value = page;
-}
-
 function nextPage() {
-  if (currentPage.value + 1 < props.team.image.length) {
+  if (props.team.image && currentPage.value + 1 < props.team.image.length) {
     currentPage.value++;
   } else {
     currentPage.value = 0;
@@ -67,12 +71,12 @@ function nextPage() {
 function previousPage() {
   if (currentPage.value - 1 >= 0) {
     currentPage.value--;
-  } else {
+  } else if (props.team.image) {
     currentPage.value = props.team.image.length - 1;
   }
 }
 
-function uploadImage(e: any) {
+function uploadImage(e: { target: { files: (File | undefined)[] } }) {
   image.value = e.target.files[0];
 }
 
@@ -82,8 +86,10 @@ async function addImage() {
 
   image.value = undefined;
 
-  await teamStore.addImage(props.team.id, formteam);
-  props.onUpdateTeam();
+  if (props.team.id) {
+    await teamStore.addImage(props.team.id, formteam);
+    props.onUpdateTeam();
+  }
 }
 </script>
 
@@ -122,7 +128,7 @@ async function addImage() {
   }
 
   .column-right {
-    max-width: fill-available;
+    max-width: max-content;
     padding: 0 10px;
 
     .add-container {

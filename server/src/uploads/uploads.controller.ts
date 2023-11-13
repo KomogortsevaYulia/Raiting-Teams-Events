@@ -1,16 +1,16 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
-  Header,
-  HttpStatus,
   Post,
-  Query,
-  Req,
-  Res,
   UploadedFile,
   UseInterceptors,
+  HttpStatus,
+  Query,
+  Header,
+  Res,
+  Req,
+  Delete,
+  Body,
 } from '@nestjs/common';
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';

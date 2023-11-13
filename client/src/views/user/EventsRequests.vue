@@ -18,12 +18,12 @@
 </template>
 
 <script setup lang="ts">
-import "@/assets/nav-second.scss"
+import "@/assets/nav-second.scss";
 import { ref, onBeforeMount } from "vue";
-import { useRoute } from "vue-router";
+// import { useRoute } from "vue-router";
 
-const route = useRoute();
-const idUser = Number(route.query.user_id);
+// const route = useRoute();
+// const idUser = Number(route.query.user_id);
 
 const itemList = [
   { name: "Мероприятия (заявки)" },
@@ -40,7 +40,6 @@ const selectItem = (i: number) => {
 </script>
 
 <style lang="scss" scoped>
-
 .navigation {
   padding: 20px;
   background: white;

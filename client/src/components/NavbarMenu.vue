@@ -1,25 +1,3 @@
-<script setup lang="ts">
-import { RouterLink } from "vue-router";
-import { ref } from "vue";
-import User_Profile from "@/components/User_profile.vue";
-import { usePermissionsStore } from "@/store/permissions_store";
-
-const permissions_store = usePermissionsStore();
-const can = permissions_store.can;
-const accountStatus = ref(permissions_store.isLogged);
-
-function OnExitSubmit() {
-  permissions_store.logout();
-}
-
-const itemLink = [
-  // { name: "Анкета(Создание)", path: "/questionnaire" },
-  { name: "Мероприятия", path: "/news" },
-  { name: "Коллективы", path: "/teams" },
-  // { name: "Статистика", path: "/statistic" },
-];
-</script>
-
 <template>
   <nav class="navbar navbar-wrapper navbar-expand-xl fixed-top p-2">
     <div class="container-fluid mx-lg-6 mx-md-5">
@@ -43,7 +21,11 @@ const itemLink = [
       <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <!-- Здесь перебираем элементы из массива менюшек -->
         <div class="navbar__item-link row w-100 justify-content-center">
-          <div v-for="item in itemLink" class="link-item col-auto">
+          <div
+            v-for="item in itemLink"
+            class="link-item col-auto"
+            v-bind:key="item.name"
+          >
             <RouterLink class="link" active-class="active" :to="item.path">
               <p class="align-items-center d-flex">{{ item.name }}</p>
             </RouterLink>
@@ -78,6 +60,24 @@ const itemLink = [
     </div>
   </nav>
 </template>
+
+<script setup lang="ts">
+import { RouterLink } from "vue-router";
+import { ref } from "vue";
+import User_Profile from "@/components/UserProfile.vue";
+import { usePermissionsStore } from "@/store/permissions_store";
+
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
+ref(permissions_store.isLogged);
+
+const itemLink = [
+  // { name: "Анкета(Создание)", path: "/questionnaire" },
+  { name: "Мероприятия", path: "/news" },
+  { name: "Коллективы", path: "/teams" },
+  // { name: "Статистика", path: "/statistic" },
+];
+</script>
 
 <style lang="scss" scoped>
 @import "@/assets/globals.scss";

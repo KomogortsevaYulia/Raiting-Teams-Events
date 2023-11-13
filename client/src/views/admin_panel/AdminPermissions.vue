@@ -7,7 +7,7 @@
   <div class="wrapper-admin-teams">
     <div class="row mb-4 align-items-end">
       <div class="col-auto">
-        <Search :handle-timer-search="handleTimerSearch" />
+        <SearchField :handle-timer-search="handleTimerSearch" />
       </div>
     </div>
     <div class="overflow-auto">
@@ -34,7 +34,7 @@
             <td>{{ user.email }}</td>
             <td>
               <div class="row g-2">
-                <div v-for="permission in user.permissions" class="col-auto">
+                <div v-for="(permission, index) in user.permissions" class="col-auto" v-bind:key="index">
                   <TagElem :text="permission" />
                 </div>
               </div>
@@ -60,7 +60,7 @@
       <LoadingElem size-fa-icon="fa-3x" />
     </div>
 
-    <Pagination
+    <PaginationElem
       :max-page="maxPages"
       :visible-pages="visiblePages"
       :handleEventChangePage="handleEventChangePage"
@@ -69,14 +69,14 @@
 </template>
 
 <script setup lang="ts">
-import Search from "@/components/Search.vue";
 import { onBeforeMount, ref } from "vue";
-import Pagination from "@/components/Pagination.vue";
 import LoadingElem from "@/components/LoadingElem.vue";
 import TagElem from "@/components/TagElem.vue";
 import { FilterUser } from "@/store/models/user.model";
 import { useUserStore } from "@/store/user_store";
 import ModalEditPermissions from "@/components/modals/ModalEditPermissions.vue";
+import PaginationElem from "@/components/PaginationElem.vue";
+import SearchField from "@/components/SearchField.vue";
 
 const userStore = useUserStore();
 
