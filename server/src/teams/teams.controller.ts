@@ -44,7 +44,7 @@ import { UserDecorator } from '../shared/user.decorator';
 import { User } from '../users/entities/user.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { AssignDirectionTeamLeaderDto } from '../users/dto/direction-leader.dto';
-import {TeamRoles} from "../shared/teamRoles";
+import { TeamRoles } from '../shared/teamRoles';
 import { extname } from 'path';
 
 @ApiTags('teams') //<---- Отдельная секция в Swagger для всех методов контроллера
