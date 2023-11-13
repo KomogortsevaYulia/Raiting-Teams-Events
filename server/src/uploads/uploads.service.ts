@@ -94,10 +94,10 @@ export class UploadsService {
   ): Promise<Buffer> {
     return await sharp(buffer)
       .toFormat('webp') // Convert to WebP format
-        .resize(width, height,  {
-          fit: 'inside', // Maintain aspect ratio and fit within the specified dimensions
-          withoutEnlargement: true, // Do not enlarge the image if smaller than the target size
-        })
+      .resize(width, height, {
+        fit: 'inside', // Maintain aspect ratio and fit within the specified dimensions
+        withoutEnlargement: true, // Do not enlarge the image if smaller than the target size
+      })
       .toBuffer();
   }
 
