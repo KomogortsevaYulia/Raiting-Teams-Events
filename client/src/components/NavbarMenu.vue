@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-wrapper navbar-expand-lg fixed-top p-2">
+  <nav class="navbar navbar-wrapper navbar-expand-xl fixed-top p-2">
     <div class="container-fluid mx-lg-6 mx-md-5">
       <!-- Иконка политеха -->
       <div class="navbar__item-logo">
@@ -42,6 +42,12 @@
               <p class="align-items-center d-flex">Направления</p>
             </RouterLink>
           </div>
+
+            <div v-if="can('can all')" class="link-item col-auto">
+                <RouterLink class="link" active-class="active" :to="'/admin-panel'">
+                    <p class="align-items-center admin-btn d-flex"> <span>Админ панель </span> <font-awesome-icon :icon="['fas', 'gear']" class="fa-xl mx-2" /></p>
+                </RouterLink>
+            </div>
         </div>
         <!-- Кнопка вход + Личный кабинет-->
         <div class="navbar__item-login justify-content-center d-flex">
@@ -105,6 +111,17 @@ const itemLink = [
 
     .link-item {
       padding: 1rem;
+
+      .admin-btn{
+        padding: 0 10px;
+        border-radius: 50px;
+        border: 2px solid var(--main-navigation-color);
+
+        &:hover{
+          border: 2px solid var(--main-color);
+        }
+      }
+
 
       p {
         cursor: pointer;

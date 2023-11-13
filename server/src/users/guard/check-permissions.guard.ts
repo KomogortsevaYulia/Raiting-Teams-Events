@@ -1,6 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { Reflector } from '@nestjs/core';
+import { User } from '../entities/user.entity';
+import { Permissions } from '../../shared/permissions';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -12,16 +14,18 @@ export class PermissionsGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     // console.log(context.switchToHttp().getRequest().session)
     const session = context.switchToHttp().getRequest().session;
+    const user = new User();
+    user.userId = session.user_id;
 
     // запросить разрешения с декоратора
-    const requiredPermissions = this.reflector.get<string[]>(
+    const requiredPermissions = this.reflector.get<Permissions[]>(
       'permissions',
       context.getHandler(),
     );
     if (!requiredPermissions) {
       return true; // no permissions required, allow access
     }
-    const userId: number = session.user_id;
-    return this.usersService.hasPermissions(userId, requiredPermissions);
+
+    return this.usersService.checkPermissions(user, requiredPermissions);
   }
 }

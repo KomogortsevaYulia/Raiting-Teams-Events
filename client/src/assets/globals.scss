@@ -9,7 +9,7 @@
 @mixin form-elem {
   border: var(--border-block);
   border-radius: 10px;
-  padding: 0.6rem;
+  padding: var(--padding-form);
   background-color: #fff;
   font-family: var(--font-family-primary);
 
@@ -112,8 +112,17 @@ textarea {
   background: white;
   border-radius: 50px;
   color: black;
-  padding: 0.6rem 0.9rem;
+  padding: 0.6rem 0.7rem;
   border: var(--border-block);
+
+  &:hover {
+    color: var(--main-color);
+  }
+}
+
+.btn-icon {
+  background: white;
+  color: black;
 
   &:hover {
     color: var(--main-color);

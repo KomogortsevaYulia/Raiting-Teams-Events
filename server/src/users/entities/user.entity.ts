@@ -77,6 +77,10 @@ export class User {
   @Column({ nullable: true })
   course: number;
 
+  @ApiProperty()
+  @Column({ nullable: true, unique: true })
+  bitrix_id: number;
+
   @OneToMany(() => UserFunction, (user_func) => user_func.function, {
     cascade: true,
   })
@@ -93,4 +97,7 @@ export class User {
   @ApiProperty()
   @OneToMany(() => Event, (event) => event.user, { cascade: true })
   events: Event[];
+
+  // use it as object class in classes
+  userId: number;
 }

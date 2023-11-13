@@ -1,5 +1,5 @@
 .env
-
+vite.config.ts
 
 # compiled output
 /dist

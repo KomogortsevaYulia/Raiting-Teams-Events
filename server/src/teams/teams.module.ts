@@ -38,5 +38,6 @@ import { FormsService } from 'src/forms/forms.service';
     GeneralService,
     FormsService,
   ],
+  exports: [TeamsService],
 })
 export class TeamsModule {}

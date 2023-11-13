@@ -26,10 +26,22 @@ async function bootstrap() {
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        secure: false,
+        httpOnly: false,
+        //   24 hours
+        maxAge: 24 * 60 * 60000,
+      },
     }),
   );
 
-  await app.listen(3000);
+  // debug session
+  // app.use((req, res, next) => {
+  //   console.log(req.session);
+  //   next();
+  // });
+
+  await app.listen(process.env.PORT);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 

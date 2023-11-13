@@ -39,9 +39,14 @@
       <!-- Правая часть контейнера -->
       <div class="cards__container ms-md-4">
         <!-- Поисковые строки -->
-        <div class="cards__search">
-          <Search :handleTimerSearch="handleTimerSearch" />
-          <Switch_toggle />
+        <div class="row g-2">
+          <div class="col">
+            <Search :handleTimerSearch="handleTimerSearch" />
+          </div>
+          <div class="col-auto">
+            <Switch_toggle />
+          </div>
+
           <div class="d-md-none">
             <button
               type="button"
@@ -109,7 +114,7 @@
           v-else-if="loading"
           class="d-flex align-items-center justify-content-center mt-4"
         >
-          <LoadingAnimation size-fa-icon="fa-3x" />
+          <LoadingElem size-fa-icon="fa-3x" />
         </div>
 
         <Pagination
@@ -145,9 +150,9 @@ import ModalFull from "@/components/modals/ModalFull.vue";
 import type { IEventSearch } from "@/store/models/event/events.model";
 import UserEvents from "../user/UserEvents.vue";
 import Search from "@/components/SearchField.vue";
-import Tag from "@/components/TagElem.vue";
-import LoadingAnimation from "@/components/LoadingAnimation.vue";
 import { Status, Type } from "@/store/enums/enum_event";
+import Tag from "@/components/TagElem.vue";
+import LoadingElem from "@/components/LoadingElem.vue";
 
 const eventStore = useEventStore();
 const teamStore = useTeamStore();
@@ -233,15 +238,6 @@ function handleEventResetFilters() {
 
   .cards__container {
     width: 100%;
-
-    .cards__search {
-      display: flex;
-      justify-content: space-between;
-
-      .title__search {
-        width: 70%;
-      }
-    }
 
     .cards__wrap {
       background-color: #fff;

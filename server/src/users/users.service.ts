@@ -1,11 +1,13 @@
 import {
+  BadRequestException,
+  ForbiddenException,
   HttpCode,
   HttpException,
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { CreateFunctionDto } from './dto/create-functions.dto';
 import { CreateUserFunctionDto } from './dto/create-user-function.dto';
@@ -20,6 +22,10 @@ import { validate } from 'class-validator';
 import { Team } from '../teams/entities/team.entity';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { FunctionDto } from './dto/functions.dto';
+import { Permissions } from '../shared/permissions';
+import { PermissionsActions } from '../general/enums/action-permissions';
+import { UnauthorizedException } from '@nestjs/common';
+import axios from 'axios';
 
 @Injectable()
 export class UsersService {
@@ -35,54 +41,96 @@ export class UsersService {
     private readonly teamRepository: Repository<Team>,
   ) {}
 
-  async findByName(limit: number, name: string, email: string) {
-    return await this.usersRepository.find({
-      take: limit,
-      where: [{ fullname: Like(`%${name}%`) }, { email: Like(`%${email}%`) }],
-    });
+  async authorizeBitrix(code: string) {
+    const client_id = process.env.BITRIX_CLIENT_ID;
+    const client_secret = process.env.BITRIX_CLIENT_SECRET;
+
+    try {
+      const tokenResponse = await axios.get(
+        'https://int.istu.edu/oauth/token/?grant_type=authorization_code',
+        {
+          params: {
+            code,
+            client_id,
+            client_secret,
+          },
+        },
+      );
+
+      const tokenData = tokenResponse.data;
+
+      if (tokenData.error) {
+        throw new Error(tokenData.error_description);
+      }
+
+      const userInfoResponse = await axios.get(
+        tokenData.client_endpoint + 'user.info.json',
+        {
+          params: {
+            auth: tokenData.access_token,
+          },
+        },
+      );
+
+      const userInfoData = userInfoResponse.data;
+
+      if (userInfoData.error) {
+        throw new Error(userInfoData.error_description);
+      }
+      return userInfoData.result;
+    } catch (error) {
+      throw new UnauthorizedException(
+        `Не удалось авторизоваться через Кампус: ${error}`,
+      );
+    }
   }
+
+  async loginBitrix(code: string) {
+    const userBitrixData = await this.authorizeBitrix(code);
+    const user = await this.findByBitrixId(userBitrixData.id);
+
+    if (user) {
+      return user;
+    } else {
+      const newUser = new User();
+      newUser.bitrix_id = userBitrixData.id;
+      newUser.email = userBitrixData.email;
+      newUser.username = userBitrixData.email;
+      newUser.password = 'stud';
+      newUser.fullname = `${userBitrixData.last_name} ${userBitrixData.name} ${userBitrixData.second_name}`;
+      return await this.usersRepository.save(newUser);
+    }
+  }
+
+  async findByBitrixId(bitrix_id: number): Promise<User> {
+    return this.usersRepository.findOneBy({ bitrix_id: bitrix_id });
+  }
+
+  async findUser(limit: number, offset: number, searchTxt: string) {
+    let query = this.usersRepository
+      .createQueryBuilder('users')
+      .orderBy('users.fullname', 'ASC')
+      .limit(limit)
+      .offset(offset);
+
+    if (searchTxt) {
+      searchTxt = searchTxt.toLowerCase();
+      query = query.andWhere(
+        `(LOWER(users.fullname) like :fullname 
+         or LOWER(users.email) like :email)`,
+        {
+          fullname: `%${searchTxt}%`,
+          email: `%${searchTxt}%`,
+        },
+      );
+    }
+
+    return await query.getManyAndCount();
+  }
+
   async update(updateUserDto: UpdateUserDto, id: number) {
     return this.usersRepository.update(+id, updateUserDto);
   }
-
-  // TODO del-feat add role
-  // async addRole(education_group, title_role) {}
-
-  async findAllWithLimit(limit: number): Promise<User[]> {
-    return await this.usersRepository.find({ take: limit });
-  }
-
-  async findAll(): Promise<User[]> {
-    return await this.usersRepository.createQueryBuilder('users').getMany();
-  }
-
-  // modernize function user if user not exist
-  // @HttpCode(400)
-  // async findOneWithFunction(id: number) { // Все робит но нужно добавить условие если нет коллективов у юзера вывести общую инфу
-
-  //   // if(isNaN(id)){
-  //   //   throw new HttpException("такого юзера не существует " + id, 400)
-  //   // }
-
-  //   const userExist = await this.usersRepository
-  //     .createQueryBuilder("users")
-  //     .where("users.id = :id", { id })
-  //     .leftJoin("users.user_function", "user_function")
-  //     .addSelect("user_function")
-  //     .leftJoin("user_function.functions", "functions")
-  //     .addSelect("functions")
-  //     .leftJoinAndSelect("functions.team", "teams")
-  //     .addSelect("teams")
-  //     .getOne();
-
-  //   // console.log("userExist " + userExist)
-  //   if (!userExist) {
-  //     throw new HttpException("такого юзера не существует ", 400)
-  //   }
-
-  //   return userExist
-
-  // }
 
   async login(username: string, pass: string): Promise<any> {
     const user = await this.usersRepository
@@ -91,7 +139,6 @@ export class UsersService {
       .getOne();
 
     if (user && (await argon2.verify(user.password, pass))) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;
     } else {
@@ -99,8 +146,8 @@ export class UsersService {
     }
   }
 
-  async findOne(email: string): Promise<any> {
-    return this.usersRepository.findOneBy({ email: email });
+  async findOne(id: number) {
+    return await this.usersRepository.findOne({ where: { id: id } });
   }
 
   async remove(id: string): Promise<void> {
@@ -151,37 +198,102 @@ export class UsersService {
 
     if (!user) {
       const errors = { User: 'Not found' };
-      throw new HttpException({ errors }, 401);
+      throw new BadRequestException({ errors });
     }
     return user;
   }
 
   // checkers---------------------------------------------------------------------------
   // check permissions
-  async hasPermissions(userId: number, requiredPermissions: string[]) {
+  async checkPermissions(
+    user: User,
+    requiredPermissions: Permissions[],
+    throwErrIfHavent = true,
+  ) {
     let userHaveAllPermissions = true;
     //  get user and its permissions
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-    // console.log("user", user.permissions, "req ", requiredPermissions)
+    user = await this.usersRepository.findOne({ where: { id: user.userId } });
 
-    // go throught req permissions
-    requiredPermissions.forEach((reqPermission) => {
-      let havePermission = false;
-      //  go throught user permissions
-      for (let i = 0; i < user.permissions.length; i++) {
-        if (user.permissions[i] === reqPermission) {
-          havePermission = true;
-          break;
+    // check if it is admin
+    const isAdmin = user.permissions.includes(Permissions.CAN_ALL);
+    // go through req permissions (with AND checking for perms)
+    if (!isAdmin)
+      requiredPermissions.forEach((reqPermission) => {
+        const havePermission = user.permissions.includes(reqPermission);
+
+        //if one from permissions not granted then return false
+        if (!havePermission) {
+          userHaveAllPermissions = false;
+          if (throwErrIfHavent)
+            throw new ForbiddenException(
+              `У Вас нет разрешений: ${requiredPermissions}`,
+            );
+          else return userHaveAllPermissions;
         }
-      }
-      // if one from permissions not granted then return false
-      if (!havePermission) {
-        userHaveAllPermissions = false;
-        return userHaveAllPermissions;
+      });
+
+    return userHaveAllPermissions;
+  }
+
+  // TODO: переделать запрос changePermissions, плохо читать
+  // add/revoke permissions to user
+  async changePermissions(
+    user: User,
+    permissions: Permissions[],
+    permissionActions = PermissionsActions.GRANT,
+  ) {
+    user = await this.usersRepository.findOne({ where: { id: user.userId } });
+    const newPerms: string[] = [];
+    // user can have no perms
+    if (!user) return false;
+    user.permissions = user.permissions ?? [];
+
+    const validPerms = Object.values(Permissions);
+
+    permissions?.forEach((reqPermission: Permissions) => {
+      // console.log(reqPermission, user.id, newPerms, user.permissions, permissionActions);
+
+      // if permission exist in system
+      const permIsValid = validPerms.includes(reqPermission);
+
+      if (permIsValid) {
+        const havePermission = user.permissions.includes(reqPermission);
+        // GRANT
+        if (permissionActions == PermissionsActions.GRANT && !havePermission)
+          newPerms.push(reqPermission);
+        // REVOKE
+        else if (
+          permissionActions == PermissionsActions.REVOKE &&
+          havePermission
+        )
+          newPerms.push(reqPermission);
+        // REPLACE
+        else if (permissionActions == PermissionsActions.REPLACE) {
+          const havePermission = newPerms.includes(reqPermission);
+          if (!havePermission) newPerms.push(reqPermission);
+        }
       }
     });
 
-    return userHaveAllPermissions;
+    // GRANT need permissionActions, add perms to user
+    if (permissionActions == PermissionsActions.GRANT)
+      user.permissions.push(...newPerms);
+    // REVOKE need revoke, del perms from user
+    else if (
+      permissionActions == PermissionsActions.REVOKE &&
+      user.permissions.length > 0
+    ) {
+      user.permissions = user.permissions.filter((perm) => {
+        return !newPerms.includes(perm);
+      });
+    }
+    // REPLACE
+    else if (permissionActions == PermissionsActions.REPLACE)
+      user.permissions = newPerms;
+
+    // save user with new perms
+    await this.usersRepository.save(user);
+    return true;
   }
 
   // проверить есть ли у юзера специальные
@@ -190,6 +302,12 @@ export class UsersService {
     teamId: number,
     permissions: string[],
   ) {
+    const user = new User();
+    user.userId = userId;
+
+    const isAdmin = await this.checkPermissions(user, []);
+    if (isAdmin) return true;
+
     const permissisonsInTeam = await this.userFunctionsRepository
       .createQueryBuilder('user_function')
       .leftJoin('user_function.function', 'function')
@@ -200,12 +318,11 @@ export class UsersService {
       .andWhere('function.type_function in (:...type_functions) ', {
         type_functions: permissions,
       })
-      // special for admin
-      .orWhere('user.username = :name', { name: 'admin' })
       .getMany();
 
     return permissisonsInTeam && permissisonsInTeam.length > 0;
   }
+
   // checkers---------------------------------------------------------------------------
 
   // function--------------------------------------------------------------------
@@ -298,25 +415,6 @@ export class UsersService {
 
   // function--------------------------------------------------------------------
 
-  //назначить роль юзеру в коллективе
-  async assignRole(teamId: number, userId: number, roleName: string) {
-    const funcDto = new CreateFunctionDto();
-    funcDto.team = teamId;
-    funcDto.title = roleName;
-
-    // find existing function with role or update
-    const func = await this.createFunctionIfNotExist(funcDto);
-
-    const ufDto = new CreateUserFunctionDto();
-    ufDto.function = func.id;
-    ufDto.user = userId;
-
-    // find existing user function or update
-    const existUFs = await this.createUserFunctionOrUpdate(ufDto);
-
-    return existUFs;
-  }
-
   //user functions---------------------------------------------------------------
   @HttpCode(400)
   async createUserFunctionOrUpdate(
@@ -327,7 +425,6 @@ export class UsersService {
     uFDto.user = createUserFunctionDto.user;
 
     const uFs = await this.findUserFunctions(uFDto);
-
     let uF = uFs ? uFs[0] : null;
 
     const dateStart = new Date();
@@ -336,9 +433,17 @@ export class UsersService {
 
     // const user = await this.usersRepository.findOneOrFail({where:{id:createUserFunctionDto.user}})
 
+    const user = await this.findById(createUserFunctionDto.user);
+    const func = await this.findFunction(createUserFunctionDto.function);
+    const team = await this.teamRepository.findOneBy({
+      id: createUserFunctionDto.team,
+    });
+
     uF = await this.userFunctionsRepository.save({
       id: uF ? uF.id : null,
-      ...createUserFunctionDto,
+      user,
+      function: func,
+      team,
       dateStart: dateStart,
       dateEnd: dateEnd,
     });
@@ -352,6 +457,14 @@ export class UsersService {
       .where('user_functions.id = :id', { id });
 
     return await query.delete().execute();
+  }
+
+  async findFunction(id: number) {
+    const query = this.functionsRepository
+      .createQueryBuilder('functions')
+      .where('functions.id = :id', { id });
+
+    return await query.getOne();
   }
 
   async findUserFunctions(userFDto: UserFunctionDto) {
@@ -378,5 +491,6 @@ export class UsersService {
 
     return await query.getMany();
   }
+
   //user functions---------------------------------------------------------------
 }

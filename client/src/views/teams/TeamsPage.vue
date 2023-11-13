@@ -14,7 +14,7 @@
         >
           Создать коллектив
         </button>
-        <ModalCreateTeam :is-edit-team="isEditTeam" :team="teamEdit" />
+        <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId"  :on-save-changes="handleModalSaveChanges"/>
       </div>
     </div>
 
@@ -53,7 +53,7 @@
                   data-bs-toggle="modal"
                   data-bs-target="#filtersModal"
                 >
-                  <font-awesome-icon class="ic" icon="filter" />
+                  <font-awesome-icon class="ic fa-lg" icon="filter"  />
                 </button>
               </div>
 
@@ -85,7 +85,7 @@
             >
               <div class="card__banner">
                 <img
-                  v-if="team.image?.length > 0"
+                  v-if="team.image?.length && team.image?.length > 0"
                   :src="team.image?.[0]"
                   class="d-block"
                   style="width: 100%; object-fit: cover"
@@ -139,7 +139,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                   >
-                    <font-awesome-icon class="ic" icon="pencil-square" />
+                    <font-awesome-icon class="ic fa-2x" icon="pencil-square" />
                   </div>
                 </div>
               </div>
@@ -164,7 +164,7 @@
             v-if="loading"
             class="d-flex align-items-center justify-content-center mt-4"
           >
-            <Loading size-fa-icon="fa-3x" />
+            <LoadingElem size-fa-icon="fa-3x" />
           </div>
         </div>
 
@@ -194,6 +194,7 @@ import Search from "@/components/SearchField.vue";
 import Tag from "@/components/TagElem.vue";
 import type { ITeam } from "@/store/models/teams/team.model";
 import type { Ref } from "vue";
+import LoadingElem from "@/components/LoadingElem.vue";
 
 const permissions_store = usePermissionsStore();
 const teamStore = useTeamStore();
@@ -206,7 +207,7 @@ const data: Ref<ITeam[]> = ref([]);
 
 // переключить на редактирвоание коллектива или на создание новаого
 const isEditTeam = ref(false);
-const teamEdit = ref();
+const teamId = ref(-1);
 
 const findTeamTxt = ref();
 
@@ -232,22 +233,21 @@ onBeforeMount(async () => {
   await handleEventSetFilters();
 });
 
+async function handleModalSaveChanges() {
+    await fetchTeams();
+}
+
 function editTeam(editT: boolean, team: ITeam | null) {
   // редактируем колектив или создаем новый
   isEditTeam.value = editT;
-  teamEdit.value = team;
+  teamId.value = team?.id ? team.id : -1;
 }
 
 // вытащить коллективы из бд
 async function fetchTeams() {
   loading.value = true;
 
-  let txt = findTeamTxt.value;
-
-  filterTeam.value.description =
-    filterTeam.value.title =
-    filterTeam.value.tags =
-      txt;
+  filterTeam.value.searchTxt = findTeamTxt.value;
 
   let d = await teamStore.fetchTeamsSearch(filterTeam.value);
 
@@ -591,8 +591,6 @@ async function handleTimerSearch(seachText: string) {
         }
 
         .ic {
-          width: 30px;
-          height: 30px;
           color: grey;
 
           &:hover {

@@ -233,7 +233,8 @@ const dictionaryStore = useDictionaryStore();
 const levels = ref([{ id: 0, name: "Все" }]);
 const types = ref([{ id: 0, name: "Все" }]);
 
-const foundTeams = ref([{ name: "Все", id: 0 }]);
+const foundTeams = ref(
+    [{ name: "Все", id: 0 }]);
 const foundEvents = ref();
 // dropdowns-----------------------------------------------------------
 

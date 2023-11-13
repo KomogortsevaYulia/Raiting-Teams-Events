@@ -1,7 +1,17 @@
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class SearchTeamDto {
+  @IsOptional()
+  @IsString()
+  type = 'teams';
+
   @Transform(({ value }) => value.toLowerCase())
   @IsOptional()
   title: string;
@@ -13,6 +23,10 @@ export class SearchTeamDto {
   @Transform(({ value }) => value.toLowerCase())
   @IsOptional()
   description: string;
+
+  @Transform(({ value }) => value.toLowerCase())
+  @IsOptional()
+  shortname: string;
 
   @IsOptional()
   @IsBoolean()
@@ -27,9 +41,6 @@ export class SearchTeamDto {
   //id parent
   @IsOptional()
   @IsArray()
-  //@IsNumber()
-  // @Type(() => Number)
-  // @Transform(({ value }) =>value.split(","))
   directions: number[];
 
   @IsNumber()
@@ -39,4 +50,14 @@ export class SearchTeamDto {
   @IsNumber()
   @Type(() => Number)
   offset: number;
+
+  // нужно для того, чтобы можно было приджойнить доп поля
+  // values: ["leaders"]
+  @IsOptional()
+  @IsArray()
+  fields: string[] = [];
+
+  //   addition
+  @IsOptional()
+  searchTxt: string;
 }

@@ -59,7 +59,7 @@ export const useTeamStore = defineStore("teams", () => {
     fileUstav: File,
     fileDocument: File,
   ) {
-    let responseMsg = "сохранено";
+    let responseMsg = "";
 
     const formData = new FormData();
     if (direction > 0) {
@@ -105,7 +105,7 @@ export const useTeamStore = defineStore("teams", () => {
 
   // обновить коллектив
   async function updateTeam(uT: UpdateTeam) {
-    let responseMsg = "сохранено";
+    let responseMsg = "";
 
     const formData = new FormData();
     if (uT.id_parent > 0) {
@@ -218,6 +218,16 @@ export const useTeamStore = defineStore("teams", () => {
 
   // requisition --------------------------------------------------------------------
 
+  //задать нового участника
+  async function assignNewParticipant(team_id: number, user_id: number) {
+    const res = await axios.post("/api/teams/user-functions/new-participant", {
+      user: user_id,
+      team: team_id,
+    });
+
+    return res.data;
+  }
+
   // Переключение Switch_toggle в стр. Коллективы и Мероприятия
   function setLayout(res: boolean) {
     layout.value = res;
@@ -267,11 +277,13 @@ export const useTeamStore = defineStore("teams", () => {
 
     updateRequisition,
     fetchRequisitions,
-    // updateRequisitionByUserId,
 
     fetchTeamsSearch,
     addImage,
     fetchDirections,
+
+    // assign roles
+    assignNewParticipant,
 
     layout,
     menu_items,

@@ -8,27 +8,23 @@ export class UpdateTeamDto {
   @IsNumber()
   id_parent: Team;
 
-  @IsNotEmpty({ message: 'Поле пустое' })
+  @IsOptional()
   @Length(1, 100, {
-    message: 'Название коллкетива, максимальная длина текста 100',
+    message: 'Название коллектива, максимальная длина текста 100',
   })
   title: string;
 
+  @IsOptional()
   @Length(1, 3000, {
     message: 'Описание, максимальная длина текста 1-3000',
   })
   description: string;
 
-  @IsNotEmpty({ message: 'Поле пустое' })
+  @IsOptional()
   @Length(1, 50, {
     message: 'Краткое название, максимальная длина текста 1-50',
   })
   shortname: string;
-
-  @IsOptional()
-  @IsNumber()
-  @Type(() => Number)
-  oldLeaderId: number;
 
   @IsOptional()
   @IsNumber()

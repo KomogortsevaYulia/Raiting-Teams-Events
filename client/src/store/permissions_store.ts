@@ -16,14 +16,20 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
   // проверить есть ли у залогиненого юзера данное разрешение
   function can(permission: Permission) {
     // проверить наличие данного разрешения у пользователя
-    return permissions.value && permissions.value.includes(permission);
+    return (
+      permissions.value &&
+      (permissions.value.includes(permission) ||
+        permissions.value.includes("can all"))
+    );
   }
 
   // получить нужные данные от юзера
   async function checkLogin() {
-    const response = await axios.get("api/users/check-login");
+    const response = await axios.get("/api/users/check-login", {
+      withCredentials: true,
+    });
 
-    if (isLogged.value) {
+    if (response?.data) {
       isLogged.value = true;
       permissions.value = response.data.permissions;
       username.value = response.data.username;
@@ -71,6 +77,20 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     return isLogged;
   }
 
+  async function loginCampus(code: string) {
+    const response = await axios.get("/api/users/bitrix-auth", {
+      params: {
+        code: code,
+      },
+    });
+
+    isLogged.value = !!response;
+
+    await checkLogin();
+
+    return isLogged;
+  }
+
   // разлогиниться
   async function logout() {
     await axios.post("/api/users/logout");
@@ -89,6 +109,13 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     return res.data;
   }
 
+  async function changePermissions(userId: number, permissions: string[]) {
+    return await axios.post("/api/users/permissions", {
+      userId: userId,
+      permissions: permissions,
+    });
+  }
+
   return {
     permissions,
     username,
@@ -99,7 +126,9 @@ export const usePermissionsStore = defineStore("permissionsStore", () => {
     fetchUser,
     checkLogin,
     login,
+    loginCampus,
     logout,
     can,
+    changePermissions,
   };
 });

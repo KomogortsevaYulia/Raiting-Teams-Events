@@ -1,139 +1,131 @@
 <template>
   <div class="wrapper-team">
     <!-- Обертка карточек коллективов -->
-    <div class="event" v-if="data">
-      <div class="full-width">
-        <div class="wrapper-team__top-panel">
-          <div class="text-area">
-            <div class="container">
-              <p>{{ data.title }}</p>
-              <button>Подать заявку</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="eventInfo row border-block">
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
-        />
-
-        <h1 class="">{{ data.title }}</h1>
-
-        <div class="header__info">
-          <div class="row g-1 my-2">
-            <Tag
-              v-for="(item, index) in data.tags"
-              class="col-auto me-2"
-              :text="item"
-              :key="index"
-            />
-          </div>
-        </div>
-        <div class="line"></div>
-        <div class="row">
-          <div class="wrapperContent col align-items-center ps-0">
-            <div class="row mb-2">
-              <h2>О мероприятии</h2>
-              <p class="event__description">
-                {{ data.description }}
-              </p>
-            </div>
-            <div class="row">
-              <h2>Дата начала/окончания мероприятия</h2>
-              <p class="event__description">{{ dateStart }} — {{ dateEnd }}</p>
-            </div>
-
-            <div class="row">
-              <h2>Дата начала/окончания регистрации</h2>
-              <p class="event__description">
-                {{ dateStartRegistration }} — {{ dateEndRegistration }}
-              </p>
-            </div>
-
-            <div class="row">
-              <div class="email d-flex align-items-center mb-4">
-                <i class="fas fa-envelope fa-xl"></i>
-                <p class="mb-0 ms-3 fs-5">{{ data.email }}</p>
-              </div>
-              <div class="number d-flex align-items-center mb-4">
-                <i class="fas fa-phone fa-xl"></i>
-                <p class="mb-0 ms-3 fs-5">{{ data.phone }}</p>
-              </div>
-              <div class="user d-flex align-items-center">
-                <i class="fa-brands fa-vk fa-xl me-2"></i>
-                <p
-                  v-for="(social_link, index) in data.social_links"
-                  :key="index"
-                  class="mb-0 ms-3 fs-5"
-                >
-                  {{ social_link }}
-                </p>
-              </div>
-              <div class="address d-flex align-items-center">
-                <i class="fas fa-location-dot fa-xl ms-1"></i>
-                <p class="mb-0 ms-4 fs-5">{{ data.event_place }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="map col">
-            <img :src="data.images" class="rounded mx-auto d-block" alt="" />
-          </div>
-
-          <div class="down">
-            <button type="button" class="button">Подать заявку</button>
-            <p class="date">14.03.2023</p>
+    <div class="full-width">
+      <div class="wrapper-team__top-panel">
+        <div class="text-area">
+          <div class="container">
+            <p>{{ data.title }}</p>
+            <button>Подать заявку</button>
           </div>
         </div>
       </div>
     </div>
-    <div v-else-if="loading" class="justify-content-center d-flex">
-      <LoadingAnimation size-fa-icon="fa-2x" />
+
+    <div class="eventInfo row border-block">
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+      />
+
+      <h1 class="">{{ data.title }}</h1>
+
+      <div class="header__info">
+        <div class="row g-1 my-2">
+          <Tag
+            v-for="(item, index) in data.tags"
+            class="col-auto me-2"
+            :text="item"
+            :key="index"
+          />
+        </div>
+      </div>
+      <div class="line"></div>
+      <div class="row">
+        <div class="wrapperContent col align-items-center ps-0">
+          <div class="row mb-2">
+            <h2>О мероприятии</h2>
+            <p class="event__description">
+              {{ data.description }}
+            </p>
+          </div>
+          <div class="row">
+            <h2>Дата начала/окончания мероприятия</h2>
+            <p class="event__description">{{ dateStart }} — {{ dateEnd }}</p>
+          </div>
+
+          <div class="row">
+            <h2>Дата начала/окончания регистрации</h2>
+            <p class="event__description">
+              {{ dateStartRegistration }} — {{ dateEndRegistration }}
+            </p>
+          </div>
+
+          <div class="row">
+            <div class="email d-flex align-items-center mb-4">
+              <i class="fas fa-envelope fa-xl"></i>
+              <p class="mb-0 ms-3 fs-5">{{ data.email }}</p>
+            </div>
+            <div class="number d-flex align-items-center mb-4">
+              <i class="fas fa-phone fa-xl"></i>
+              <p class="mb-0 ms-3 fs-5">{{ data.phone }}</p>
+            </div>
+            <div class="user d-flex align-items-center">
+              <i class="fa-brands fa-vk fa-xl me-2"></i>
+              <p
+                v-for="(social_link, index) in data.social_links"
+                :key="index"
+                class="mb-0 ms-3 fs-5"
+              >
+                {{ social_link }}
+              </p>
+            </div>
+            <div class="address d-flex align-items-center">
+              <i class="fas fa-location-dot fa-xl ms-1"></i>
+              <p class="mb-0 ms-4 fs-5">{{ data.event_place }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="map col">
+          <img :src="data.images" class="rounded mx-auto d-block" />
+        </div>
+
+        <div class="down">
+          <button type="button" class="button">Подать заявку</button>
+          <p class="date">14.03.2023</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import axios from "axios";
 import { onBeforeMount, ref } from "vue";
-import { useRoute } from "vue-router";
-import Tag from "@/components/TagElem.vue";
-import { useEventStore } from "@/store/event_store";
-import moment from "moment";
-import LoadingAnimation from "@/components/LoadingAnimation.vue";
-import type { IEvent } from "@/store/models/event/events.model";
-import type { Ref } from "vue";
 
-const eventStore = useEventStore();
+import { useRoute } from "vue-router";
+import moment from "moment";
+import Tag from "@/components/TagElem.vue";
 
 const route = useRoute();
-const loading = ref(true);
-
-const data: Ref<IEvent> = ref({});
+const data = ref();
 const dateStart = ref();
 const dateEnd = ref();
 const dateStartRegistration = ref();
 const dateEndRegistration = ref();
 
 onBeforeMount(async () => {
-  loading.value = true;
   await fetchCurrentEvent();
-  loading.value = false;
 });
 
 async function fetchCurrentEvent() {
-  const id = parseInt(route.params.id as string);
 
-  data.value = (await eventStore.fetchEvent(id)) as IEvent;
-  dateStart.value = moment(data.value.dateStart).format("DD-MM-YYYY, HH:mm");
-  dateEnd.value = moment(data.value.dateEnd).format("DD-MM-YYYY, HH:mm");
-  dateStartRegistration.value = moment(data.value.dateStartRegistration).format(
-    "DD-MM-YYYY, HH:mm",
-  );
-  dateEndRegistration.value = moment(data.value.dateEndRegistration).format(
-    "DD-MM-YYYY, HH:mm",
-  );
+  await axios
+    .get("/api/events/external/" + route.params.id)
+    .then((respose) => {
+      data.value = respose.data;
+      dateStart.value = moment(data.value.dateStart).format(
+        "DD-MM-YYYY, HH:mm",
+      );
+      dateEnd.value = moment(data.value.dateEnd).format("DD-MM-YYYY, HH:mm");
+      dateStartRegistration.value = moment(
+        data.value.dateStartRegistration,
+      ).format("DD-MM-YYYY, HH:mm");
+      dateEndRegistration.value = moment(data.value.dateEndRegistration).format(
+        "DD-MM-YYYY, HH:mm",
+      );
+    });
 }
 </script>
 
@@ -172,6 +164,7 @@ async function fetchCurrentEvent() {
     background-size: 100% auto;
     background-color: rgba(0, 0, 0, 0.5);
     background-position: center;
+    height: 350px;
     width: 100%;
     overflow: hidden;
 
@@ -270,7 +263,8 @@ async function fetchCurrentEvent() {
 }
 
 .imgEvent {
-  margin-inline-end: 0;
+  // margin-inline-start: -7.8em ;
+  margin-inline-end: 0em;
 
   img {
     height: 20em;

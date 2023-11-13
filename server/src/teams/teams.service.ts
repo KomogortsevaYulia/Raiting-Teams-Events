@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
@@ -12,11 +17,17 @@ import { Requisitions } from './entities/requisition.entity';
 import { RequisitionDto } from './dto/update-requisition.dto';
 import { GeneralService } from '../general/general.service';
 import { DictionaryDto } from 'src/general/dto/dictionary.dto';
-import { UserFunctionDto } from 'src/users/dto/user-functions.dto';
 import { CreateRequisitionFieldDto } from './dto/create-requisition-field.dto';
 import { RequisitionFields } from 'src/forms/entities/requisition_fields.entity';
 import { CreateRequisitionDto } from './dto/create-requisition.dto';
 import { FormsService } from 'src/forms/forms.service';
+import { AssignDirectionTeamLeaderDto } from '../users/dto/direction-leader.dto';
+import { Permissions } from '../shared/permissions';
+import { CreateFunctionDto } from '../users/dto/create-functions.dto';
+import { CreateUserFunctionDto } from '../users/dto/create-user-function.dto';
+import { PermissionsRoles, Roles } from '../shared/permissionsRoles';
+import { TeamRoles } from '../shared/teamRoles';
+import { PermissionsActions } from '../general/enums/action-permissions';
 import { TeamFunction } from '../users/entities/function.entity';
 
 @Injectable()
@@ -24,27 +35,24 @@ export class TeamsService {
   constructor(
     @InjectRepository(Team) // user //,
     private readonly teamsRepository: Repository<Team>,
-    @InjectRepository(User) // user //,
-    private readonly usersRepository: Repository<User>,
     @InjectRepository(UserFunction)
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(TeamFunction)
     private readonly functionsRepository: Repository<TeamFunction>,
-    private readonly usersService: UsersService,
-    private readonly dictionaryService: GeneralService,
-    private readonly formService: FormsService,
     @InjectRepository(Requisitions)
     private readonly requisitionsRepository: Repository<Requisitions>,
     @InjectRepository(RequisitionFields)
     private readonly requisitionsFieldsRepository: Repository<RequisitionFields>,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
+    private readonly dictionaryService: GeneralService,
+    private readonly formService: FormsService,
   ) {}
 
   async findOne(id: number) {
-    const head = 'Руководитель';
+    const head = TeamRoles.Leader;
 
-    // .addSelect("user.title_role")
-
-    return await this.teamsRepository
+    const res = await this.teamsRepository
       .createQueryBuilder('teams')
 
       .select([
@@ -63,57 +71,50 @@ export class TeamsService {
         'teams.id_parent',
       ])
       .where('teams.id = :id', { id: id })
-      .andWhere('teams.type_team = :type', { type: 'teams' })
-      .leftJoin('teams.functions', 'functions')
+      // .andWhere('teams.type_team = :type', { type: 'teams' })
       // select direction
       .leftJoin('teams.id_parent', 'direction')
       .addSelect('direction.id')
-      .addSelect('functions.title')
-      .andWhere('functions.title = :head', { head: head })
-
+      .leftJoinAndSelect(
+        'teams.functions',
+        'functions',
+        'functions.title = :head',
+        { head: head },
+      )
       .leftJoin('functions.userFunctions', 'user_functions')
       .addSelect('user_functions.id')
       .leftJoinAndSelect('user_functions.user', 'user')
       .getOne();
+
+    return res;
   }
 
   // Обновить коллектив
-  async update(id: number, updateTeamDto: UpdateTeamDto) {
+  async update(user: User, id: number, updateTeamDto: UpdateTeamDto) {
     updateTeamDto.id_parent = updateTeamDto.id_parent ?? null;
-    const team = await this.teamsRepository.save({
+    const updatedTeam = await this.teamsRepository.save({
       id,
       ...updateTeamDto,
       charter_team: updateTeamDto.charterTeam,
     });
 
-    // удалить прошлого лидера
-    if (
-      updateTeamDto.oldLeaderId != null &&
-      updateTeamDto.newLeaderId != null
-    ) {
-      const ufDto = new UserFunctionDto();
-      ufDto.team = team.id;
-      ufDto.user = updateTeamDto.oldLeaderId;
+    await this.findOne(id);
 
-      const uFs = await this.usersService.findUserFunctions(ufDto);
-
-      uFs.forEach(async (uF) => {
-        await this.usersService.removeUserFunction(uF.id);
-      });
+    if (updateTeamDto.newLeaderId != null) {
+      const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
+      directionTeamLeaderDto.teamId = updatedTeam.id;
+      directionTeamLeaderDto.userId = updateTeamDto.newLeaderId;
+      directionTeamLeaderDto.roleName = TeamRoles.Leader;
 
       // назначить нового пользвоателя
-      await this.usersService.assignRole(
-        team.id,
-        updateTeamDto.newLeaderId,
-        'Руководитель',
-      );
+      await this.assignTeamRole(user, directionTeamLeaderDto);
     }
 
-    return team;
+    return updatedTeam;
   }
 
   //создать коллектив, с учетом, что есь минимум 1 лидер
-  async create(createTeamDto: CreateTeamDto): Promise<Team> {
+  async create(user: User, createTeamDto: CreateTeamDto): Promise<Team> {
     const team = await this.teamsRepository.save({
       ...createTeamDto,
       charter_team: createTeamDto.charterTeam,
@@ -123,11 +124,13 @@ export class TeamsService {
       creation_date: new Date(),
     });
 
-    await this.usersService.assignRole(
-      team.id,
-      createTeamDto.userID,
-      'Руководитель',
-    );
+    const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
+    directionTeamLeaderDto.teamId = team.id;
+    directionTeamLeaderDto.userId = createTeamDto.userID;
+    directionTeamLeaderDto.roleName = 'Руководитель';
+
+    // назначить нового пользвоателя
+    await this.assignTeamRole(user, directionTeamLeaderDto);
 
     return team;
   }
@@ -153,15 +156,30 @@ export class TeamsService {
         'teams.id_parent',
         'teams.set_open',
       ])
-      .where('teams.type_team = :type', { type: 'teams' })
-      .leftJoin('teams.functions', 'functions')
+      .where('teams.type_team = :type', { type: params.type })
       // select direction
       .leftJoin('teams.id_parent', 'direction')
       // .andWhere("functions.title = :head", { head: head })
-      .leftJoin('functions.userFunctions', 'user_functions')
-      .leftJoin('user_functions.user', 'user')
 
       .orderBy('teams.id', 'DESC');
+
+    if (params.fields.includes('leaders')) {
+      query
+        .leftJoinAndSelect(
+          'teams.functions',
+          'functions',
+          'functions.title = :head',
+          { head: TeamRoles.Leader },
+        )
+        .leftJoinAndSelect('functions.userFunctions', 'user_functions')
+        .leftJoin('user_functions.user', 'user')
+        .addSelect([
+          'user.id',
+          'user.fullname',
+          'user.email',
+          'user.permissions',
+        ]);
+    }
 
     query = await this.filterTeam(params, query);
     query = query
@@ -176,16 +194,18 @@ export class TeamsService {
     let query = q;
 
     //если у нас все параметры то через 'или' все ищем
-    if (params.title && params.description && params.tags) {
+    if (params.searchTxt) {
       //делаем все столбцы в нижнем регистре и ищем по всем столбцам через предлог "или"
       query = query.andWhere(
         `(LOWER(teams.title) like :title 
          or LOWER(teams.description) like :description 
-         or LOWER(teams.tags) like :tags)`,
+         or LOWER(teams.tags) like :tags
+         or LOWER(teams.shortname) like :shortname)`,
         {
-          title: `%${params.title}%`,
-          description: `%${params.description}%`,
-          tags: `%${params.tags}%`,
+          title: `%${params.searchTxt}%`,
+          description: `%${params.searchTxt}%`,
+          tags: `%${params.searchTxt}%`,
+          shortname: `%${params.searchTxt}%`,
         },
       );
     } else {
@@ -203,7 +223,7 @@ export class TeamsService {
             description: `%${params.description}%`,
           })
         : query;
-      //if description
+      //if tags
       params.tags
         ? query.andWhere('LOWER(teams.tags) like :tags', {
             tags: `%${params.tags}%`,
@@ -361,8 +381,13 @@ export class TeamsService {
       .leftJoin('rf.form_field', 'form_field')
       .leftJoin('form_field.form', 'form')
       // .addSelect(["form.id"])
-      .where('form.team_id = :team_id', { team_id })
-      .orWhere('requisition.team_id = :team_id', { team_id })
+      .andWhere(
+        new Brackets((sqb) => {
+          sqb.where('form.team_id = :team_id', { team_id });
+          sqb.orWhere('requisition.team_id = :team_id', { team_id });
+        }),
+      )
+
       // пользователей с этим статусом н показывать
 
       .orderBy('status.name', 'DESC');
@@ -460,7 +485,7 @@ export class TeamsService {
 
   async teamsFunctions(id: number) {
     //начинаем с функций пользователя
-    return await this.functionsRepository
+    await this.functionsRepository
       .createQueryBuilder('functions')
       .innerJoin('functions.team', 'team')
       .addSelect('team.title')
@@ -481,5 +506,113 @@ export class TeamsService {
       id: team.id,
       image: team.image,
     });
+  }
+
+  // ----------------------------------------------------------------------------
+  // add role and user in team
+  // ----------------------------------------------------------------------------
+  async assignTeamRole(
+    user: User,
+    teamLeaderDto: AssignDirectionTeamLeaderDto,
+  ) {
+    // required permissions of initiator user
+    let reqInitiatorPermission: Permissions;
+    const directions = await this.findDirections();
+    const dirIds = directions[0].map((team) => team.id);
+
+    // check if it is direction
+    if (dirIds.includes(teamLeaderDto.teamId)) {
+      if (teamLeaderDto.roleName != TeamRoles.Leader) {
+        throw new BadRequestException(
+          'Нельзя добавлять участников в направления, только руководителей',
+        );
+      } else {
+        reqInitiatorPermission = Permissions.CAN_ASSIGN_LEADER_DIRECTIONS;
+        // check permissions of user for specific team or throw err
+        await this.usersService.checkPermissions(
+          user,
+          [reqInitiatorPermission],
+          true,
+        );
+        await this.assignTeamLeader(teamLeaderDto, Roles.LEADER_DIRECTION);
+      }
+      //   if it is team and want to assign leader
+    } else if (teamLeaderDto.roleName == TeamRoles.Leader) {
+      reqInitiatorPermission = Permissions.CAN_ASSIGN_LEADER_TEAM;
+      // check permissions of user for specific team or throw err
+      await this.usersService.checkPermissions(
+        user,
+        [reqInitiatorPermission],
+        true,
+      );
+      await this.assignTeamLeader(teamLeaderDto, Roles.LEADER_TEAM);
+    }
+
+    const funcDto = new CreateFunctionDto();
+    funcDto.team = teamLeaderDto.teamId;
+    funcDto.title = teamLeaderDto.roleName;
+
+    // find existing function with role or create new
+    const func = await this.usersService.createFunctionIfNotExist(funcDto);
+
+    const ufDto = new CreateUserFunctionDto();
+    ufDto.function = func.id;
+    ufDto.user = teamLeaderDto.userId;
+    ufDto.team = teamLeaderDto.teamId;
+
+    // find existing user function or update
+    try {
+      await this.usersService.createUserFunctionOrUpdate(ufDto);
+    } catch (e) {}
+
+    return true;
+  }
+
+  // назначить лидера направления, коллектива или по ирниту
+  private async assignTeamLeader(
+    teamLeaderDto: AssignDirectionTeamLeaderDto,
+    typeGrantRole: Roles,
+  ) {
+    const team = await this.findOne(teamLeaderDto.teamId);
+
+    // add new perms to new user
+    const assignPermsUser = new User();
+    assignPermsUser.userId = teamLeaderDto.userId;
+
+    // revoke perms old leader
+    if (team.functions)
+      team.functions.forEach((func) => {
+        if (func.title == TeamRoles.Leader && func.userFunctions) {
+          func.userFunctions.forEach(async (userFunc) => {
+            const oldLeader = new User();
+            oldLeader.userId = userFunc.user.id;
+
+            await this.usersService.changePermissions(
+              oldLeader,
+              PermissionsRoles.LEADER_TEAM,
+              PermissionsActions.REVOKE,
+            );
+
+            await this.usersService.removeUserFunction(userFunc.id);
+          });
+        }
+      });
+
+    let grantPerms: Permissions[] = [];
+    // set permissions
+    switch (typeGrantRole) {
+      case Roles.LEADER_TEAM:
+        grantPerms = PermissionsRoles.LEADER_TEAM;
+        break;
+      case Roles.LEADER_DIRECTION:
+        grantPerms = PermissionsRoles.LEADER_DIRECTION;
+        break;
+    }
+
+    await this.usersService.changePermissions(
+      assignPermsUser,
+      grantPerms,
+      PermissionsActions.GRANT,
+    );
   }
 }

@@ -20,13 +20,13 @@
           <div class="member-info p-3">
             <div class="col">
               <div class="row">
-                <h1>{{ item.user.fullname }}</h1>
+                <h1>{{ item?.user?.fullname }}</h1>
               </div>
               <div class="row">
                 <h2>Дата последнего рассмотрения: {{ item.date_update }}</h2>
               </div>
               <div class="row">
-                <h2>Статус: {{ item.status.name }}</h2>
+                <h2>Статус: {{ item?.status?.name }}</h2>
               </div>
               <div class="row d-flex justify-content-end g-2">
                 <div class="col-auto">
@@ -78,8 +78,7 @@ import type { IRequisition } from "@/store/models/forms/requisition.model";
 import type { Ref } from "vue";
 
 const teamStore = useTeamStore();
-const uFStore = useUserFunctionsStore();
-
+useUserFunctionsStore();
 const props = defineProps<{
   idTeam: number;
 }>();
@@ -99,8 +98,8 @@ async function updateRequisition(req: IRequisition, status_name: string) {
   await teamStore.updateRequisition(req.id ?? -1, status_name);
   await fetchRequisitions();
 
-  if (status_name == "Принята" && req.user?.id) {
-    await uFStore.assignNewParticipant(props.idTeam, req.user.id);
+  if (status_name == "Принята") {
+    await teamStore.assignNewParticipant(props.idTeam, req.user?.id ?? -1);
   }
 }
 

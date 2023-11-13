@@ -5,16 +5,20 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  text: string;
-}>();
+withDefaults(defineProps<{
+    text: string;
+    textColor?: string,
+    backgroundColor?: string
+}>(), {textColor: "#4a72ff", backgroundColor: "#F1F4FE"})
+
+
 </script>
 
 <style scoped lang="scss">
 .tag {
-  background-color: #f1f4fe;
+  background-color: v-bind(backgroundColor);
   padding: 0.2rem 1rem;
-  color: #4a72ff;
+  color: v-bind(textColor);
   border-radius: var(--border-radius);
 }
 </style>

@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.6
--- Dumped by pg_dump version 14.6
+-- Dumped from database version 14.9
+-- Dumped by pg_dump version 14.9
 
--- Started on 2023-09-19 23:22:13
+-- Started on 2023-11-10 22:20:42
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -48,6 +48,7 @@ ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_09f256fb7f9a05f0ed9927f406b";
 ALTER TABLE ONLY public.requisition_fields DROP CONSTRAINT "FK_087b7eeee30e9f5e62b7ba603fc";
 ALTER TABLE ONLY public.users DROP CONSTRAINT "UQ_fe0bb3f6520ee0469504521e710";
 ALTER TABLE ONLY public.users DROP CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3";
+ALTER TABLE ONLY public.users DROP CONSTRAINT "UQ_19fa01fc1212bbc25d4b1ae5654";
 ALTER TABLE ONLY public.form_fields DROP CONSTRAINT "PK_dc4b73290f2926c3a7d7c92d1e1";
 ALTER TABLE ONLY public.dictionary DROP CONSTRAINT "PK_d17df343bd5d01ed62dd0e55e4a";
 ALTER TABLE ONLY public.forms DROP CONSTRAINT "PK_ba062fd30b06814a60756f233da";
@@ -104,7 +105,7 @@ DROP TYPE public.teams_type_team_enum;
 DROP TYPE public.requisition_status_id_enum;
 DROP TYPE public.functions_type_function_enum;
 --
--- TOC entry 847 (class 1247 OID 29990)
+-- TOC entry 847 (class 1247 OID 445844)
 -- Name: functions_type_function_enum; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -117,7 +118,7 @@ CREATE TYPE public.functions_type_function_enum AS ENUM (
 ALTER TYPE public.functions_type_function_enum OWNER TO postgres;
 
 --
--- TOC entry 892 (class 1247 OID 30239)
+-- TOC entry 850 (class 1247 OID 445850)
 -- Name: requisition_status_id_enum; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -131,7 +132,7 @@ CREATE TYPE public.requisition_status_id_enum AS ENUM (
 ALTER TYPE public.requisition_status_id_enum OWNER TO postgres;
 
 --
--- TOC entry 850 (class 1247 OID 29996)
+-- TOC entry 853 (class 1247 OID 445858)
 -- Name: teams_type_team_enum; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -149,7 +150,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 209 (class 1259 OID 30003)
+-- TOC entry 209 (class 1259 OID 445865)
 -- Name: achievements; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -175,7 +176,7 @@ CREATE TABLE public.achievements (
 ALTER TABLE public.achievements OWNER TO postgres;
 
 --
--- TOC entry 210 (class 1259 OID 30008)
+-- TOC entry 210 (class 1259 OID 445871)
 -- Name: achievements_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -191,7 +192,7 @@ CREATE SEQUENCE public.achievements_id_seq
 ALTER TABLE public.achievements_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3493 (class 0 OID 0)
+-- TOC entry 3495 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: achievements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -200,7 +201,7 @@ ALTER SEQUENCE public.achievements_id_seq OWNED BY public.achievements.id;
 
 
 --
--- TOC entry 211 (class 1259 OID 30009)
+-- TOC entry 211 (class 1259 OID 445872)
 -- Name: dictionary; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -215,7 +216,7 @@ CREATE TABLE public.dictionary (
 ALTER TABLE public.dictionary OWNER TO postgres;
 
 --
--- TOC entry 212 (class 1259 OID 30014)
+-- TOC entry 212 (class 1259 OID 445877)
 -- Name: dictionary_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -231,7 +232,7 @@ CREATE SEQUENCE public.dictionary_id_seq
 ALTER TABLE public.dictionary_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3494 (class 0 OID 0)
+-- TOC entry 3496 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: dictionary_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -240,7 +241,7 @@ ALTER SEQUENCE public.dictionary_id_seq OWNED BY public.dictionary.id;
 
 
 --
--- TOC entry 213 (class 1259 OID 30015)
+-- TOC entry 213 (class 1259 OID 445878)
 -- Name: events; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -270,7 +271,7 @@ CREATE TABLE public.events (
     event_place character varying,
     team_size integer,
     event_goal character varying,
-    date_update timestamp without time zone DEFAULT '2023-08-17 08:31:05.649'::timestamp without time zone NOT NULL,
+    date_update timestamp without time zone DEFAULT '2023-10-28 13:44:56.337'::timestamp without time zone NOT NULL,
     user_id integer,
     status_id integer
 );
@@ -279,7 +280,7 @@ CREATE TABLE public.events (
 ALTER TABLE public.events OWNER TO postgres;
 
 --
--- TOC entry 214 (class 1259 OID 30020)
+-- TOC entry 214 (class 1259 OID 445884)
 -- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -295,7 +296,7 @@ CREATE SEQUENCE public.events_id_seq
 ALTER TABLE public.events_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3495 (class 0 OID 0)
+-- TOC entry 3497 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -304,7 +305,7 @@ ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
 
 
 --
--- TOC entry 215 (class 1259 OID 30021)
+-- TOC entry 215 (class 1259 OID 445885)
 -- Name: form_fields; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -320,7 +321,7 @@ CREATE TABLE public.form_fields (
 ALTER TABLE public.form_fields OWNER TO postgres;
 
 --
--- TOC entry 216 (class 1259 OID 30026)
+-- TOC entry 216 (class 1259 OID 445892)
 -- Name: form_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -336,7 +337,7 @@ CREATE SEQUENCE public.form_fields_id_seq
 ALTER TABLE public.form_fields_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3496 (class 0 OID 0)
+-- TOC entry 3498 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: form_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -345,7 +346,7 @@ ALTER SEQUENCE public.form_fields_id_seq OWNED BY public.form_fields.id;
 
 
 --
--- TOC entry 217 (class 1259 OID 30027)
+-- TOC entry 217 (class 1259 OID 445893)
 -- Name: forms; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -360,7 +361,7 @@ CREATE TABLE public.forms (
 ALTER TABLE public.forms OWNER TO postgres;
 
 --
--- TOC entry 218 (class 1259 OID 30032)
+-- TOC entry 218 (class 1259 OID 445898)
 -- Name: forms_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -376,7 +377,7 @@ CREATE SEQUENCE public.forms_id_seq
 ALTER TABLE public.forms_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3497 (class 0 OID 0)
+-- TOC entry 3499 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: forms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -385,7 +386,7 @@ ALTER SEQUENCE public.forms_id_seq OWNED BY public.forms.id;
 
 
 --
--- TOC entry 219 (class 1259 OID 30033)
+-- TOC entry 219 (class 1259 OID 445899)
 -- Name: functions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -400,7 +401,7 @@ CREATE TABLE public.functions (
 ALTER TABLE public.functions OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 30039)
+-- TOC entry 220 (class 1259 OID 445905)
 -- Name: functions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -416,7 +417,7 @@ CREATE SEQUENCE public.functions_id_seq
 ALTER TABLE public.functions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3498 (class 0 OID 0)
+-- TOC entry 3500 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: functions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -425,7 +426,7 @@ ALTER SEQUENCE public.functions_id_seq OWNED BY public.functions.id;
 
 
 --
--- TOC entry 221 (class 1259 OID 30040)
+-- TOC entry 221 (class 1259 OID 445906)
 -- Name: journals; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -451,7 +452,7 @@ CREATE TABLE public.journals (
 ALTER TABLE public.journals OWNER TO postgres;
 
 --
--- TOC entry 222 (class 1259 OID 30051)
+-- TOC entry 222 (class 1259 OID 445917)
 -- Name: journals_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -467,7 +468,7 @@ CREATE SEQUENCE public.journals_id_seq
 ALTER TABLE public.journals_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3499 (class 0 OID 0)
+-- TOC entry 3501 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: journals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -476,7 +477,7 @@ ALTER SEQUENCE public.journals_id_seq OWNED BY public.journals.id;
 
 
 --
--- TOC entry 223 (class 1259 OID 30052)
+-- TOC entry 223 (class 1259 OID 445918)
 -- Name: migrations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -490,7 +491,7 @@ CREATE TABLE public.migrations (
 ALTER TABLE public.migrations OWNER TO postgres;
 
 --
--- TOC entry 224 (class 1259 OID 30057)
+-- TOC entry 224 (class 1259 OID 445923)
 -- Name: migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -506,7 +507,7 @@ CREATE SEQUENCE public.migrations_id_seq
 ALTER TABLE public.migrations_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3500 (class 0 OID 0)
+-- TOC entry 3502 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -515,7 +516,7 @@ ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
 
 
 --
--- TOC entry 232 (class 1259 OID 30246)
+-- TOC entry 225 (class 1259 OID 445924)
 -- Name: requisition; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -533,7 +534,7 @@ CREATE TABLE public.requisition (
 ALTER TABLE public.requisition OWNER TO postgres;
 
 --
--- TOC entry 234 (class 1259 OID 38867)
+-- TOC entry 226 (class 1259 OID 445931)
 -- Name: requisition_fields; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -548,7 +549,7 @@ CREATE TABLE public.requisition_fields (
 ALTER TABLE public.requisition_fields OWNER TO postgres;
 
 --
--- TOC entry 233 (class 1259 OID 38866)
+-- TOC entry 227 (class 1259 OID 445936)
 -- Name: requisition_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -564,8 +565,8 @@ CREATE SEQUENCE public.requisition_fields_id_seq
 ALTER TABLE public.requisition_fields_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3501 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 3503 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: requisition_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -573,7 +574,7 @@ ALTER SEQUENCE public.requisition_fields_id_seq OWNED BY public.requisition_fiel
 
 
 --
--- TOC entry 231 (class 1259 OID 30245)
+-- TOC entry 228 (class 1259 OID 445937)
 -- Name: requisition_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -589,8 +590,8 @@ CREATE SEQUENCE public.requisition_id_seq
 ALTER TABLE public.requisition_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3502 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3504 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: requisition_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -598,7 +599,7 @@ ALTER SEQUENCE public.requisition_id_seq OWNED BY public.requisition.id;
 
 
 --
--- TOC entry 225 (class 1259 OID 30058)
+-- TOC entry 229 (class 1259 OID 445938)
 -- Name: teams; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -624,7 +625,7 @@ CREATE TABLE public.teams (
 ALTER TABLE public.teams OWNER TO postgres;
 
 --
--- TOC entry 226 (class 1259 OID 30065)
+-- TOC entry 230 (class 1259 OID 445947)
 -- Name: teams_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -640,8 +641,8 @@ CREATE SEQUENCE public.teams_id_seq
 ALTER TABLE public.teams_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3503 (class 0 OID 0)
--- Dependencies: 226
+-- TOC entry 3505 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -649,7 +650,7 @@ ALTER SEQUENCE public.teams_id_seq OWNED BY public.teams.id;
 
 
 --
--- TOC entry 227 (class 1259 OID 30072)
+-- TOC entry 231 (class 1259 OID 445948)
 -- Name: user_functions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -665,7 +666,7 @@ CREATE TABLE public.user_functions (
 ALTER TABLE public.user_functions OWNER TO postgres;
 
 --
--- TOC entry 228 (class 1259 OID 30075)
+-- TOC entry 232 (class 1259 OID 445951)
 -- Name: user_functions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -681,8 +682,8 @@ CREATE SEQUENCE public.user_functions_id_seq
 ALTER TABLE public.user_functions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3504 (class 0 OID 0)
--- Dependencies: 228
+-- TOC entry 3506 (class 0 OID 0)
+-- Dependencies: 232
 -- Name: user_functions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -690,7 +691,7 @@ ALTER SEQUENCE public.user_functions_id_seq OWNED BY public.user_functions.id;
 
 
 --
--- TOC entry 229 (class 1259 OID 30076)
+-- TOC entry 233 (class 1259 OID 445952)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -709,14 +710,15 @@ CREATE TABLE public.users (
     username character varying DEFAULT '123'::character varying,
     password character varying DEFAULT '123'::character varying,
     image character varying,
-    course integer
+    course integer,
+    bitrix_id integer
 );
 
 
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 230 (class 1259 OID 30083)
+-- TOC entry 234 (class 1259 OID 445959)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -732,8 +734,8 @@ CREATE SEQUENCE public.users_id_seq
 ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3505 (class 0 OID 0)
--- Dependencies: 230
+-- TOC entry 3507 (class 0 OID 0)
+-- Dependencies: 234
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -741,7 +743,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 3233 (class 2604 OID 30084)
+-- TOC entry 3234 (class 2604 OID 445960)
 -- Name: achievements id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -749,7 +751,7 @@ ALTER TABLE ONLY public.achievements ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- TOC entry 3235 (class 2604 OID 30085)
+-- TOC entry 3235 (class 2604 OID 445961)
 -- Name: dictionary id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -757,7 +759,7 @@ ALTER TABLE ONLY public.dictionary ALTER COLUMN id SET DEFAULT nextval('public.d
 
 
 --
--- TOC entry 3236 (class 2604 OID 30086)
+-- TOC entry 3236 (class 2604 OID 445962)
 -- Name: events id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -765,7 +767,7 @@ ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.event
 
 
 --
--- TOC entry 3238 (class 2604 OID 30087)
+-- TOC entry 3240 (class 2604 OID 445963)
 -- Name: form_fields id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -773,7 +775,7 @@ ALTER TABLE ONLY public.form_fields ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3241 (class 2604 OID 30088)
+-- TOC entry 3241 (class 2604 OID 445964)
 -- Name: forms id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -781,7 +783,7 @@ ALTER TABLE ONLY public.forms ALTER COLUMN id SET DEFAULT nextval('public.forms_
 
 
 --
--- TOC entry 3243 (class 2604 OID 30089)
+-- TOC entry 3243 (class 2604 OID 445965)
 -- Name: functions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -789,7 +791,7 @@ ALTER TABLE ONLY public.functions ALTER COLUMN id SET DEFAULT nextval('public.fu
 
 
 --
--- TOC entry 3250 (class 2604 OID 30090)
+-- TOC entry 3250 (class 2604 OID 445966)
 -- Name: journals id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -797,7 +799,7 @@ ALTER TABLE ONLY public.journals ALTER COLUMN id SET DEFAULT nextval('public.jou
 
 
 --
--- TOC entry 3251 (class 2604 OID 30091)
+-- TOC entry 3251 (class 2604 OID 445967)
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -805,7 +807,7 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
--- TOC entry 3261 (class 2604 OID 30249)
+-- TOC entry 3254 (class 2604 OID 445968)
 -- Name: requisition id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -813,7 +815,7 @@ ALTER TABLE ONLY public.requisition ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3264 (class 2604 OID 38870)
+-- TOC entry 3255 (class 2604 OID 445969)
 -- Name: requisition_fields id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -821,7 +823,7 @@ ALTER TABLE ONLY public.requisition_fields ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 3254 (class 2604 OID 30092)
+-- TOC entry 3260 (class 2604 OID 445970)
 -- Name: teams id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -829,7 +831,7 @@ ALTER TABLE ONLY public.teams ALTER COLUMN id SET DEFAULT nextval('public.teams_
 
 
 --
--- TOC entry 3257 (class 2604 OID 30094)
+-- TOC entry 3261 (class 2604 OID 445971)
 -- Name: user_functions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -837,7 +839,7 @@ ALTER TABLE ONLY public.user_functions ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3260 (class 2604 OID 30095)
+-- TOC entry 3264 (class 2604 OID 445972)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -845,7 +847,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3462 (class 0 OID 30003)
+-- TOC entry 3464 (class 0 OID 445865)
 -- Dependencies: 209
 -- Data for Name: achievements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -862,7 +864,7 @@ COPY public.achievements (id, title, points, date_get, date_add, file, date_last
 
 
 --
--- TOC entry 3464 (class 0 OID 30009)
+-- TOC entry 3466 (class 0 OID 445872)
 -- Dependencies: 211
 -- Data for Name: dictionary; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -892,7 +894,7 @@ COPY public.dictionary (id, name, class_name, class_id) FROM stdin;
 
 
 --
--- TOC entry 3466 (class 0 OID 30015)
+-- TOC entry 3468 (class 0 OID 445878)
 -- Dependencies: 213
 -- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -919,7 +921,7 @@ COPY public.events (id, title, "dateStart", "dateEnd", description, tags, "dateS
 
 
 --
--- TOC entry 3468 (class 0 OID 30021)
+-- TOC entry 3470 (class 0 OID 445885)
 -- Dependencies: 215
 -- Data for Name: form_fields; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -940,7 +942,7 @@ COPY public.form_fields (id, title, required, archive, form_id) FROM stdin;
 
 
 --
--- TOC entry 3470 (class 0 OID 30027)
+-- TOC entry 3472 (class 0 OID 445893)
 -- Dependencies: 217
 -- Data for Name: forms; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -956,7 +958,7 @@ COPY public.forms (id, date, description, team_id) FROM stdin;
 
 
 --
--- TOC entry 3472 (class 0 OID 30033)
+-- TOC entry 3474 (class 0 OID 445899)
 -- Dependencies: 219
 -- Data for Name: functions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -969,8 +971,6 @@ COPY public.functions (id, title, type_function, team_id) FROM stdin;
 24	Заместитель	general	15
 165	Руководитель	general	2
 166	Руководитель	general	3
-167	Руководитель	general	4
-168	Руководитель	general	5
 100	Руководитель	special	12
 101	Руководитель	special	11
 102	Руководитель	special	10
@@ -981,11 +981,12 @@ COPY public.functions (id, title, type_function, team_id) FROM stdin;
 180	Руководитель	general	4
 128	Руководитель	special	16
 129	Руководитель	special	15
+181	Руководитель	special	14
 \.
 
 
 --
--- TOC entry 3474 (class 0 OID 30040)
+-- TOC entry 3476 (class 0 OID 445906)
 -- Dependencies: 221
 -- Data for Name: journals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1018,7 +1019,7 @@ COPY public.journals (id, "dateRegistration", comment, event_id, team_id, user_i
 
 
 --
--- TOC entry 3476 (class 0 OID 30052)
+-- TOC entry 3478 (class 0 OID 445918)
 -- Dependencies: 223
 -- Data for Name: migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1066,12 +1067,13 @@ COPY public.migrations (id, "timestamp", name) FROM stdin;
 55	1691811999744	Auto1691811999744
 59	1692098849279	Auto1692098849279
 60	1692261054501	Auto1692261054501
+61	1698500689867	Auto1698500689867
 \.
 
 
 --
--- TOC entry 3485 (class 0 OID 30246)
--- Dependencies: 232
+-- TOC entry 3480 (class 0 OID 445924)
+-- Dependencies: 225
 -- Data for Name: requisition; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1108,8 +1110,8 @@ COPY public.requisition (id, fullname, date_create, date_update, user_id, status
 
 
 --
--- TOC entry 3487 (class 0 OID 38867)
--- Dependencies: 234
+-- TOC entry 3481 (class 0 OID 445931)
+-- Dependencies: 226
 -- Data for Name: requisition_fields; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1143,33 +1145,33 @@ COPY public.requisition_fields (id, value, form_fields_id, requisition_id) FROM 
 
 
 --
--- TOC entry 3478 (class 0 OID 30058)
--- Dependencies: 225
+-- TOC entry 3484 (class 0 OID 445938)
+-- Dependencies: 229
 -- Data for Name: teams; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.teams (id, title, creation_date, image, tags, description, shortname, id_parent, type_team, short_description, is_archive, cabinet, charter_team, document, set_open) FROM stdin;
 1	ИРНИТУ	2010-05-09 00:00:00	/image.jpg	лучший университет	Иркутский Национальный Исследовательский Технический Институт	ПОЛИТЕХ	\N	university	\N	f	\N	\N	\N	t
 6	Студенческое научное общество «Квантум»	2011-05-09 00:00:00	https://static.tildacdn.com/tild3961-6562-4834-a333-306661303635/_.gif	Инновации,Исследования,НаучноеCooбщество	Студенческое научное общество Квантум - это сообщество студентов, которые интересуются квантовой физикой, желают углубить свои знания в этой области, участвовать в научных исследованиях и общаться с единомышленниками.\n\nВ рамках "Квантума" вы сможете участвовать в научных симпозиумах, конференциях и семинарах, узнавать о последних тенденциях в квантовой физике и делиться своим опытом.\n\nВы также сможете получить доступ к лабораториям, оборудованию и инструментам, необходимым для проведения исследований.\n\nКроме того, вы сможете знакомиться с научными работниками и профессорами, которые разделяют ваш интерес к квантовой физике, и получать от них консультации и рекомендации.\n\nПрисоединяйтесь к нашему сообществу "Квантум" и откройте для себя новые горизонты в науке, сделайте новые знакомства и обретите опыт, который поможет вам в будущем!	Наука	2	teams	Студенческое научное общество «Квантум» - сообщество студентов, увлеченных квантовой физикой. Мы исследуем явления квантовой механики, проводим исследования и участвуем в научных мероприятиях.	f	\N	\N	\N	t
-14	Учебная деятельность	2010-05-09 00:00:00	/image_study.jpg	учеба\nстатьи	учеба	УД	1	direction	\N	f	\N	\N	\N	t
 8	Баскетбол юноши	2011-05-09 00:00:00	https://static.tildacdn.com/tild3961-6562-4834-a333-306661303635/_.gif	Баскетбол,Команда,Соревнования,Тренировки	Коллектив Баскетбол юноши - это сообщество студентов, увлеченных спортом и баскетболом в частности. У нас есть опытные тренеры, которые помогают нам развиваться в спорте и участвовать в разных соревнованиях на разных уровнях, от вузовских до международных. Наш коллектив - это не только возможность заниматься любимым делом, но и дружеская команда, в которой каждый член может развиваться и находить новых друзей. Мы проводим тренировки, на которых учимся работать в команде, развиваем технику и тактику игры, а также физическую подготовку. У нас также есть возможность посещать лагеря и сборы, где мы можем показать свои навыки в соревнованиях. Присоединяйтесь к нам и попробуйте себя в баскетболе!	Баскетбол	3	teams	Коллектив "Баскетбол юноши" - это студенческая команда, занимающаяся баскетболом и участвующая в соревнованиях. Тренировки проводятся квалифицированными тренерами, готовящими спортсменов к достижению высоких результатов.	f	\N	\N	\N	t
 3	Спортивная деятельность	2010-05-09 00:00:00	/image_sport.jpg	спорт\nсоревнование	Спортивное направление	СД	1	direction	\N	f	\N	\N	\N	t
 4	Общественная деятельность	2010-05-09 00:00:00	/image_social.jpg	танцы\nпесни\nмузыка	Общесвенное направление	ОД	1	direction	\N	f	45	\N	\N	t
-10	Студенческие отряды	2011-05-09 00:00:00	https://sun4-11.userapi.com/impg/aCk6mxpkQUL_AxEkfjkQWTeza0M377--LxgOfw/3Yffdw2EJpw.jpg?size=1080x1080&quality=96&sign=6fdb94b4cb1447bd09b8d7aa222176a3&type=album	Лидерство,Экология,Друзья	Коллектив Студенческие отряды - это добровольческое сообщество студентов, которые объединены общей идеей помощи окружающим и улучшения условий жизни в своих городах и селах. Мы проводим различные социальные проекты, в том числе благоустройство территорий, помощь в организации мероприятий, помощь в оздоровлении, экологические и образовательные программы. Отряды работают в разных направлениях, в зависимости от интересов и возможностей участников. Участие в отряде - это не только возможность помочь другим, но и развить лидерские качества, научиться работать в команде и получить новые знания и навыки. Присоединяйтесь к нам, чтобы стать частью большого и дружного сообщества, которое делает мир лучше!	СтудОтряды	4	teams	Студенческие отряды - это сообщество студентов, которые добровольно участвуют в общественных работах, экологических акциях и организации культурных мероприятий, чтобы сделать мир лучше. 	f	null	\N	\N	t
 5	Культурная массовая деятельность	2010-05-09 00:00:00	/image_culture.jpg	танцы\nпесни\nмузыка	Культурно-творческая деятельность – это деятельность, направленная на создание условий для наиболее полного развития, самоутверждения и самореализации личности и группы в сфере досуга. Являясь традиционным видом социально-воспитательной работы в вузе, культурно-творческая деятельность служит основой правильного погружения студентов в новую социальную среду.	КТД	1	direction	\N	f	\N	\N	\N	t
 2	Научная деятельность	2010-05-09 00:00:00	/image_scince.jpg	наука\nизучение	Научная работа в университете — это скоординированная по целям, времени и ресурсам совокупность научных исследований (экспериментов, испытаний) и разработок, организационных и обеспечивающих мероприятий, позволяющих на практике осуществлять научное обоснование основных направлений совершенствования системы образования и решать другие научно–практические задачи по профилю деятельности основных кафедр и лабораторий.	НИД	1	direction	\N	t	\N	\N	\N	t
 7	Гиревой спорт	2011-05-09 00:00:00	https://static.tildacdn.com/tild3961-6562-4834-a333-306661303635/_.gif	ЗОЖ,Спорт,Тренировки,Команда	Коллектив Гиревой спорт - это команда студентов, увлеченных культурой здорового образа жизни, которые занимаются гиревым спортом, повышают физическую форму и участвуют в спортивных мероприятиях.\n\nВ рамках нашего коллектива вы сможете заниматься тренировками, участвовать в соревнованиях и получать опыт от профессиональных тренеров.\n\nМы гарантируем поддержку и дух команды, которые помогут вам достигнуть новых высот в спорте и повысить свою самооценку.\n\nПрисоединяйтесь к нашему коллективу "Гиревой спорт" и станьте частью дружной команды, которая поможет вам раскрыть свой потенциал, поднять физическую форму и сформировать здоровый образ жизни!	Гиревой	3	teams	Коллектив "Гиревой спорт" - это студенческое сообщество, занимающееся гиревым спортом и участвующее в соревнованиях под руководством профессиональных тренеров. Присоединяйтесь к нам и станьте частью дружной команды!	f	55	\N	\N	t
 15	Народный коллектив ансамбль русской песни "Калина"	2011-05-09 00:00:00	https://sun9-13.userapi.com/impf/c857420/v857420789/64aae/1vOABDL67UU.jpg?size=2560x1707&quality=96&sign=1d99c14e2c3627c364c1bf87db709bf9&type=album,ec48cd79-c260-4d1d-a67d-4a687a6d5c8f.jpeg,6ac5d0ff-b2a7-487e-bf33-5bfa052eca69.jpeg	КАЛИНА,РусскаяПесня,Ансамбль,НародныйКоллектив	Коллектив "КАЛИНА" - народный ансамбль русской песни Иркутского национального технического университета, который существует уже более 50 лет и является одним из самых известных и уважаемых коллективов в Иркутске и регионе.\r\nВ состав ансамбля входят студенты и выпускники университета, которые соединили свой талант, любовь к народной музыке и желание сохранить и продолжить традиции русской культуры.\r\n"КАЛИНА" выступает на различных мероприятиях, таких как гала-концерты, праздники и фестивали, как в Иркутске, так и за его пределами. Ансамбль гордится своей богатой репертуарной программой, которая включает в себя как народные песни, так и авторские произведения в жанре русской песни.\r\nКроме того, в коллективе существует активная творческая работа, которая включает в себя создание новых аранжировок, песен и музыкальных номеров, что позволяет ансамблю постоянно развиваться и быть в тренде.\r\nПрисоединяйтесь к "КАЛИНЕ", чтобы раскрыть свой творческий потенциал, насладиться уникальной атмосферой и принять участие в прекрасных мероприятиях вместе с душевной командой профессионалов.	Калина	5	teams	КАЛИНА - это народный коллектив ансамбля русской песни ИРНИТУ, состоящий из студентов, которые исполняют народные песни и танцы разных регионов России. Ансамбль уже более 50 лет радует своей музыкой и выступает на различных концертах и фестивалях. Присоединяйтесь к нам, чтобы узнать больше о культурном наследии России и стать частью нашей творческой команды.	f	null	\N	\N	t
-16	Танцевально-спортивный клуб «Академик». Народный коллектив Ансамбль бального танца «Академик»	2011-05-09 00:00:00.177	https://sun9-28.userapi.com/impg/_bkYuxPNFqGqlYD9KHykzrfRbCvVwdllh_qzWw/EU6SEeABpaU.jpg?size=2146x1874&quality=95&sign=c621426bcb42e6f722d659e4e4445ae6&type=album,0b98f508-043a-44db-b561-1a1432fcbe40.jpg,f6cf1d62-6dee-4373-84ca-b1290cadc845.jpg,http://localhost:3000/public/media/2023.06/16/1686900422707_8t2tak0d17b9c073259231460d65043eb882ef.jpeg	Бальные танцы,Выступления,Мероприятия	«Академик» – это один из лидеров в области танцевального спорта среди клубов Иркутской области и России. Успехи клуба определяются многолетними традициями, профессионализмом и бескомпромиссным качеством обучения, достигаемым благодаря работе лучших преподавателей, созданию прекрасных условий для занятий и великолепной атмосферы, царящей в зале.\r\n\r\nРуководитель Скоморовский Максим Валерьевич\r\n\r\nПедагоги коллектива: Камалдина Эльмира Ибрагимовна, Балясин Владислав Игоревич, Бутаков Евгений Александрович\r\n\r\nОсновная информация о коллективе:\r\n\r\nфиналист Чемпионата России среди команд "формейшн", Чемпион Сибири "формейшн", обладатель Гран-При фестиваля "Солнечный ветер" г. Барнаул\r\nТанец - школа, способная воспитать в человеке множество незаменимых качеств, начиная от красивых линий тела и стремительной его подвижности и заканчивая железной волей, закалённым характером. А прелесть бальных танцев в том, что два человека соединяются вместе и танцуют как одно целое. Участие в соревнованиях, исполнение шоу-номеров, выступление в составе ансамбля дают широкое поле для творческого развития молодёжи	Академик	5	teams	Ансамбль занимается бальными танцами, проводит мастер-классы и выступает на конкурсах и фестивалях. Участники коллектива не только танцуют, но и создают костюмы и украшения для своих выступлений.	f	-	./public/media/2023.06/1686822896120_bccwph	\N	t
-12	Интеллектуальный клуб студентов	2011-05-09 00:00:00	https://sun9-6.userapi.com/impg/ZDVcop3wpQMX4E3vAxse9hNWm1k1p9lp56_52Q/R5BF42BisUQ.jpg?size=1200x1201&quality=95&sign=8486f925a7e7b74d1aafc15f87d5e28c&type=album	Творчество,Искусство,Наука,Интеллектуальные игры	Интеллектуальный клуб студентов-ИКС - это сообщество студентов, увлеченных наукой, технологиями и развитием своих умственных способностей. В нашем клубе вы найдете единомышленников, готовых поделиться своими знаниями и опытом, а также обучиться новым навыкам и расширить свой кругозор. Мы проводим встречи, дискуссии, лекции и турниры по различным тематикам, таким как IT, наука, философия, литература и многое другое. Присоединяйтесь к нам, чтобы обрести новых друзей, раскрыть свой потенциал и увлечься интеллектуальной деятельностью!	ИКС	4	teams	Интеллектуальный клуб студентов - сообщество умных студентов, участвующих в интеллектуальных играх, обменах знаниями и организации мероприятий. В клубе ИКС можно расширить кругозор, научиться новому и встретить единомышленников.\n\n\n\n	f	-	\N	\N	t
 9	Волейбол юноши	2011-05-09 00:00:00	https://static.tildacdn.com/tild3961-6562-4834-a333-306661303635/_.gif	Волейбол,Спорт,ЗдоровыйОбразЖизни	Коллектив Волейбол юноши - это сообщество студентов, увлеченных волейболом и здоровым образом жизни, которые занимаются этим видом спорта и принимают участие в соревнованиях на различных уровнях. У нас есть опытные тренеры, которые помогут вам стать лучшими и достичь успеха в соревнованиях. Мы проводим не только тренировки, но и мероприятия, такие как турниры и волейбольные игры, где вы сможете показать свои навыки и насладиться игрой. В нашей команде царит дружеская и поддерживающая атмосфера, которая поможет вам прогрессировать в волейболе и развиваться как личность. Присоединяйтесь к нам, чтобы стать частью этой команды и получить новые знакомства, эмоции и навыки в волейболе!	Волейбол	3	teams	"Волейбол юноши" - команда студентов, увлеченных волейболом и здоровым образом жизни. Мы тренируемся под руководством профессиональных тренеров, участвуем в соревнованиях и дружно поддерживаем друг друга.	f	null	\N	\N	t
+16	Танцевально-спортивный клуб «Академик». Народный коллектив Ансамбль бального танца «Академик»	2011-05-09 00:00:00.177	https://sun9-28.userapi.com/impg/_bkYuxPNFqGqlYD9KHykzrfRbCvVwdllh_qzWw/EU6SEeABpaU.jpg?size=2146x1874&quality=95&sign=c621426bcb42e6f722d659e4e4445ae6&type=album,0b98f508-043a-44db-b561-1a1432fcbe40.jpg,f6cf1d62-6dee-4373-84ca-b1290cadc845.jpg,http://localhost:3000/public/media/2023.06/16/1686900422707_8t2tak0d17b9c073259231460d65043eb882ef.jpeg	Бальные танцы,Выступления,Мероприятия	«Академик» – это один из лидеров в области танцевального спорта среди клубов Иркутской области и России. Успехи клуба определяются многолетними традициями, профессионализмом и бескомпромиссным качеством обучения, достигаемым благодаря работе лучших преподавателей, созданию прекрасных условий для занятий и великолепной атмосферы, царящей в зале.\r\n\r\nРуководитель Скоморовский Максим Валерьевич\r\n\r\nПедагоги коллектива: Камалдина Эльмира Ибрагимовна, Балясин Владислав Игоревич, Бутаков Евгений Александрович\r\n\r\nОсновная информация о коллективе:\r\n\r\nфиналист Чемпионата России среди команд "формейшн", Чемпион Сибири "формейшн", обладатель Гран-При фестиваля "Солнечный ветер" г. Барнаул\r\nТанец - школа, способная воспитать в человеке множество незаменимых качеств, начиная от красивых линий тела и стремительной его подвижности и заканчивая железной волей, закалённым характером. А прелесть бальных танцев в том, что два человека соединяются вместе и танцуют как одно целое. Участие в соревнованиях, исполнение шоу-номеров, выступление в составе ансамбля дают широкое поле для творческого развития молодёжи	Академик	5	teams	Ансамбль занимается бальными танцами, проводит мастер-классы и выступает на конкурсах и фестивалях. Участники коллектива не только танцуют, но и создают костюмы и украшения для своих выступлений.	f	-	./public/media/2023.06/1686822896120_bccwph	\N	t
+14	Учебная деятельность	2010-05-09 00:00:00	/image_study.jpg	учеба\nстатьи	учеба	УД	2	direction	\N	f	null	\N	\N	t
+12	Интеллектуальный клуб студентов	2011-05-09 00:00:00	https://sun9-6.userapi.com/impg/ZDVcop3wpQMX4E3vAxse9hNWm1k1p9lp56_52Q/R5BF42BisUQ.jpg?size=1200x1201&quality=95&sign=8486f925a7e7b74d1aafc15f87d5e28c&type=album	Творчество,Искусство,Наука,Интеллектуальные игры	Интеллектуальный клуб студентов-ИКС - это сообщество студентов, увлеченных наукой, технологиями и развитием своих умственных способностей. В нашем клубе вы найдете единомышленников, готовых поделиться своими знаниями и опытом, а также обучиться новым навыкам и расширить свой кругозор. Мы проводим встречи, дискуссии, лекции и турниры по различным тематикам, таким как IT, наука, философия, литература и многое другое. Присоединяйтесь к нам, чтобы обрести новых друзей, раскрыть свой потенциал и увлечься интеллектуальной деятельностью!	ИКС	4	teams	Интеллектуальный клуб студентов - сообщество умных студентов, участвующих в интеллектуальных играх, обменах знаниями и организации мероприятий. В клубе ИКС можно расширить кругозор, научиться новому и встретить единомышленников.\n\n\n\n	f	-	\N	\N	t
 11	Добровольцы	2011-05-09 00:00:00	https://sun9-52.userapi.com/impg/-oj1T-Lc1UZVu3064uQY0DvwT2UAUTOI5Z6RXQ/pqpI4ROX38Q.jpg?size=1240x1240&quality=95&sign=1eb111e2c7e8ca9323f9c89afe787e9e&type=album	Добро,Благотворительность,Волонтёрство,Помощь,Сообщество	Коллектив Добровольцы - это сообщество студентов, которые стремятся к саморазвитию, укреплению своих навыков и знаний, а также помощи другим. У нас вы сможете проявить свою социальную ответственность и волю к действию, принимая участие в различных благотворительных мероприятиях, таких как сбор и переработка мусора, помощь в приютах для бездомных животных, работа с детьми и многое другое. Мы уверены, что работа в команде и совместные проекты помогут вам раскрыть свой потенциал и стать лучшими версиями себя. Присоединяйтесь к "Добровольцам", чтобы сделать свой вклад в улучшение нашей общей жизни!	Страдание	4	teams	"Добровольцы" - это сообщество студентов, готовых помочь людям и сделать мир лучше, участвуя в благотворительных мероприятиях, волонтёрстве и акциях, нацеленных на поддержку нуждающихся, окружающей среды и животных. Наша команда действует в различных областях и всегда открыта для новых участников, готовых помочь в реализации благотворительных проектов.	t	null	\N	\N	t
+10	Студенческие отряды	2011-05-09 00:00:00	https://sun4-11.userapi.com/impg/aCk6mxpkQUL_AxEkfjkQWTeza0M377--LxgOfw/3Yffdw2EJpw.jpg?size=1080x1080&quality=96&sign=6fdb94b4cb1447bd09b8d7aa222176a3&type=album	Лидерство,Экология,Друзья	Коллектив Студенческие отряды - это добровольческое сообщество студентов, которые объединены общей идеей помощи окружающим и улучшения условий жизни в своих городах и селах. Мы проводим различные социальные проекты, в том числе благоустройство территорий, помощь в организации мероприятий, помощь в оздоровлении, экологические и образовательные программы. Отряды работают в разных направлениях, в зависимости от интересов и возможностей участников. Участие в отряде - это не только возможность помочь другим, но и развить лидерские качества, научиться работать в команде и получить новые знания и навыки. Присоединяйтесь к нам, чтобы стать частью большого и дружного сообщества, которое делает мир лучше!	СтудОтряды	4	teams	Студенческие отряды - это сообщество студентов, которые добровольно участвуют в общественных работах, экологических акциях и организации культурных мероприятий, чтобы сделать мир лучше. 	f	null	\N	\N	t
 \.
 
 
 --
--- TOC entry 3480 (class 0 OID 30072)
--- Dependencies: 227
+-- TOC entry 3486 (class 0 OID 445948)
+-- Dependencies: 231
 -- Data for Name: user_functions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1177,88 +1179,91 @@ COPY public.user_functions (id, "dateStart", "dateEnd", function_id, user_id) FR
 265	2010-05-09 00:00:00	2010-05-09 00:00:00	34	13
 268	2023-08-13 18:28:22.653	2024-08-13 18:28:22.653	22	3
 271	2023-08-13 19:46:50.695	2024-08-13 19:46:50.695	174	6
-274	2023-08-15 12:51:37.26	2024-08-15 12:51:37.26	128	26
 281	2010-05-09 00:00:00	2010-05-09 00:00:00	179	3
 282	2010-05-09 00:00:00	2010-05-09 00:00:00	180	3
 283	2023-08-19 18:29:19.125	2024-08-19 18:29:19.125	174	7
+285	2023-11-10 18:59:57.641	2024-11-10 18:59:57.641	181	26
+286	2023-11-10 20:47:02.579	2024-11-10 20:47:02.579	100	54
+290	2023-11-10 21:00:45.678	2024-11-10 21:00:45.678	101	30
+293	2023-11-10 21:03:59.798	2024-11-10 21:03:59.798	128	54
 \.
 
 
 --
--- TOC entry 3482 (class 0 OID 30076)
--- Dependencies: 229
+-- TOC entry 3488 (class 0 OID 445952)
+-- Dependencies: 233
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, studnumber, fullname, email, education_group, institute, gender, phone, birthdate, type_time_study, permissions, username, password, image, course) FROM stdin;
-28	3316560	Филиппов Даниил Богданович	student25@mail.ru	ИСТб-19-2	Институт недропользования	Муж	\N	\N	Очно-заочно	\N	student25	$argon2id$v=19$m=65536,t=3,p=4$o90cKwpwV/HeqIJRvpPFtQ$uUrSvWLQrPH1bfUAq8znYALhkAby5BQ2qdzaoqIl+YA	\N	\N
-29	7961870	Соколов Макар Миронович	student26@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно	\N	student26	$argon2id$v=19$m=65536,t=3,p=4$ctdM2xCDcLrHnhwPz3sCeA$5ZVhxRAQX69b0WfcFWEiGzGr9oxKqkE+QhrgVcolqUY	\N	\N
-4	4108046	Иванов Степан Максимович	student1@mail.ru	БТПб-20-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно	\N	student1	$argon2id$v=19$m=65536,t=3,p=4$RwgUCAEy+DvqeBJnuKrKBg$w4+V+SBcWAJgizdLvJ1iP3NVPhxhnjy8JP2R9BtSJOE	\N	\N
-26	3362967	Савельев Валерий Иванович	student23@mail.ru	ЛМБм-21-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно-заочно	\N	student23	$argon2id$v=19$m=65536,t=3,p=4$5qMV3eHD0Ef1Q526N0DQ8w$8ccS34gH+44ZYG00hfEtUZHL5XHfiAcQFnMi73B9lmE	\N	\N
-15	6844248	Устинова Александра Артёмовна	student12@mail.ru	ИСТб-19-2	Институт недропользования	Жен	\N	\N	Очно-заочно	\N	student12	$argon2id$v=19$m=65536,t=3,p=4$5hCSjGbI3rpfhG8bzAOF7A$V2sVmrb+p74orsJ8hbgICsIdJ4zrTVY1HgYZ8pPgtMI	\N	\N
-11	9613358	Пономарева Мария Марковна	student8@mail.ru	ИСТб-19-2	Институт недропользования	Жен	\N	\N	Очно	\N	student8	$argon2id$v=19$m=65536,t=3,p=4$7kXwegSAO0fSk+TP3QRlJw$TrLJ+sqAbzFLGVJcWMI8IIPIW14lZ2qSEt2LyvTVsP0	\N	\N
-16	4025438	Васильева Ева Матвеевна	student13@mail.ru	ДСб-20-1	Институт высоких технологий	Жен	\N	\N	Очно	\N	student13	$argon2id$v=19$m=65536,t=3,p=4$hQAs6G/0LaJyC1M9Y5cAzA$QE39+ki/HwCmuEmsVXIEUPY8MlZUGU43/2hMhZQbzfQ	\N	\N
-6	4532537	Новикова София Тимофеевна	student3@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно	\N	student3	$argon2id$v=19$m=65536,t=3,p=4$GUrGxbYPY8mhxDcHD558sw$Wu0WHA2CLHCmX61TUpBJZ5w/f5AMIsu8bjE3UXD+Tn4	\N	\N
-5	8271949	Пономарев Александр Артёмович	student2@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно	\N	student2	$argon2id$v=19$m=65536,t=3,p=4$hIbco9n2Zie74DU0DZnZCg$uxfETfrgx6Tjnxx2NIi8F+BPQ3jBLp2zuoqbr1aXw4s	\N	\N
-17	9153407	Сахарова Елизавета Михайловна	student14@mail.ru	ИСТб-19-2	Институт авиамашиностроения и транспорта	Жен	\N	\N	Очно	\N	student14	$argon2id$v=19$m=65536,t=3,p=4$P6tcxJsL3S7BIDiNenewVg$DLmALMweeYwtFAHLWJfgohcpCCnnmTo5s1Sa//XHi8Q	\N	\N
-12	5328175	Смирнова Виктория Петровна	student9@mail.ru	ЛМБм-21-1	Институт недропользования	Жен	\N	\N	Очно	\N	student9	$argon2id$v=19$m=65536,t=3,p=4$Z7QPxKUVkBETJ58w/EdI6Q$/5rDD27KWojYUzRRaxZO52f8LPZT4JCPev8ZscpAfLc	\N	\N
-10	5117772	Гордеева Кира Кирилловна	student7@mail.ru	ЛМБм-21-1	Институт информационных технологий и анализа данных	Жен	\N	\N	Очно-заочно	\N	student7	$argon2id$v=19$m=65536,t=3,p=4$loRd2vZObolgcPXj3mSVuQ$HSGCO52IVP03/ncXNxTwvmm154XLuDJPRumP2gJZQlM	\N	\N
-8	9414304	Цветков Марсель Степанович	student5@mail.ru	ТХб-19-2	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно	\N	student5	$argon2id$v=19$m=65536,t=3,p=4$AtPAZjO96YJNZvO5SZKiBg$RRXW96GJs9P9WsjyABUJZ8sS6lHyief6fZ25dBNnvpI	\N	\N
-9	9390413	Румянцев Даниил Константинович	student6@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно-заочно	\N	student6	$argon2id$v=19$m=65536,t=3,p=4$7TmXD+z2nLCEXnlgmMg6kA$2ztUtFj1i0pO0b3mgJL5KZzNZE0ragPOLCrodja48nE	\N	\N
-23	5020039	Самсонов Дмитрий Платонович	student20@mail.ru	ДСб-20-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно	\N	student20	$argon2id$v=19$m=65536,t=3,p=4$SEIUtdZ52wGXiym9+Lx1iQ$v74tbTQcoR1/3GcwxLuePCCNSyEjJ2bgBYZY6VlVW4M	\N	\N
-7	7072966	Агафонова Алиса Денисовна	student4@mail.ru	УПКм-22-1	Институт высоких технологий	Жен	\N	\N	Очно	\N	student4	$argon2id$v=19$m=65536,t=3,p=4$Itvq1HzrXhR8TYdEghkC3Q$NZMtpIPg7qRybwPtMkOqyEW00gHCG9cqQiLakMb7Q7M	\N	\N
-25	7373558	Ермаков Никита Артёмович	student22@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно-заочно	\N	student22	$argon2id$v=19$m=65536,t=3,p=4$FxaGUQ6jShGAemKat4IVXw$uSbWTsQk1aBsJstU03zxsiupLbTy/TSB13LPZy6VN3E	\N	\N
-27	4718773	Кузнецов Дмитрий Владиславович	student24@mail.ru	ДСб-20-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно-заочно	\N	student24	$argon2id$v=19$m=65536,t=3,p=4$gNTmyE7ry8tGq4VmqSZBcQ$FKV3wQ5NeB8kcq52GNxfZQ8vHEbIZKOSwSbvi4HvEY4	\N	\N
-19	1413716	Киселев Ярослав Александрович	student16@mail.ru	ИСТб-19-2	Институт авиамашиностроения и транспорта	Муж	\N	\N	Очно	\N	student16	$argon2id$v=19$m=65536,t=3,p=4$9Z/lbLR7wByoPc8RL28iPg$F3aHagOrXTmWBAn54GpLizEPS5z9VHnvnL+kthYWO98	\N	\N
-33	9735580	Гончаров Фёдор Витальевич	student30@mail.ru	ДСб-20-1	Институт авиамашиностроения и транспорта	Муж	\N	\N	Очно-заочно	\N	student30	$argon2id$v=19$m=65536,t=3,p=4$tiAvAEjaOP4OmzRKUEbKEg$ICC4qvOfdsltG1tNsB29K32EXmeJTXIr+adxmE8816I	\N	\N
-32	4956830	Голованова Вера Павловна	student29@mail.ru	ИСТб-19-2	Институт информационных технологий и анализа данных	Жен	\N	\N	Очно	\N	student29	$argon2id$v=19$m=65536,t=3,p=4$VPSuTPNweoGoNbJSVEoOSA$zKnJOSWu9XMP/uuU5SKRXg86ylyNfR6Kg/W8g4ASHks	\N	\N
-31	5683292	Соболев Никита Львович	student28@mail.ru	УПКм-22-1	Институт высоких технологий	Муж	\N	\N	Очно-заочно	\N	student28	$argon2id$v=19$m=65536,t=3,p=4$h9yDYoK300JN410HAPdf2g$PUb6jlOUbvDGKthWgtduyAEax6b7jrFrXW+PiT0ICC4	\N	\N
-13	2844304	Киселев Владимир Андреевич	student10@mail.ru	БТПб-20-1	Институт высоких технологий	Муж	\N	\N	Очно	\N	student10	$argon2id$v=19$m=65536,t=3,p=4$9rEyAjBbVJidbR6mJAR3og$CjszEbcMLAia13XjamKxJyJd7wNBFjUoyc0K4G1AoS0	\N	\N
-14	6770115	Самсонов Кирилл Львович	student11@mail.ru	ТХб-19-2	Институт недропользования	Муж	\N	\N	Очно-заочно	\N	student11	$argon2id$v=19$m=65536,t=3,p=4$4ot2szGSTdSQ12CXOGAwww$lxdth5jQRoGnAwLyiTMiSRRIDheio4Hp+OV9XQkt9oA	\N	\N
-18	5797251	Иванов Роман Павлович	student15@mail.ru	ТХб-19-2	Институт недропользования	Муж	\N	\N	Очно-заочно	\N	student15	$argon2id$v=19$m=65536,t=3,p=4$7/FKzG76XZ+HaZzHaGH7Dg$TyrZseGcomd5fonVMPCPJcZAkIg4JSCw5xcM4b7rm+8	\N	\N
-20	2946288	Семенова Алиса Андреевна	student17@mail.ru	ИСТб-19-2	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно	\N	student17	$argon2id$v=19$m=65536,t=3,p=4$GqqeKzTr0C3zGZYKQRXW6Q$3PRQnuIhno0JbLb6yMiuZ+2KHflJpoZi22p74G9uEhQ	\N	\N
-21	5235850	Позднякова Вероника Алиевна	student18@mail.ru	ИСТб-19-2	Институт авиамашиностроения и транспорта	Жен	\N	\N	Очно-заочно	\N	student18	$argon2id$v=19$m=65536,t=3,p=4$JlPXCiz8nyX8qiOzFD+gdQ$DFdp4Amq1sb8y0s/sHGQrY/XN0MKivn4SBrwqocuM7o	\N	\N
-22	7304032	Иванова Анна Никитична	student19@mail.ru	ИСТб-19-2	Институт высоких технологий	Жен	\N	\N	Очно-заочно	\N	student19	$argon2id$v=19$m=65536,t=3,p=4$H8WhZ2x/HtNuB7ZPM0xpLw$GnU5EScx+wclsmqoxw9U0IICv9W+oM8M1mRfO55wEgQ	\N	\N
-24	4821973	Иванова Николь Марковна	student21@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно-заочно	\N	student21	$argon2id$v=19$m=65536,t=3,p=4$3W/5zQECNp2o+DiafWjgNA$/iJANO97ME6ajA3uq75E1LLbttYzLTFHAKHhpdO/WoY	\N	\N
-30	7907050	Баранова Варвара Владиславовна	student27@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно-заочно	\N	student27	$argon2id$v=19$m=65536,t=3,p=4$ckE4L8Znnix3WzCnuOrfVw$oiEBi2QEnJMLwFRfBuX6Thc1SaKNDTaTst5muktDCmQ	\N	\N
-43	5724564	Васильева Ева Матвеевна	student40@mail.ru	БТПб-20-1	Институт архитектуры, строительства и дизайна	\N	\N	\N	Очно-заочно	\N	student40	$argon2id$v=19$m=65536,t=3,p=4$GMmcynaWPbLXcesC1PslKg$UixWhm1fzNGLHq6qPl+fdWnU9eSBlWmPnhuMmBEFewc	\N	\N
-44	1152785	Сахарова Елизавета Михайловна	student41@mail.ru	ДСб-20-1	Институт информационных технологий и анализа данных	\N	\N	\N	Очно	\N	student41	$argon2id$v=19$m=65536,t=3,p=4$xZ434bJJPMVGgZsu+s60ag$+zwqWEDKti820k8oKb5h8ZSnDroHlXbVRw6LelD1NPw	\N	\N
-45	8478814	Иванов Роман Павлович	student42@mail.ru	ТХб-19-2	Институт недропользования	\N	\N	\N	Очно-заочно	\N	student42	$argon2id$v=19$m=65536,t=3,p=4$0TGlpHiW2m/6TXsVzou55w$eRI1uaa1kSeRGG4a4ja+CCWq3v7hrgr4/7iKAPbBmgM	\N	\N
-47	1427080	Семенова Алиса Андреевна	student44@mail.ru	БТПб-20-1	Институт недропользования	\N	\N	\N	Очно	\N	student44	$argon2id$v=19$m=65536,t=3,p=4$gThtcvFGaWy1uAd6Cd1I6A$9gY0ztaEBPgnL2XtzstXHigba2j0wW0tjRS5SN7fqDA	\N	\N
-36	8474036	Ермаков Никита Артёмович	student33@mail.ru	ДСб-20-1	Институт высоких технологий	\N	\N	\N	Очно	\N	student33	$argon2id$v=19$m=65536,t=3,p=4$pmjPY6xF01pj814T07Pwmw$mdLhx47871t4CSYI6HpVk8M0fjPtlERDYmslnMBjKUk	\N	\N
-46	1956979	Киселев Ярослав Александрович	student43@mail.ru	ДСб-20-1	Институт информационных технологий и анализа данных	\N	\N	\N	Очно	\N	student43	$argon2id$v=19$m=65536,t=3,p=4$G9tbVCnuoH1Yp4F7CQJ8Fg$QlFTBt6JmR2eGyijIYF/ELeDb02bJCBvKeNJdnphu8o	\N	\N
-35	9894440	Иванова Николь Марковна	student32@mail.ru	ТХб-19-2	Институт авиамашиностроения и транспорта	\N	\N	\N	Очно-заочно	\N	student32	$argon2id$v=19$m=65536,t=3,p=4$j+S8brFnCE2ITr29o10MOQ$HpIGhcB8ITFEPTjhdnY9yDNuZ0mQ+l81vvN2/n80l5E	\N	\N
-38	5404539	Савельев Валерий Иванович	student35@mail.ru	ТХб-19-2	Институт высоких технологий	\N	\N	\N	Очно-заочно	\N	student35	$argon2id$v=19$m=65536,t=3,p=4$Pea/chqVfP3dKGm6MHP+zg$Idv2YCf/bYqn5h4Ms0y+YXfgOjGNG3NzE3WxMUW36sw	\N	\N
-41	9419568	Кузнецов Дмитрий Владиславович	student38@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	\N	\N	\N	Очно-заочно	\N	student38	$argon2id$v=19$m=65536,t=3,p=4$67lh2lSpyyTimGRzaAAbKg$HxaBIeIyVCXSOioUngvW1KxdeWPWoFR0L/kmMrVWTeU	\N	\N
-42	1411466	Филиппов Даниил Богданович	student39@mail.ru	ИСТб-19-2	Институт информационных технологий и анализа данных	\N	\N	\N	Очно	\N	student39	$argon2id$v=19$m=65536,t=3,p=4$U3BBqhuHyA8Hs7mbzrDMpA$mfdv8TLswjKp+X5uY9GZhOWELPdWQOyifKKtEc7i0tw	\N	\N
-52	1180318	Самсонов Кирилл Львович	student49@mail.ru	ИСТб-19-2	Институт высоких технологий	\N	\N	\N	Очно-заочно	\N	student49	$argon2id$v=19$m=65536,t=3,p=4$fzgiV5mgFmHCdrUsf/XG1w$CiLgR1Lb8Y7Fp8oTbAVl82RG3B5/Ffvtcd+sWVjiWs8	\N	\N
-49	6048369	Позднякова Вероника Алиевна	student46@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	\N	\N	\N	Очно-заочно	\N	student46	$argon2id$v=19$m=65536,t=3,p=4$w4pttugQ7Flcu5vfVRhOQw$idS+LzgXFIAavojyEfERRfNyrR/IzerThsMMRfyJX5g	\N	\N
-51	3698783	Новикова София Тимофеевна	student48@mail.ru	БТПб-20-1	Институт недропользования	\N	\N	\N	Очно	\N	student48	$argon2id$v=19$m=65536,t=3,p=4$nnoNSOgiXswMMG6JUkMdrA$/X8UZSmmuyuV6WdXtHkOKAGXNuU/N4fdqrwbxzZCwM0	\N	\N
-57	\N	Кравцова Елизавета Глебовна	directorTeam1@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	directorTeam1	$argon2id$v=19$m=65536,t=3,p=4$O9RIhKapseq+1Yp6wcBIOQ$zpOyvQOd+cGsv+fGLav4Y7ON8ofK05N3AJ8Fm9KmgFI	\N	\N
-55	\N	Цветков Марсель Степанович	bossTeam@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	bossTeam	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	\N	\N
-48	8724790	Соколов Макар Миронович	student45@mail.ru	ТХб-19-2	Институт авиамашиностроения и транспорта	\N	\N	\N	Очно-заочно	\N	student45	$argon2id$v=19$m=65536,t=3,p=4$Hnv/2CCGi2+UIS/eNnxX0Q$qe+yi5l7MqXK+3YvCokW8gIh8cTtvYtXd+W9OtOCMGo	\N	\N
-34	1196395	Баранова Варвара Владиславовна	student31@mail.ru	ТХб-19-2	Институт авиамашиностроения и транспорта	\N	\N	\N	Очно-заочно	\N	student31	$argon2id$v=19$m=65536,t=3,p=4$yupcJLQVCBi8WR4u0HjAEA$I52nvNkQrJuTqCXk5bNMqnCZ+ditGbbDtbTJ5oGze+4	\N	\N
-50	2595058	Соболев Никита Львович	student47@mail.ru	УПКм-22-1	Институт информационных технологий и анализа данных	\N	\N	\N	Очно-заочно	\N	student47	$argon2id$v=19$m=65536,t=3,p=4$LA7+16+7ZqemIEXKm9tleg$B9jn/1weHy1Ung7UeWeIXBiyUDExEXfprcs/txF+MvM	\N	\N
-37	5269064	Голованова Вера Павловна	student34@mail.ru	ТХб-19-2	Институт информационных технологий и анализа данных	\N	\N	\N	Очно-заочно	\N	student34	$argon2id$v=19$m=65536,t=3,p=4$tsoGvbkyzTMeY+07QsdTMg$QLlORp600Hpngl5Njc4AhyWNk8jooQr234pkAjqPO88	\N	\N
-39	3285321	Гончаров Фёдор Витальевич	student36@mail.ru	ИСТб-19-2	Институт недропользования	\N	\N	\N	Очно	\N	student36	$argon2id$v=19$m=65536,t=3,p=4$bYeMwBHpLhHz58UVXvbsbw$fdCpfZKabc5igCdV19qhmnlhLpeA+2Fhyj9PK239dW8	\N	\N
-40	8819356	Иванов Степан Максимович	student37@mail.ru	ЛМБм-21-1	Институт авиамашиностроения и транспорта	\N	\N	\N	Очно	\N	student37	$argon2id$v=19$m=65536,t=3,p=4$XIe8uk9w7F0Ii8Qw244Ygg$XSPWoCbHZnCBc4Y5zOVVzh9IXR0MoAnGbB8cznr3H9o	\N	\N
-56	\N	Гордеева Кира Кирилловна	bossUniversity@mail.ru	\N	\N	\N	\N	\N	\N	can view directions,can view reports directions,can create teams,can view reports teams	bossUniversity	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	\N	\N
-61	\N	Калинина Мария Ильинична	directorTeam5@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam5	$argon2id$v=19$m=65536,t=3,p=4$+NKDwuXgwT6DQhaG7VGf0A$LUr4MT7hSr82WDcsM0HsqhT2n9eZDgGg5X5JcRvKyf0	\N	\N
-62	\N	Никифорова Анна Данииловна	directorTeam6@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam6	$argon2id$v=19$m=65536,t=3,p=4$U2KFw5MSEX1Rl+4ipsa78w$yU583Z8WxO0vehzLgsCyrqiiKGume5QidZ4vq55/TGs	\N	\N
-63	\N	Чернышев Лев Захарович	directorTeam7@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam7	$argon2id$v=19$m=65536,t=3,p=4$2jPjLPEdUZ33xddLfhMZ0A$QgxE8+25z2pWQJNkS18ts471PxS3OL49kdjG/kn4tBY	\N	\N
-64	\N	Галкина Виктория Львовна	directorTeam8@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam8	$argon2id$v=19$m=65536,t=3,p=4$Nof8Y8xRjQ2BZ7Z8/hawTA$40lVttP6FTi2bhtnwWphX48yOUJAFegTlhWL0HpdGhU	\N	\N
-65	\N	Давыдова Мия Александровна	directorTeam9@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam9	$argon2id$v=19$m=65536,t=3,p=4$HGusMXIk0bn4AGR1PLHLjw$qq3Ptgxp0TuGodNTaYw6ISgiTlIgw+G6F4DhYWntT4Q	\N	\N
-54	\N	Агафонова Алиса Денисовна	bossDirections@mail.ru	\N	\N	\N	\N	\N	\N	can create teams,can view reports teams	bossDirections	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	\N	\N
-58	\N	Ермакова Таисия Ивановна	directorTeam2@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	directorTeam2	$argon2id$v=19$m=65536,t=3,p=4$ZAGEHCX8YO/A5A6QBvX7GA$JlD/r1xx6szDUwaEnptilCX840YjV1CAU+E9a9WBdk4	\N	\N
-59	\N	Пономарев Иван Робертович	directorTeam3@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	directorTeam3	$argon2id$v=19$m=65536,t=3,p=4$lmEUM6G/qkPWvPyxbwE9Bg$JWFB2Dlmm3q5LFXaf8CP72decxtHsVhZcBgvJW1m9fA	\N	\N
-60	\N	Фролова София Саввична	directorTeam4@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	directorTeam4	$argon2id$v=19$m=65536,t=3,p=4$lS9GmRyOnaFimskXpLyt0w$yMRKLqKDDb0wYu7L9iD1sJWiXkQPHtesPy71EqVO87o	\N	\N
-66	\N	Козлова Диана Максимовна	directorTeam10@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam10	$argon2id$v=19$m=65536,t=3,p=4$8XVu+d+keDv0cIjmTFsleQ$qcOyCQd8iDglPQaP8HDQ0AAx+BmF/hWkhumQ2NXJP64	\N	\N
-3	4108046	Иванов Иван Иванович	admin@mail.ru	\N	Институт информационных технологий и анализа данных	Муж	\N	\N	\N	can create teams,can view directions,can view reports directions,can view reports teams,can view reports,can edit status events,can view teams reports,can edit status events,can edit status requisitions,can create questionnaires,can create team roles,can create events	admin	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	https://sun9-4.userapi.com/impg/PlbA1QKETnQLakTWa4D66ByJYgXxFRDT2abOZA/TNkYrlgxyn0.jpg?size=2560x1920&quality=96&sign=726c0677fb1e31e6f3d7e5003c43fe9e&type=album	4
+COPY public.users (id, studnumber, fullname, email, education_group, institute, gender, phone, birthdate, type_time_study, permissions, username, password, image, course, bitrix_id) FROM stdin;
+10	5117772	Гордеева Кира Кирилловна	student7@mail.ru	ЛМБм-21-1	Институт информационных технологий и анализа данных	Жен	\N	\N	Очно-заочно	\N	student7	$argon2id$v=19$m=65536,t=3,p=4$loRd2vZObolgcPXj3mSVuQ$HSGCO52IVP03/ncXNxTwvmm154XLuDJPRumP2gJZQlM	\N	\N	\N
+8	9414304	Цветков Марсель Степанович	student5@mail.ru	ТХб-19-2	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно	\N	student5	$argon2id$v=19$m=65536,t=3,p=4$AtPAZjO96YJNZvO5SZKiBg$RRXW96GJs9P9WsjyABUJZ8sS6lHyief6fZ25dBNnvpI	\N	\N	\N
+9	9390413	Румянцев Даниил Константинович	student6@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно-заочно	\N	student6	$argon2id$v=19$m=65536,t=3,p=4$7TmXD+z2nLCEXnlgmMg6kA$2ztUtFj1i0pO0b3mgJL5KZzNZE0ragPOLCrodja48nE	\N	\N	\N
+23	5020039	Самсонов Дмитрий Платонович	student20@mail.ru	ДСб-20-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно	\N	student20	$argon2id$v=19$m=65536,t=3,p=4$SEIUtdZ52wGXiym9+Lx1iQ$v74tbTQcoR1/3GcwxLuePCCNSyEjJ2bgBYZY6VlVW4M	\N	\N	\N
+25	7373558	Ермаков Никита Артёмович	student22@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно-заочно	\N	student22	$argon2id$v=19$m=65536,t=3,p=4$FxaGUQ6jShGAemKat4IVXw$uSbWTsQk1aBsJstU03zxsiupLbTy/TSB13LPZy6VN3E	\N	\N	\N
+27	4718773	Кузнецов Дмитрий Владиславович	student24@mail.ru	ДСб-20-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно-заочно	\N	student24	$argon2id$v=19$m=65536,t=3,p=4$gNTmyE7ry8tGq4VmqSZBcQ$FKV3wQ5NeB8kcq52GNxfZQ8vHEbIZKOSwSbvi4HvEY4	\N	\N	\N
+19	1413716	Киселев Ярослав Александрович	student16@mail.ru	ИСТб-19-2	Институт авиамашиностроения и транспорта	Муж	\N	\N	Очно	\N	student16	$argon2id$v=19$m=65536,t=3,p=4$9Z/lbLR7wByoPc8RL28iPg$F3aHagOrXTmWBAn54GpLizEPS5z9VHnvnL+kthYWO98	\N	\N	\N
+33	9735580	Гончаров Фёдор Витальевич	student30@mail.ru	ДСб-20-1	Институт авиамашиностроения и транспорта	Муж	\N	\N	Очно-заочно	\N	student30	$argon2id$v=19$m=65536,t=3,p=4$tiAvAEjaOP4OmzRKUEbKEg$ICC4qvOfdsltG1tNsB29K32EXmeJTXIr+adxmE8816I	\N	\N	\N
+32	4956830	Голованова Вера Павловна	student29@mail.ru	ИСТб-19-2	Институт информационных технологий и анализа данных	Жен	\N	\N	Очно	\N	student29	$argon2id$v=19$m=65536,t=3,p=4$VPSuTPNweoGoNbJSVEoOSA$zKnJOSWu9XMP/uuU5SKRXg86ylyNfR6Kg/W8g4ASHks	\N	\N	\N
+31	5683292	Соболев Никита Львович	student28@mail.ru	УПКм-22-1	Институт высоких технологий	Муж	\N	\N	Очно-заочно	\N	student28	$argon2id$v=19$m=65536,t=3,p=4$h9yDYoK300JN410HAPdf2g$PUb6jlOUbvDGKthWgtduyAEax6b7jrFrXW+PiT0ICC4	\N	\N	\N
+13	2844304	Киселев Владимир Андреевич	student10@mail.ru	БТПб-20-1	Институт высоких технологий	Муж	\N	\N	Очно	\N	student10	$argon2id$v=19$m=65536,t=3,p=4$9rEyAjBbVJidbR6mJAR3og$CjszEbcMLAia13XjamKxJyJd7wNBFjUoyc0K4G1AoS0	\N	\N	\N
+14	6770115	Самсонов Кирилл Львович	student11@mail.ru	ТХб-19-2	Институт недропользования	Муж	\N	\N	Очно-заочно	\N	student11	$argon2id$v=19$m=65536,t=3,p=4$4ot2szGSTdSQ12CXOGAwww$lxdth5jQRoGnAwLyiTMiSRRIDheio4Hp+OV9XQkt9oA	\N	\N	\N
+15	6844248	Устинова Александра Артёмовна	student12@mail.ru	ИСТб-19-2	Институт недропользования	Жен	\N	\N	Очно-заочно		student12	$argon2id$v=19$m=65536,t=3,p=4$5hCSjGbI3rpfhG8bzAOF7A$V2sVmrb+p74orsJ8hbgICsIdJ4zrTVY1HgYZ8pPgtMI	\N	\N	\N
+29	7961870	Соколов Макар Миронович	student26@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно	can create events,can view directions	student26	$argon2id$v=19$m=65536,t=3,p=4$ctdM2xCDcLrHnhwPz3sCeA$5ZVhxRAQX69b0WfcFWEiGzGr9oxKqkE+QhrgVcolqUY	\N	\N	\N
+4	4108046	Иванов Степан Максимович	student1@mail.ru	БТПб-20-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно		student1	$argon2id$v=19$m=65536,t=3,p=4$RwgUCAEy+DvqeBJnuKrKBg$w4+V+SBcWAJgizdLvJ1iP3NVPhxhnjy8JP2R9BtSJOE	\N	\N	\N
+11	9613358	Пономарева Мария Марковна	student8@mail.ru	ИСТб-19-2	Институт недропользования	Жен	\N	\N	Очно		student8	$argon2id$v=19$m=65536,t=3,p=4$7kXwegSAO0fSk+TP3QRlJw$TrLJ+sqAbzFLGVJcWMI8IIPIW14lZ2qSEt2LyvTVsP0	\N	\N	\N
+16	4025438	Васильева Ева Матвеевна	student13@mail.ru	ДСб-20-1	Институт высоких технологий	Жен	\N	\N	Очно		student13	$argon2id$v=19$m=65536,t=3,p=4$hQAs6G/0LaJyC1M9Y5cAzA$QE39+ki/HwCmuEmsVXIEUPY8MlZUGU43/2hMhZQbzfQ	\N	\N	\N
+6	4532537	Новикова София Тимофеевна	student3@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно		student3	$argon2id$v=19$m=65536,t=3,p=4$GUrGxbYPY8mhxDcHD558sw$Wu0WHA2CLHCmX61TUpBJZ5w/f5AMIsu8bjE3UXD+Tn4	\N	\N	\N
+5	8271949	Пономарев Александр Артёмович	student2@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно		student2	$argon2id$v=19$m=65536,t=3,p=4$hIbco9n2Zie74DU0DZnZCg$uxfETfrgx6Tjnxx2NIi8F+BPQ3jBLp2zuoqbr1aXw4s	\N	\N	\N
+12	5328175	Смирнова Виктория Петровна	student9@mail.ru	ЛМБм-21-1	Институт недропользования	Жен	\N	\N	Очно		student9	$argon2id$v=19$m=65536,t=3,p=4$Z7QPxKUVkBETJ58w/EdI6Q$/5rDD27KWojYUzRRaxZO52f8LPZT4JCPev8ZscpAfLc	\N	\N	\N
+17	9153407	Сахарова Елизавета Михайловна	student14@mail.ru	ИСТб-19-2	Институт авиамашиностроения и транспорта	Жен	\N	\N	Очно		student14	$argon2id$v=19$m=65536,t=3,p=4$P6tcxJsL3S7BIDiNenewVg$DLmALMweeYwtFAHLWJfgohcpCCnnmTo5s1Sa//XHi8Q	\N	\N	\N
+7	7072966	Агафонова Алиса Денисовна	student4@mail.ru	УПКм-22-1	Институт высоких технологий	Жен	\N	\N	Очно	can create teams,can view reports teams	student4	$argon2id$v=19$m=65536,t=3,p=4$Itvq1HzrXhR8TYdEghkC3Q$NZMtpIPg7qRybwPtMkOqyEW00gHCG9cqQiLakMb7Q7M	\N	\N	\N
+18	5797251	Иванов Роман Павлович	student15@mail.ru	ТХб-19-2	Институт недропользования	Муж	\N	\N	Очно-заочно	\N	student15	$argon2id$v=19$m=65536,t=3,p=4$7/FKzG76XZ+HaZzHaGH7Dg$TyrZseGcomd5fonVMPCPJcZAkIg4JSCw5xcM4b7rm+8	\N	\N	\N
+20	2946288	Семенова Алиса Андреевна	student17@mail.ru	ИСТб-19-2	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно	\N	student17	$argon2id$v=19$m=65536,t=3,p=4$GqqeKzTr0C3zGZYKQRXW6Q$3PRQnuIhno0JbLb6yMiuZ+2KHflJpoZi22p74G9uEhQ	\N	\N	\N
+21	5235850	Позднякова Вероника Алиевна	student18@mail.ru	ИСТб-19-2	Институт авиамашиностроения и транспорта	Жен	\N	\N	Очно-заочно	\N	student18	$argon2id$v=19$m=65536,t=3,p=4$JlPXCiz8nyX8qiOzFD+gdQ$DFdp4Amq1sb8y0s/sHGQrY/XN0MKivn4SBrwqocuM7o	\N	\N	\N
+22	7304032	Иванова Анна Никитична	student19@mail.ru	ИСТб-19-2	Институт высоких технологий	Жен	\N	\N	Очно-заочно	\N	student19	$argon2id$v=19$m=65536,t=3,p=4$H8WhZ2x/HtNuB7ZPM0xpLw$GnU5EScx+wclsmqoxw9U0IICv9W+oM8M1mRfO55wEgQ	\N	\N	\N
+24	4821973	Иванова Николь Марковна	student21@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно-заочно	\N	student21	$argon2id$v=19$m=65536,t=3,p=4$3W/5zQECNp2o+DiafWjgNA$/iJANO97ME6ajA3uq75E1LLbttYzLTFHAKHhpdO/WoY	\N	\N	\N
+44	1152785	Сахарова Елизавета Михайловна	student41@mail.ru	ДСб-20-1	Институт информационных технологий и анализа данных	\N	\N	\N	Очно	\N	student41	$argon2id$v=19$m=65536,t=3,p=4$xZ434bJJPMVGgZsu+s60ag$+zwqWEDKti820k8oKb5h8ZSnDroHlXbVRw6LelD1NPw	\N	\N	\N
+45	8478814	Иванов Роман Павлович	student42@mail.ru	ТХб-19-2	Институт недропользования	\N	\N	\N	Очно-заочно	\N	student42	$argon2id$v=19$m=65536,t=3,p=4$0TGlpHiW2m/6TXsVzou55w$eRI1uaa1kSeRGG4a4ja+CCWq3v7hrgr4/7iKAPbBmgM	\N	\N	\N
+47	1427080	Семенова Алиса Андреевна	student44@mail.ru	БТПб-20-1	Институт недропользования	\N	\N	\N	Очно	\N	student44	$argon2id$v=19$m=65536,t=3,p=4$gThtcvFGaWy1uAd6Cd1I6A$9gY0ztaEBPgnL2XtzstXHigba2j0wW0tjRS5SN7fqDA	\N	\N	\N
+36	8474036	Ермаков Никита Артёмович	student33@mail.ru	ДСб-20-1	Институт высоких технологий	\N	\N	\N	Очно	\N	student33	$argon2id$v=19$m=65536,t=3,p=4$pmjPY6xF01pj814T07Pwmw$mdLhx47871t4CSYI6HpVk8M0fjPtlERDYmslnMBjKUk	\N	\N	\N
+46	1956979	Киселев Ярослав Александрович	student43@mail.ru	ДСб-20-1	Институт информационных технологий и анализа данных	\N	\N	\N	Очно	\N	student43	$argon2id$v=19$m=65536,t=3,p=4$G9tbVCnuoH1Yp4F7CQJ8Fg$QlFTBt6JmR2eGyijIYF/ELeDb02bJCBvKeNJdnphu8o	\N	\N	\N
+35	9894440	Иванова Николь Марковна	student32@mail.ru	ТХб-19-2	Институт авиамашиностроения и транспорта	\N	\N	\N	Очно-заочно	\N	student32	$argon2id$v=19$m=65536,t=3,p=4$j+S8brFnCE2ITr29o10MOQ$HpIGhcB8ITFEPTjhdnY9yDNuZ0mQ+l81vvN2/n80l5E	\N	\N	\N
+38	5404539	Савельев Валерий Иванович	student35@mail.ru	ТХб-19-2	Институт высоких технологий	\N	\N	\N	Очно-заочно	\N	student35	$argon2id$v=19$m=65536,t=3,p=4$Pea/chqVfP3dKGm6MHP+zg$Idv2YCf/bYqn5h4Ms0y+YXfgOjGNG3NzE3WxMUW36sw	\N	\N	\N
+41	9419568	Кузнецов Дмитрий Владиславович	student38@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	\N	\N	\N	Очно-заочно	\N	student38	$argon2id$v=19$m=65536,t=3,p=4$67lh2lSpyyTimGRzaAAbKg$HxaBIeIyVCXSOioUngvW1KxdeWPWoFR0L/kmMrVWTeU	\N	\N	\N
+42	1411466	Филиппов Даниил Богданович	student39@mail.ru	ИСТб-19-2	Институт информационных технологий и анализа данных	\N	\N	\N	Очно	\N	student39	$argon2id$v=19$m=65536,t=3,p=4$U3BBqhuHyA8Hs7mbzrDMpA$mfdv8TLswjKp+X5uY9GZhOWELPdWQOyifKKtEc7i0tw	\N	\N	\N
+52	1180318	Самсонов Кирилл Львович	student49@mail.ru	ИСТб-19-2	Институт высоких технологий	\N	\N	\N	Очно-заочно	\N	student49	$argon2id$v=19$m=65536,t=3,p=4$fzgiV5mgFmHCdrUsf/XG1w$CiLgR1Lb8Y7Fp8oTbAVl82RG3B5/Ffvtcd+sWVjiWs8	\N	\N	\N
+49	6048369	Позднякова Вероника Алиевна	student46@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	\N	\N	\N	Очно-заочно	\N	student46	$argon2id$v=19$m=65536,t=3,p=4$w4pttugQ7Flcu5vfVRhOQw$idS+LzgXFIAavojyEfERRfNyrR/IzerThsMMRfyJX5g	\N	\N	\N
+51	3698783	Новикова София Тимофеевна	student48@mail.ru	БТПб-20-1	Институт недропользования	\N	\N	\N	Очно	\N	student48	$argon2id$v=19$m=65536,t=3,p=4$nnoNSOgiXswMMG6JUkMdrA$/X8UZSmmuyuV6WdXtHkOKAGXNuU/N4fdqrwbxzZCwM0	\N	\N	\N
+57	\N	Кравцова Елизавета Глебовна	directorTeam1@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	directorTeam1	$argon2id$v=19$m=65536,t=3,p=4$O9RIhKapseq+1Yp6wcBIOQ$zpOyvQOd+cGsv+fGLav4Y7ON8ofK05N3AJ8Fm9KmgFI	\N	\N	\N
+55	\N	Цветков Марсель Степанович	bossTeam@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	bossTeam	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	\N	\N	\N
+48	8724790	Соколов Макар Миронович	student45@mail.ru	ТХб-19-2	Институт авиамашиностроения и транспорта	\N	\N	\N	Очно-заочно	\N	student45	$argon2id$v=19$m=65536,t=3,p=4$Hnv/2CCGi2+UIS/eNnxX0Q$qe+yi5l7MqXK+3YvCokW8gIh8cTtvYtXd+W9OtOCMGo	\N	\N	\N
+34	1196395	Баранова Варвара Владиславовна	student31@mail.ru	ТХб-19-2	Институт авиамашиностроения и транспорта	\N	\N	\N	Очно-заочно	\N	student31	$argon2id$v=19$m=65536,t=3,p=4$yupcJLQVCBi8WR4u0HjAEA$I52nvNkQrJuTqCXk5bNMqnCZ+ditGbbDtbTJ5oGze+4	\N	\N	\N
+50	2595058	Соболев Никита Львович	student47@mail.ru	УПКм-22-1	Институт информационных технологий и анализа данных	\N	\N	\N	Очно-заочно	\N	student47	$argon2id$v=19$m=65536,t=3,p=4$LA7+16+7ZqemIEXKm9tleg$B9jn/1weHy1Ung7UeWeIXBiyUDExEXfprcs/txF+MvM	\N	\N	\N
+37	5269064	Голованова Вера Павловна	student34@mail.ru	ТХб-19-2	Институт информационных технологий и анализа данных	\N	\N	\N	Очно-заочно	\N	student34	$argon2id$v=19$m=65536,t=3,p=4$tsoGvbkyzTMeY+07QsdTMg$QLlORp600Hpngl5Njc4AhyWNk8jooQr234pkAjqPO88	\N	\N	\N
+39	3285321	Гончаров Фёдор Витальевич	student36@mail.ru	ИСТб-19-2	Институт недропользования	\N	\N	\N	Очно	\N	student36	$argon2id$v=19$m=65536,t=3,p=4$bYeMwBHpLhHz58UVXvbsbw$fdCpfZKabc5igCdV19qhmnlhLpeA+2Fhyj9PK239dW8	\N	\N	\N
+40	8819356	Иванов Степан Максимович	student37@mail.ru	ЛМБм-21-1	Институт авиамашиностроения и транспорта	\N	\N	\N	Очно	\N	student37	$argon2id$v=19$m=65536,t=3,p=4$XIe8uk9w7F0Ii8Qw244Ygg$XSPWoCbHZnCBc4Y5zOVVzh9IXR0MoAnGbB8cznr3H9o	\N	\N	\N
+56	\N	Гордеева Кира Кирилловна	bossUniversity@mail.ru	\N	\N	\N	\N	\N	\N	can view directions,can view reports directions,can create teams,can view reports teams	bossUniversity	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	\N	\N	\N
+61	\N	Калинина Мария Ильинична	directorTeam5@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam5	$argon2id$v=19$m=65536,t=3,p=4$+NKDwuXgwT6DQhaG7VGf0A$LUr4MT7hSr82WDcsM0HsqhT2n9eZDgGg5X5JcRvKyf0	\N	\N	\N
+62	\N	Никифорова Анна Данииловна	directorTeam6@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam6	$argon2id$v=19$m=65536,t=3,p=4$U2KFw5MSEX1Rl+4ipsa78w$yU583Z8WxO0vehzLgsCyrqiiKGume5QidZ4vq55/TGs	\N	\N	\N
+63	\N	Чернышев Лев Захарович	directorTeam7@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam7	$argon2id$v=19$m=65536,t=3,p=4$2jPjLPEdUZ33xddLfhMZ0A$QgxE8+25z2pWQJNkS18ts471PxS3OL49kdjG/kn4tBY	\N	\N	\N
+64	\N	Галкина Виктория Львовна	directorTeam8@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam8	$argon2id$v=19$m=65536,t=3,p=4$Nof8Y8xRjQ2BZ7Z8/hawTA$40lVttP6FTi2bhtnwWphX48yOUJAFegTlhWL0HpdGhU	\N	\N	\N
+65	\N	Давыдова Мия Александровна	directorTeam9@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam9	$argon2id$v=19$m=65536,t=3,p=4$HGusMXIk0bn4AGR1PLHLjw$qq3Ptgxp0TuGodNTaYw6ISgiTlIgw+G6F4DhYWntT4Q	\N	\N	\N
+58	\N	Ермакова Таисия Ивановна	directorTeam2@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	directorTeam2	$argon2id$v=19$m=65536,t=3,p=4$ZAGEHCX8YO/A5A6QBvX7GA$JlD/r1xx6szDUwaEnptilCX840YjV1CAU+E9a9WBdk4	\N	\N	\N
+59	\N	Пономарев Иван Робертович	directorTeam3@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	directorTeam3	$argon2id$v=19$m=65536,t=3,p=4$lmEUM6G/qkPWvPyxbwE9Bg$JWFB2Dlmm3q5LFXaf8CP72decxtHsVhZcBgvJW1m9fA	\N	\N	\N
+60	\N	Фролова София Саввична	directorTeam4@mail.ru	\N	\N	\N	\N	\N	\N	can view reports team	directorTeam4	$argon2id$v=19$m=65536,t=3,p=4$lS9GmRyOnaFimskXpLyt0w$yMRKLqKDDb0wYu7L9iD1sJWiXkQPHtesPy71EqVO87o	\N	\N	\N
+66	\N	Козлова Диана Максимовна	directorTeam10@mail.ru	\N	\N	\N	\N	\N	\N	\N	directorTeam10	$argon2id$v=19$m=65536,t=3,p=4$8XVu+d+keDv0cIjmTFsleQ$qcOyCQd8iDglPQaP8HDQ0AAx+BmF/hWkhumQ2NXJP64	\N	\N	\N
+3	4108046	Иванов Иван Иванович	admin@mail.ru	\N	Институт информационных технологий и анализа данных	Муж	\N	\N	\N	can all,can create teams,can view directions,can view reports directions,can view reports teams,can view reports,can edit status events,can view teams reports,can edit status events,can edit status requisitions,can create questionnaires,can create team roles,can create events	admin	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	https://sun9-4.userapi.com/impg/PlbA1QKETnQLakTWa4D66ByJYgXxFRDT2abOZA/TNkYrlgxyn0.jpg?size=2560x1920&quality=96&sign=726c0677fb1e31e6f3d7e5003c43fe9e&type=album	4	\N
+28	3316560	Филиппов Даниил Богданович	student25@mail.ru	ИСТб-19-2	Институт недропользования	Муж	\N	\N	Очно-заочно		student25	$argon2id$v=19$m=65536,t=3,p=4$o90cKwpwV/HeqIJRvpPFtQ$uUrSvWLQrPH1bfUAq8znYALhkAby5BQ2qdzaoqIl+YA	\N	\N	\N
+26	3362967	Савельев Валерий Иванович	student23@mail.ru	ЛМБм-21-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно-заочно	can create teams,can view reports directions,can view reports teams,can edit status events,can assign leader teams	student23	$argon2id$v=19$m=65536,t=3,p=4$5qMV3eHD0Ef1Q526N0DQ8w$8ccS34gH+44ZYG00hfEtUZHL5XHfiAcQFnMi73B9lmE	\N	\N	\N
+30	7907050	Баранова Варвара Владиславовна	student27@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно-заочно	can create team roles,can create questionnaires,can edit status requisitions,can edit own teams	student27	$argon2id$v=19$m=65536,t=3,p=4$ckE4L8Znnix3WzCnuOrfVw$oiEBi2QEnJMLwFRfBuX6Thc1SaKNDTaTst5muktDCmQ	\N	\N	\N
+54	\N	Агафонова Алиса Денисовна	bossDirections@mail.ru	\N	\N	\N	\N	\N	\N	can view reports teams,can create events	bossDirections	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	\N	\N	\N
+43	5724564	Васильева Ева Матвеевна	student40@mail.ru	БТПб-20-1	Институт архитектуры, строительства и дизайна	\N	\N	\N	Очно-заочно		student40	$argon2id$v=19$m=65536,t=3,p=4$GMmcynaWPbLXcesC1PslKg$UixWhm1fzNGLHq6qPl+fdWnU9eSBlWmPnhuMmBEFewc	\N	\N	\N
 \.
 
 
 --
--- TOC entry 3506 (class 0 OID 0)
+-- TOC entry 3508 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: achievements_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1267,7 +1272,7 @@ SELECT pg_catalog.setval('public.achievements_id_seq', 11, true);
 
 
 --
--- TOC entry 3507 (class 0 OID 0)
+-- TOC entry 3509 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: dictionary_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1276,7 +1281,7 @@ SELECT pg_catalog.setval('public.dictionary_id_seq', 20, true);
 
 
 --
--- TOC entry 3508 (class 0 OID 0)
+-- TOC entry 3510 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1285,7 +1290,7 @@ SELECT pg_catalog.setval('public.events_id_seq', 14, true);
 
 
 --
--- TOC entry 3509 (class 0 OID 0)
+-- TOC entry 3511 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: form_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1294,7 +1299,7 @@ SELECT pg_catalog.setval('public.form_fields_id_seq', 69, true);
 
 
 --
--- TOC entry 3510 (class 0 OID 0)
+-- TOC entry 3512 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: forms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1303,16 +1308,16 @@ SELECT pg_catalog.setval('public.forms_id_seq', 11, true);
 
 
 --
--- TOC entry 3511 (class 0 OID 0)
+-- TOC entry 3513 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.functions_id_seq', 180, true);
+SELECT pg_catalog.setval('public.functions_id_seq', 181, true);
 
 
 --
--- TOC entry 3512 (class 0 OID 0)
+-- TOC entry 3514 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: journals_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1321,17 +1326,17 @@ SELECT pg_catalog.setval('public.journals_id_seq', 45, true);
 
 
 --
--- TOC entry 3513 (class 0 OID 0)
+-- TOC entry 3515 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 60, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 61, true);
 
 
 --
--- TOC entry 3514 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 3516 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: requisition_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1339,8 +1344,8 @@ SELECT pg_catalog.setval('public.requisition_fields_id_seq', 29, true);
 
 
 --
--- TOC entry 3515 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3517 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: requisition_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1348,8 +1353,8 @@ SELECT pg_catalog.setval('public.requisition_id_seq', 30, true);
 
 
 --
--- TOC entry 3516 (class 0 OID 0)
--- Dependencies: 226
+-- TOC entry 3518 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: teams_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1357,17 +1362,17 @@ SELECT pg_catalog.setval('public.teams_id_seq', 59, true);
 
 
 --
--- TOC entry 3517 (class 0 OID 0)
--- Dependencies: 228
+-- TOC entry 3519 (class 0 OID 0)
+-- Dependencies: 232
 -- Name: user_functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_functions_id_seq', 284, true);
+SELECT pg_catalog.setval('public.user_functions_id_seq', 294, true);
 
 
 --
--- TOC entry 3518 (class 0 OID 0)
--- Dependencies: 230
+-- TOC entry 3520 (class 0 OID 0)
+-- Dependencies: 234
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1375,7 +1380,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 66, true);
 
 
 --
--- TOC entry 3278 (class 2606 OID 30098)
+-- TOC entry 3278 (class 2606 OID 445976)
 -- Name: journals PK_157a30136385dd81cdd19111380; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1384,7 +1389,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
--- TOC entry 3284 (class 2606 OID 30100)
+-- TOC entry 3288 (class 2606 OID 445978)
 -- Name: user_functions PK_1b04a9e32d9511b33fe11b6ffda; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1393,7 +1398,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3266 (class 2606 OID 30102)
+-- TOC entry 3266 (class 2606 OID 445980)
 -- Name: achievements PK_1bc19c37c6249f70186f318d71d; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1402,7 +1407,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3276 (class 2606 OID 30104)
+-- TOC entry 3276 (class 2606 OID 445982)
 -- Name: functions PK_203889d2ae5a98ffc137739301e; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1411,7 +1416,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
--- TOC entry 3270 (class 2606 OID 30106)
+-- TOC entry 3270 (class 2606 OID 445984)
 -- Name: events PK_40731c7151fe4be3116e45ddf73; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1420,7 +1425,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3292 (class 2606 OID 30254)
+-- TOC entry 3282 (class 2606 OID 445986)
 -- Name: requisition PK_53f9ab966e1c2d2d96cc5ac944a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1429,7 +1434,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
--- TOC entry 3282 (class 2606 OID 30110)
+-- TOC entry 3286 (class 2606 OID 445988)
 -- Name: teams PK_7e5523774a38b08a6236d322403; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1438,7 +1443,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
--- TOC entry 3280 (class 2606 OID 30112)
+-- TOC entry 3280 (class 2606 OID 445990)
 -- Name: migrations PK_8c82d7f526340ab734260ea46be; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1447,7 +1452,7 @@ ALTER TABLE ONLY public.migrations
 
 
 --
--- TOC entry 3286 (class 2606 OID 30114)
+-- TOC entry 3290 (class 2606 OID 445992)
 -- Name: users PK_a3ffb1c0c8416b9fc6f907b7433; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1456,7 +1461,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3294 (class 2606 OID 38874)
+-- TOC entry 3284 (class 2606 OID 445994)
 -- Name: requisition_fields PK_b5114990d6fde9a186b1c5a896b; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1465,7 +1470,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
--- TOC entry 3274 (class 2606 OID 30116)
+-- TOC entry 3274 (class 2606 OID 445996)
 -- Name: forms PK_ba062fd30b06814a60756f233da; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1474,7 +1479,7 @@ ALTER TABLE ONLY public.forms
 
 
 --
--- TOC entry 3268 (class 2606 OID 30118)
+-- TOC entry 3268 (class 2606 OID 445998)
 -- Name: dictionary PK_d17df343bd5d01ed62dd0e55e4a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1483,7 +1488,7 @@ ALTER TABLE ONLY public.dictionary
 
 
 --
--- TOC entry 3272 (class 2606 OID 30120)
+-- TOC entry 3272 (class 2606 OID 446000)
 -- Name: form_fields PK_dc4b73290f2926c3a7d7c92d1e1; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1492,7 +1497,16 @@ ALTER TABLE ONLY public.form_fields
 
 
 --
--- TOC entry 3288 (class 2606 OID 56118)
+-- TOC entry 3292 (class 2606 OID 446148)
+-- Name: users UQ_19fa01fc1212bbc25d4b1ae5654; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT "UQ_19fa01fc1212bbc25d4b1ae5654" UNIQUE (bitrix_id);
+
+
+--
+-- TOC entry 3294 (class 2606 OID 446002)
 -- Name: users UQ_97672ac88f789774dd47f7c8be3; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1501,7 +1515,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3290 (class 2606 OID 56116)
+-- TOC entry 3296 (class 2606 OID 446004)
 -- Name: users UQ_fe0bb3f6520ee0469504521e710; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1510,7 +1524,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3321 (class 2606 OID 38880)
+-- TOC entry 3320 (class 2606 OID 446005)
 -- Name: requisition_fields FK_087b7eeee30e9f5e62b7ba603fc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1519,7 +1533,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
--- TOC entry 3308 (class 2606 OID 56022)
+-- TOC entry 3302 (class 2606 OID 446010)
 -- Name: events FK_09f256fb7f9a05f0ed9927f406b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1528,7 +1542,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3299 (class 2606 OID 55995)
+-- TOC entry 3297 (class 2606 OID 446015)
 -- Name: achievements FK_0c0cd24bc6e722c12cd45750434; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1537,7 +1551,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3301 (class 2606 OID 30126)
+-- TOC entry 3303 (class 2606 OID 446020)
 -- Name: events FK_12ab9fec0ea7a5c0bd47f244fb7; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1546,7 +1560,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3318 (class 2606 OID 30255)
+-- TOC entry 3317 (class 2606 OID 446025)
 -- Name: requisition FK_1b08960843499439da23a3e0698; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1555,7 +1569,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
--- TOC entry 3312 (class 2606 OID 30131)
+-- TOC entry 3314 (class 2606 OID 446030)
 -- Name: journals FK_1b4d28fa4b326ecc43128e7d05b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1564,7 +1578,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
--- TOC entry 3295 (class 2606 OID 30136)
+-- TOC entry 3298 (class 2606 OID 446035)
 -- Name: achievements FK_2888c1257c41913030b59369f96; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1573,7 +1587,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3319 (class 2606 OID 56120)
+-- TOC entry 3318 (class 2606 OID 446040)
 -- Name: requisition FK_2bc07f9556b7e089dc2785228ed; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1582,7 +1596,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
--- TOC entry 3320 (class 2606 OID 56028)
+-- TOC entry 3319 (class 2606 OID 446045)
 -- Name: requisition FK_3330bf1b3acd2568b818c72b226; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1591,7 +1605,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
--- TOC entry 3322 (class 2606 OID 56071)
+-- TOC entry 3321 (class 2606 OID 446050)
 -- Name: requisition_fields FK_3777bd9d0f2897d0d24faf345bf; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1600,7 +1614,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
--- TOC entry 3296 (class 2606 OID 30141)
+-- TOC entry 3299 (class 2606 OID 446055)
 -- Name: achievements FK_3e7e91763bdef262e9f727a1208; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1609,7 +1623,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3317 (class 2606 OID 55975)
+-- TOC entry 3323 (class 2606 OID 446060)
 -- Name: user_functions FK_414c47660792aa509c8f55adc7f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1618,7 +1632,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3298 (class 2606 OID 30547)
+-- TOC entry 3300 (class 2606 OID 446065)
 -- Name: achievements FK_439fe2afbe76423baefd988dbd8; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1627,7 +1641,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3311 (class 2606 OID 55965)
+-- TOC entry 3313 (class 2606 OID 446070)
 -- Name: functions FK_579f1e0cdab39bd43464fb882be; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1636,7 +1650,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
--- TOC entry 3300 (class 2606 OID 56126)
+-- TOC entry 3304 (class 2606 OID 446075)
 -- Name: events FK_723091d08c3c5415a1999597464; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1645,7 +1659,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3314 (class 2606 OID 56000)
+-- TOC entry 3315 (class 2606 OID 446080)
 -- Name: journals FK_811c873435715b3eb624d256a11; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1654,7 +1668,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
--- TOC entry 3302 (class 2606 OID 30161)
+-- TOC entry 3305 (class 2606 OID 446085)
 -- Name: events FK_9025d02effbcfec592d24236f5c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1663,7 +1677,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3310 (class 2606 OID 55980)
+-- TOC entry 3312 (class 2606 OID 446090)
 -- Name: forms FK_b8df7e99e28d225024e56783b8e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1672,7 +1686,7 @@ ALTER TABLE ONLY public.forms
 
 
 --
--- TOC entry 3303 (class 2606 OID 30171)
+-- TOC entry 3306 (class 2606 OID 446095)
 -- Name: events FK_b935d793584366f2a3c196ac9d7; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1681,7 +1695,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3316 (class 2606 OID 55970)
+-- TOC entry 3324 (class 2606 OID 446100)
 -- Name: user_functions FK_bc78d14d218fc2e57e7a6941ab3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1690,7 +1704,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3304 (class 2606 OID 30181)
+-- TOC entry 3307 (class 2606 OID 446105)
 -- Name: events FK_bcb2ce0072504d624725e3ef826; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1699,7 +1713,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3305 (class 2606 OID 30186)
+-- TOC entry 3308 (class 2606 OID 446110)
 -- Name: events FK_bf2f38672c0046c6328e69b71e6; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1708,7 +1722,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3315 (class 2606 OID 30191)
+-- TOC entry 3322 (class 2606 OID 446115)
 -- Name: teams FK_c0b0c479964469ab9fbbed02c8d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1717,7 +1731,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
--- TOC entry 3309 (class 2606 OID 56076)
+-- TOC entry 3311 (class 2606 OID 446120)
 -- Name: form_fields FK_c2076d2b47add1aaa07608e0cf2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1726,7 +1740,7 @@ ALTER TABLE ONLY public.form_fields
 
 
 --
--- TOC entry 3306 (class 2606 OID 30196)
+-- TOC entry 3309 (class 2606 OID 446125)
 -- Name: events FK_c5a362fc7d682923a6aa8f0072f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1735,7 +1749,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3313 (class 2606 OID 30206)
+-- TOC entry 3316 (class 2606 OID 446130)
 -- Name: journals FK_dcd8f26897887ea1ca19e9b910a; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1744,7 +1758,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
--- TOC entry 3297 (class 2606 OID 30211)
+-- TOC entry 3301 (class 2606 OID 446135)
 -- Name: achievements FK_e2c799e4fa523f355079e1b06c0; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1753,7 +1767,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3307 (class 2606 OID 30221)
+-- TOC entry 3310 (class 2606 OID 446140)
 -- Name: events FK_fb98daef5570cb124e34c9ea42c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1761,7 +1775,7 @@ ALTER TABLE ONLY public.events
     ADD CONSTRAINT "FK_fb98daef5570cb124e34c9ea42c" FOREIGN KEY (format_id) REFERENCES public.dictionary(id);
 
 
--- Completed on 2023-09-19 23:22:13
+-- Completed on 2023-11-10 22:20:42
 
 --
 -- PostgreSQL database dump complete

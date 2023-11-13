@@ -25,9 +25,9 @@ export class UserFunction {
 
   @ManyToOne(() => TeamFunction, (func) => func.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'function_id' }])
-  function: number;
+  function: TeamFunction;
 
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'user_id' }])
-  user: number;
+  user: User;
 }
