@@ -9,34 +9,50 @@
         Поиск по новостям
       </div>
       <div class="dropdown">
-        <div class="block date" @click="isCalendarExpanded = !isCalendarExpanded" type="button" id="dropdownCalendar" data-bs-toggle="dropdown" aria-expanded="false">
+        <div
+          class="block date"
+          @click="isCalendarExpanded = !isCalendarExpanded"
+          type="button"
+        >
           <FontAwesomeIcon icon="calendar" />
-          25 сен - 1 окт 2023
-          <FontAwesomeIcon v-if="!isCalendarExpanded" icon="angle-down" />
+            {{ calendarPicked.toISOString() }}
+            <FontAwesomeIcon v-if="!isCalendarExpanded" icon="angle-down" />
           <FontAwesomeIcon v-if="isCalendarExpanded" icon="angle-up" />
         </div>
-        <ul class="block dropdown-menu" aria-labelledby="dropdownCalendar">
-          <li><a class="dropdown-item" href="#">
-            <Datepicker v-model="picked" />
-          </a></li>
-        </ul>
+        <div :class="['calendar', { 'calendar-visible': isCalendarExpanded }]">
+          <DatePicker
+            v-model="calendarPicked"
+            @click="isCalendarExpanded = !isCalendarExpanded"
+          />
+        </div>
       </div>
       <div class="dropdown">
-        <div class="block order" @click="isOrderExpanded = !isOrderExpanded" type="button" id="dropdownOrder" data-bs-toggle="dropdown" aria-expanded="false">
+        <div
+          class="block order"
+          @click="isOrderExpanded = !isOrderExpanded"
+          type="button"
+          id="dropdownOrder"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
           <FontAwesomeIcon icon="sort" />
           Сначала новые
-           <FontAwesomeIcon v-if="!isOrderExpanded" icon="angle-down" />
+          <FontAwesomeIcon v-if="!isOrderExpanded" icon="angle-down" />
           <FontAwesomeIcon v-if="isOrderExpanded" icon="angle-up" />
         </div>
         <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
-          <li><a class="dropdown-item" href="#">
-            <FontAwesomeIcon icon="sort" />
-            Сначала новые
-          </a></li>
-          <li><a class="dropdown-item" href="#">
-            <FontAwesomeIcon icon="sort" />
-            Сначала старые
-          </a></li>
+          <li>
+            <a class="dropdown-item" href="#">
+              <FontAwesomeIcon icon="sort" />
+              Сначала новые
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#">
+              <FontAwesomeIcon icon="sort" />
+              Сначала старые
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -44,13 +60,15 @@
       <div class="card mb-3 rounded-3" v-for="news in newsList" :key="news.id">
         <div class="row g-0">
           <div class="col-lg-4">
-            <img :src="news.imageUrl" class="img-fluid rounded-3" alt="">
+            <img :src="news.imageUrl" class="img-fluid rounded-3" alt="" />
           </div>
           <div class="col-lg-8">
             <div class="card-body">
               <h5 class="card-title">{{ news.title }}</h5>
               <p class="card-text">{{ news.description }}</p>
-              <p class="card-text"><small class="text-muted">07.03.2022</small></p>
+              <p class="card-text">
+                <small class="text-muted">07.03.2022</small>
+              </p>
             </div>
           </div>
         </div>
@@ -62,11 +80,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import Datepicker from "vue3-datepicker";
-const props = defineProps<{ team: any; }>();
+import { DatePicker } from "v-calendar";
+
+const props = defineProps<{ team: any }>();
 
 const isCalendarExpanded = ref(false);
-const picked = ref(new Date())
+const calendarPicked = ref(new Date());
 
 const isOrderExpanded = ref(false);
 
@@ -160,6 +179,21 @@ const newsList = [
       text-align: justify;
       font-size: 12px;
     }
+  }
+}
+
+//for calendar
+.calendar {
+  display: none;
+  position: absolute;
+  right: 0px;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  z-index: 1;
+  border-radius: 20px;
+
+  &-visible {
+    display: block;
   }
 }
 </style>
