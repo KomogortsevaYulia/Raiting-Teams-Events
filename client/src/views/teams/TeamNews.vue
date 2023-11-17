@@ -13,9 +13,18 @@
             type="button"
           >
             <FontAwesomeIcon icon="calendar" class="mx-2" />
-            {{ calendarPicked.start.toLocaleDateString() }} -  {{ calendarPicked.end.toLocaleDateString() }}
-            <FontAwesomeIcon v-if="!isCalendarExpanded" icon="angle-down"  class="mx-2" />
-            <FontAwesomeIcon v-if="isCalendarExpanded" icon="angle-up"  class="mx-2" />
+            {{ calendarPicked.start.toLocaleDateString() }} -
+            {{ calendarPicked.end.toLocaleDateString() }}
+            <FontAwesomeIcon
+              v-if="!isCalendarExpanded"
+              icon="angle-down"
+              class="mx-2"
+            />
+            <FontAwesomeIcon
+              v-if="isCalendarExpanded"
+              icon="angle-up"
+              class="mx-2"
+            />
           </div>
           <div
             :class="['calendar', { 'calendar-visible': isCalendarExpanded }]"
@@ -28,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="col-auto ">
+      <div class="col-auto">
         <div class="dropdown">
           <div
             class="block order"
@@ -38,23 +47,29 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            <FontAwesomeIcon icon="sort" class="mx-2"/>
-            Сначала новые
-            <FontAwesomeIcon v-if="!isOrderExpanded" icon="angle-down" class="mx-2"/>
-            <FontAwesomeIcon v-if="isOrderExpanded" icon="angle-up" class="mx-2"/>
+            <FontAwesomeIcon icon="sort" class="mx-2" />
+            {{ filters.selectedFilterDate.name }}
+            <FontAwesomeIcon
+              v-if="!isOrderExpanded"
+              icon="angle-down"
+              class="mx-2"
+            />
+            <FontAwesomeIcon
+              v-if="isOrderExpanded"
+              icon="angle-up"
+              class="mx-2"
+            />
           </div>
           <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
-            <li>
-              <a class="dropdown-item" href="#">
+            <li
+              v-for="value in filterDate"
+              @click="filters.selectedFilterDate = value"
+              v-bind:key="value.id"
+            >
+              <div class="dropdown-item">
                 <FontAwesomeIcon icon="sort" />
-                Сначала новые
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">
-                <FontAwesomeIcon icon="sort" />
-                Сначала старые
-              </a>
+                {{ value.name }}
+              </div>
             </li>
           </ul>
         </div>
@@ -91,11 +106,19 @@ import SearchField from "@/components/SearchField.vue";
 
 const isCalendarExpanded = ref(false);
 const calendarPicked = ref({
-        start: new Date(new Date().getTime() - 31556952000),
-        end: new Date(),
+  start: new Date(new Date().getTime() - 31556952000),
+  end: new Date(),
 });
 
 const isOrderExpanded = ref(false);
+
+const filterDate = [
+  { id: 0, name: "Сначала новые" },
+  { id: 1, name: "Сначала старые" },
+];
+const filters = ref({
+  selectedFilterDate: filterDate[0],
+});
 
 defineProps<{
   team: ITeam; //коллектив
@@ -194,8 +217,8 @@ const newsList = [
   }
 }
 
-.dropdown{
-  width:fit-content;
+.dropdown {
+  width: fit-content;
 }
 
 //for calendar
