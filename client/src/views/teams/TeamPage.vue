@@ -69,7 +69,7 @@
 <script setup lang="ts">
 import "@/assets/nav-second.scss";
 import WIP from "@/components/WIP.vue";
-import { onBeforeMount, ref } from "vue";
+import {onBeforeMount, ref} from "vue";
 import Ankets from "@/views/teams/QuestionnairePage.vue";
 
 import axios from "axios";
@@ -81,6 +81,8 @@ import Participation from "./ParticipationPage.vue";
 import TeamRequests from "./TeamRequests.vue";
 import { usePermissionsStore } from "@/store/permissions_store";
 import TeamMain from "./TeamMain.vue";
+import type {ITeam} from "@/store/models/teams/team.model";
+import type { Ref } from "vue";
 
 const route = useRoute();
 
@@ -92,7 +94,8 @@ const idTeam = Number(route.params.id);
 const teamStore = useTeamStore();
 const show = ref(true);
 
-const team = ref();
+const team: Ref<ITeam> = ref({});
+
 const teamUsers = ref();
 
 onBeforeMount(async () => {

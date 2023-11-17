@@ -1,13 +1,13 @@
 <template>
   <div class="navigation-tags row g-1">
-    <Tag v-for="(item, index) in team.tags" class="col-auto me-2" :text="item" :key="index" />
+    <Tag v-for="(item, index) in team?.tags" class="col-auto me-2" :text="item" :key="index" />
   </div>
   <hr />
   <div class="block-title">О коллективе</div>
   <div class="middle-panel row g-3">
     <div class="column-left col-md-7 col-sm-12">
       <div class="description">
-        {{ team.description }}
+        {{ team?.description }}
       </div>
     </div>
     <div class="column-right col-md-5 col-sm-12">
@@ -16,7 +16,7 @@
           <FontAwesomeIcon icon="angle-left" />
         </div>
         <div class="image-container">
-          <div v-for="(item, index) in team.image" :key="index">
+          <div v-for="(item, index) in team?.image" :key="index">
             <img :src="item" v-if="currentPage === index" />
           </div>
         </div>

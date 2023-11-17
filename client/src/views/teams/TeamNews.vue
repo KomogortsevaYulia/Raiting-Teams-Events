@@ -1,61 +1,66 @@
 <template>
   <!-- Блок с НОВОСТЯМИ -->
   <div class="news-panel">
-    <div class="filters">
-      <div class="block search">
-        <div class="icon">
-          <FontAwesomeIcon icon="search" />
-        </div>
-        Поиск по новостям
+    <div class="filters row g-3">
+      <div class="col-auto">
+        <SearchField handle-timer-search="" />
       </div>
-      <div class="dropdown">
-        <div
-          class="block date"
-          @click="isCalendarExpanded = !isCalendarExpanded"
-          type="button"
-        >
-          <FontAwesomeIcon icon="calendar" />
-            {{ calendarPicked.toISOString() }}
-            <FontAwesomeIcon v-if="!isCalendarExpanded" icon="angle-down" />
-          <FontAwesomeIcon v-if="isCalendarExpanded" icon="angle-up" />
-        </div>
-        <div :class="['calendar', { 'calendar-visible': isCalendarExpanded }]">
-          <DatePicker
-            v-model="calendarPicked"
+      <div class="col-auto">
+        <div class="dropdown">
+          <div
+            class="block date"
             @click="isCalendarExpanded = !isCalendarExpanded"
-          />
+            type="button"
+          >
+            <FontAwesomeIcon icon="calendar" class="mx-2" />
+            {{ calendarPicked.start.toLocaleDateString() }} -  {{ calendarPicked.end.toLocaleDateString() }}
+            <FontAwesomeIcon v-if="!isCalendarExpanded" icon="angle-down"  class="mx-2" />
+            <FontAwesomeIcon v-if="isCalendarExpanded" icon="angle-up"  class="mx-2" />
+          </div>
+          <div
+            :class="['calendar', { 'calendar-visible': isCalendarExpanded }]"
+          >
+            <DatePicker
+              v-model="calendarPicked"
+              @dayclick="isCalendarExpanded = !isCalendarExpanded"
+              is-range
+            />
+          </div>
         </div>
       </div>
-      <div class="dropdown">
-        <div
-          class="block order"
-          @click="isOrderExpanded = !isOrderExpanded"
-          type="button"
-          id="dropdownOrder"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <FontAwesomeIcon icon="sort" />
-          Сначала новые
-          <FontAwesomeIcon v-if="!isOrderExpanded" icon="angle-down" />
-          <FontAwesomeIcon v-if="isOrderExpanded" icon="angle-up" />
+      <div class="col-auto ">
+        <div class="dropdown">
+          <div
+            class="block order"
+            @click="isOrderExpanded = !isOrderExpanded"
+            type="button"
+            id="dropdownOrder"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <FontAwesomeIcon icon="sort" class="mx-2"/>
+            Сначала новые
+            <FontAwesomeIcon v-if="!isOrderExpanded" icon="angle-down" class="mx-2"/>
+            <FontAwesomeIcon v-if="isOrderExpanded" icon="angle-up" class="mx-2"/>
+          </div>
+          <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
+            <li>
+              <a class="dropdown-item" href="#">
+                <FontAwesomeIcon icon="sort" />
+                Сначала новые
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <FontAwesomeIcon icon="sort" />
+                Сначала старые
+              </a>
+            </li>
+          </ul>
         </div>
-        <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
-          <li>
-            <a class="dropdown-item" href="#">
-              <FontAwesomeIcon icon="sort" />
-              Сначала новые
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">
-              <FontAwesomeIcon icon="sort" />
-              Сначала старые
-            </a>
-          </li>
-        </ul>
       </div>
     </div>
+
     <div>
       <div class="card mb-3 rounded-3" v-for="news in newsList" :key="news.id">
         <div class="row g-0">
@@ -82,9 +87,13 @@ import { ref } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { ITeam } from "@/store/models/teams/team.model";
 import { DatePicker } from "v-calendar";
+import SearchField from "@/components/SearchField.vue";
 
 const isCalendarExpanded = ref(false);
-const calendarPicked = ref(new Date());
+const calendarPicked = ref({
+        start: new Date(new Date().getTime() - 31556952000),
+        end: new Date(),
+});
 
 const isOrderExpanded = ref(false);
 
@@ -183,6 +192,10 @@ const newsList = [
       font-size: 12px;
     }
   }
+}
+
+.dropdown{
+  width:fit-content;
 }
 
 //for calendar
