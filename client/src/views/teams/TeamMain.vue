@@ -47,26 +47,22 @@
 </template>
 
 <script setup lang="ts">
-import { useTeamStore } from "@/store/team_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/TagElem.vue";
+import type { ITeam } from "@/store/models/teams/team.model";
 
 const props = defineProps<{
-  team: any;
-  onUpdateTeam: Function;
+  team: ITeam; //коллектив
+  onUpdateTeam: () => void;
 }>();
-
-const teamStore = useTeamStore();
 
 const currentPage = ref(0);
 
-function setCurrentPage(page: number) {
-  currentPage.value = page;
-}
+// const image = ref<File>();
 
 function nextPage() {
-  if (currentPage.value + 1 < props.team.image.length) {
+  if (props.team.image && currentPage.value + 1 < props.team.image.length) {
     currentPage.value++;
   } else {
     currentPage.value = 0;
@@ -76,10 +72,27 @@ function nextPage() {
 function previousPage() {
   if (currentPage.value - 1 >= 0) {
     currentPage.value--;
-  } else {
+  } else if (props.team.image) {
     currentPage.value = props.team.image.length - 1;
   }
 }
+
+// TODO: сделать загрузку изображений в коллективе
+// function uploadImage(e: { target: { files: (File | undefined)[] } }) {
+//   image.value = e.target.files[0];
+// }
+
+// async function addImage() {
+//   let formteam = new FormData();
+//   formteam.append("file", image.value!);
+//
+//   image.value = undefined;
+//
+//   if (props.team.id) {
+//     await teamStore.addImage(props.team.id, formteam);
+//     props.onUpdateTeam();
+//   }
+// }
 </script>
 
 <style lang="scss" scoped>

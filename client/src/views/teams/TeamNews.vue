@@ -80,14 +80,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import type { ITeam } from "@/store/models/teams/team.model";
 import { DatePicker } from "v-calendar";
-
-const props = defineProps<{ team: any }>();
 
 const isCalendarExpanded = ref(false);
 const calendarPicked = ref(new Date());
 
 const isOrderExpanded = ref(false);
+
+defineProps<{
+  team: ITeam; //коллектив
+}>();
 
 const newsList = [
   {

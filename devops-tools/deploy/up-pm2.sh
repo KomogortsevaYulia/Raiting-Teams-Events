@@ -1,12 +1,15 @@
 #!/bin/bash
+source source.sh
 
-BE_PM2_ID=0
-FE_PM2_ID=2
+BE_PROCESS_ID_=$(pm2 status | grep $BE_PROCESS_NAME_ | awk '{print $2}')
+FE_PROCESS_ID_=$(pm2 status | grep $FE_PROCESS_NAME_ | awk '{print $2}')
 
-echo "restarting processes by pm2..."
+pm2 restart $BE_PROCESS_ID_
 
-pm2 restart $BE_PM2_ID $FE_PM2_ID
+sleep "$BE_BUILD_COOLDOWN_"s
 
-pm2 save
+pm2 restart $FE_PROCESS_ID_
+
+sleep "$FE_BUILD_COOLDOWN_"s
 
 echo "processes were restarted by pm2"

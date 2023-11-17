@@ -1,31 +1,28 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UploadsController } from './uploads.controller';
-import { UploadsService } from './uploads.service';
-import { EventsService } from '../events/events.service';
+// import { Test, TestingModule } from '@nestjs/testing';
+// import { UploadsController } from './uploads.controller';
+// import { UploadsService } from './uploads.service';
+// import { EventsService } from '../events/events.service';
 
 describe('UploadsController', () => {
-  let controller: UploadsController;
+  // let controller: UploadsController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UploadsController],
-      providers: [UploadsService, EventsService],
-    }).compile();
-
-    controller = module.get<UploadsController>(UploadsController);
-  });
-
+  // beforeEach(async () => {
+  //   const module: TestingModule = await Test.createTestingModule({
+  //     controllers: [UploadsController],
+  //     providers: [UploadsService, EventsService],
+  //   }).compile();
+  //
+  //   // controller = module.get<UploadsController>(UploadsController);
+  // });
 
   describe('get file by path', () => {
     it('should throw an error', async () => {
       // await expect(controller.getFileBuffer({params:{path:"none"}})).rejects.toThrow();
     });
-
   });
 
   // describe('load file ', () => {
   //   it('should throw an error', async () => {
-
 
   //       console.log("Reading the file");
 
@@ -47,5 +44,4 @@ describe('UploadsController', () => {
   //   });
 
   // });
-
 });

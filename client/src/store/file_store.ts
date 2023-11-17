@@ -16,7 +16,7 @@ export const useFileStore = defineStore("file", () => {
   async function getImageBase64(path: string) {
     let imageData = null;
 
-    const res = await axios
+    await axios
       .get("api/uploads/image_base64", { params: { path: path } })
       .then((response) => {
         imageData = response.data;
