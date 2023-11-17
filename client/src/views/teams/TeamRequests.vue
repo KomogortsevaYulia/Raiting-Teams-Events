@@ -5,105 +5,152 @@
 
   <!-- анкета -->
   <ModalQuestionnaireAnswers :requisition="currentRequisition" />
-  
-  <div class="filters">
-    <div class="block search">
-      <div class="icon">
-        <FontAwesomeIcon icon="search" />
-      </div>
-      Поиск по новостям
+
+  <div class="filters row g-3">
+    <!--   поиск -->
+    <div class="col-auto">
+      <SearchField handle-timer-search="" />
     </div>
-    <div class="dropdown">
-      <div class="block filter" @click="isFilterExpanded = !isFilterExpanded" type="button" id="dropdownFilter" data-bs-toggle="dropdown" aria-expanded="false">
-        <FontAwesomeIcon icon="sort" />
-        Фильтрация заявок
-        <FontAwesomeIcon v-if="!isFilterExpanded" icon="angle-down" />
-        <FontAwesomeIcon v-if="isFilterExpanded" icon="angle-up" />
-      </div>
-      <ul class="block dropdown-menu" aria-labelledby="dropdownFilter">
-        <li><a class="dropdown-item" href="#">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-              Утверждённые
-            </label>
-          </div>
-        </a></li>
-        <li><a class="dropdown-item" href="#">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          <label class="form-check-label" for="flexCheckDefault">
-            Отклонённые
-          </label>
+    <!--   фильтр по статусу   -->
+    <div class="col-auto">
+      <div class="dropdown">
+        <div
+          class="block filter"
+          @click="isFilterExpanded = !isFilterExpanded"
+          type="button"
+          id="dropdownFilter"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <FontAwesomeIcon icon="sort" class="mx-2" />
+          Фильтрация заявок
+          <FontAwesomeIcon
+            v-if="!isFilterExpanded"
+            icon="angle-down"
+            class="mx-2"
+          />
+          <FontAwesomeIcon
+            v-if="isFilterExpanded"
+            icon="angle-up"
+            class="mx-2"
+          />
         </div>
-        </a></li>
-        <li><a class="dropdown-item" href="#">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-              Не просмотренные
-            </label>
-          </div>
-        </a></li>
-        <li><a class="dropdown-item" href="#">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-              Приглашены на собеседование
-            </label>
-          </div>
-        </a></li>
-      </ul>
-    </div>
-    <div class="dropdown">
-      <div class="block order" @click="isOrderExpanded = !isOrderExpanded" type="button" id="dropdownOrder" data-bs-toggle="dropdown" aria-expanded="false">
-        <FontAwesomeIcon icon="sort" />
-        Сначала новые
-        <FontAwesomeIcon v-if="!isOrderExpanded" icon="angle-down" />
-        <FontAwesomeIcon v-if="isOrderExpanded" icon="angle-up" />
+        <ul class="block dropdown-menu" aria-labelledby="dropdownFilter">
+          <li v-for="value in filterRequisitions" v-bind:key="value.id">
+            <div class="dropdown-item">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="flexCheckDefault"
+                  :checked="value.checked"
+                />
+                <label class="form-check-label" for="flexCheckDefault">
+                  {{ value.name }}
+                </label>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
-      <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
-        <li><a class="dropdown-item" href="#">
-          <FontAwesomeIcon icon="sort" />
-          Сначала новые
-        </a></li>
-        <li><a class="dropdown-item" href="#">
-          <FontAwesomeIcon icon="sort" />
-          Сначала старые
-        </a></li>
-      </ul>
+    </div>
+    <!--   фильтр по дате   -->
+    <div class="col-auto">
+      <div class="dropdown">
+        <div
+          class="block order"
+          @click="isOrderExpanded = !isOrderExpanded"
+          type="button"
+          id="dropdownOrder"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <FontAwesomeIcon icon="sort" class="mx-2" />
+          {{ filters.selectedFilterDate.name }}
+          <FontAwesomeIcon
+            v-if="!isOrderExpanded"
+            icon="angle-down"
+            class="mx-2"
+          />
+          <FontAwesomeIcon
+            v-if="isOrderExpanded"
+            icon="angle-up"
+            class="mx-2"
+          />
+        </div>
+        <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
+          <li
+            v-for="value in filterDate"
+            @click="filters.selectedFilterDate = value"
+            v-bind:key="value.id"
+          >
+            <div class="dropdown-item">
+              <FontAwesomeIcon icon="sort" />
+              {{ value.name }}
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
   <div v-for="item in req" v-bind:key="item.id">
-    <div class="card mb-3 rounded-4">
-      <div class="row g-0">
-        <div class="col-md-2">
-          <img src="@/assets/icon/user.png" class="img-fluid rounded-4" alt="">
+    <div class="member-card mb-3 rounded-4 border-block">
+      <div class="row g-1">
+        <div
+          class="col-md-2 img-container align-items-center d-flex justify-content-center"
+        >
+          <img
+            src="@/assets/icon/user.png"
+            class="img-fluid rounded-4"
+            alt=""
+          />
         </div>
         <div class="col-md-10">
           <div class="card-body d-flex flex-column">
             <div class="member-title mb-2">{{ item.user?.fullname }}</div>
-            <div class="member-desc mb-5">Дата отправки заявки: {{ item.date_update }}</div>
-            <div class="mt-auto row align-content-center">
-              <div class="member-status col">Статус: {{ item.status?.name }}</div>
-              <div class="col-auto">
-                <button class="button-outline px-4 button-text-dark"
-                data-bs-toggle="modal"
-                  data-bs-target="#viewReqFormModal" @click="setCurrentRequisition(item)">Открыть</button>
+            <div class="member-desc mb-5">
+              Дата отправки заявки: {{ item.date_update }}
+            </div>
+            <div class="mt-auto row align-content-center g-2">
+              <div class="member-status col">
+                Статус: {{ item.status?.name }}
               </div>
               <div class="col-auto">
-                <button class="button-orange px-4 button-text-light">Написать</button>
+                <button
+                  class="button-outline px-4 button-text-dark"
+                  data-bs-toggle="modal"
+                  data-bs-target="#viewReqFormModal"
+                  @click="setCurrentRequisition(item)"
+                >
+                  Открыть
+                </button>
               </div>
               <div class="col-auto">
-                <button class="button-green px-4 button-text-light" @click="updateRequisition(item, 'Принята')">Утвердить</button>
+                <button class="button-orange px-4 button-text-light">
+                  Написать
+                </button>
               </div>
-                <div class="col-auto">
-                <button class="button-red px-4 button-text-light" @click="updateRequisition(item, 'Отклонена')">Отклонить</button>
+              <div class="col-auto">
+                <button
+                  class="button-green px-4 button-text-light"
+                  @click="updateRequisition(item, 'Принята')"
+                >
+                  Утвердить
+                </button>
+              </div>
+              <div class="col-auto">
+                <button
+                  class="button-red px-4 button-text-light"
+                  @click="updateRequisition(item, 'Отклонена')"
+                >
+                  Отклонить
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -116,6 +163,7 @@ import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref, onBeforeMount } from "vue";
 import type { IRequisition } from "@/store/models/forms/requisition.model";
 import type { Ref } from "vue";
+import SearchField from "@/components/SearchField.vue";
 
 const teamStore = useTeamStore();
 useUserFunctionsStore();
@@ -123,12 +171,27 @@ const props = defineProps<{
   idTeam: number;
 }>();
 
-
 const isFilterExpanded = ref(false);
 const isOrderExpanded = ref(false);
 
 const req: Ref<IRequisition[]> = ref([]);
 const currentRequisition = ref();
+
+const filterRequisitions = ref([
+  { id: 0, name: "Утверждённые", checked: true },
+  { id: 1, name: "Отклонённые", checked: true },
+  { id: 2, name: "Не просмотренные", checked: true },
+  { id: 3, name: "Приглашены на собеседование", checked: true },
+]);
+
+const filterDate = [
+  { id: 0, name: "Сначала новые" },
+  { id: 1, name: "Сначала старые" },
+];
+
+const filters = ref({
+  selectedFilterDate: filterDate[0],
+});
 
 onBeforeMount(async () => {
   await fetchRequisitions();
@@ -153,9 +216,13 @@ function setCurrentRequisition(req: IRequisition) {
 </script>
 
 <style lang="scss" scoped>
+.img-fluid {
+  height: fit-content;
+  max-height: 150px;
+}
+
 .member-title {
   color: #383838;
-  font-family: Montserrat;
   font-size: 20px;
   font-style: normal;
   font-weight: 600;
@@ -164,7 +231,6 @@ function setCurrentRequisition(req: IRequisition) {
 
 .member-desc {
   color: #383838;
-  font-family: Montserrat;
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
@@ -173,7 +239,6 @@ function setCurrentRequisition(req: IRequisition) {
 
 .member-status {
   color: #383838;
-  font-family: Montserrat;
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
@@ -181,8 +246,7 @@ function setCurrentRequisition(req: IRequisition) {
 }
 
 .button-text-light {
-  color: #FFF;
-  font-family: Montserrat;
+  color: #fff;
   font-size: 14px;
   font-style: normal;
   font-weight: 600;
@@ -191,7 +255,6 @@ function setCurrentRequisition(req: IRequisition) {
 
 .button-text-dark {
   color: #383838;
-  font-family: Montserrat;
   font-size: 14px;
   font-style: normal;
   font-weight: 600;
@@ -201,22 +264,22 @@ function setCurrentRequisition(req: IRequisition) {
 .button-outline {
   border-radius: 10px;
   border: 1.5px solid;
-  background: #FFF;
+  background: #fff;
 }
 
 .button-orange {
   border-radius: 10px;
-  background: #FF9457;
+  background: #ff9457;
 }
 
 .button-green {
   border-radius: 10px;
-  background: #61E2A1;
+  background: #61e2a1;
 }
 
 .button-red {
   border-radius: 10px;
-  background: #D22043;
+  background: #d22043;
 }
 
 .filters {
@@ -259,7 +322,7 @@ function setCurrentRequisition(req: IRequisition) {
 .member-card {
   width: 100%;
   margin-bottom: 12px;
-  background: rgb(243, 243, 243);
+  padding: 15px;
   border-radius: var(--border-radius);
 }
 
@@ -281,5 +344,11 @@ function setCurrentRequisition(req: IRequisition) {
   color: rgba(90, 90, 90, 1);
   font-size: 15px;
   line-height: 24px;
+}
+
+@media (max-width: 768px) {
+  .img-container {
+    display: none;
+  }
 }
 </style>
