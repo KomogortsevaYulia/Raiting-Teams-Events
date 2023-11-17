@@ -31,7 +31,6 @@
           >
             <DatePicker
               v-model="calendarPicked"
-              @dayclick="isCalendarExpanded = !isCalendarExpanded"
               is-range
             />
           </div>
@@ -98,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import {ref, watch} from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { ITeam } from "@/store/models/teams/team.model";
 import { DatePicker } from "v-calendar";
@@ -109,6 +108,7 @@ const calendarPicked = ref({
   start: new Date(new Date().getTime() - 31556952000),
   end: new Date(),
 });
+
 
 const isOrderExpanded = ref(false);
 
@@ -123,6 +123,13 @@ const filters = ref({
 defineProps<{
   team: ITeam; //коллектив
 }>();
+
+watch(
+    () => calendarPicked.value.end,
+    async () => {
+        isCalendarExpanded.value = !(isCalendarExpanded.value)
+    },
+);
 
 const newsList = [
   {
