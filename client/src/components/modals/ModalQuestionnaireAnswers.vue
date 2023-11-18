@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="wrap-button">
-          <button type="button" class="close-btn" data-bs-dismiss="modal">
+          <button type="button" class="btn-custom-primary" data-bs-dismiss="modal">
             Закрыть
           </button>
         </div>
@@ -56,13 +56,10 @@ const props = defineProps<{
 watch(
   () => props.requisition,
   async () => {
-    await fetchRequisitionAnswers();
+      const id = props.requisition.id
+    if (id && id  > 0) await fetchRequisitionAnswers();
   },
 );
-
-onBeforeMount(async () => {
-  await fetchRequisitionAnswers();
-});
 
 async function fetchRequisitionAnswers() {
   formAnswers.value = await formStore.fetchRequisitionAnswers(
@@ -123,14 +120,6 @@ async function fetchRequisitionAnswers() {
         display: flex;
         justify-content: space-between;
 
-        .close-btn {
-          background: #ff502f;
-          border-radius: 10px;
-          color: white;
-          cursor: pointer;
-          width: 225px;
-          height: 55px;
-        }
       }
     }
   }

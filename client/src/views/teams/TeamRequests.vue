@@ -95,7 +95,7 @@
     Заявок нет
   </div>
 
-  <div v-for="item in req" v-bind:key="item.id">
+  <div v-if="!loading" v-for="item in req" v-bind:key="item.id">
     <div class="member-card mb-3 rounded-4 border-block">
       <div class="row g-1">
         <div
@@ -154,6 +154,9 @@
       </div>
     </div>
   </div>
+  <div v-else class="d-flex align-items-center justify-content-center mt-4">
+    <LoadingElem size-fa-icon="fa-3x" />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -165,12 +168,15 @@ import { ref, onBeforeMount } from "vue";
 import type { IRequisition } from "@/store/models/forms/requisition.model";
 import type { Ref } from "vue";
 import SearchField from "@/components/SearchField.vue";
+import LoadingElem from "@/components/LoadingElem.vue";
 
 const teamStore = useTeamStore();
 useUserFunctionsStore();
 const props = defineProps<{
   idTeam: number;
 }>();
+
+const loading = ref(false);
 
 const isFilterExpanded = ref(false);
 const isOrderExpanded = ref(false);
@@ -199,7 +205,9 @@ onBeforeMount(async () => {
 });
 
 async function fetchRequisitions() {
+  loading.value = true;
   req.value = await teamStore.fetchRequisitions(props.idTeam);
+  loading.value = false;
 }
 
 async function updateRequisition(req: IRequisition, status_name: string) {
