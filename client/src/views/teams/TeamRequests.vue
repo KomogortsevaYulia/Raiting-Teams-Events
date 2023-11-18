@@ -1,8 +1,4 @@
 <template>
-  <div v-if="req.length <= 0" class="alert alert-warning" role="alert">
-    Заявок нет
-  </div>
-
   <!-- анкета -->
   <ModalQuestionnaireAnswers :requisition="currentRequisition" />
 
@@ -94,6 +90,11 @@
       </div>
     </div>
   </div>
+
+  <div v-if="req.length <= 0" class="alert alert-warning" role="alert">
+    Заявок нет
+  </div>
+
   <div v-for="item in req" v-bind:key="item.id">
     <div class="member-card mb-3 rounded-4 border-block">
       <div class="row g-1">
