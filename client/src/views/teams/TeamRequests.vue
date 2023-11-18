@@ -95,7 +95,7 @@
     Заявок нет
   </div>
 
-  <div v-if="!loading" v-for="item in req" v-bind:key="item.id">
+  <div v-for="item in req" v-bind:key="item.id">
     <div class="member-card mb-3 rounded-4 border-block">
       <div class="row g-1">
         <div
@@ -154,7 +154,7 @@
       </div>
     </div>
   </div>
-  <div v-else class="d-flex align-items-center justify-content-center mt-4">
+  <div v-if="loading" class="d-flex align-items-center justify-content-center mt-4">
     <LoadingElem size-fa-icon="fa-3x" />
   </div>
 </template>
