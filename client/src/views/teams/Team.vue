@@ -66,12 +66,23 @@
       </div>
 
               <div class="py-4">
-                <div>1 участников</div>
-                <div>1 руководителя   0 студентов</div>
+                <div v-for="(item, ind) in team">
+                  <div v-if="item.function?.title == 'Участник'">
+                    <div>{{ ind + 1 }} участников</div>
+                  </div>
+                </div>
+                  <div v-for="(item, inde) in team">
+                  <div v-if="item.function?.title == 'Руководитель'">
+                    <div>{{ inde + 1 }} руководителя</div>
+                  </div>
+                </div>
+                          
               </div>
-        <div v-for="item in team">
-          <div v-if="isTable == false" class="members-list row g-2" >
-            <div class="col-md-6 col-lg-6">
+
+              
+            
+            <div v-if="isTable == false" class="members-list row g-2" >
+              <div v-for="item in team" class="col-md-6 col-lg-6">
               <div class="member-card border rounded">
                 <div class="image-container">
                   <img class="rounded" src="../../assets/icon/event3.png" alt="" />
@@ -123,7 +134,8 @@
                           </div>
                         </div>
                       </div>
-          </div>
+            
+            </div>
           
         </div>          
               <div v-if="isTable==true">
@@ -149,12 +161,12 @@
                             </table>       
               </div>  
          
-        </div>
+        
                 
                   
        
-        <Pagination class="d-flex" :visiblePages=10 :maxPage=1 :handleEventChangePage="changePage"/>
-      </div>
+      <Pagination class="d-flex" :visiblePages=10 :maxPage=1 :handleEventChangePage="changePage"/>
+    </div>
     
 
       <div v-if="selectedItem === 4">
