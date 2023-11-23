@@ -19,7 +19,7 @@ import { onBeforeMount, ref, watch } from "vue";
 const state = ref(true); //состояние лэйаута (сетка, лист)
 
 const props = defineProps<{
-  onEventChangeState: Function; //обработка события при смене представления
+  onEventChangeState: (stateL: boolean)=>void; //обработка события при смене представления
 }>();
 
 onBeforeMount(() => {
