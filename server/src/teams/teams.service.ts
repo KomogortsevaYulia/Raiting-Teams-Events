@@ -372,6 +372,7 @@ export class TeamsService {
         'requisition.date_update',
         'requisition.status',
         'requisition.id',
+        'requisition.comment_leader',
       ])
       .leftJoinAndSelect('requisition.user', 'user')
       // взять статус со словаря

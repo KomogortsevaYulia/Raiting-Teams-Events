@@ -6,6 +6,9 @@ export class RequisitionDto {
   status_name: string;
 
   @IsOptional()
+  comment_leader: string;
+
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
   user_id: number;
