@@ -2,51 +2,30 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
 import type UpdateTeam from "@/components/modals/UpdateTeam";
-import type { FilterTeam } from "./models/teams.model";
+import type { FilterTeam } from "./models/teams/teams.model";
 
 export const useTeamStore = defineStore("teams", () => {
   const layout = ref(true);
 
-  // Вывести все коллективвы с руководителсями
-  async function fetchTeams(): Promise<any> {
-    const res = await axios.get("/api/teams");
-
-    // const res2 = await axios.get('/api/uploads/',{params:{path:"/public/media/87a39a3586e19c22106a10ad53d0434b101.pdf"}} )
-    // console.log(res2)
-    const data = res.data;
-
-    return data;
-  }
-
   // data will be returned as index 0 - is data, index 1 is count
-  async function fetchTeamsOfDirection(direction: number = -1): Promise<any> {
+  async function fetchTeamsOfDirection(direction: number = -1) {
     const res = await axios.get("/api/teams/of-direction", {
       params: { id_parent: direction },
     });
-    const data = res.data;
-
-    return data;
+    return res.data;
   }
 
-  async function fetchDirections(direction: number = -1): Promise<any> {
+  async function fetchDirections(direction: number = -1) {
     const dir = direction > 0 ? direction : null;
     const res = await axios.get("/api/teams/directions", {
       params: { id_parent: dir },
     });
-    const data = res.data;
-    return data;
-  }
-
-  async function fetchCreateTeams() {
-    await axios.get("/api").then((respose: any) => {
-      // Умные действия
-    });
+    return res.data;
   }
 
   async function addImage(id: number, formData: FormData) {
     let responseMsg = "сохранено";
-
-    const res = await axios
+    await axios
       .post(`/api/teams/${id}/image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -57,21 +36,17 @@ export const useTeamStore = defineStore("teams", () => {
           responseMsg = err.response.data.message[0];
         }
       });
-
     return responseMsg;
   }
 
-  async function fetchUserOfTeam(id: number): Promise<any> {
+  async function fetchUsersOfTeam(id: number) {
     const res = await axios.get("/api/teams/" + id + "/users");
-    const data = res.data;
-    // console.log(data)
-    return data;
+    return res.data;
   }
 
-  async function fetchTeam(id: number): Promise<any> {
+  async function fetchTeam(id: number) {
     const res = await axios.get("/api/teams/" + id);
-    const data = res.data;
-    return data;
+    return res.data;
   }
 
   async function createTeam(
@@ -81,10 +56,10 @@ export const useTeamStore = defineStore("teams", () => {
     shortname: string,
     userId: number,
     cabinet: string,
-    fileUstav: any,
-    fileDocument: any,
+    fileUstav: File,
+    fileDocument: File,
   ) {
-    let responseMsg = "сохранено";
+    let responseMsg = "";
 
     const formData = new FormData();
     if (direction > 0) {
@@ -130,7 +105,7 @@ export const useTeamStore = defineStore("teams", () => {
 
   // обновить коллектив
   async function updateTeam(uT: UpdateTeam) {
-    let responseMsg = "сохранено";
+    let responseMsg = "";
 
     const formData = new FormData();
     if (uT.id_parent > 0) {
@@ -174,7 +149,6 @@ export const useTeamStore = defineStore("teams", () => {
       .catch((err) => {
         if (err.response) {
           responseMsg = err.response.data.message;
-          //    console.log(err.response.data.message)
         }
       });
 
@@ -200,8 +174,8 @@ export const useTeamStore = defineStore("teams", () => {
     return { responseMsg, isOK };
   }
 
-  //fetch teams by
-  async function fetchTeamsSearch(filterTeam: FilterTeam): Promise<any> {
+  //fetch teams by some filters
+  async function fetchTeamsSearch(filterTeam: FilterTeam) {
     //find by all txt data in table
     const res = await axios.get("/api/teams", {
       params: filterTeam,
@@ -212,48 +186,50 @@ export const useTeamStore = defineStore("teams", () => {
 
   // requisition --------------------------------------------------------------------
   //получить заявки
-  async function fetchRequisitions(
-    team_id: number,
-    user_id: any = null,
-  ): Promise<any> {
+  async function fetchRequisitions(team_id: number, user_id: number = -1) {
     const res = await axios.get("/api/teams/" + team_id + "/requisition", {
-      params: { user_id: user_id },
-    });
-    const data = res.data;
-
-    return data;
-  }
-
-  // обновить заявку
-  async function updateRequisition(
-    id: number,
-    status_name: string,
-  ): Promise<any> {
-    const res = await axios.put("/api/teams/requisition/" + id, {
-      status_name: status_name,
-    });
-    const data = res.data;
-
-    return data;
-  }
-
-  // update by user id
-  async function updateRequisitionByUserId(
-    user_id: number,
-    status_name: string,
-  ): Promise<any> {
-    const res = await axios.put("/api/teams/requisition/", {
-      status_name: status_name,
-      user_id: user_id,
+      params: { user_id: user_id > 0 ? user_id : null },
     });
 
     return res.data;
   }
 
+  // обновить заявку
+  async function updateRequisition(id: number, status_name: string) {
+    const res = await axios.put("/api/teams/requisition/" + id, {
+      status_name: status_name,
+    });
+    return res.data;
+  }
+
+  // TODO: обновить заявку в коллектив по ид юзера
+  // update by user id
+  // async function updateRequisitionByUserId(
+  //     user_id: number,
+  //     status_name: string,
+  // ) {
+  //     const res = await axios.put("/api/teams/requisition/", {
+  //         status_name: status_name,
+  //         user_id: user_id,
+  //     });
+  //
+  //     return res.data;
+  // }
+
   // requisition --------------------------------------------------------------------
 
+  //задать нового участника
+  async function assignNewParticipant(team_id: number, user_id: number) {
+    const res = await axios.post("/api/teams/user-functions/new-participant", {
+      user: user_id,
+      team: team_id,
+    });
+
+    return res.data;
+  }
+
   // Переключение Switch_toggle в стр. Коллективы и Мероприятия
-  function setLayout(res: any) {
+  function setLayout(res: boolean) {
     layout.value = res;
   }
 
@@ -291,23 +267,23 @@ export const useTeamStore = defineStore("teams", () => {
   ];
 
   return {
-    fetchCreateTeams,
-    fetchTeams,
     createTeam,
     setLayout,
     fetchTeamsOfDirection,
-    fetchUserOfTeam,
+    fetchUsersOfTeam: fetchUsersOfTeam,
     fetchTeam,
     updateTeam,
     archiveTeam,
 
     updateRequisition,
     fetchRequisitions,
-    updateRequisitionByUserId,
 
     fetchTeamsSearch,
     addImage,
     fetchDirections,
+
+    // assign roles
+    assignNewParticipant,
 
     layout,
     menu_items,

@@ -1,69 +1,152 @@
 <template>
-  <div
-    v-if="req == null || req[0] == null"
-    class="alert alert-warning"
-    role="alert"
-  >
-    Заявок нет
-  </div>
-
   <!-- анкета -->
   <ModalQuestionnaireAnswers :requisition="currentRequisition" />
 
-  <div v-for="item in req">
-    <div class="member-card">
-      <div class="row ms-lg-3">
-        <div class="col-lg-2 d-flex col-md-12 justify-content-center mt-4">
-          <img
-            class="member-image"
-            src="@/assets/icon/user.png"
-            alt="картинка пользователя"
+  <div class="filters row g-3">
+    <!--   поиск -->
+    <div class="col-auto">
+      <SearchField handle-timer-search="" />
+    </div>
+    <!--   фильтр по статусу   -->
+    <div class="col-auto">
+      <div class="dropdown">
+        <div
+          class="block filter"
+          @click="isFilterExpanded = !isFilterExpanded"
+          type="button"
+          id="dropdownFilter"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <FontAwesomeIcon icon="sort" class="mx-2" />
+          Фильтрация заявок
+          <FontAwesomeIcon
+            v-if="!isFilterExpanded"
+            icon="angle-down"
+            class="mx-2"
+          />
+          <FontAwesomeIcon
+            v-if="isFilterExpanded"
+            icon="angle-up"
+            class="mx-2"
           />
         </div>
-        <div class="col-lg-10 col-md-12">
-          <div class="member-info p-3">
-            <div class="col">
-              <div class="row">
-                <h1>{{ item.user.fullname }}</h1>
+        <ul class="block dropdown-menu" aria-labelledby="dropdownFilter">
+          <li v-for="value in filterRequisitions" v-bind:key="value.id">
+            <div class="dropdown-item">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="flexCheckDefault"
+                  :checked="value.checked"
+                />
+                <label class="form-check-label" for="flexCheckDefault">
+                  {{ value.name }}
+                </label>
               </div>
-              <div class="row">
-                <h2>Дата последнего рассмотрения: {{ item.date_update }}</h2>
-              </div>
-              <div class="row">
-                <h2>Статус: {{ item.status.name }}</h2>
-              </div>
-              <div class="row d-flex justify-content-end g-2">
-                <div class="col-auto">
-                  <!-- anketa -->
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!--   фильтр по дате   -->
+    <div class="col-auto">
+      <div class="dropdown">
+        <div
+          class="block order"
+          @click="isOrderExpanded = !isOrderExpanded"
+          type="button"
+          id="dropdownOrder"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <FontAwesomeIcon icon="sort" class="mx-2" />
+          {{ filters.selectedFilterDate.name }}
+          <FontAwesomeIcon
+            v-if="!isOrderExpanded"
+            icon="angle-down"
+            class="mx-2"
+          />
+          <FontAwesomeIcon
+            v-if="isOrderExpanded"
+            icon="angle-up"
+            class="mx-2"
+          />
+        </div>
+        <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
+          <li
+            v-for="value in filterDate"
+            @click="filters.selectedFilterDate = value"
+            v-bind:key="value.id"
+          >
+            <div class="dropdown-item">
+              <FontAwesomeIcon icon="sort" />
+              {{ value.name }}
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-                  <button
-                    class="btn-custom-secondary"
-                    @click="setCurrentRequisition(item)"
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#viewReqFormModal"
-                  >
-                    Анкета
-                    <font-awesome-icon icon="id-card-clip" />
-                  </button>
-                </div>
-                <div class="col-auto">
-                  <button
-                    class="btn-custom-accept"
-                    @click="updateRequisition(item, 'Принята')"
-                  >
-                    Принять
-                  </button>
-                </div>
+  <div v-if="req.length <= 0" class="alert alert-warning" role="alert">
+    Заявок нет
+  </div>
 
-                <div class="col-auto">
-                  <button
-                    class="btn-custom-primary"
-                    @click="updateRequisition(item, 'Отклонена')"
-                  >
-                    Отклонить
-                  </button>
-                </div>
+  <div v-for="item in req" v-bind:key="item.id">
+    <div class="member-card mb-3 rounded-4 border-block">
+      <div class="row g-1">
+        <div
+          class="col-md-2 img-container align-items-center d-flex justify-content-center"
+        >
+          <img
+            src="@/assets/icon/user.png"
+            class="img-fluid rounded-4"
+            alt=""
+          />
+        </div>
+        <div class="col-md-10">
+          <div class="card-body d-flex flex-column">
+            <div class="member-title mb-2">{{ item.user?.fullname }}</div>
+            <div class="member-desc mb-5">
+              Дата отправки заявки: {{ item.date_update }}
+            </div>
+            <div class="mt-auto row align-content-center g-2">
+              <div class="member-status col">
+                Статус: {{ item.status?.name }}
+              </div>
+              <div class="col-auto">
+                <button
+                  class="button-outline px-4 button-text-dark"
+                  data-bs-toggle="modal"
+                  data-bs-target="#viewReqFormModal"
+                  @click="setCurrentRequisition(item)"
+                >
+                  Открыть
+                </button>
+              </div>
+              <div class="col-auto">
+                <button class="button-orange px-4 button-text-light">
+                  Написать
+                </button>
+              </div>
+              <div class="col-auto">
+                <button
+                  class="button-green px-4 button-text-light"
+                  @click="updateRequisition(item, 'Принята')"
+                >
+                  Утвердить
+                </button>
+              </div>
+              <div class="col-auto">
+                <button
+                  class="button-red px-4 button-text-light"
+                  @click="updateRequisition(item, 'Отклонена')"
+                >
+                  Отклонить
+                </button>
               </div>
             </div>
           </div>
@@ -71,56 +154,184 @@
       </div>
     </div>
   </div>
+  <div v-if="loading" class="d-flex align-items-center justify-content-center mt-4">
+    <LoadingElem size-fa-icon="fa-3x" />
+  </div>
 </template>
 
 <script lang="ts" setup>
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ModalQuestionnaireAnswers from "@/components/modals/ModalQuestionnaireAnswers.vue";
 import { useTeamStore } from "@/store/team_store";
 import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref, onBeforeMount } from "vue";
+import type { IRequisition } from "@/store/models/forms/requisition.model";
+import type { Ref } from "vue";
+import SearchField from "@/components/SearchField.vue";
+import LoadingElem from "@/components/LoadingElem.vue";
 
 const teamStore = useTeamStore();
-const uFStore = useUserFunctionsStore();
-
+useUserFunctionsStore();
 const props = defineProps<{
   idTeam: number;
 }>();
 
-const req = ref();
+const loading = ref(false);
+
+const isFilterExpanded = ref(false);
+const isOrderExpanded = ref(false);
+
+const req: Ref<IRequisition[]> = ref([]);
 const currentRequisition = ref();
+
+const filterRequisitions = ref([
+  { id: 0, name: "Утверждённые", checked: true },
+  { id: 1, name: "Отклонённые", checked: true },
+  { id: 2, name: "Не просмотренные", checked: true },
+  { id: 3, name: "Приглашены на собеседование", checked: true },
+]);
+
+const filterDate = [
+  { id: 0, name: "Сначала новые" },
+  { id: 1, name: "Сначала старые" },
+];
+
+const filters = ref({
+  selectedFilterDate: filterDate[0],
+});
 
 onBeforeMount(async () => {
   await fetchRequisitions();
 });
 
 async function fetchRequisitions() {
+  loading.value = true;
   req.value = await teamStore.fetchRequisitions(props.idTeam);
+  loading.value = false;
 }
 
-async function updateRequisition(req: any, status_name: string) {
-  await teamStore.updateRequisition(req.id, status_name);
+async function updateRequisition(req: IRequisition, status_name: string) {
+  await teamStore.updateRequisition(req.id ?? -1, status_name);
   await fetchRequisitions();
 
   if (status_name == "Принята") {
-    await uFStore.assignNewParticipant(props.idTeam, req.user.id);
+    await teamStore.assignNewParticipant(props.idTeam, req.user?.id ?? -1);
   }
 }
 
-async function getRequisitions(req_id: number, status_name: string) {
-  await teamStore.updateRequisition(req_id, status_name);
-}
-
-function setCurrentRequisition(req: any) {
-  // редактируем колектив или создаем новый
+function setCurrentRequisition(req: IRequisition) {
   currentRequisition.value = req;
 }
 </script>
 
 <style lang="scss" scoped>
+.img-fluid {
+  height: fit-content;
+  max-height: 150px;
+}
+
+.member-title {
+  color: #383838;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.member-desc {
+  color: #383838;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.member-status {
+  color: #383838;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.button-text-light {
+  color: #fff;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.button-text-dark {
+  color: #383838;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.button-outline {
+  border-radius: 10px;
+  border: 1.5px solid;
+  background: #fff;
+}
+
+.button-orange {
+  border-radius: 10px;
+  background: #ff9457;
+}
+
+.button-green {
+  border-radius: 10px;
+  background: #61e2a1;
+}
+
+.button-red {
+  border-radius: 10px;
+  background: #d22043;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 30px;
+
+  .block {
+    padding: 7px 15px;
+    border: 1.5px solid rgba(61, 61, 61, 0.1);
+    border-radius: 15px;
+  }
+
+  .search {
+    .icon {
+      margin-right: 10px;
+    }
+
+    display: flex;
+    align-items: center;
+  }
+
+  .filter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .order {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
 .member-card {
   width: 100%;
   margin-bottom: 12px;
-  background: rgb(243, 243, 243);
+  padding: 15px;
   border-radius: var(--border-radius);
 }
 
@@ -142,5 +353,11 @@ function setCurrentRequisition(req: any) {
   color: rgba(90, 90, 90, 1);
   font-size: 15px;
   line-height: 24px;
+}
+
+@media (max-width: 768px) {
+  .img-container {
+    display: none;
+  }
 }
 </style>

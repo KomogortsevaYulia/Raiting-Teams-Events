@@ -12,9 +12,9 @@
       <div class="modal-content">
         <div class="modal-title" id="exampleModalLabel">Анкета</div>
         <div
-          v-if="formAnswers"
           v-for="form_field in formAnswers.form_field"
           class="wrapper-questions"
+          v-bind:key="form_field.id"
         >
           <div class="wrapper-one-question">
             <div class="question-label">{{ form_field.title }}</div>
@@ -22,12 +22,16 @@
               disabled
               class="input-answer"
               type="text"
-              :placeholder="form_field.requisition_field[0].value"
+              :placeholder="
+                form_field.requisition_field
+                  ? form_field.requisition_field[0].value
+                  : '-'
+              "
             />
           </div>
         </div>
         <div class="wrap-button">
-          <button type="button" class="close-btn" data-bs-dismiss="modal">
+          <button type="button" class="btn-custom-primary" data-bs-dismiss="modal">
             Закрыть
           </button>
         </div>
@@ -37,30 +41,29 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useFormStore } from "@/store/form_store";
+import type { Ref } from "vue";
+import type { IForm } from "@/store/models/forms/form.model";
 
 const formStore = useFormStore();
-const formAnswers = ref();
+const formAnswers: Ref<IForm> = ref({});
 
 const props = defineProps<{
-  requisition: any;
+  requisition: IForm;
 }>();
 
 watch(
   () => props.requisition,
   async () => {
-    await fetchRequisitionAnswers();
+      const id = props.requisition.id
+    if (id && id  > 0) await fetchRequisitionAnswers();
   },
 );
 
-onBeforeMount(async () => {
-  await fetchRequisitionAnswers();
-});
-
 async function fetchRequisitionAnswers() {
   formAnswers.value = await formStore.fetchRequisitionAnswers(
-    props.requisition.id,
+    props.requisition?.id ?? -1,
   );
 }
 </script>
@@ -117,14 +120,6 @@ async function fetchRequisitionAnswers() {
         display: flex;
         justify-content: space-between;
 
-        .close-btn {
-          background: #ff502f;
-          border-radius: 10px;
-          color: white;
-          cursor: pointer;
-          width: 225px;
-          height: 55px;
-        }
       }
     }
   }
