@@ -493,6 +493,9 @@ function handleEventResetFilters() {
     .card__banner {
       display: none !important;
     }
+    .card{
+      height: auto !important;
+    }
   }
 }
 </style>

@@ -107,7 +107,7 @@
             </div>
 
             <div class="wrapperContent col-lg col-md-auto px-4 py-4">
-              <div class="row mb-2">
+              <div class="row mb-2 g-2">
                 <!-- team title -->
                 <div class="col p-0">
                   <div class="row g-2">
@@ -144,12 +144,12 @@
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                   >
-                    <font-awesome-icon class="ic" icon="pencil-square" />
+                    <font-awesome-icon class="ic fa-1x btn-icon btn-icon-rounded" icon="pen-to-square" />
                   </div>
                 </div>
               </div>
 
-              <div class="row mb-2">
+              <div class="row mb-2 g-2">
                 <div class="navigation-tags my-2 row g-1">
                   <Tag
                     v-for="(item, index) in team.tags"
@@ -588,15 +588,6 @@ async function handleTimerSearch(seachText: string) {
           }
         }
 
-        .ic {
-          color: grey;
-
-          &:hover {
-            transition: 0.4s;
-            color: var(--main-color-hover);
-          }
-        }
-
         .card__event-name {
           color: #373737;
           font-size: 1.2rem;
@@ -619,6 +610,9 @@ async function handleTimerSearch(seachText: string) {
   .wrapper-list {
     .card__banner {
       display: none !important;
+    }
+    .cardEvent {
+      height: auto !important;
     }
   }
 }
