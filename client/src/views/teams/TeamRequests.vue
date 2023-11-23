@@ -131,7 +131,10 @@
                 <button
                   class="px-4"
                   data-bs-toggle="modal"
-                  @click="sendCommentMode = !sendCommentMode"
+                  @click="
+                    sendCommentReqId =
+                      sendCommentReqId == item.id ? -1 : item.id ?? -1
+                  "
                 >
                   Написать
                 </button>
@@ -152,21 +155,15 @@
                   Отклонить
                 </button>
               </div>
-              <div class="col-auto">
+              <div class="col-12">
                 <div class="col-auto">
                   Комментарий:
                   {{ item.comment_leader ?? "-" }}
                 </div>
               </div>
-
-              <!--              <div class="col-auto">-->
-              <!--                <button class="button-orange px-4 button-text-light">-->
-              <!--                  Написать-->
-              <!--                </button>-->
-              <!--              </div>-->
             </div>
             <!--              send comment-->
-            <div v-if="sendCommentMode" class="row my-2 g-2">
+            <div v-if="sendCommentReqId == item.id" class="row my-2 g-2">
               <div class="col">
                 <input type="text" class="comment" v-model="commentLeader" />
               </div>
@@ -216,7 +213,7 @@ const props = defineProps<{
   idTeam: number;
 }>();
 
-const sendCommentMode = ref(false);
+const sendCommentReqId = ref(-1);
 const loading = ref(false);
 
 const isFilterExpanded = ref(false);

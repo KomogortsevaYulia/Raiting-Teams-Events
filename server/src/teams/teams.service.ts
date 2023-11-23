@@ -355,8 +355,7 @@ export class TeamsService {
       date_update: new Date(),
     };
 
-    if(findDict)
-      body['status'] = findDict
+    if (findDict) body['status'] = findDict;
 
     // сохранить новые данные заявки
     return await this.requisitionsRepository.save(body);
