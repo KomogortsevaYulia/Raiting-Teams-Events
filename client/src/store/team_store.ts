@@ -1,23 +1,25 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import axios, {AxiosError} from "axios";
 import type UpdateTeam from "@/components/modals/UpdateTeam";
 import type { FilterTeam } from "./models/teams/filter-teams.model";
 import type { IURequisition } from "@/store/models/teams/update-requisition.model";
+import type {AxiosError, AxiosResponse} from "axios";
+import axios from "axios";
 
 export const useTeamStore = defineStore("teams", () => {
   const layout = ref(true);
   const loading = ref(false);
   const error = ref("");
 
-  async function handleApiRequest(apiCall: Function) {
+  async function handleApiRequest(apiCall: ()=>Promise<AxiosResponse>) {
     loading.value = true;
     error.value= ""
     try {
       const response = await apiCall();
       return response.data;
-    } catch (err:any) {
-      error.value = err.message || "An error occurred";
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      error.value = axiosError.message || "An error occurred";
     } finally {
       loading.value = false;
     }
@@ -213,7 +215,7 @@ export const useTeamStore = defineStore("teams", () => {
   // обновить заявку
   async function updateRequisition(requisition: IURequisition) {
     loading.value = true;
-    return handleApiRequest(async () => {
+    return handleApiRequest(async ():Promise<void> => {
       const { id, ...requestData } = requisition;
       return await axios.put(`/api/teams/requisition/${id}`, requestData);
     });
