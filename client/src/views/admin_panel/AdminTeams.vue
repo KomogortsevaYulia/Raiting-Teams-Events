@@ -91,7 +91,7 @@ import { useTeamStore } from "@/store/team_store";
 import LoadingElem from "@/components/LoadingElem.vue";
 import { TeamRoles } from "@/store/enums/team_roles";
 import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
-import {FilterTeam} from "@/store/models/teams/teams.model";
+import {FilterTeam} from "@/store/models/teams/filter-teams.model";
 import type {ITeam} from "@/store/models/teams/team.model";
 
 const teamStore = useTeamStore();

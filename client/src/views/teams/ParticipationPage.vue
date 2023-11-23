@@ -87,6 +87,7 @@ import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref } from "vue";
 import type { IUser } from "@/store/models/user/user.model";
 import type { IFunction } from "@/store/models/user/functions.model";
+import type {IURequisition} from "@/store/models/teams/update-requisition.model";
 
 const teamStore = useTeamStore();
 const uFStore = useUserFunctionsStore();
@@ -107,8 +108,14 @@ async function deleteUserFromTeam(status_name: string) {
     props.user.id,
   );
 
-  if (requisitions && requisitions[0]?.id)
-    await teamStore.updateRequisition(requisitions[0].id, status_name);
+  if (requisitions && requisitions[0]?.id){
+      let requis: IURequisition = {};
+      requis.id = requisitions[0].id
+      requis.status_name = status_name;
+
+      await teamStore.updateRequisition(requis);
+  }
+
 
   // remove user functions
   let uFs = await uFStore.findUserFunctions(props.idTeam, props.user.id ?? -1);

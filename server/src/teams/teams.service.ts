@@ -348,12 +348,15 @@ export class TeamsService {
       findDict = (await this.dictionaryService.findAll(dd))[0];
     }
 
+    // принят на рассмотрение, приходите завтра в в-07
     const body = {
       id: id,
       ...updateRequisitionDto,
-      status: findDict,
       date_update: new Date(),
     };
+
+    if(findDict)
+      body['status'] = findDict
 
     // сохранить новые данные заявки
     return await this.requisitionsRepository.save(body);

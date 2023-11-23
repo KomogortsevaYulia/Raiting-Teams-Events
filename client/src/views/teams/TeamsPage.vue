@@ -188,7 +188,7 @@ import { DirectionName } from "@/store/enums/enum_teams";
 import Pagination from "@/components/PaginationElem.vue";
 import { useTeamStore } from "@/store/team_store";
 import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
-import { FilterTeam } from "@/store/models/teams/teams.model";
+import { FilterTeam } from "@/store/models/teams/filter-teams.model";
 import ModalFull from "@/components/modals/ModalFull.vue";
 import Search from "@/components/SearchField.vue";
 import Tag from "@/components/TagElem.vue";

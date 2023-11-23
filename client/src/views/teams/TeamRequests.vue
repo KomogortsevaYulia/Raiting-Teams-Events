@@ -124,29 +124,65 @@
                   data-bs-target="#viewReqFormModal"
                   @click="setCurrentRequisition(item)"
                 >
-                  Открыть
+                  Анкета
                 </button>
               </div>
               <div class="col-auto">
-                <button class="button-orange px-4 button-text-light">
+                <button
+                  class="px-4"
+                  data-bs-toggle="modal"
+                  @click="sendCommentMode = !sendCommentMode"
+                >
                   Написать
                 </button>
               </div>
               <div class="col-auto">
                 <button
-                  class="button-green px-4 button-text-light"
-                  @click="updateRequisition(item, 'Принята')"
+                  class="button-green px-4"
+                  @click="updateStatus(item, 'Принята')"
                 >
                   Утвердить
                 </button>
               </div>
               <div class="col-auto">
                 <button
-                  class="button-red px-4 button-text-light"
-                  @click="updateRequisition(item, 'Отклонена')"
+                  class="button-red px-4"
+                  @click="updateStatus(item, 'Отклонена')"
                 >
                   Отклонить
                 </button>
+              </div>
+              <div class="col-auto">
+                <div class="col-auto">
+                  Комментарий:
+                  {{ item.comment_leader ?? "-" }}
+                </div>
+              </div>
+
+              <!--              <div class="col-auto">-->
+              <!--                <button class="button-orange px-4 button-text-light">-->
+              <!--                  Написать-->
+              <!--                </button>-->
+              <!--              </div>-->
+            </div>
+            <!--              send comment-->
+            <div v-if="sendCommentMode" class="row my-2 g-2">
+              <div class="col">
+                <input type="text" class="comment" v-model="commentLeader" />
+              </div>
+              <div class="col-auto">
+                <font-awesome-icon
+                  :icon="['fas', 'paper-plane']"
+                  class="btn-icon-rounded"
+                  @click="sendComment(item.id ?? -1, commentLeader)"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div v-if="teamStore.error" class="col-auto">
+                <div class="alert alert-warning" role="alert">
+                  {{ teamStore.error }}
+                </div>
               </div>
             </div>
           </div>
@@ -154,7 +190,10 @@
       </div>
     </div>
   </div>
-  <div v-if="loading" class="d-flex align-items-center justify-content-center mt-4">
+  <div
+    v-if="loading"
+    class="d-flex align-items-center justify-content-center mt-4"
+  >
     <LoadingElem size-fa-icon="fa-3x" />
   </div>
 </template>
@@ -169,6 +208,7 @@ import type { IRequisition } from "@/store/models/forms/requisition.model";
 import type { Ref } from "vue";
 import SearchField from "@/components/SearchField.vue";
 import LoadingElem from "@/components/LoadingElem.vue";
+import type { IURequisition } from "@/store/models/teams/update-requisition.model";
 
 const teamStore = useTeamStore();
 useUserFunctionsStore();
@@ -176,6 +216,7 @@ const props = defineProps<{
   idTeam: number;
 }>();
 
+const sendCommentMode = ref(false);
 const loading = ref(false);
 
 const isFilterExpanded = ref(false);
@@ -183,6 +224,7 @@ const isOrderExpanded = ref(false);
 
 const req: Ref<IRequisition[]> = ref([]);
 const currentRequisition = ref();
+const commentLeader = ref();
 
 const filterRequisitions = ref([
   { id: 0, name: "Утверждённые", checked: true },
@@ -210,21 +252,41 @@ async function fetchRequisitions() {
   loading.value = false;
 }
 
-async function updateRequisition(req: IRequisition, status_name: string) {
-  await teamStore.updateRequisition(req.id ?? -1, status_name);
-  await fetchRequisitions();
+async function updateStatus(req: IRequisition, status_name: string) {
+  let requis: IURequisition = {};
+  requis.id = req.id;
+  requis.status_name = status_name;
+
+  await updateRequisition(requis);
 
   if (status_name == "Принята") {
     await teamStore.assignNewParticipant(props.idTeam, req.user?.id ?? -1);
   }
 }
 
+async function updateRequisition(req: IURequisition) {
+  await teamStore.updateRequisition(req);
+  await fetchRequisitions();
+}
+
 function setCurrentRequisition(req: IRequisition) {
   currentRequisition.value = req;
+}
+
+async function sendComment(requis_id: number, comment: string) {
+  let requis: IURequisition = {};
+  requis.id = requis_id;
+  requis.comment_leader = comment;
+
+  await updateRequisition(requis);
 }
 </script>
 
 <style lang="scss" scoped>
+.comment {
+  width: 100%;
+}
+
 .img-fluid {
   height: fit-content;
   max-height: 150px;
@@ -254,19 +316,9 @@ function setCurrentRequisition(req: IRequisition) {
   line-height: normal;
 }
 
-.button-text-light {
-  color: #fff;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-}
-
 .button-text-dark {
   color: #383838;
-  font-size: 14px;
   font-style: normal;
-  font-weight: 600;
   line-height: normal;
 }
 
@@ -282,12 +334,10 @@ function setCurrentRequisition(req: IRequisition) {
 }
 
 .button-green {
-  border-radius: 10px;
   background: #61e2a1;
 }
 
 .button-red {
-  border-radius: 10px;
   background: #d22043;
 }
 

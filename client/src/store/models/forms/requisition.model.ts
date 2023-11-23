@@ -5,5 +5,6 @@ export interface IRequisition {
   id?: number;
   status?: IDictionary;
   user?: IUser;
+  comment_leader?: string;
   date_update?: string;
 }
