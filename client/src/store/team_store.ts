@@ -3,27 +3,12 @@ import { ref } from "vue";
 import type UpdateTeam from "@/components/modals/UpdateTeam";
 import type { FilterTeam } from "./models/teams/filter-teams.model";
 import type { IURequisition } from "@/store/models/teams/update-requisition.model";
-import type {AxiosError, AxiosResponse} from "axios";
 import axios from "axios";
+import {ApiRequest} from "@/store/handleApiRequest";
 
 export const useTeamStore = defineStore("teams", () => {
   const layout = ref(true);
-  const loading = ref(false);
-  const error = ref("");
-
-  async function handleApiRequest(apiCall: ()=>Promise<AxiosResponse>) {
-    loading.value = true;
-    error.value= ""
-    try {
-      const response = await apiCall();
-      return response.data;
-    } catch (err) {
-      const axiosError = err as AxiosError;
-      error.value = axiosError.message || "An error occurred";
-    } finally {
-      loading.value = false;
-    }
-  }
+  const apiRequest = new ApiRequest()
 
   // data will be returned as index 0 - is data, index 1 is count
   async function fetchTeamsOfDirection(direction: number = -1) {
@@ -205,7 +190,7 @@ export const useTeamStore = defineStore("teams", () => {
   // requisition --------------------------------------------------------------------
   //получить заявки
   async function fetchRequisitions(requisition: IURequisition) {
-    return handleApiRequest(async () => {
+    return apiRequest.handleApiRequest(async () => {
       return await axios.get("/api/teams/" + requisition?.team_id + "/requisition", {
         params: { ...requisition },
       });
@@ -218,7 +203,7 @@ export const useTeamStore = defineStore("teams", () => {
 
   // обновить заявку
   async function updateRequisition(requisition: IURequisition) {
-    return handleApiRequest(async () => {
+    return apiRequest.handleApiRequest(async () => {
       const { id, ...requestData } = requisition;
       return await axios.put(`/api/teams/requisition/${id}`, requestData);
     });
@@ -309,7 +294,6 @@ export const useTeamStore = defineStore("teams", () => {
 
     layout,
     menu_items,
-    error,
-    loading,
+    apiRequest
   };
 });

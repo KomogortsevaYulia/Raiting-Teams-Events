@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
-import axios from "axios";
 import { Status, Type } from "./enums/enum_event";
 import type { IEventSearch } from "./models/event/events.model";
+import {ApiRequest} from "@/store/handleApiRequest";
+import axios from "axios";
 
 export const useEventStore = defineStore("events", () => {
+ const apiRequest = new ApiRequest()
   // type 4 is external
   async function fetchEvents(event: IEventSearch) {
     const params = {
@@ -13,9 +15,9 @@ export const useEventStore = defineStore("events", () => {
       search_txt: event.search_text,
     };
 
-    const res = await axios.get("/api/events", { params: params });
-
-    return res.data;
+    return apiRequest.handleApiRequest(async () => {
+      return  await axios.get("/api/events", { params: params });
+    });
   }
 
   // удалить мероприятие
@@ -171,5 +173,6 @@ export const useEventStore = defineStore("events", () => {
     getReportEventsOfDirection,
     getEventsViaJournalsByTeam,
     getReportEventsOfTeam,
+    apiRequest
   };
 });

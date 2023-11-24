@@ -183,9 +183,9 @@
               </div>
             </div>
             <div class="row">
-              <div v-if="teamStore.error" class="col-auto">
+              <div v-if="teamStore.apiRequest.error" class="col-auto">
                 <div class="alert alert-warning" role="alert">
-                  {{ teamStore.error }}
+                  {{ teamStore.apiRequest.error }}
                 </div>
               </div>
             </div>
@@ -195,7 +195,7 @@
     </div>
   </div>
   <div
-    v-if="teamStore.loading"
+    v-if="teamStore.apiRequest.loading"
     class="d-flex align-items-center justify-content-center mt-4"
   >
     <LoadingElem size-fa-icon="fa-3x" />

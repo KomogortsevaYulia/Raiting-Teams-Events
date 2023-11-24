@@ -33,9 +33,9 @@
             <li
               v-for="value in filterDate"
               @click="
-              filters.selectedFilterDate = value;
-              fetchEvents();
-            "
+                filters.selectedFilterDate = value;
+                fetchEvents();
+              "
               v-bind:key="value.id"
             >
               <div class="dropdown-item">
@@ -49,6 +49,17 @@
     </div>
 
     <div>
+      <div v-if="events?.length <= 0" class="alert alert-warning" role="alert">
+        Мероприятий нет
+      </div>
+
+      <div
+        v-if="eventStore.apiRequest.loading"
+        class="d-flex align-items-center justify-content-center mt-4"
+      >
+        <LoadingElem size-fa-icon="fa-3x" />
+      </div>
+
       <div class="card mb-3 rounded-3" v-for="event in events" :key="event.id">
         <div class="row g-0">
           <div class="col-lg-4">
@@ -95,6 +106,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import SearchField from "@/components/SearchField.vue";
 import { useEventStore } from "@/store/events_store";
 import type { IEvent, IEventSearch } from "@/store/models/event/events.model";
+import LoadingElem from "@/components/LoadingElem.vue";
 
 const eventStore = useEventStore();
 

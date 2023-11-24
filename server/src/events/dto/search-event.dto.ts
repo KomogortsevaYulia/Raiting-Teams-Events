@@ -1,6 +1,6 @@
 import { Entity } from 'typeorm';
 import { IsDate, IsNumber, IsOptional } from 'class-validator';
-import {Transform, Type} from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 @Entity('events')
 export class SearchEventDto {
@@ -73,5 +73,5 @@ export class SearchEventDto {
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  journal_team_id:number
+  journal_team_id: number;
 }
