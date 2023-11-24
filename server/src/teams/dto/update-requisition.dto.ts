@@ -1,5 +1,5 @@
-import {Transform, Type} from 'class-transformer';
-import {IsDate, IsNumber, IsOptional} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsDate, IsNumber, IsOptional } from 'class-validator';
 
 export class RequisitionDto {
   @IsOptional()
@@ -25,7 +25,7 @@ export class RequisitionDto {
 
   // additional
   @IsOptional()
-  date_update_order: "ASC" | "DESC" = 'ASC';
+  date_update_order: 'ASC' | 'DESC' = 'ASC';
 
   @IsOptional()
   statuses: string[] = [];

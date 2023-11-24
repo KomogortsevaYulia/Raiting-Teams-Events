@@ -400,7 +400,7 @@ export class TeamsService {
     params: RequisitionDto,
     q: SelectQueryBuilder<Requisitions>,
   ) {
-    let query = q;
+    const query = q;
 
     //statuses
     params.statuses.length > 0
