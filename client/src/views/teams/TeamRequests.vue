@@ -249,7 +249,7 @@ const filters = ref({
 });
 
 onBeforeMount(async () => {
-
+  await fetchRequisitions();
 });
 
 async function handleTimerSearch(seachText: string) {
