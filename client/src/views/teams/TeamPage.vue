@@ -42,9 +42,9 @@
       <div v-if="selectedItem === 2">
         <WIP />
       </div>
-
       <!-- участники -->
       <div v-if="selectedItem === 3">
+
         <div v-for="item in teamUsers" v-bind:key="item.id">
           <Participation
             :onDeleteMemberEvent="handleDeleteMemberEvent"

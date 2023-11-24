@@ -5,7 +5,7 @@
   <div class="filters row g-3">
     <!--   поиск -->
     <div class="col-auto">
-      <SearchField handle-timer-search="" />
+      <SearchField :handle-timer-search="handleTimerSearch" />
     </div>
     <!--   фильтр по статусу   -->
     <div class="col-auto">
@@ -41,6 +41,10 @@
                   value=""
                   id="flexCheckDefault"
                   :checked="value.checked"
+                  @change="
+                    value.checked = !value.checked;
+                    fetchRequisitions();
+                  "
                 />
                 <label class="form-check-label" for="flexCheckDefault">
                   {{ value.name }}
@@ -78,7 +82,10 @@
         <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
           <li
             v-for="value in filterDate"
-            @click="filters.selectedFilterDate = value"
+            @click="
+              filters.selectedFilterDate = value;
+              fetchRequisitions();
+            "
             v-bind:key="value.id"
           >
             <div class="dropdown-item">
@@ -91,7 +98,7 @@
     </div>
   </div>
 
-  <div v-if="req.length <= 0" class="alert alert-warning" role="alert">
+  <div v-if="req?.length <= 0" class="alert alert-warning" role="alert">
     Заявок нет
   </div>
 
@@ -188,7 +195,7 @@
     </div>
   </div>
   <div
-    v-if="loading"
+    v-if="teamStore.loading"
     class="d-flex align-items-center justify-content-center mt-4"
   >
     <LoadingElem size-fa-icon="fa-3x" />
@@ -206,6 +213,7 @@ import type { Ref } from "vue";
 import SearchField from "@/components/SearchField.vue";
 import LoadingElem from "@/components/LoadingElem.vue";
 import type { IURequisition } from "@/store/models/teams/update-requisition.model";
+import { Status } from "@/store/enums/enum_event";
 
 const teamStore = useTeamStore();
 useUserFunctionsStore();
@@ -214,7 +222,6 @@ const props = defineProps<{
 }>();
 
 const sendCommentReqId = ref(-1);
-const loading = ref(false);
 
 const isFilterExpanded = ref(false);
 const isOrderExpanded = ref(false);
@@ -223,16 +230,18 @@ const req: Ref<IRequisition[]> = ref([]);
 const currentRequisition = ref();
 const commentLeader = ref();
 
+const searchTxt = ref("");
+
 const filterRequisitions = ref([
-  { id: 0, name: "Утверждённые", checked: true },
-  { id: 1, name: "Отклонённые", checked: true },
-  { id: 2, name: "Не просмотренные", checked: true },
-  { id: 3, name: "Приглашены на собеседование", checked: true },
+  { id: 0, name: "Утверждённые", checked: true, status: Status.ACCEPTED },
+  { id: 1, name: "Отклонённые", checked: true, status: Status.CANCELLED },
+  { id: 2, name: "Не просмотренные", checked: true, status: Status.CREATED },
+  // { id: 3, name: "Приглашены на собеседование", checked: true },
 ]);
 
 const filterDate = [
-  { id: 0, name: "Сначала новые" },
-  { id: 1, name: "Сначала старые" },
+  { id: 0, name: "Сначала новые", order: "DESC" },
+  { id: 1, name: "Сначала старые", order: "ASC" },
 ];
 
 const filters = ref({
@@ -243,10 +252,23 @@ onBeforeMount(async () => {
   await fetchRequisitions();
 });
 
+async function handleTimerSearch(seachText: string) {
+  searchTxt.value = seachText;
+
+  await fetchRequisitions();
+}
+
 async function fetchRequisitions() {
-  loading.value = true;
-  req.value = await teamStore.fetchRequisitions(props.idTeam);
-  loading.value = false;
+  let requis: IURequisition = {};
+  requis.fullname = searchTxt.value;
+  requis.team_id = props.idTeam;
+  requis.date_update_order = filters.value.selectedFilterDate.order;
+  requis.statuses = [];
+  filterRequisitions.value.forEach((status) => {
+    if (status.checked) requis.statuses?.push(status.status);
+  });
+
+  req.value = await teamStore.fetchRequisitions(requis);
 }
 
 async function updateStatus(req: IRequisition, status_name: string) {
