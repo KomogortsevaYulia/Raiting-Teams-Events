@@ -35,7 +35,7 @@ import { Requisitions } from './entities/requisition.entity';
 import { Request } from 'express';
 import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe';
 import { FileImageValidationPipe } from 'src/uploads/validation/image_file.validation.pipe';
-import { RequisitionDto } from './dto/update-requisition.dto';
+import { RequisitionDto } from './dto/uc-requisition.dto';
 import { LocalAuthGuard } from 'src/users/guard/local-auth.guard';
 import { PermissionsGuard } from 'src/users/guard/check-permissions.guard';
 import { CreateRequisitionDto } from './dto/create-requisition.dto';

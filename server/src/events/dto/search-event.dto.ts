@@ -1,6 +1,6 @@
 import { Entity } from 'typeorm';
 import { IsDate, IsNumber, IsOptional } from 'class-validator';
-import { Type } from 'class-transformer';
+import {Transform, Type} from 'class-transformer';
 
 @Entity('events')
 export class SearchEventDto {
@@ -62,6 +62,16 @@ export class SearchEventDto {
   offset: number;
 
   // additional
+  @Transform(({ value }) => value.toLowerCase())
   @IsOptional()
   search_txt: string;
+
+  // additional
+  @IsOptional()
+  date_update_order: 'ASC' | 'DESC' = 'ASC';
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  journal_team_id:number
 }

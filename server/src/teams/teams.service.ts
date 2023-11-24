@@ -14,7 +14,7 @@ import { Team } from './entities/team.entity';
 import { UsersService } from '../users/users.service';
 import { SearchTeamDto } from './dto/search-team.dto';
 import { Requisitions } from './entities/requisition.entity';
-import { RequisitionDto } from './dto/update-requisition.dto';
+import { RequisitionDto } from './dto/uc-requisition.dto';
 import { GeneralService } from '../general/general.service';
 import { DictionaryDto } from 'src/general/dto/dictionary.dto';
 import { CreateRequisitionFieldDto } from './dto/create-requisition-field.dto';

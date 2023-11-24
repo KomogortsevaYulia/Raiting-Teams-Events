@@ -58,8 +58,7 @@ export class EventsService {
       .leftJoinAndSelect('events.direction', 'direction')
       .leftJoinAndSelect('events.status', 'status')
       // creator
-      .leftJoinAndSelect('events.user', 'user')
-      .orderBy('events.date_update', 'DESC');
+      .leftJoinAndSelect('events.user', 'user');
 
     buildQuery = await this.filterEvents(searchEvent, buildQuery);
 
@@ -155,6 +154,26 @@ export class EventsService {
         },
       );
     }
+
+    // journal
+    searchEvent.journal_team_id
+      ? buildQuery
+          .leftJoin('events.journal', 'journal')
+          .addSelect([
+            'journal.id',
+            'journal.dateRegistration',
+            'journal.dateParticipation',
+            'journal.result_place',
+          ])
+          .andWhere('journal.team_id = :journal_team_id', {
+            journal_team_id: searchEvent.journal_team_id,
+          })
+      : buildQuery;
+
+    // date order
+    searchEvent.date_update_order
+      ? buildQuery.orderBy('events.date_update', searchEvent.date_update_order)
+      : buildQuery;
 
     return buildQuery;
   }
