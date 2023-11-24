@@ -365,9 +365,7 @@ export class TeamsService {
     team_id: number = null,
     reqDto: RequisitionDto,
   ): Promise<Requisitions[]> {
-    const rejectStatus = 'Принята';
-
-    const query = this.requisitionsRepository
+    let query = this.requisitionsRepository
       .createQueryBuilder('requisition')
       .select([
         'requisition.date_create',
@@ -389,19 +387,46 @@ export class TeamsService {
           sqb.where('form.team_id = :team_id', { team_id });
           sqb.orWhere('requisition.team_id = :team_id', { team_id });
         }),
-      )
+      );
+    // пользователей с этим статусом н показывать
+    // .orderBy('status.name', 'DESC');
 
-      // пользователей с этим статусом н показывать
-
-      .orderBy('status.name', 'DESC');
-
-    reqDto.user_id
-      ? query.andWhere('user.id = :user_id', { user_id: reqDto.user_id })
-      : query.andWhere('status.name != :rejectStatus', {
-          rejectStatus: rejectStatus,
-        });
+    query = await this.filterRequisition(reqDto, query);
 
     return await query.getMany();
+  }
+
+  async filterRequisition(
+    params: RequisitionDto,
+    q: SelectQueryBuilder<Requisitions>,
+  ) {
+    let query = q;
+
+    //statuses
+    params.statuses.length > 0
+      ? query.andWhere('status.name in (:...status)', {
+          status: params.statuses,
+        })
+      : query;
+
+    //date order by
+    params.date_update_order
+      ? query.orderBy('requisition.date_update', params.date_update_order)
+      : query;
+
+    // fullname user
+    params.fullname
+      ? query.andWhere(`(LOWER(user.fullname) like :fullname)`, {
+          fullname: `%${params.fullname}%`,
+        })
+      : query;
+
+    // user_id
+    params.user_id
+      ? query.andWhere('user.id = :user_id', { user_id: params.user_id })
+      : query;
+
+    return query;
   }
 
   async findRequisition(req_id: number): Promise<Requisitions> {
@@ -477,7 +502,7 @@ export class TeamsService {
         requisitionFieldDto.requisition = createdRequisition;
         requisitionFieldDto.form_field = form.form_field[i];
 
-        this.createRequisitionField(requisitionFieldDto);
+        await this.createRequisitionField(requisitionFieldDto);
       }
     }
 

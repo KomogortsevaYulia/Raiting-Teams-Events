@@ -1,0 +1,5 @@
+### get requisition by team
+GET http://localhost:3000/api/teams/6/requisition?statuses[]=Принята&statuses[]=Создана&fullname=а&date_update_order=DESC
+
+### get requisition by id
+GET http://localhost:3000/api/forms/requisition/6

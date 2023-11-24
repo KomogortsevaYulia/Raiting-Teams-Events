@@ -129,8 +129,6 @@ content-type: application/json
 ###
 DELETE  http://localhost:3000/api/users/team/17/leader/54 HTTP/1.1
 
-###
-GET  http://localhost:3000/api/teams/6/requisition HTTP/1.1
 
 
 ###
@@ -141,9 +139,6 @@ content-type: application/json
   "title": "shit4",
   "team": 30
 }
-
-
-
 
 
 
@@ -188,9 +183,6 @@ GET http://localhost:3000/api/uploads/excel/events_direction
 ###
 GET http://localhost:3000/api/uploads/excel/events_of_team?teamId=1
 
-###
-GET http://localhost:3000/api/teams/59/requisition?user_id=3
-
 
 
 ###
@@ -205,10 +197,6 @@ content-type: application/json
 
 
 
-# forms
-
-### get requisition
-GET http://localhost:3000/api/forms/requisition/6
 
 
 
