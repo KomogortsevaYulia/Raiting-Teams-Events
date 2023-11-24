@@ -36,7 +36,7 @@
 
       <div v-if="selectedItem === 1">
         <!-- Блок с НОВОСТЯМИ -->
-        <TeamNews :team="teamUsers" />
+        <TeamNews :idTeam="idTeam" />
       </div>
 
       <div v-if="selectedItem === 2">

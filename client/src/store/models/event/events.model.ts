@@ -1,6 +1,7 @@
 import type { IDictionary } from "@/store/models/dictionary/dictionary.model";
 import type { Type, Status } from "@/store/enums/enum_event";
 import type { IUser } from "@/store/models/user/user.model";
+import type {IJournal} from "@/store/models/event/journals.model";
 
 // interface for search
 export interface IEventSearch {
@@ -9,15 +10,18 @@ export interface IEventSearch {
   direction?: number;
 
   user_id?: number;
+  journal_team_id?:number,
 
   // addition
   search_text?: string;
+  date_update_order?:string //'ASC' | 'DESC';
   limit?: number;
   offset?: number;
 }
 
 // interface for to keep Events
 export interface IEvent {
+  id?: number;
   type?: IDictionary;
   status?: IDictionary;
   direction?: IDictionary;
@@ -38,7 +42,8 @@ export interface IEvent {
   level?: IDictionary;
   format?: IDictionary;
   count_people?: number;
-  id?: number;
+
+  journal?:IJournal[];
 
   user_id?: number;
 }

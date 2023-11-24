@@ -3,39 +3,9 @@
   <div class="news-panel">
     <div class="filters row g-3">
       <div class="col-auto">
-        <SearchField handle-timer-search="" />
+        <SearchField :handle-timer-search="handleTimerSearch" />
       </div>
-      <div class="col-auto">
-        <div class="dropdown">
-          <div
-            class="block date"
-            @click="isCalendarExpanded = !isCalendarExpanded"
-            type="button"
-          >
-            <FontAwesomeIcon icon="calendar" class="mx-2" />
-            {{ calendarPicked.start.toLocaleDateString() }} -
-            {{ calendarPicked.end.toLocaleDateString() }}
-            <FontAwesomeIcon
-              v-if="!isCalendarExpanded"
-              icon="angle-down"
-              class="mx-2"
-            />
-            <FontAwesomeIcon
-              v-if="isCalendarExpanded"
-              icon="angle-up"
-              class="mx-2"
-            />
-          </div>
-          <div
-            :class="['calendar', { 'calendar-visible': isCalendarExpanded }]"
-          >
-            <DatePicker
-              v-model="calendarPicked"
-              is-range
-            />
-          </div>
-        </div>
-      </div>
+
       <div class="col-auto">
         <div class="dropdown">
           <div
@@ -62,7 +32,10 @@
           <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
             <li
               v-for="value in filterDate"
-              @click="filters.selectedFilterDate = value"
+              @click="
+              filters.selectedFilterDate = value;
+              fetchEvents();
+            "
               v-bind:key="value.id"
             >
               <div class="dropdown-item">
@@ -76,17 +49,36 @@
     </div>
 
     <div>
-      <div class="card mb-3 rounded-3" v-for="news in newsList" :key="news.id">
+      <div class="card mb-3 rounded-3" v-for="event in events" :key="event.id">
         <div class="row g-0">
           <div class="col-lg-4">
-            <img :src="news.imageUrl" class="img-fluid rounded-3" alt="" />
+            <img
+              :src="event.images ? event.images[0] : ''"
+              class="img-fluid rounded-3"
+              alt=""
+            />
           </div>
           <div class="col-lg-8">
             <div class="card-body">
-              <h5 class="card-title">{{ news.title }}</h5>
-              <p class="card-text">{{ news.description }}</p>
+              <h5 class="card-title">{{ event.title }}</h5>
               <p class="card-text">
-                <small class="text-muted">07.03.2022</small>
+                {{
+                  event.description?.length > 200
+                    ? event.description?.slice(0, 200) + "..."
+                    : "описания нет"
+                }}
+              </p>
+              <p class="card-text">
+                <small class="text-muted"
+                  >Дата проведения:
+                  {{
+                    event.dateStartRegistration
+                      ? new Date(
+                          event.dateStartRegistration,
+                        ).toLocaleDateString()
+                      : "-"
+                  }}</small
+                >
               </p>
             </div>
           </div>
@@ -97,11 +89,14 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import { onBeforeMount, ref, watch } from "vue";
+import type { Ref } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import type { ITeam } from "@/store/models/teams/team.model";
-import { DatePicker } from "v-calendar";
 import SearchField from "@/components/SearchField.vue";
+import { useEventStore } from "@/store/events_store";
+import type { IEvent, IEventSearch } from "@/store/models/event/events.model";
+
+const eventStore = useEventStore();
 
 const isCalendarExpanded = ref(false);
 const calendarPicked = ref({
@@ -109,54 +104,48 @@ const calendarPicked = ref({
   end: new Date(),
 });
 
-
 const isOrderExpanded = ref(false);
+const events: Ref<IEvent[]> = ref([]);
+const searchTxt = ref("");
 
 const filterDate = [
-  { id: 0, name: "Сначала новые" },
-  { id: 1, name: "Сначала старые" },
+  { id: 0, name: "Сначала новые", order: "DESC" },
+  { id: 1, name: "Сначала старые", order: "ASC" },
 ];
+
 const filters = ref({
   selectedFilterDate: filterDate[0],
 });
 
-defineProps<{
-  team: ITeam; //коллектив
+const props = defineProps<{
+  idTeam: number; //коллектив
 }>();
 
+onBeforeMount(() => {
+  fetchEvents();
+});
+
 watch(
-    () => calendarPicked.value.end,
-    async () => {
-        isCalendarExpanded.value = !(isCalendarExpanded.value)
-    },
+  () => calendarPicked.value.end,
+  async () => {
+    isCalendarExpanded.value = !isCalendarExpanded.value;
+  },
 );
 
-const newsList = [
-  {
-    id: 1,
-    title: "Выступление на встрече",
-    description:
-      '28 марта прошла встреча с Жугдэрдэмидийн Гуррагча, президентом Общества "Монголия - Россия", героем Советского Союза, первым космонавтом Монгольской Народной Республики (МНР).',
-    imageUrl:
-      "https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album",
-  },
-  {
-    id: 2,
-    title: "Гала-концерт",
-    description:
-      "18 марта на сцене ИРНИТУ состоялся гала-концерт межрегионального многожанрового музыкального конкурса, посвящённого 75-летию со дня рождения поэта, композитора, телеведущего, Народного артиста России Геннадия Дмитриевича Заволокина.",
-    imageUrl:
-      "https://sun9-72.userapi.com/impg/3fBWXOId3AxVXmsor6HR50f5IOf7A0K-sp-iPA/GMnrC6OqDew.jpg?size=2560x1707&quality=95&sign=6a57308ab9691669faf9452b1f3e1f85&type=album",
-  },
-  {
-    id: 3,
-    title: "Выступление на ректорском приеме",
-    description:
-      "Ректорский прием, посвященный международному женскому дню, состоялся 7 марта. Наш коллектив также принял участие в концертной программе и поздравил прекрасную половину нашего университета с праздником!",
-    imageUrl:
-      "https://sun9-35.userapi.com/impg/qo49V2NSbiMOrTTqwmnJoffy7v7tzMv3pPs6Bg/44aBwrBj2Ak.jpg?size=1280x853&quality=95&sign=f8ced23a9edd565a4e14e94858a709c0&type=album",
-  },
-];
+async function fetchEvents() {
+  const event: IEventSearch = {};
+  event.journal_team_id = props.idTeam;
+  event.search_text = searchTxt.value;
+  event.date_update_order = filters.value.selectedFilterDate.order;
+  const data = await eventStore.fetchEvents(event);
+  events.value = data[0];
+}
+
+async function handleTimerSearch(seachText: string) {
+  searchTxt.value = seachText;
+
+  await fetchEvents();
+}
 </script>
 
 <style lang="scss" scoped>

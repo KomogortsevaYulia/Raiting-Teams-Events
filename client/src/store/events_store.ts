@@ -13,7 +13,7 @@ export const useEventStore = defineStore("events", () => {
       search_txt: event.search_text,
     };
 
-    const res = await axios.get("api/events", { params: params });
+    const res = await axios.get("/api/events", { params: params });
 
     return res.data;
   }
