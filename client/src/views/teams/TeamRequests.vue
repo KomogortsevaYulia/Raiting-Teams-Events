@@ -149,7 +149,7 @@
               <div class="col-auto">
                 <button
                   class="button-green px-4"
-                  @click="updateStatus(item, 'Принята')"
+                  @click="updateStatus(item, Status.ACCEPTED)"
                 >
                   Утвердить
                 </button>
@@ -157,7 +157,7 @@
               <div class="col-auto">
                 <button
                   class="button-red px-4"
-                  @click="updateStatus(item, 'Отклонена')"
+                  @click="updateStatus(item, Status.CANCELLED)"
                 >
                   Отклонить
                 </button>
@@ -249,7 +249,7 @@ const filters = ref({
 });
 
 onBeforeMount(async () => {
-  await fetchRequisitions();
+
 });
 
 async function handleTimerSearch(seachText: string) {

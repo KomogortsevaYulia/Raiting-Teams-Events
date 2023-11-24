@@ -87,7 +87,7 @@ async function fetchFormFields() {
 async function fetchRequisition() {
   let requis: IURequisition = {};
   requis.user_id = permissions_store.user_id;
-
+  requis.team_id = idTeam;
   userReq.value = await teamStore.fetchRequisitions(requis);
 }
 </script>
