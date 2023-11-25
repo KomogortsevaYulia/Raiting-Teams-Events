@@ -110,7 +110,8 @@ module.exports = {
     'release-tags',
     'devops-tools',
     'sql',
-    'husky'
+    'husky',
+    'docker'
   ],
   types: getTypes(),
 };

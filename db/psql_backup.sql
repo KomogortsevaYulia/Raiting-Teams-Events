@@ -1,3 +1,6 @@
+CREATE DATABASE raiting_team_events;
+\c raiting_team_events;
+
 --
 -- PostgreSQL database dump
 --
