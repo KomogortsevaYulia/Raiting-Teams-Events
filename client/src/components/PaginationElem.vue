@@ -10,9 +10,8 @@
           <!-- prev page -->
           <li class="page-item">
             <a
-              class="page-link-custom"
+              :class="['page-link-custom',{'disabled':current == 1} ]"
               @click="changePage(current - 1)"
-              href="#"
               aria-label="Previous"
             >
               <span aria-hidden="true">&laquo;</span>
@@ -50,10 +49,11 @@
               maxPage
             }}</a>
           </li>
-          <!-- nest page -->
+          <!-- next page -->
           <li class="page-item">
             <a
               class="page-link-custom"
+              :class="['page-link-custom',{'disabled':current == maxPage} ]"
               @click="changePage(current + 1)"
               href="#"
               aria-label="Next"
@@ -155,21 +155,21 @@ function range(from: number, to: number) {
       color: black;
     }
 
-    &:last-child .page-link-custom {
-      border-radius: 0 10px 10px 0;
+      &:last-child .page-link-custom {
+        border-radius: 0 10px 10px 0;
 
-      &:hover {
-        color: var(--main-color);
+        &:hover {
+          color: var(--main-color);
+        }
       }
-    }
 
-    &:first-child .page-link-custom {
-      border-radius: 10px 0 0 10px;
+      &:first-child .page-link-custom {
+        border-radius: 10px 0 0 10px;
 
-      &:hover {
-        color: var(--main-color);
+        &:hover {
+          color: var(--main-color);
+        }
       }
-    }
   }
 
   .custom-border {
@@ -180,6 +180,9 @@ function range(from: number, to: number) {
     &:hover {
       @include item-border();
     }
+  }
+  a.disabled {
+    pointer-events: none;
   }
 }
 </style>
