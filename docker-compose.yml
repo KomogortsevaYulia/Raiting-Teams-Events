@@ -3,55 +3,64 @@ version: '3.8'
 services:
 
   rating-teams-db:
-    container_name: rating-teams-db
+    container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_DB_CONTAINER_NAME}
     image: postgres:13
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       POSTGRES_DB: raiting_team_events
-      PGPORT: 3003
+      PGPORT: ${DOCKER_PG_PORT}
     ports:
-      - "3003:3003"
+      - "${DOCKER_PG_PORT}:${DOCKER_PG_PORT}"
     volumes:
       - "./db/psql_protected:/var/lib/postgresql/data/"
       - "./db/psql_backup.sql:/docker-entrypoint-initdb.d/01-dump.sql"
       - "./db/restore-db.sh:/docker-entrypoint-initdb.d/02-restore-db.sh"
     networks:
-      - be
+      - be-bridge
 
   rating-teams-be:
-    container_name: rating-teams-be
+    container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}
     env_file:
       - ./server/.env
     build:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - 3002:3002
+      - ${DOCKER_BE_PORT}:${DOCKER_BE_PORT}
+    environment:
+      - PORT=${DOCKER_BE_PORT}
+      - DB_NAME=raiting_team_events
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - DB_HOST=${DOCKER_CONTAINER_PREFIX}${DOCKER_DB_CONTAINER_NAME}
+      - DB_PORT=${DOCKER_PG_PORT}
     networks:
-      - be
-      - fe
+      - be-bridge
+      - fe-bridge
 
   rating-teams-fe:
-    container_name: rating-teams-fe
+    container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_FE_CONTAINER_NAME}
     env_file:
       - ./client/.env
     build: 
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - 3001:3001
+      - ${DOCKER_FE_PORT}:${DOCKER_FE_PORT}
     environment:
       - VITE_PUBLIC_HOST=localhost
+      - PORT=${DOCKER_FE_PORT}
+      - PROXY=http://${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}:${DOCKER_BE_PORT}
     depends_on:
-      - rating-teams-be
+      - ${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}
     networks:
-      - fe
+      - fe-bridge
 
 networks:
-  fe:
+  fe-bridge:
     driver: bridge
-  be:
+  be-bridge:
     driver: bridge  
 
