@@ -96,6 +96,13 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <Pagination
+        :max-page="maxPages"
+        :visible-pages="visiblePages"
+        :handleEventChangePage="handleEventChangePage"
+      />
+    </div>
   </div>
 </template>
 
@@ -107,8 +114,17 @@ import SearchField from "@/components/SearchField.vue";
 import { useEventStore } from "@/store/events_store";
 import type { IEvent, IEventSearch } from "@/store/models/event/events.model";
 import LoadingElem from "@/components/LoadingElem.vue";
+import Pagination from "@/components/PaginationElem.vue";
 
 const eventStore = useEventStore();
+
+//pagination ---------------------------------------------------------------------
+const limit = 2; //сколько колелктивов отображается на странице
+const offset = ref(0); //сколько коллективов пропустить прежде чем отобрад+зить
+
+const maxPages = ref(1);
+const visiblePages = 7;
+//pagination ---------------------------------------------------------------------
 
 const isCalendarExpanded = ref(false);
 const calendarPicked = ref({
@@ -119,6 +135,8 @@ const calendarPicked = ref({
 const isOrderExpanded = ref(false);
 const events: Ref<IEvent[]> = ref([]);
 const searchTxt = ref("");
+
+const filterEvents: Ref<IEventSearch> = ref({});
 
 const filterDate = [
   { id: 0, name: "Сначала новые", order: "DESC" },
@@ -134,6 +152,9 @@ const props = defineProps<{
 }>();
 
 onBeforeMount(() => {
+  filterEvents.value.limit = limit;
+  filterEvents.value.offset = offset.value;
+
   fetchEvents();
 });
 
@@ -144,13 +165,22 @@ watch(
   },
 );
 
+async function handleEventChangePage(currentPage: number) {
+  offset.value = (currentPage - 1) * limit;
+  filterEvents.value.offset = offset.value;
+
+  await fetchEvents();
+}
+
 async function fetchEvents() {
-  const event: IEventSearch = {};
-  event.journal_team_id = props.idTeam;
-  event.search_text = searchTxt.value;
-  event.date_update_order = filters.value.selectedFilterDate.order;
-  const data = await eventStore.fetchEvents(event);
+  filterEvents.value.journal_team_id = props.idTeam;
+  filterEvents.value.search_text = searchTxt.value;
+  filterEvents.value.date_update_order = filters.value.selectedFilterDate.order;
+  const data = await eventStore.fetchEvents(filterEvents.value);
   events.value = data[0];
+
+  const eventsCount = data[1];
+  maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1;
 }
 
 async function handleTimerSearch(seachText: string) {
