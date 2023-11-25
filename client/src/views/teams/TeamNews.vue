@@ -119,7 +119,7 @@ import Pagination from "@/components/PaginationElem.vue";
 const eventStore = useEventStore();
 
 //pagination ---------------------------------------------------------------------
-const limit = 2; //сколько колелктивов отображается на странице
+const limit = 5; //сколько колелктивов отображается на странице
 const offset = ref(0); //сколько коллективов пропустить прежде чем отобрад+зить
 
 const maxPages = ref(1);
