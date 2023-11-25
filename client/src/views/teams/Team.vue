@@ -68,15 +68,14 @@
               <div class="py-4">
                 <div v-for="(item, ind) in team">
                   <div v-if="item.function?.title == 'Участник'">
-                    <div>{{ ind + 1 }} участников</div>
+                    <div><!-- {{ ind + 1 }} участников-->1 участник</div>
                   </div>
                 </div>
                   <div v-for="(item, inde) in team">
                   <div v-if="item.function?.title == 'Руководитель'">
-                    <div>{{ inde + 1 }} руководителя</div>
+                    <div><!--{{ inde + 1 }} руководителя-->1 руководитель</div>
                   </div>
-                </div>
-                          
+                </div>          
               </div>
 
               
