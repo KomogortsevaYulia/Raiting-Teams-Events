@@ -1,55 +1,68 @@
 <template>
-
-    <div class="checkbox__nav ">
-
-      <div class="checkbox__block" v-for="menu_item in props.menu_items" :key="menu_item.id">
-        <div class="checkbox__title">{{ menu_item.title }}</div>
-        <label class="checkbox__container" v-for="menu_type in menu_item.menu_types" :key="menu_type.id"
-          :class="{ 'hidden': menu_item.hidden && menu_type.id > 4 }">
-          <input type="checkbox" class="checkbox" v-model="menu_type.checked" v-bind="menu_type.id">
-          <span class="fake"></span>
-          <span class="span__title">{{ menu_type.title }}</span>
-        </label>
-        <div class="btn__open" v-if="menu_item.menu_types.length > 4" @click="menu_item.hidden = !menu_item.hidden">
-          <div class="btn__text" v-if="menu_item.hidden">Развернуть</div>
-          <div v-else class="btn__text">Свернуть</div>
-          <div class="btn__img" :class="{ 'closed': menu_item.hidden }"></div>
-        </div>
+  <div class="checkbox__nav">
+    <div
+      class="checkbox__block"
+      v-for="menu_item in props.menu_items"
+      :key="menu_item.id"
+    >
+      <div class="checkbox__title">{{ menu_item.title }}</div>
+      <label
+        class="checkbox__container"
+        v-for="menu_type in menu_item.menu_types"
+        :key="menu_type.id"
+        :class="{ hidden: menu_item.hidden && menu_type.id > 4 }"
+      >
+        <input
+          type="checkbox"
+          class="checkbox"
+          v-model="menu_type.checked"
+          v-bind="menu_type.id"
+        />
+        <span class="fake"></span>
+        <span class="span__title">{{ menu_type.title }}</span>
+      </label>
+      <div
+        class="btn__open"
+        v-if="menu_item.menu_types.length > 4"
+        @click="menu_item.hidden = !menu_item.hidden"
+      >
+        <div class="btn__text" v-if="menu_item.hidden">Развернуть</div>
+        <div v-else class="btn__text">Свернуть</div>
+        <div class="btn__img" :class="{ closed: menu_item.hidden }"></div>
       </div>
-      <button class="apply__btn" @click="handleEventSetFilters()">Применить</button>
-      <button class="refuse__btn" @click="handleEventResetFilters()">Сбросить</button>
     </div>
-
+    <button class="apply__btn" @click="handleEventSetFilters()">
+      Применить
+    </button>
+    <button class="refuse__btn" @click="handleEventResetFilters()">
+      Сбросить
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
-
 const props = defineProps<{
-  menu_items: {},
-  handleEventSetFilters: Function, //обработчик отправки фильтров
-  handleEventResetFilters: Function
-}>()
+  menu_items: {};
+  handleEventSetFilters: Function; //обработчик отправки фильтров
+  handleEventResetFilters: Function;
+}>();
 
 // const filtersVisivle = ref(false)
 
 // function setFiltersVisivle(fV: boolean) {
 //   filtersVisivle.value = fV
 // }
-
 </script>
 
 <style scoped lang="scss">
-
 .checkbox__block {
   margin-bottom: 1rem;
 }
 
 .checkbox__nav {
-
-
   .btn__open {
     display: flex;
-    color: #348498;
+    color: var(--second-color);
     padding-left: 0.5rem;
 
     &:hover {
@@ -88,13 +101,13 @@ const props = defineProps<{
     .checkbox {
       display: none;
 
-      &:checked+.fake::before {
+      &:checked + .fake::before {
         opacity: 1;
       }
     }
 
     .span__title {
-      color: #A1A1A1;
+      color: #a1a1a1;
       font-size: 1rem;
       margin-left: 1rem;
       hyphens: manual;
@@ -111,13 +124,12 @@ const props = defineProps<{
       width: 1.5rem;
       height: 1.5rem;
       border-radius: 0.3rem;
-      background-color: #CDEEF0;
+      background-color: var(--second-color-50);
 
       &:hover {
         cursor: pointer;
-        background-color: #b9e6e9;
+        background-color: var(--second-color);
       }
-
     }
 
     .fake::before {
@@ -131,9 +143,8 @@ const props = defineProps<{
       border-radius: 0.3rem;
       transform: (-50%, -50%);
       opacity: 0;
-      transition: .2s;
+      transition: 0.2s;
     }
-
   }
 
   .apply__btn {

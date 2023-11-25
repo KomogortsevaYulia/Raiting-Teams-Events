@@ -1,150 +1,3 @@
-<script lang="ts" setup>
-import axios from 'axios';
-import { onBeforeMount, ref } from 'vue';
-import { useFormStore } from "@/store/form_store"
-import { useRoute } from "vue-router";
-
-const route = useRoute()
-
-const idTeam = Number(route.params.id)
-
-let idForm: number
-
-const formStore = useFormStore()
-
-const data = ref()
-const deletedFields = ref()
-
-const responseMsg = ref()
-
-onBeforeMount(async () => {
-  fetchFormFields()
-  deletedFields.value = []
-})
-
-async function fetchFormFields() {
-  data.value = await formStore.fetchFormFields(idTeam)
-  idForm = await formStore.fetchFormId(idTeam)
-
-}
-
-
-const addInput = () => {
-  if (!data.value) {
-    data.value = []; // Initialize data.value as an empty array
-  }
-  data.value.push({ title: '', required: true });
-};
-
-const submit = async () => {
-  const promises = [];
-
-  for (let i = data.value.length - 1; i >= 0; i--) {
-    const form = data.value[i];
-    // if (!form.title.trim()) {
-    //   removeInput(i);
-    // } else {
-    if (form.id == null) {
-      const promise = createFormFields(form.title, idForm, form.required);
-      promises.push(promise);
-    }
-
-  }
-
-  // const results = await Promise.all(promises);
-  // const idFields = results.filter((result) => result !== null).join("\n");
-
-  if (idForm == undefined) {
-    createForm(idTeam)
-  } else {
-    archiveFields(deletedFields.value, true)
-
-    // updateForm(idForm)
-  }
-  //console.log(idFields);
-};
-
-
-const removeInput = (index: number) => {
-  if (data.value[index]) {
-    deletedFields.value.push(data.value[index])
-    data.value.splice(index, 1);
-  }
-};
-
-async function createFormFields(title: string, form_id: number, required: boolean) {
-  responseMsg.value = "сохранено";
-
-  try {
-    const response = await axios.post("/api/forms/field", {
-      title: title,
-      required: required,
-      form: form_id
-    });
-    const strId: string = response.data.id.toString()
-    //console.log(response.data.id)
-    return strId
-  } catch (error: any) {
-    if (error.response) {
-      responseMsg.value = error.response.data.message
-    }
-    return null;
-  }
-}
-
-async function createForm(idTeam: number) {
-
-  responseMsg.value = "сохранено";
-
-  await axios.post("/api/forms", {
-    team_id: idTeam,
-  })
-    .catch((err) => {
-      if (err.response) {
-        responseMsg.value = err.response.data.message
-      }
-    })
-}
-
-async function archiveFields( deletedFields: [], is_archive: boolean) {
-
-  console.log("deletedFields")
-  console.log(deletedFields)
-  for (let i =0; i<deletedFields.length; i++) {
-    console.log(deletedFields[i])
-    let f:any = deletedFields[i]
-    if (f.id) {
-
-      await axios.put(`/api/forms/field/${f.id}`, {
-        archive: is_archive,
-      })
-        .catch((err) => {
-          if (err.response) {
-            responseMsg.value = err.response.data.message
-          }
-        })
-    }
-
-
-  }
-
-
-}
-
-//  async function updateForm(id: number, fields_id: string) {
-
-// responseMsg.value = "сохранено";
-// await axios.put("/api/forms/" + id, {
-//     fields_id: fields_id,
-// })
-//     .catch((err) => {
-//         if (err.response) {
-//             responseMsg.value = err.response.data.message
-//         }
-//     })
-// }
-</script>
-
 <template>
   <div class="form">
     <div class="wrapper-question" v-for="(form, index) in data">
@@ -167,6 +20,148 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
   </div>
 </template>
 
+<script lang="ts" setup>
+import axios from "axios";
+import { onBeforeMount, ref } from "vue";
+import { useFormStore } from "@/store/form_store";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+
+const idTeam = Number(route.params.id);
+
+let idForm: number;
+
+const formStore = useFormStore();
+
+const data = ref();
+const deletedFields = ref();
+
+const responseMsg = ref();
+
+onBeforeMount(async () => {
+  await fetchFormFields();
+  deletedFields.value = [];
+});
+
+async function fetchFormFields() {
+  data.value = await formStore.fetchFormFields(idTeam);
+  idForm = await formStore.fetchFormId(idTeam);
+}
+
+const addInput = () => {
+  if (!data.value) {
+    data.value = []; // Initialize data.value as an empty array
+  }
+  data.value.push({ title: "", required: true });
+};
+
+const submit = async () => {
+  const promises = [];
+
+  for (let i = data.value.length - 1; i >= 0; i--) {
+    const form = data.value[i];
+    // if (!form.title.trim()) {
+    //   removeInput(i);
+    // } else {
+    if (form.id == null) {
+      const promise = createFormFields(form.title, idForm, form.required);
+      promises.push(promise);
+    }
+  }
+
+  // const results = await Promise.all(promises);
+  // const idFields = results.filter((result) => result !== null).join("\n");
+
+  if (idForm == undefined) {
+    await createForm(idTeam);
+  } else {
+    await archiveFields(deletedFields.value, true);
+
+    // updateForm(idForm)
+  }
+  //console.log(idFields);
+};
+
+const removeInput = (index: number) => {
+  if (data.value[index]) {
+    deletedFields.value.push(data.value[index]);
+    data.value.splice(index, 1);
+  }
+};
+
+async function createFormFields(
+  title: string,
+  form_id: number,
+  required: boolean,
+) {
+  responseMsg.value = "сохранено";
+
+  try {
+    const response = await axios.post("/api/forms/field", {
+      title: title,
+      required: required,
+      form: form_id,
+    });
+    const strId: string = response.data.id.toString();
+    //console.log(response.data.id)
+    return strId;
+  } catch (error: any) {
+    if (error.response) {
+      responseMsg.value = error.response.data.message;
+    }
+    return null;
+  }
+}
+
+async function createForm(idTeam: number) {
+  responseMsg.value = "сохранено";
+
+  await axios
+    .post("/api/forms", {
+      team_id: idTeam,
+    })
+    .catch((err) => {
+      if (err.response) {
+        responseMsg.value = err.response.data.message;
+      }
+    });
+}
+
+async function archiveFields(deletedFields: [], is_archive: boolean) {
+  console.log("deletedFields");
+  console.log(deletedFields);
+  for (let i = 0; i < deletedFields.length; i++) {
+    console.log(deletedFields[i]);
+    let f: any = deletedFields[i];
+    if (f.id) {
+      await axios
+        .put(`/api/forms/field/${f.id}`, {
+          archive: is_archive,
+        })
+        .catch((err) => {
+          if (err.response) {
+            responseMsg.value = err.response.data.message;
+          }
+        });
+    }
+  }
+}
+
+//  async function updateForm(id: number, fields_id: string) {
+
+// responseMsg.value = "сохранено";
+// await axios.put("/api/forms/" + id, {
+//     fields_id: fields_id,
+// })
+//     .catch((err) => {
+//         if (err.response) {
+//             responseMsg.value = err.response.data.message
+//         }
+//     })
+// }
+</script>
+
 <style lang="scss" scoped>
 .form {
   display: block;
@@ -185,7 +180,7 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
         font-weight: 700;
         font-size: 20px;
 
-        color: rgba(0, 0, 0, 0.80);
+        color: rgba(0, 0, 0, 0.8);
       }
 
       .checkbox-label {
@@ -203,10 +198,10 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
           margin-left: 5px;
           transition: color 0.2s;
 
-          color: #A2A2A2;
+          color: #a2a2a2;
 
           &::before {
-            color: #FF502F;
+            color: #ff502f;
           }
         }
 
@@ -216,7 +211,7 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
           width: 1rem;
           height: 1rem;
           border-radius: 0.3rem;
-          background-color: #CDEEF0;
+          background-color: #cdeef0;
 
           &:hover {
             cursor: pointer;
@@ -225,29 +220,28 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
 
           &::before {
             content: "";
-            position: relative;
             display: block;
             width: 1rem;
             height: 1rem;
-            background-color: #5BD1D7;
+            background-color: #5bd1d7;
             background-image: url(@/assets/icon/checked.svg);
             background-position: center;
             border-radius: 0.3rem;
             position: absolute;
             opacity: 0;
-            transition: .2s;
+            transition: 0.2s;
           }
         }
 
         input[type="checkbox"] {
           display: none;
 
-          &:checked~.checkbox-custom::before {
+          &:checked ~ .checkbox-custom::before {
             opacity: 1;
             visibility: visible;
           }
 
-          &:checked~.checkbox-text {
+          &:checked ~ .checkbox-text {
             color: #373737;
             text-decoration-line: none;
           }
@@ -261,9 +255,6 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
 
       .input-question {
         background-color: #fff;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
-        border-radius: 5px;
         width: 100%;
         resize: none;
         font-family: var(--font-family-title);
@@ -280,7 +271,6 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
       }
 
       .remove-btn {
-        border-radius: 10px;
         color: white;
         border: none;
         cursor: pointer;
@@ -293,7 +283,6 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
 
   .add-btn {
     display: block;
-    margin: 0px auto;
     padding: 0;
     font-family: var(--font-family-title);
     width: 230px;
@@ -301,11 +290,11 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
     font-weight: 400;
     font-size: 20px;
     line-height: 24px;
-    margin-bottom: 50px;
+    margin: 0px auto 50px;
 
-    color: #FFFFFF;
-    background: rgba(52, 132, 152, 0.8);
-    border-radius: 10px;
+    color: #ffffff;
+    background: var(--second-accept);
+    opacity: 0.8;
 
     &:focus {
       outline: none;
@@ -322,14 +311,8 @@ async function archiveFields( deletedFields: [], is_archive: boolean) {
     width: 290px;
     height: 80px;
 
-    color: #FFFFFF;
-    background: #348498;
-    border-radius: 10px;
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px #348498;
-    }
+    color: #ffffff;
+    background:var(--second-accept);
   }
 }
 </style>

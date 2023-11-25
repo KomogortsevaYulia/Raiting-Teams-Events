@@ -15,7 +15,7 @@ export const useChartStore = defineStore("echarts", () => {
 
         for (let i = 0; i < events.length; i++) {
 
-            let event = events[i]
+            const event = events[i]
             if (event.type != null && event.type.name == Type.INSIDE) inner += 1
             else if (event.type != null && event.type.name == Type.OUTSIDE) outer += 1
         }
@@ -37,9 +37,9 @@ export const useChartStore = defineStore("echarts", () => {
 
         for (let i = 0; i < events.length; i++) {
 
-            let event = events[i]
-            let date = new Date(event.dateStart)
-            let month = date.getMonth()
+            const event = events[i]
+            const date = new Date(event.dateStart)
+            const month = date.getMonth()
             // console.log("event.date  " + new Date( event.dateStart))
 
             if (month <= 2 || month == 12) winter += 1
@@ -60,16 +60,16 @@ export const useChartStore = defineStore("echarts", () => {
         level: number,
         type: number, count = 10) {
 
-        let dataTopTm: number[] = []
-        let labelsTopTm: string[] = []
+        const dataTopTm: number[] = []
+        const labelsTopTm: string[] = []
 
-        let data: { data: number, label: string }[] = []
+        const data: { data: number, label: string }[] = []
 
         // get count events from teams
         for (let i = 0; i < teams.length; i++) {
             const team = teams[i]
 
-            let events = await eventStore.getEventsViaJournalsByTeam(team.id, dateStart, dateEnd, type, level)
+            const events = await eventStore.getEventsViaJournalsByTeam(team.id, dateStart, dateEnd, type, level)
 
             data.push({ data: events.data[1], label: team.name })
         }
@@ -80,7 +80,7 @@ export const useChartStore = defineStore("echarts", () => {
         // prepare data top count teams for chart
         for (let i = 1; i < count; i++) {
 
-            let ind = data.length - i
+            const ind = data.length - i
 
             if (data.length - i >= 0) {
                 dataTopTm.push(data[ind].data)
