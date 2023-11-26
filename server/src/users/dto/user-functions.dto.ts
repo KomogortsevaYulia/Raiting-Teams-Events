@@ -20,12 +20,12 @@ export class UserFunctionDto {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  limit: number = 5;
+  limit = 5;
 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  offset: number = 0;
+  offset = 0;
 
   // additional
   @IsOptional()
