@@ -27,9 +27,18 @@
       </div>
     </div>
 
-    <div class="py-4">
+    <div class="row py-4">
       <div>{{ countParticipants }} участник</div>
       <div>{{ countLeaders }} руководитель</div>
+    </div>
+
+    <!--    error-->
+    <div class="row">
+      <div v-if="uFStore.apiRequest.error || teamStore.apiRequest.error">
+        <div class="alert alert-danger" role="alert">
+          {{ uFStore.apiRequest.error || teamStore.apiRequest.error }}
+        </div>
+      </div>
     </div>
 
     <div v-if="!isTable" class="members-list row g-2">
@@ -47,12 +56,45 @@
             </div>
 
             <div class="col-lg col-md col-sm p-3">
-              <!--            btn edit-->
+              <!--            edit info-->
               <div class="row g-2 justify-content-end">
                 <div class="col-auto">
-                  <button class="btn-icon" @click="isEditMode = true">
-                    <font-awesome-icon :icon="['fas', 'ellipsis']" />
-                  </button>
+                  <div
+                    class="dropdown"
+                    v-if="item.function?.title != TeamRoles.Leader"
+                  >
+                    <button
+                      class="btn-icon"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <font-awesome-icon :icon="['fas', 'ellipsis']" />
+                    </button>
+                    <ul class="dropdown-menu">
+                      <a
+                        class="dropdown-item"
+                        @click="isEditMode = !isEditMode"
+                        href="javascript:"
+                      >
+                        <font-awesome-icon :icon="['fas', 'pencil']" />
+                        Редактировать роль</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="javascript:"
+                        @click="
+                          deleteUserFromTeam(
+                            item.user?.id ?? -1,
+                            Status.CANCELLED,
+                          )
+                        "
+                      >
+                        <font-awesome-icon :icon="['fas', 'trash']" />
+                        Удалить участника</a
+                      >
+                    </ul>
+                  </div>
                 </div>
               </div>
               <!--            info about participant-->
@@ -101,6 +143,7 @@
         </div>
       </div>
     </div>
+    <!--    table -->
     <div v-if="isTable">
       <table class="table table-hover">
         <thead>
@@ -110,6 +153,7 @@
             <th scope="col">Роль</th>
             <th scope="col">Группа</th>
             <th scope="col">Дата вступления</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -119,6 +163,42 @@
             <td>{{ it.function?.title }}</td>
             <td>{{ it.user.education_group }}</td>
             <td>{{ new Date(it.dateCreate).toLocaleDateString() }}</td>
+            <!--            edit info-->
+            <td>
+              <div
+                class="dropdown"
+                v-if="it.function?.title != TeamRoles.Leader"
+              >
+                <button
+                  class="btn-icon"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <font-awesome-icon :icon="['fas', 'ellipsis']" />
+                </button>
+                <ul class="dropdown-menu">
+                  <a
+                    class="dropdown-item"
+                    @click="isEditMode = !isEditMode"
+                    href="javascript:"
+                  >
+                    <font-awesome-icon :icon="['fas', 'pencil']" />
+                    Редактировать роль</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="javascript:"
+                    @click="
+                      deleteUserFromTeam(it.user?.id ?? -1, Status.CANCELLED)
+                    "
+                  >
+                    <font-awesome-icon :icon="['fas', 'trash']" />
+                    Удалить участника</a
+                  >
+                </ul>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -144,8 +224,12 @@ import type { Ref } from "vue";
 import SearchField from "@/components/SearchField.vue";
 import type { IRUFunction } from "@/store/models/user/search-user-functions.model";
 import PaginationElem from "@/components/PaginationElem.vue";
+import type { RURequisition } from "@/store/models/teams/update-requisition.model";
+import { useUserFunctionsStore } from "@/store/user_functions.store";
+import { Status } from "@/store/enums/enum_event";
 
 const teamStore = useTeamStore();
+const uFStore = useUserFunctionsStore();
 const userStore = useFunctionsStore();
 
 const props = defineProps<{
@@ -229,31 +313,32 @@ async function countPeople(teamUsers: IUserFunction[]) {
   countLeaders.value = cLeaders;
 }
 
-//
-// async function deleteUserFromTeam(status_name: string) {
-//   let requis: RURequisition = {};
-//   requis.team_id = props.idTeam;
-//   requis.user_id = props.user.id;
-//
-//   // заявка меняет статус
-//   let requisitions = await teamStore.fetchRequisitions(requis);
-//
-//   if (requisitions && requisitions[0]?.id) {
-//     let requis: RURequisition = {};
-//     requis.id = requisitions[0].id;
-//     requis.status_name = status_name;
-//
-//     await teamStore.updateRequisition(requis);
-//   }
-//
-//   // remove user functions
-//   let uFs = await uFStore.findUserFunctions(props.idTeam, props.user.id ?? -1);
-//
-//   for (const uF of uFs) {
-//     // удалить роль в коллективе
-//     await uFStore.removeUserFunction(uF.id);
-//   }
-// }
+async function deleteUserFromTeam(userId: number, status_name: string) {
+  let requis: RURequisition = {};
+  requis.team_id = props.idTeam;
+  requis.user_id = userId;
+
+  // заявка меняет статус
+  let requisitions = await teamStore.fetchRequisitions(requis);
+
+  if (requisitions && requisitions[0]?.id) {
+    let requis: RURequisition = {};
+    requis.id = requisitions[0].id;
+    requis.status_name = status_name;
+
+    await teamStore.updateRequisition(requis);
+  }
+
+  // remove user functions
+  let uFs = await uFStore.findUserFunctions(props.idTeam, userId);
+
+  for (const uF of uFs) {
+    // удалить роль в коллективе
+    await uFStore.removeUserFunction(uF.id);
+  }
+
+  await fetchUsers();
+}
 
 async function cancelEditMode() {
   isEditMode.value = false;
