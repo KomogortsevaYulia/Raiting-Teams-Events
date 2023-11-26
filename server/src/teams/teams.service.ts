@@ -29,7 +29,7 @@ import { PermissionsRoles, Roles } from '../shared/permissionsRoles';
 import { TeamRoles } from '../shared/teamRoles';
 import { PermissionsActions } from '../general/enums/action-permissions';
 import { TeamFunction } from '../users/entities/function.entity';
-import {UserFunctionDto} from "../users/dto/user-functions.dto";
+import { UserFunctionDto } from '../users/dto/user-functions.dto';
 
 @Injectable()
 export class TeamsService {

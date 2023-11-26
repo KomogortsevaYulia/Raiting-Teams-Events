@@ -44,7 +44,7 @@
             <Search :handleTimerSearch="handleTimerSearch" />
           </div>
           <div class="col-auto">
-            <Switch_toggle />
+            <Switch_toggle  :on-event-change-state="handleEventChangeStateLayout"/>
           </div>
 
           <div class="d-md-none">
@@ -184,6 +184,10 @@ const findEventTxt = ref();
 onBeforeMount(async () => {
   await fetchEvents();
 });
+
+function handleEventChangeStateLayout(stateL: boolean) {
+return stateL
+}
 
 async function handleTimerSearch(eventTxt: string) {
   findEventTxt.value = eventTxt;

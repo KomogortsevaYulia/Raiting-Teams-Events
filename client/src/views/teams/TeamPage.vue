@@ -75,7 +75,6 @@ import Ankets from "@/views/teams/QuestionnairePage.vue";
 
 import axios from "axios";
 import { useRoute } from "vue-router";
-import { useTeamStore } from "@/store/team_store";
 import ModalQuestionnaire from "@/components/modals/ModalQuestionnaire.vue";
 import TeamNews from "./TeamNews.vue";
 import TeamRequests from "./TeamRequests.vue";
@@ -90,10 +89,8 @@ const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
 
 const idTeam = Number(route.params.id);
-const teamStore = useTeamStore();
 const show = ref(true);
 
-const data = ref();
 
 const team: Ref<ITeam> = ref({});
 

@@ -41,7 +41,7 @@
             </div>
 
             <div class="col-auto">
-              <Switch_toggle />
+                <Switch_toggle  :on-event-change-state="handleEventChangeStateLayout"/>
             </div>
 
             <!-- фильтры в модальнос окне -->
@@ -241,6 +241,9 @@ function editTeam(editT: boolean, team: ITeam | null) {
   // редактируем колектив или создаем новый
   isEditTeam.value = editT;
   teamId.value = team?.id ? team.id : -1;
+}
+function handleEventChangeStateLayout(stateL: boolean) {
+return stateL
 }
 
 // вытащить коллективы из бд

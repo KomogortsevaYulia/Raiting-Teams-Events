@@ -33,7 +33,7 @@
     </div>
 
     <div v-if="!isTable" class="members-list row g-2">
-      <div v-for="item in teamUsers" class="col-md-12 col-lg-6">
+      <div v-for="item in teamUsers" class="col-md-12 col-lg-6" v-bind:key="item.id">
         <div class="member-card border-block">
           <div class="row g-2">
             <div class="col-lg-auto col-md-auto col-sm-auto">
@@ -109,7 +109,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(it, index) in teamUsers">
+          <tr v-for="(it, index) in teamUsers" v-bind:key="index">
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ it.user.fullname }}</td>
             <td>{{ it.function?.title }}</td>
@@ -120,21 +120,19 @@
       </table>
     </div>
 
-    <PaginationElem
-      class="d-flex"
-      :visiblePages="10"
-      :maxPage="1"
-      :handleEventChangePage="changePage"
-    />
+<!--    <PaginationElem-->
+<!--      class="d-flex"-->
+<!--      :visiblePages="10"-->
+<!--      :maxPage="1"-->
+<!--      :handleEventChangePage="changePage"-->
+<!--    />-->
   </div>
 </template>
 
 <script setup lang="ts">
-import PaginationElem from "@/components/PaginationElem.vue";
+// import PaginationElem from "@/components/PaginationElem.vue";
 import { useTeamStore } from "@/store/team_store";
-import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { onBeforeMount, ref } from "vue";
-import type { RURequisition } from "@/store/models/teams/update-requisition.model";
 import { useFunctionsStore } from "@/store/fucntion_store";
 import { TeamRoles } from "@/store/enums/team_roles";
 import type { IUserFunction } from "@/store/models/user/user-functions.model";
@@ -144,7 +142,6 @@ import SearchField from "@/components/SearchField.vue";
 import type { IRUFunction } from "@/store/models/user/search-user-functions.model";
 
 const teamStore = useTeamStore();
-const uFStore = useUserFunctionsStore();
 const userStore = useFunctionsStore();
 
 const props = defineProps<{
@@ -189,9 +186,9 @@ async function saveChanges(
   isEditMode.value = false;
 }
 
-async function handleDeleteMemberEvent() {
-  await fetchUsers();
-}
+// async function handleDeleteMemberEvent() {
+//   await fetchUsers();
+// }
 
 async function fetchUsers() {
   const uF: IRUFunction = {};
@@ -215,31 +212,31 @@ async function countPeople(teamUsers: IUserFunction[]) {
   countParticipants.value = cParticipants;
   countLeaders.value = cLeaders;
 }
-
-async function deleteUserFromTeam(status_name: string) {
-  let requis: RURequisition = {};
-  requis.team_id = props.idTeam;
-  requis.user_id = props.user.id;
-
-  // заявка меняет статус
-  let requisitions = await teamStore.fetchRequisitions(requis);
-
-  if (requisitions && requisitions[0]?.id) {
-    let requis: RURequisition = {};
-    requis.id = requisitions[0].id;
-    requis.status_name = status_name;
-
-    await teamStore.updateRequisition(requis);
-  }
-
-  // remove user functions
-  let uFs = await uFStore.findUserFunctions(props.idTeam, props.user.id ?? -1);
-
-  for (const uF of uFs) {
-    // удалить роль в коллективе
-    await uFStore.removeUserFunction(uF.id);
-  }
-}
+//
+// async function deleteUserFromTeam(status_name: string) {
+//   let requis: RURequisition = {};
+//   requis.team_id = props.idTeam;
+//   requis.user_id = props.user.id;
+//
+//   // заявка меняет статус
+//   let requisitions = await teamStore.fetchRequisitions(requis);
+//
+//   if (requisitions && requisitions[0]?.id) {
+//     let requis: RURequisition = {};
+//     requis.id = requisitions[0].id;
+//     requis.status_name = status_name;
+//
+//     await teamStore.updateRequisition(requis);
+//   }
+//
+//   // remove user functions
+//   let uFs = await uFStore.findUserFunctions(props.idTeam, props.user.id ?? -1);
+//
+//   for (const uF of uFs) {
+//     // удалить роль в коллективе
+//     await uFStore.removeUserFunction(uF.id);
+//   }
+// }
 
 async function cancelEditMode() {
   isEditMode.value = false;
@@ -250,7 +247,9 @@ async function handleTimerSearch(seachText: string) {
   await fetchUsers()
 }
 
-async function changePage(page: number) {}
+// async function changePage(page: number) {
+//
+// }
 </script>
 
 <style scoped lang="scss">

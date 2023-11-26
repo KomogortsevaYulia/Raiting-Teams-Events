@@ -1,4 +1,4 @@
-import {Transform, Type} from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsNumber, IsOptional } from 'class-validator';
 
 export class UserFunctionDto {

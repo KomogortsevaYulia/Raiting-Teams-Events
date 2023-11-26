@@ -11,17 +11,6 @@ export const useTeamStore = defineStore("teams", () => {
   const layout = ref(true);
   const apiRequest = new ApiRequest();
 
-  // Вывести все коллективвы с руководителсями
-  async function fetchTeams(): Promise<any> {
-    const res = await axios.get("/api/teams");
-
-    // const res2 = await axios.get('/api/uploads/',{params:{path:"/public/media/87a39a3586e19c22106a10ad53d0434b101.pdf"}} )
-    // console.log(res2)
-    const data = res.data;
-
-    return data;
-  }
-
   async function getStatus(id: number) {
     return await axios.get("/api/teams/requisitions/user/" + id);
   }

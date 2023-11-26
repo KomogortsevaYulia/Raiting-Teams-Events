@@ -47,11 +47,11 @@ import { usePermissionsStore } from "@/store/permissions_store";
 import { ref, onBeforeMount } from "vue";
 import { useTeamStore } from "@/store/team_store";
 
-import { useRoute } from "vue-router";
+// import { useRoute } from "vue-router";
 const permissions_store = usePermissionsStore()
-const route = useRoute();
+// const route = useRoute();
 const status = ref();
-const idUser = Number(route.query.user_id);
+// const idUser = Number(route.query.user_id);
 
 const itemList = [
   { name: "Мероприятия (заявки)" },
