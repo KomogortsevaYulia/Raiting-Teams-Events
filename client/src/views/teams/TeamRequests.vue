@@ -98,7 +98,7 @@
     </div>
   </div>
 
-  <div v-if="req?.length <= 0" class="alert alert-warning" role="alert">
+  <div v-if="req?.length <= 0 && !teamStore.apiRequest.loading" class="alert alert-warning" role="alert">
     Заявок нет
   </div>
 

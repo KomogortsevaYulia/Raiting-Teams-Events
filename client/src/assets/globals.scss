@@ -8,7 +8,7 @@
 // для элемента формы
 @mixin form-elem {
   border: var(--border-block);
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   padding: var(--padding-form);
   background-color: #fff;
   font-family: var(--font-family-primary);
@@ -202,6 +202,7 @@ a {
 
 .form-select {
   padding-right: 2rem;
+  border-radius: var(--border-radius);
 
   &:focus {
     box-shadow: none;

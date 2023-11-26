@@ -15,7 +15,7 @@
 
   <!-- see request for creation event -->
   <div v-if="selectedItem === 1">
-    <div class="member-card" v-for="(item, index) in status.data"
+    <div class="member-card border-block" v-for="(item, index) in status.data"
                 :key="index">
         <div class="row ms-lg-3">
           
@@ -74,7 +74,7 @@ const selectItem = (i: number) => {
   width: 100%;
   
   margin-bottom: 12px;
-  background: rgb(243, 243, 243);
+  background: #fff;
   border-radius: var(--border-radius);
 }
 

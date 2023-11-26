@@ -49,7 +49,7 @@
     </div>
 
     <div>
-      <div v-if="events?.length <= 0" class="alert alert-warning" role="alert">
+      <div v-if="events?.length <= 0 && !eventStore.apiRequest.loading" class="alert alert-warning" role="alert">
         Мероприятий нет
       </div>
 

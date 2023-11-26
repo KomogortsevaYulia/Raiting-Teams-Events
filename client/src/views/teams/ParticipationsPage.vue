@@ -159,7 +159,7 @@
         </thead>
         <tbody>
           <tr v-for="(it, index) in teamUsers" v-bind:key="index">
-            <th scope="row">{{ index + 1 }}</th>
+            <th scope="row">{{ index + 1 + offset }}</th>
             <td>{{ it.user.fullname }}</td>
             <td>{{ it.function?.title }}</td>
             <td>{{ it.user.education_group }}</td>
