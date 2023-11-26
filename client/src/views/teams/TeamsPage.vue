@@ -144,7 +144,10 @@
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                   >
-                    <font-awesome-icon class="ic fa-1x btn-icon btn-icon-rounded" icon="pen-to-square" />
+                    <font-awesome-icon
+                      class="ic fa-1x btn-icon btn-icon-rounded"
+                      icon="pen-to-square"
+                    />
                   </div>
                 </div>
               </div>
@@ -249,8 +252,9 @@ function editTeam(editT: boolean, team: ITeam | null) {
   isEditTeam.value = editT;
   teamId.value = team?.id ? team.id : -1;
 }
+
 function handleEventChangeStateLayout(stateL: boolean) {
-return stateL
+    stateLayout.value = stateL;
 }
 
 // вытащить коллективы из бд
@@ -610,6 +614,7 @@ async function handleTimerSearch(seachText: string) {
     .card__banner {
       display: none !important;
     }
+
     .cardEvent {
       height: auto !important;
     }

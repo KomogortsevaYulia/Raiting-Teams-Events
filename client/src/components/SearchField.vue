@@ -1,5 +1,5 @@
 <template>
-  <div class="search">
+  <div class="search-elem">
     <div class="row align-items-center">
       <div class="col-auto">
         <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
@@ -46,7 +46,7 @@ watch(findTeamTxt, () => {
 
 }
 
-.search{
+.search-elem{
   background: white;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);

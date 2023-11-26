@@ -104,17 +104,13 @@
 
   <div v-for="item in req" v-bind:key="item.id">
     <div class="member-card mb-3 rounded-4 border-block">
-      <div class="row g-1">
+      <div class="row g-1 align-items-center">
         <div
-          class="col-md-2 img-container align-items-center d-flex justify-content-center"
+          class="col-lg-auto col-md-auto col-sm-auto img-container align-items-center d-flex justify-content-center"
         >
-          <img
-            src="@/assets/icon/user.png"
-            class="img-fluid rounded-4"
-            alt=""
-          />
+            <img class="" src="@/assets/icon/user.png" alt="" />
         </div>
-        <div class="col-md-10">
+        <div class="col-lg col-md col-sm p-3">
           <div class="card-body d-flex flex-column">
             <div class="member-title mb-2">{{ item.user?.fullname }}</div>
             <div class="member-desc mb-5">
@@ -306,6 +302,22 @@ async function sendComment(requis_id: number, comment: string) {
   width: 100%;
 }
 
+.img-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  background-size: cover;
+  overflow: hidden;
+  border-radius: 25px;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
 .img-fluid {
   height: fit-content;
   max-height: 150px;
@@ -400,7 +412,6 @@ async function sendComment(requis_id: number, comment: string) {
 .member-card {
   width: 100%;
   margin-bottom: 12px;
-  padding: 15px;
   border-radius: var(--border-radius);
 }
 
@@ -426,7 +437,7 @@ async function sendComment(requis_id: number, comment: string) {
 
 @media (max-width: 768px) {
   .img-container {
-    display: none;
+    display: none !important;
   }
 }
 </style>

@@ -51,7 +51,8 @@
           <div class="row g-2">
             <div class="col-lg-auto col-md-auto col-sm-auto">
               <div class="image-container">
-                <img class="rounded-4" src="@/assets/icon/event3.png" alt="" />
+                  <img v-if="item.user?.image" class="rounded-4" :src="item.user?.image" alt="" />
+                  <img v-else class="rounded-4" src="@/assets/icon/avatar.png" alt="" />
               </div>
             </div>
 
