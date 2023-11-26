@@ -44,7 +44,9 @@
             <Search :handleTimerSearch="handleTimerSearch" />
           </div>
           <div class="col-auto">
-            <Switch_toggle  :on-event-change-state="handleEventChangeStateLayout"/>
+            <Switch_toggle
+              :on-event-change-state="handleEventChangeStateLayout"
+            />
           </div>
 
           <div class="d-md-none">
@@ -70,43 +72,63 @@
           </ModalFull>
         </div>
         <div
-          :class="[teamStore.layout ? 'wrapper-list' : 'wrapper-grid']"
+          :class="[stateLayout ? 'wrapper-list' : 'wrapper-grid']"
           v-if="data && data.length > 0"
         >
-          <div class="card border-block" v-for="event in data" :key="event.id">
-            <div class="card__banner">
-              <img
-                :src="event.images"
-                class="d-block"
-                style="width: 100%; object-fit: cover"
-                alt="banner"
-              />
-            </div>
-            <router-link :to="'/event/' + event.id">
-              <div class="card__content">
-                <div class="card__event-name">{{ event.title }}</div>
-                <div class="row g-1 my-2">
-                  <Tag
-                    v-for="(item, index) in event.tags"
-                    class="col-auto me-2"
-                    :text="item"
-                    :key="index"
-                  />
-                </div>
-
-                <div class="card__text">
-                  <p v-if="event.description != null">
-                    {{ event.description.slice(0, 150) }}
-                  </p>
-                  <p v-else>{{ event.description }}</p>
-                  <!-- @TODO: реализовать кнопку "Подать заявку" на участие в мероприятии -->
-
-                  <!--                  <div class="btn__container">-->
-                  <!--                    <button class="card__btn">Подать заявку</button>-->
-                  <!--                  </div>-->
-                </div>
+          <div
+            class="card border-block row-cols-auto"
+            v-for="event in data"
+            :key="event.id"
+          >
+            <div class="p-0 col-md-auto d-flex justify-content-center">
+              <div class="card__banner">
+                <img
+                  v-if="event.images"
+                  :src="event.images"
+                  class="d-block"
+                  style="width: 100%; object-fit: cover"
+                  alt=""
+                />
+                <img
+                  v-else
+                  src="@/assets/icon/empty_photo.jpg"
+                  class="d-block"
+                  style="width: 100%; object-fit: cover"
+                />
               </div>
-            </router-link>
+            </div>
+            <div class="wrapper col-lg col-md-auto px-4 py-4">
+              <router-link :to="'/event/' + event.id">
+                <div class="card__content">
+                  <div class="row g-2">
+                    <div class="col-12">
+                      <div class="card__event-name">{{ event.title }}</div>
+                    </div>
+                    <div class="col-12">
+                      <div class="row g-1 my-2">
+                        <Tag
+                          v-for="(item, index) in event.tags"
+                          class="col-auto me-2"
+                          :text="item"
+                          :key="index"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="card__text card-description">
+                        <p v-if="event.description != null">
+                          {{ event.description.slice(0, 150) }}
+                        </p>
+                        <p v-else>{{ event.description }}</p>
+                      </div>
+                      <!-- <div class="btn__container">
+                                                                                                                                                                                              <button class="card__btn">Подать заявку</button>
+                                                                                                                                                                                            </div> -->
+                    </div>
+                  </div>
+                </div>
+              </router-link>
+            </div>
           </div>
         </div>
 
@@ -145,7 +167,6 @@ import { onBeforeMount, ref } from "vue";
 import { usePermissionsStore } from "@/store/permissions_store";
 import Pagination from "@/components/PaginationElem.vue";
 import EventsRequests from "./EventsRequests.vue";
-import { useTeamStore } from "@/store/team_store";
 import ModalFull from "@/components/modals/ModalFull.vue";
 import type { IEventSearch } from "@/store/models/event/events.model";
 import UserEvents from "../user/UserEvents.vue";
@@ -155,7 +176,6 @@ import Tag from "@/components/TagElem.vue";
 import LoadingElem from "@/components/LoadingElem.vue";
 
 const eventStore = useEventStore();
-const teamStore = useTeamStore();
 const menu_items = eventStore.menu_items;
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
@@ -181,12 +201,14 @@ const itemList = [
 const selectedItem = ref(0);
 const findEventTxt = ref();
 
+const stateLayout = ref();
+
 onBeforeMount(async () => {
   await fetchEvents();
 });
 
 function handleEventChangeStateLayout(stateL: boolean) {
-return stateL
+  stateLayout.value = stateL;
 }
 
 async function handleTimerSearch(eventTxt: string) {
@@ -236,6 +258,9 @@ function handleEventResetFilters() {
 </script>
 
 <style lang="scss" scoped>
+.card {
+}
+
 .events__container {
   display: flex;
   padding-top: 1rem;
@@ -243,35 +268,59 @@ function handleEventResetFilters() {
   .cards__container {
     width: 100%;
 
+    .wrapper {
+      width: fit-content;
+      height: fit-content;
+    }
+
+    .cards__search {
+      display: flex;
+      justify-content: space-between;
+
+      .title__search {
+        width: 70%;
+      }
+    }
+
     .cards__wrap {
       background-color: #fff;
       width: 10%;
     }
 
+    //list
     .wrapper-list {
       padding-top: 1rem;
 
+      .card-description {
+        display: none;
+      }
+
       .card {
-        width: 100%;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        margin: 1rem 0;
+        border-radius: var(--border-radius);
+        overflow: hidden;
         background-color: #fff;
         height: 15rem;
-        margin-bottom: 1rem;
+        width: 100%;
+
         display: flex;
         flex-direction: row;
         transition: all 0.5s;
 
         .card__banner {
           height: 100%;
-          max-width: 15rem;
+          width: 15rem;
           border-radius: 5px 0 0 5px;
-          width: 100%;
           overflow: hidden;
           background-position: center;
           display: flex;
         }
 
         .card__content {
-          padding: 2rem;
           width: 100%;
 
           .card__event-name {
@@ -309,20 +358,25 @@ function handleEventResetFilters() {
       }
     }
 
+    //grid
     .wrapper-grid {
-      padding-top: 2rem;
+      padding-top: 1rem;
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
 
       .card {
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: auto;
         width: 250px;
-        background-color: #fff;
         height: 350px;
         margin: 0 1rem 1rem 0;
-        flex-wrap: wrap;
-        overflow: hidden;
-        display: flex;
-        // flex-direction: row;
         transition: all 0.5s;
 
         .card__banner {
@@ -337,7 +391,6 @@ function handleEventResetFilters() {
         }
 
         .card__content {
-          padding: 2rem;
           width: 100%;
           flex-wrap: wrap;
 
@@ -433,5 +486,16 @@ function handleEventResetFilters() {
   background-color: #fff;
   padding: 2rem;
   border-radius: var(--border-radius);
+}
+
+@media (max-width: 992px) {
+  .wrapper-list {
+    .card__banner {
+      display: none !important;
+    }
+    .card{
+      height: auto !important;
+    }
+  }
 }
 </style>

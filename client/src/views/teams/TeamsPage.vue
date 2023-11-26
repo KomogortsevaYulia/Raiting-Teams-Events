@@ -14,7 +14,11 @@
         >
           Создать коллектив
         </button>
-        <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId"  :on-save-changes="handleModalSaveChanges"/>
+        <ModalCreateTeam
+          :is-edit-team="isEditTeam"
+          :team-id="teamId"
+          :on-save-changes="handleModalSaveChanges"
+        />
       </div>
     </div>
 
@@ -35,13 +39,15 @@
       <div class="content-cards ms-md-4">
         <!-- Инпут с поиском -->
         <div class="cards__search">
-          <div class="row g-2">
+          <div class="row g-0">
             <div class="col">
               <Search :handleTimerSearch="handleTimerSearch" />
             </div>
 
             <div class="col-auto">
-                <Switch_toggle  :on-event-change-state="handleEventChangeStateLayout"/>
+              <Switch_toggle
+                :on-event-change-state="handleEventChangeStateLayout"
+              />
             </div>
 
             <!-- фильтры в модальнос окне -->
@@ -53,7 +59,7 @@
                   data-bs-toggle="modal"
                   data-bs-target="#filtersModal"
                 >
-                  <font-awesome-icon class="ic fa-lg" icon="filter"  />
+                  <font-awesome-icon class="ic fa-lg" icon="filter" />
                 </button>
               </div>
 
@@ -72,37 +78,36 @@
         </div>
 
         <!-- Сами карточки -->
-        <div :class="[teamStore.layout ? 'wrapper-list' : 'wrapper-grid']">
+        <div :class="[stateLayout ? 'wrapper-list' : 'wrapper-grid']">
           <div
             v-for="team in data"
-            :class="[{ cardEvent__archive: team.is_archive }]"
+            :class="[{ archive: team.is_archive }]"
             class="cardEvent border-block row justify-content-center"
             v-bind:key="team.id"
           >
-            <router-link
-              class="col-lg-auto p-0 col-md-auto d-flex justify-content-center"
-              :to="'/team/' + team.id"
-            >
-              <div class="card__banner">
-                <img
-                  v-if="team.image?.length && team.image?.length > 0"
-                  :src="team.image?.[0]"
-                  class="d-block"
-                  style="width: 100%; object-fit: cover"
-                  alt="card__banner"
-                />
-                <img
-                  v-else
-                  src="@/assets/icon/empty_photo.jpg"
-                  class="d-block"
-                  style="width: 100%; object-fit: cover"
-                  alt="empty_photo"
-                />
-              </div>
-            </router-link>
+            <div class="p-0 col-md-auto d-flex justify-content-center">
+              <router-link :to="'/team/' + team.id">
+                <div class="card__banner">
+                  <img
+                    v-if="team?.image && team.image?.length > 0"
+                    :src="team?.image[0]"
+                    class="d-block"
+                    style="width: 100%; object-fit: cover"
+                    alt=""
+                  />
+                  <img
+                    v-else
+                    src="@/assets/icon/empty_photo.jpg"
+                    class="d-block"
+                    style="width: 100%; object-fit: cover"
+                    alt=""
+                  />
+                </div>
+              </router-link>
+            </div>
 
             <div class="wrapperContent col-lg col-md-auto px-4 py-4">
-              <div class="row mb-2">
+              <div class="row mb-2 g-2">
                 <!-- team title -->
                 <div class="col p-0">
                   <div class="row g-2">
@@ -139,12 +144,12 @@
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                   >
-                    <font-awesome-icon class="ic fa-2x" icon="pencil-square" />
+                    <font-awesome-icon class="ic fa-1x btn-icon btn-icon-rounded" icon="pen-to-square" />
                   </div>
                 </div>
               </div>
 
-              <div class="row mb-2">
+              <div class="row mb-2 g-2">
                 <div class="navigation-tags my-2 row g-1">
                   <Tag
                     v-for="(item, index) in team.tags"
@@ -153,7 +158,7 @@
                     :key="index"
                   />
                 </div>
-                <div class="row">
+                <div class="card-description row">
                   {{ team.short_description }}
                 </div>
               </div>
@@ -224,6 +229,8 @@ const maxPages = ref(1);
 const visiblePages = 7;
 //pagination ---------------------------------------------------------------------
 
+const stateLayout = ref();
+
 // найденные направления из системы
 const foundDirections = ref([{ id: 0, shortname: "-", idDB: 0 }]); //дата
 
@@ -234,7 +241,7 @@ onBeforeMount(async () => {
 });
 
 async function handleModalSaveChanges() {
-    await fetchTeams();
+  await fetchTeams();
 }
 
 function editTeam(editT: boolean, team: ITeam | null) {
@@ -389,6 +396,9 @@ async function handleTimerSearch(seachText: string) {
   padding: 2rem;
 }
 
+.navigation-tags {
+}
+
 .wrapper-team {
   display: block;
   width: 100%;
@@ -442,6 +452,10 @@ async function handleTimerSearch(seachText: string) {
     height: 100%;
     width: 100%;
 
+    .archive {
+      opacity: 0.5;
+    }
+
     .content-filter {
       border-radius: var(--border-radius);
       border: var(--main-border-card);
@@ -459,10 +473,13 @@ async function handleTimerSearch(seachText: string) {
         }
       }
 
+      //grid
       .wrapper-grid {
         padding-top: 1rem;
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
 
         .cardEvent {
           &::-webkit-scrollbar {
@@ -477,10 +494,6 @@ async function handleTimerSearch(seachText: string) {
           margin: 0 1rem 1rem 0;
           flex-wrap: wrap;
           transition: all 0.5s;
-
-          &__archive {
-            opacity: 0.5;
-          }
 
           .cardTitle {
             color: #373737;
@@ -520,19 +533,6 @@ async function handleTimerSearch(seachText: string) {
           height: 13rem;
           overflow: hidden;
 
-          p {
-            margin: 4rem 0 0 1rem;
-            color: #fff;
-            position: absolute;
-          }
-
-          div {
-            width: 100%;
-            height: 13rem;
-            background-color: rgba(0, 0, 0, 0.295);
-            position: absolute;
-          }
-
           img {
             width: 100%;
           }
@@ -548,26 +548,22 @@ async function handleTimerSearch(seachText: string) {
         }
       }
 
+      //list
       .wrapper-list {
-        .cardEvent {
-          &::-webkit-scrollbar {
-            display: none;
-          }
+        .card-description {
+          display: none;
+        }
 
+        .cardEvent {
           margin: 1rem 0;
           border-radius: var(--border-radius);
-          overflow-y: scroll;
           background-color: #fff;
           height: 15rem;
           width: 100%;
-
+          overflow: hidden;
           display: flex;
           flex-direction: row;
           transition: all 0.5s;
-
-          &__archive {
-            opacity: 0.7;
-          }
 
           .cardTitle {
             color: #373737;
@@ -584,21 +580,10 @@ async function handleTimerSearch(seachText: string) {
 
           .card__banner {
             height: 100%;
-            max-width: 15rem;
-            border-radius: 5px 0 0 0;
-            width: 100%;
+            width: 15rem;
             overflow: hidden;
             background-position: center;
             display: flex;
-          }
-        }
-
-        .ic {
-          color: grey;
-
-          &:hover {
-            transition: 0.4s;
-            color: var(--main-color-hover);
           }
         }
 
@@ -614,15 +599,6 @@ async function handleTimerSearch(seachText: string) {
 
         .wrapperContent {
           width: 100%;
-
-          p {
-            color: #000;
-          }
-
-          .date {
-            text-align: end;
-            font-size: 1.6rem;
-          }
         }
       }
     }
@@ -630,13 +606,13 @@ async function handleTimerSearch(seachText: string) {
 }
 
 @media (max-width: 992px) {
-  .cardEvent {
-    height: 25rem !important;
-  }
-
-  .card__banner {
-    max-width: 100% !important;
-    max-height: 15rem !important;
+  .wrapper-list {
+    .card__banner {
+      display: none !important;
+    }
+    .cardEvent {
+      height: auto !important;
+    }
   }
 }
 </style>
