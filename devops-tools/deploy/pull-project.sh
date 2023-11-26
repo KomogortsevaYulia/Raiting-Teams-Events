@@ -2,4 +2,4 @@
 
 echo "git pull --ff for updating the project code"
 
-git pull --ff
+git pull --ff origin main

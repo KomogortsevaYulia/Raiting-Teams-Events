@@ -9,7 +9,9 @@
         v-model="selectedStatus"
         @change="fetchEvents()"
       >
-        <option v-for="st in status" :value="st.id">{{ st.name }}</option>
+        <option v-for="st in status" :value="st.id" v-bind:key="st.id">
+          {{ st.name }}
+        </option>
       </select>
     </div>
   </div>
@@ -17,17 +19,17 @@
   <!-- cards of events -->
   <div class="row">
     <div class="events-requests__wrapper">
-      <div
-        v-if="events == null || events.length <= 0"
-        class="alert alert-warning"
-        role="alert"
-      >
+      <div v-if="events.length <= 0" class="alert alert-warning" role="alert">
         Заявок нет
       </div>
 
-      <div v-else v-for="event in events">
+      <div v-else v-for="event in events" v-bind:key="event.id">
         <!-- карточка -->
-        <CardApprove :positive-border-color="event.status">
+        <CardApprove
+          :positive-border-color="
+            event.status && event.status.name == Status.ACCEPTED
+          "
+        >
           <template #title>
             ({{ event.direction ? event.direction.name : "-" }})
             {{ event.title }}
@@ -77,11 +79,15 @@
               <div class="fw-bold">Статус:</div>
             </div>
             <div class="col-auto">
-              <div v-if="event.status">
+              <div v-if="event.status && event.status.name == Status.ACCEPTED">
                 <font-awesome-icon icon="check-circle" class="text-success" />
                 принято
               </div>
-              <div v-else-if="event.status != null">
+              <div
+                v-else-if="
+                  event.status && event.status.name == Status.CANCELLED
+                "
+              >
                 <font-awesome-icon icon="circle-xmark" class="text-danger" />
                 отклонено
               </div>
@@ -96,13 +102,13 @@
             <div class="col d-flex justify-content-end">
               <button
                 class="button btn-custom-accept"
-                @click="updateEvent(event.id)"
+                @click="updateEvent(event.id ?? -1)"
               >
                 Редактировать
               </button>
             </div>
             <div class="col-auto">
-              <button class="button" @click="deleteEvent(event.id)">
+              <button class="button" @click="deleteEvent(event.id ?? -1)">
                 Удалить
               </button>
             </div>
@@ -122,23 +128,22 @@
 </template>
 
 <script setup lang="ts">
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/PaginationElem.vue";
 import { useEventStore } from "@/store/events_store";
 
 import { onBeforeMount, ref } from "vue";
-import { useDictionaryStore } from "@/store/dictionary_store";
 import CardApprove from "@/components/CardApprove.vue";
 import { Status, Type } from "@/store/enums/enum_event";
-import { Event } from "@/store/models/events.model";
+import type { IEvent, IEventSearch } from "@/store/models/event/events.model";
+import type { Ref } from "vue";
 
 const eventsStore = useEventStore();
-const dictionaryStore = useDictionaryStore();
 
 const props = defineProps<{
   idUser: number;
 }>();
 
-const events = ref();
+const events: Ref<IEvent[]> = ref([]);
 const status = [
   { id: 0, name: "Принятные", value: Status.ACCEPTED },
   { id: 1, name: "Отклоненные", value: Status.CANCELLED },
@@ -159,13 +164,12 @@ const maxPages = ref(1);
 const visiblePages = 7;
 //pagination ---------------------------------------------------------------------
 
-const eventFilter = ref(new Event());
+const eventFilter: Ref<IEventSearch> = ref({ limit: limit, offset: 0 });
 
 onBeforeMount(async () => {
   eventFilter.value.limit = limit;
   eventFilter.value.offset = 0;
   eventFilter.value.type = Type.OUTSIDE;
-  eventFilter.value.direction = null;
   eventFilter.value.user_id = props.idUser;
 
   await fetchEvents();
@@ -190,7 +194,9 @@ async function handleEventChangePage(currentPage: number) {
   await fetchEvents();
 }
 
-async function updateEvent(id: number) {}
+async function updateEvent(id: number) {
+  console.log(id);
+}
 
 async function deleteEvent(id: number) {
   await eventsStore.deleteEvent(id);

@@ -1,26 +1,23 @@
 @import "constants";
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('./fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+  font-family: Montserrat;
+  src: url("./fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
 }
-
 
 // для элемента формы
 @mixin form-elem {
   border: var(--border-block);
   border-radius: 10px;
-  padding: 0.6rem;
+  padding: var(--padding-form);
   background-color: #fff;
   font-family: var(--font-family-primary);
-
 
   &:focus {
     box-shadow: var(--hover-elem);
     outline: 0;
   }
 }
-
 
 body {
   font-family: var(--font-family-primary);
@@ -62,7 +59,7 @@ label {
 }
 
 button {
-  padding: 0.5rem 2rem 0.5rem 2rem;
+  padding: 0.5rem 2rem;
   border: 0;
   border-radius: 10px;
   background-color: var(--main-color);
@@ -70,25 +67,21 @@ button {
   font-family: var(--font-family-title);
   font-weight: 400;
 
-
   &:hover {
     opacity: 0.8;
     transition: 0.3s;
   }
 
-  //&:focus {
-  //  outline: none;
-  //  box-shadow: 0 0 0 2px var(--main-color-hover);
-  //}
 }
 
 input {
-  @include form-elem();
+  @include form-elem;
+
   transition: 0.3s;
 }
 
 textarea {
-  @include form-elem();
+  @include form-elem;
 }
 
 .form-control {
@@ -114,12 +107,12 @@ textarea {
   background: var(--main-color);
 }
 
-// вторичная кнопка
+// вторичная кнопка иконка с закруглением
 .btn-icon-rounded {
   background: white;
   border-radius: 50px;
   color: black;
-  padding: 0.6rem 0.9rem;
+  padding: 0.6rem 0.7rem;
   border: var(--border-block);
 
   &:hover {
@@ -127,9 +120,17 @@ textarea {
   }
 }
 
+// кнопка иконка
+.btn-icon {
+  background: white;
+  color: black;
+
+  &:hover {
+    color: var(--main-color);
+  }
+}
 
 // кнопки ------------------------------------------------------------------------------------------
-
 
 a {
   font-size: 14px;
@@ -148,13 +149,13 @@ a {
   }
 }
 
-//выпадающий список с поиском
+// выпадающий список с поиском
 .v-select {
   min-width: 200px;
 
-
   .vs__dropdown-toggle {
-    @include form-elem();
+    @include form-elem;
+
     transition: 0.3s;
   }
 
@@ -169,7 +170,6 @@ a {
   }
 }
 
-
 .form-check {
   .form-check-input:checked {
     background-color: var(--second-color);
@@ -183,11 +183,10 @@ a {
 .vc-popover-content-wrapper {
   button {
     background: none;
-    padding: 0em;
+    padding: 0;
     color: black;
   }
 }
-
 
 // form-select, accordion
 
@@ -212,9 +211,7 @@ a {
 
 .accordion-item {
   .accordion-header {
-
     .accordion-button {
-
       &:focus,
       &:hover {
         color: black;
@@ -225,11 +222,10 @@ a {
       }
     }
   }
-
 }
 
 // media
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .nav-collapse {
     display: block !important;
   }

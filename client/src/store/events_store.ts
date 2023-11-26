@@ -1,11 +1,13 @@
 import { defineStore } from "pinia";
-import axios from "axios";
 import { Status, Type } from "./enums/enum_event";
-import type { Event } from "./models/events.model";
+import type { IEventSearch } from "./models/event/events.model";
+import {ApiRequest} from "@/store/handleApiRequest";
+import axios from "axios";
 
 export const useEventStore = defineStore("events", () => {
+ const apiRequest = new ApiRequest()
   // type 4 is external
-  async function fetchEvents(event: Event): Promise<any> {
+  async function fetchEvents(event: IEventSearch) {
     const params = {
       ...event,
       type: event.type != Type.ALL ? event.type : null,
@@ -13,45 +15,16 @@ export const useEventStore = defineStore("events", () => {
       search_txt: event.search_text,
     };
 
-    const res = await axios.get("api/events", { params: params });
-
-    const data = res.data;
-
-    return data;
-  }
-
-  async function fetchEventById(
-    id: number,
-    dateStart: Date,
-    dateEnd: Date,
-    level: number = 0,
-    type: number = 0,
-  ): Promise<any> {
-    const lvl = level != 0 ? level : null;
-    const tp = type != 0 ? type : null;
-
-    const res = await axios.get("api/events", {
-      params: {
-        id: id,
-        level: lvl,
-        type: tp,
-        dateStart: dateStart.toISOString(),
-        dateEnd: dateEnd.toISOString(),
-      },
+    return apiRequest.handleApiRequest(async () => {
+      return  await axios.get("/api/events", { params: params });
     });
-
-    const data = res.data[0];
-
-    return data[0];
   }
 
   // удалить мероприятие
   async function deleteEvent(id: number) {
     const res = await axios.delete("api/events/" + id);
 
-    const data = res.data;
-
-    return data;
+    return res.data;
   }
 
   async function getEventsViaJournalsByTeam(
@@ -60,11 +33,11 @@ export const useEventStore = defineStore("events", () => {
     dateEnd: Date,
     type: number = 0,
     level: number = 0,
-  ): Promise<any> {
+  ) {
     const lvl = level != 0 ? level : null;
     const tp = type != 0 ? type : null;
 
-    const res = await axios.get("api/events/events_of_team/" + teamId, {
+    return await axios.get("api/events/events_of_team/" + teamId, {
       params: {
         level: lvl,
         type: tp,
@@ -72,10 +45,6 @@ export const useEventStore = defineStore("events", () => {
         dateEnd: dateEnd.toISOString(),
       },
     });
-
-    const data = res;
-
-    return data;
   }
 
   // найти мероприятия по направлению
@@ -85,15 +54,13 @@ export const useEventStore = defineStore("events", () => {
     dateEnd: Date,
     level: number = 0,
     type: number = 0,
-  ): Promise<any> {
-    let res = null;
-
+  ) {
     const lvl = level != 0 ? level : null;
     const tp = type != 0 ? type : null;
     const dr = direction != 0 ? direction : null;
 
     //need get all directions
-    res = await axios.get("api/events/", {
+    const res = await axios.get("api/events/", {
       params: {
         direction: dr,
         level: lvl,
@@ -103,9 +70,7 @@ export const useEventStore = defineStore("events", () => {
       },
     });
 
-    const data = res.data;
-
-    return data;
+    return res.data;
   }
 
   async function getReportEventsOfDirection(
@@ -115,14 +80,12 @@ export const useEventStore = defineStore("events", () => {
     level: number = 0,
     type: number = 0,
   ) {
-    let res = null;
-
     const lvl = level != 0 ? level : null;
     const tp = type != 0 ? type : null;
     const dr = direction != 0 ? direction : null;
 
     //need get all directions
-    res = await axios.get("api/uploads/excel/events_direction", {
+    return await axios.get("api/uploads/excel/events_direction", {
       params: {
         direction: dr,
         level: lvl,
@@ -132,8 +95,6 @@ export const useEventStore = defineStore("events", () => {
       },
       responseType: "arraybuffer",
     });
-
-    return res;
   }
 
   async function getReportEventsOfTeam(
@@ -146,7 +107,7 @@ export const useEventStore = defineStore("events", () => {
     const lvl = level != 0 ? level : null;
     const tp = type != 0 ? type : null;
 
-    const res = await axios.get("api/uploads/excel/events_of_team", {
+    return await axios.get("api/uploads/excel/events_of_team", {
       params: {
         teamId: teamId,
         level: lvl,
@@ -156,8 +117,6 @@ export const useEventStore = defineStore("events", () => {
       },
       responseType: "arraybuffer",
     });
-
-    return res;
   }
 
   const menu_items = [
@@ -208,12 +167,12 @@ export const useEventStore = defineStore("events", () => {
   return {
     menu_items,
     fetchEvents,
-    fetchEventById,
     deleteEvent,
 
     getEventsByDirection,
     getReportEventsOfDirection,
     getEventsViaJournalsByTeam,
     getReportEventsOfTeam,
+    apiRequest
   };
 });

@@ -1,18 +1,17 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import type {FilterUser} from "@/store/models/user.model";
 
 export const useUserStore = defineStore("user", () => {
   //получить юзерова по имени, емеил
   async function getUsersByNameEmail(
-    limit: number,
-    fullname: string,
-    email: string,
+   filterUser:FilterUser
   ) {
     return await axios.get("/api/users", {
       params: {
-        limit: limit,
-        fullname: fullname,
-        email: email,
+        limit: filterUser.limit,
+        offset: filterUser.offset,
+        searchTxt:filterUser.searchTxt
       },
     });
   }
@@ -34,9 +33,14 @@ export const useUserStore = defineStore("user", () => {
     return await axios.get("/api/users/functions/" + id);
   }
 
+  async function getUser(id: number) {
+    return await axios.get("/api/users/" + id);
+  }
+
   return {
     getUsersByNameEmail,
     update,
     getUsersFunction,
+    getUser
   };
 });

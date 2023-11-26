@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
   positiveBorderColor: boolean | undefined;
 }>();
 </script>

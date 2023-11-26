@@ -5,7 +5,7 @@ import { Team } from './entities/team.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Function } from '../users/entities/function.entity';
+import { TeamFunction } from '../users/entities/function.entity';
 import { UsersService } from '../users/users.service';
 import { UploadsService } from '../uploads/uploads.service';
 import { Requisitions } from './entities/requisition.entity';
@@ -16,14 +16,13 @@ import { RequisitionFields } from 'src/forms/entities/requisition_fields.entity'
 import { FormField } from 'src/forms/entities/form_field.entity';
 import { FormsService } from 'src/forms/forms.service';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Team,
       User,
       UserFunction,
-      Function,
+      TeamFunction,
       Requisitions,
       Dictionary,
       Form,
@@ -39,5 +38,6 @@ import { FormsService } from 'src/forms/forms.service';
     GeneralService,
     FormsService,
   ],
+  exports: [TeamsService],
 })
 export class TeamsModule {}
