@@ -33,7 +33,11 @@
     </div>
 
     <div v-if="!isTable" class="members-list row g-2">
-      <div v-for="item in teamUsers" class="col-md-12 col-lg-6" v-bind:key="item.id">
+      <div
+        v-for="item in teamUsers"
+        class="col-md-12 col-lg-6"
+        v-bind:key="item.id"
+      >
         <div class="member-card border-block">
           <div class="row g-2">
             <div class="col-lg-auto col-md-auto col-sm-auto">
@@ -120,12 +124,11 @@
       </table>
     </div>
 
-<!--    <PaginationElem-->
-<!--      class="d-flex"-->
-<!--      :visiblePages="10"-->
-<!--      :maxPage="1"-->
-<!--      :handleEventChangePage="changePage"-->
-<!--    />-->
+    <PaginationElem
+      :max-page="maxPages"
+      :visible-pages="visiblePages"
+      :handleEventChangePage="handleEventChangePage"
+    />
   </div>
 </template>
 
@@ -140,6 +143,7 @@ import SwitchToggle from "@/components/SwitchToggle.vue";
 import type { Ref } from "vue";
 import SearchField from "@/components/SearchField.vue";
 import type { IRUFunction } from "@/store/models/user/search-user-functions.model";
+import PaginationElem from "@/components/PaginationElem.vue";
 
 const teamStore = useTeamStore();
 const userStore = useFunctionsStore();
@@ -147,6 +151,14 @@ const userStore = useFunctionsStore();
 const props = defineProps<{
   idTeam: number;
 }>();
+
+//pagination ---------------------------------------------------------------------
+const limit = 5; //сколько отображается на странице
+const offset = ref(0); //сколько пропустить прежде чем отобрад+зить
+
+const maxPages = ref(1);
+const visiblePages = 7;
+//pagination ---------------------------------------------------------------------
 
 const isTable = ref(false);
 const isEditMode = ref(false);
@@ -156,6 +168,7 @@ const countLeaders = ref(0);
 
 const searchTxt = ref("");
 
+const filter: Ref<IRUFunction> = ref({});
 // выбранные параметры
 const selectParams = ref({
   userDateInclude: [
@@ -170,6 +183,8 @@ const selectedParams = ref({
 });
 
 onBeforeMount(async () => {
+  filter.value.offset = offset.value;
+  filter.value.limit = limit;
   await fetchUsers();
 });
 
@@ -191,12 +206,13 @@ async function saveChanges(
 // }
 
 async function fetchUsers() {
-  const uF: IRUFunction = {};
-  uF.date_create_order = selectedParams.value.userDateInclude.order;
-  uF.searchTxt = searchTxt.value;
-  const data = await teamStore.fetchUsersOfTeam(props.idTeam, uF);
+  filter.value.date_create_order = selectedParams.value.userDateInclude.order;
+  filter.value.searchTxt = searchTxt.value;
+  const data = await teamStore.fetchUsersOfTeam(props.idTeam, filter.value);
 
   teamUsers.value = data[0];
+  const count = data[1];
+  maxPages.value = count >= limit ? Math.ceil(count / limit) : 1;
 
   await countPeople(teamUsers.value);
 }
@@ -212,6 +228,7 @@ async function countPeople(teamUsers: IUserFunction[]) {
   countParticipants.value = cParticipants;
   countLeaders.value = cLeaders;
 }
+
 //
 // async function deleteUserFromTeam(status_name: string) {
 //   let requis: RURequisition = {};
@@ -244,12 +261,15 @@ async function cancelEditMode() {
 
 async function handleTimerSearch(seachText: string) {
   searchTxt.value = seachText;
-  await fetchUsers()
+  await fetchUsers();
 }
 
-// async function changePage(page: number) {
-//
-// }
+async function handleEventChangePage(currentPage: number) {
+  offset.value = (currentPage - 1) * limit;
+  filter.value.offset = offset.value;
+
+  await fetchUsers();
+}
 </script>
 
 <style scoped lang="scss">

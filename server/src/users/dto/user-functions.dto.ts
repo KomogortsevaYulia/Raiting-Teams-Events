@@ -17,6 +17,16 @@ export class UserFunctionDto {
   @IsNumber()
   team: number;
 
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  limit: number = 5;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  offset: number = 0;
+
   // additional
   @IsOptional()
   date_create_order: 'ASC' | 'DESC' = 'ASC';

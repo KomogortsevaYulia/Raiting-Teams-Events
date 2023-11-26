@@ -332,6 +332,8 @@ export class TeamsService {
       .innerJoin('user_functions.function', 'function')
       .addSelect('function.title')
       .innerJoin('function.team', 'team')
+      .limit(params.limit)
+      .offset(params.offset)
       .where('team.id = :id', { id });
 
     // filters
