@@ -11,6 +11,8 @@ import * as argon2 from 'argon2';
 import { Journal } from '../../events/entities/journal.entity';
 import { Requisitions } from '../../teams/entities/requisition.entity';
 import { Event } from '../../events/entities/event.entity';
+import {TeamSchedule} from "../../teams/entities/schedule.entity";
+import {TeamVisits} from "../../teams/entities/visits.entity";
 
 @Entity('users')
 export class User {
@@ -97,6 +99,12 @@ export class User {
   @ApiProperty()
   @OneToMany(() => Event, (event) => event.user, { cascade: true })
   events: Event[];
+
+  @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.user, { cascade: true })
+  team_schedules: TeamSchedule[];
+
+  @OneToMany(() => TeamVisits, (team_visits) => team_visits.user, { cascade: true })
+  team_visits: TeamVisits[];
 
   // use it as object class in classes
   userId: number;
