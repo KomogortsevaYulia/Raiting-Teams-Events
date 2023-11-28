@@ -2,18 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   Entity,
-  JoinColumn,
-  ManyToOne, OneToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {User} from "../../users/entities/user.entity";
-import {Team} from "./team.entity";
-import {TeamSchedule} from "./schedule.entity";
-import {Journal} from "../../events/entities/journal.entity";
+import { TeamSchedule } from './schedule.entity';
 
 @Entity('cabinets')
 export class Cabinets {
-
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -22,6 +17,8 @@ export class Cabinets {
   @Column()
   name: string;
 
-  @OneToMany(() => TeamSchedule, (schedule) => schedule.cabinet, { cascade: true })
+  @OneToMany(() => TeamSchedule, (schedule) => schedule.cabinet, {
+    cascade: true,
+  })
   team_schedule: TeamSchedule[];
 }

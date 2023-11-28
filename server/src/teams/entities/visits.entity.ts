@@ -6,12 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {User} from "../../users/entities/user.entity";
-import {TeamSchedule} from "./schedule.entity";
+import { User } from '../../users/entities/user.entity';
+import { TeamSchedule } from './schedule.entity';
 
 @Entity('team_visits')
 export class TeamVisits {
-
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;

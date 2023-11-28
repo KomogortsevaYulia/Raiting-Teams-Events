@@ -12,7 +12,7 @@ import { TeamFunction } from '../../users/entities/function.entity';
 import { Journal } from '../../events/entities/journal.entity';
 import { Form } from '../../forms/entities/form.entity';
 import { Requisitions } from './requisition.entity';
-import {TeamSchedule} from "./schedule.entity";
+import { TeamSchedule } from './schedule.entity';
 
 @Entity('teams')
 export class Team {
@@ -89,7 +89,9 @@ export class Team {
   @OneToMany(() => Form, (form) => form.team, { cascade: true })
   forms: Form[];
 
-  @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.team, { cascade: true })
+  @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.team, {
+    cascade: true,
+  })
   team_schedules: TeamSchedule[];
 
   @OneToMany(() => Requisitions, (requisition) => requisition.team)
