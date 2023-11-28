@@ -475,6 +475,7 @@ export class TeamsService {
         'requisition.date_create',
         'requisition.date_update',
         'requisition.status',
+        'requisition.comment_leader',
         'requisition.id',
       ])
       .leftJoinAndSelect('requisition.status', 'status')

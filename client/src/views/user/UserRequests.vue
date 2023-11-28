@@ -15,42 +15,45 @@
 
   <!-- see request for creation event -->
   <div v-if="selectedItem === 1">
-    <div class="member-card border-block" v-for="(item, index) in status.data"
-                :key="index">
-        <div class="row ms-lg-3">
-          
-          <div class="col-lg-10 col-md-12">
-            <div class="member-info p-3">
-              <div class="col">
-                <div class="row" >
-              
-                  <h4>{{ item.team.title }}</h4>
-                </div>
-                <div class="row">
-                  <h7>Дата последнего рассмотрения: {{ item.date_update }} </h7>
-                </div>
-                <div class="row">
-                  <h7>Статус вашей заявки: {{ item.status.name }} </h7>
-                </div>
-              
+    <div
+      class="member-card border-block"
+      v-for="(item, index) in requests"
+      :key="index"
+    >
+      <div class="row ms-lg-3">
+        <div class="col-lg-10 col-md-12">
+          <div class="member-info p-3">
+            <div class="col">
+              <div class="row">
+                <h4>{{ item.team.title }}</h4>
+              </div>
+              <div class="row">
+                Дата последнего рассмотрения: {{ item.date_update }}
+              </div>
+              <div class="row">Статус вашей заявки: {{ item.status.name }}</div>
+              <div class="row">
+                Комментарий: {{ item.comment_leader ?? "-" }}
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import "@/assets/nav-second.scss"
+import "@/assets/nav-second.scss";
 import { usePermissionsStore } from "@/store/permissions_store";
 import { ref, onBeforeMount } from "vue";
+import type { Ref } from "vue";
 import { useTeamStore } from "@/store/team_store";
+import type { IRequisition } from "@/store/models/teams/requisition.model";
 
 // import { useRoute } from "vue-router";
-const permissions_store = usePermissionsStore()
+const permissions_store = usePermissionsStore();
 // const route = useRoute();
-const status = ref();
+const requests: Ref<IRequisition[]> = ref([]);
 // const idUser = Number(route.query.user_id);
 
 const itemList = [
@@ -61,7 +64,9 @@ const itemList = [
 const selectedItem = ref(0);
 
 onBeforeMount(async () => {
-  status.value = await useTeamStore().getStatus(permissions_store.user_id);
+  requests.value = await useTeamStore().getUserRequisitions(
+    permissions_store.user_id,
+  );
 });
 
 const selectItem = (i: number) => {
@@ -72,9 +77,10 @@ const selectItem = (i: number) => {
 <style lang="scss" scoped>
 .member-card {
   width: 100%;
-  
+
   margin-bottom: 12px;
   background: #fff;
+  padding: 15px;
   border-radius: var(--border-radius);
 }
 

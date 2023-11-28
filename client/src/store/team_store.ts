@@ -11,8 +11,8 @@ export const useTeamStore = defineStore("teams", () => {
   const layout = ref(true);
   const apiRequest = new ApiRequest();
 
-  async function getStatus(id: number) {
-    return await axios.get("/api/teams/requisitions/user/" + id);
+  async function getUserRequisitions(id: number) {
+    return (await axios.get("/api/teams/requisitions/user/" + id)).data;
   }
 
   // data will be returned as index 0 - is data, index 1 is count
@@ -294,7 +294,7 @@ export const useTeamStore = defineStore("teams", () => {
 
     updateRequisition,
     fetchRequisitions,
-    getStatus,
+    getUserRequisitions,
 
     fetchTeamsSearch,
     addImage,
