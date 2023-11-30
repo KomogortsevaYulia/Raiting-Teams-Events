@@ -94,7 +94,7 @@
                   src="@/assets/icon/empty_photo.jpg"
                   class="d-block"
                   style="width: 100%; object-fit: cover"
-                />
+                 alt=""/>
               </div>
             </div>
             <div class="wrapper col-lg col-md-auto px-4 py-4">
@@ -113,17 +113,6 @@
                           :key="index"
                         />
                       </div>
-                    </div>
-                    <div class="col-12">
-                      <div class="card__text card-description">
-                        <p v-if="event.description != null">
-                          {{ event.description.slice(0, 150) }}
-                        </p>
-                        <p v-else>{{ event.description }}</p>
-                      </div>
-                      <!-- <div class="btn__container">
-                                                                                                                                                                                              <button class="card__btn">Подать заявку</button>
-                                                                                                                                                                                            </div> -->
                     </div>
                   </div>
                 </div>
@@ -291,9 +280,6 @@ function handleEventResetFilters() {
     .wrapper-list {
       padding-top: 1rem;
 
-      .card-description {
-        display: none;
-      }
 
       .card {
         &::-webkit-scrollbar {
