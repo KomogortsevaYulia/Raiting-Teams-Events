@@ -1,4 +1,4 @@
-export interface IURequisition {
+export interface RURequisition {
     id?: number;
     comment_leader?: string;
     status_name?: string;

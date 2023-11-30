@@ -29,6 +29,7 @@ import { PermissionsRoles, Roles } from '../shared/permissionsRoles';
 import { TeamRoles } from '../shared/teamRoles';
 import { PermissionsActions } from '../general/enums/action-permissions';
 import { TeamFunction } from '../users/entities/function.entity';
+import { UserFunctionDto } from '../users/dto/user-functions.dto';
 
 @Injectable()
 export class TeamsService {
@@ -317,17 +318,38 @@ export class TeamsService {
   }
 
   //вывести команду
-  async teamWithUsers(id: number): Promise<UserFunction[]> {
-    return await this.userFunctionsRepository
+  async teamWithUsers(id: number, params: UserFunctionDto) {
+    const query = this.userFunctionsRepository
 
       .createQueryBuilder('user_functions')
-      .select(['user_functions.dateStart', 'user_functions.dateEnd'])
+      .select([
+        'user_functions.dateStart',
+        'user_functions.dateEnd',
+        'user_functions.dateCreate',
+        'user_functions.dateUpdate',
+      ])
       .leftJoinAndSelect('user_functions.user', 'user')
       .innerJoin('user_functions.function', 'function')
       .addSelect('function.title')
       .innerJoin('function.team', 'team')
-      .where('team.id = :id', { id })
-      .getMany();
+      .limit(params.limit)
+      .offset(params.offset)
+      .where('team.id = :id', { id });
+
+    // filters
+    //date order by
+    params.date_create_order
+      ? query.orderBy('user_functions.dateCreate', params.date_create_order)
+      : query;
+
+    // fullname user
+    params.searchTxt
+      ? query.andWhere(`(LOWER(user.fullname) like :fullname)`, {
+          fullname: `%${params.searchTxt}%`,
+        })
+      : query;
+
+    return await query.getManyAndCount();
   }
 
   // requisition --------------------------------------------------------------------
@@ -453,6 +475,7 @@ export class TeamsService {
         'requisition.date_create',
         'requisition.date_update',
         'requisition.status',
+        'requisition.comment_leader',
         'requisition.id',
       ])
       .leftJoinAndSelect('requisition.status', 'status')

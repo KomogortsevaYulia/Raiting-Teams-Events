@@ -56,7 +56,7 @@ import { usePermissionsStore } from "@/store/permissions_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { IFormField } from "@/store/models/forms/form-field.model";
 import type { Ref } from "vue";
-import type { IURequisition } from "@/store/models/teams/update-requisition.model";
+import type { RURequisition } from "@/store/models/teams/update-requisition.model";
 
 const permissions_store = usePermissionsStore();
 
@@ -85,7 +85,7 @@ async function fetchFormFields() {
 }
 
 async function fetchRequisition() {
-  let requis: IURequisition = {};
+  let requis: RURequisition = {};
   requis.user_id = permissions_store.user_id;
   requis.team_id = idTeam;
   userReq.value = await teamStore.fetchRequisitions(requis);

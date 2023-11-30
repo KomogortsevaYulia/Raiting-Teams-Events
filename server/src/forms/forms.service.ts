@@ -54,7 +54,7 @@ export class FormsService {
   async createForm(createFormDto: CreateFormDto): Promise<Form> {
     return await this.formRepository.save({
       ...createFormDto,
-      date: new Date(),
+      order: new Date(),
       description: 'description',
     });
   }

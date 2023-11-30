@@ -20,7 +20,7 @@
                 @click="changeTimeViaButton(dt.timeRange)"
                 v-bind:key="dt.id"
               >
-                {{ dt.date }}
+                  {{ dt.order }}
               </button>
 
               <div class="my-dropdown">
@@ -262,9 +262,9 @@ const typeGraphics = ref([
 
 // даты
 const dates = [
-  { id: 0, date: "1н", timeRange: TimeRange.WEEK },
-  { id: 1, date: "1м", timeRange: TimeRange.MONTH },
-  { id: 2, date: "1г", timeRange: TimeRange.YEAR },
+  { id: 0, order: "1н", timeRange: TimeRange.WEEK },
+  { id: 1, order: "1м", timeRange: TimeRange.MONTH },
+  { id: 2, order: "1г", timeRange: TimeRange.YEAR },
 ];
 
 //типы отчетов

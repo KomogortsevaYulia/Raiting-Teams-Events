@@ -83,7 +83,7 @@ const router = createRouter({
       name: "Requests",
       props: (route) => ({ userId: route.query.user_id }),
 
-      component: () => import("@/views/user/EventsRequests.vue"),
+      component: () => import("@/views/user/UserRequests.vue"),
       meta: {
         requiresAuth: true,
       },

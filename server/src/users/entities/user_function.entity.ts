@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { TeamFunction } from './function.entity';
@@ -22,6 +24,14 @@ export class UserFunction {
   @ApiProperty()
   @Column({ nullable: true })
   dateEnd: Date;
+
+  @ApiProperty()
+  @CreateDateColumn({ default: () => 'now()' })
+  dateCreate: Date;
+
+  @ApiProperty()
+  @UpdateDateColumn({ default: () => 'now()' })
+  dateUpdate: Date;
 
   @ManyToOne(() => TeamFunction, (func) => func.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'function_id' }])

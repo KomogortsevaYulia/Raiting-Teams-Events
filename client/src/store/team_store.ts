@@ -2,13 +2,18 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import type UpdateTeam from "@/components/modals/UpdateTeam";
 import type { FilterTeam } from "./models/teams/filter-teams.model";
-import type { IURequisition } from "@/store/models/teams/update-requisition.model";
+import type { RURequisition } from "@/store/models/teams/update-requisition.model";
 import axios from "axios";
-import {ApiRequest} from "@/store/handleApiRequest";
+import { ApiRequest } from "@/store/handleApiRequest";
+import type { IRUFunction } from "./models/user/search-user-functions.model";
 
 export const useTeamStore = defineStore("teams", () => {
   const layout = ref(true);
-  const apiRequest = new ApiRequest()
+  const apiRequest = new ApiRequest();
+
+  async function getUserRequisitions(id: number) {
+    return (await axios.get("/api/teams/requisitions/user/" + id)).data;
+  }
 
   // data will be returned as index 0 - is data, index 1 is count
   async function fetchTeamsOfDirection(direction: number = -1) {
@@ -42,8 +47,10 @@ export const useTeamStore = defineStore("teams", () => {
     return responseMsg;
   }
 
-  async function fetchUsersOfTeam(id: number) {
-    const res = await axios.get("/api/teams/" + id + "/users");
+  async function fetchUsersOfTeam(id: number, params: IRUFunction) {
+    const res = await axios.get("/api/teams/" + id + "/users", {
+      params: { ...params },
+    });
     return res.data;
   }
 
@@ -189,11 +196,14 @@ export const useTeamStore = defineStore("teams", () => {
 
   // requisition --------------------------------------------------------------------
   //получить заявки
-  async function fetchRequisitions(requisition: IURequisition) {
+  async function fetchRequisitions(requisition: RURequisition) {
     return apiRequest.handleApiRequest(async () => {
-      return await axios.get("/api/teams/" + requisition?.team_id + "/requisition", {
-        params: { ...requisition },
-      });
+      return await axios.get(
+        "/api/teams/" + requisition?.team_id + "/requisition",
+        {
+          params: { ...requisition },
+        },
+      );
     });
 
     // const res = await axios.get("/api/teams/" + team_id + "/requisition", {
@@ -202,7 +212,7 @@ export const useTeamStore = defineStore("teams", () => {
   }
 
   // обновить заявку
-  async function updateRequisition(requisition: IURequisition) {
+  async function updateRequisition(requisition: RURequisition) {
     return apiRequest.handleApiRequest(async () => {
       const { id, ...requestData } = requisition;
       return await axios.put(`/api/teams/requisition/${id}`, requestData);
@@ -284,6 +294,7 @@ export const useTeamStore = defineStore("teams", () => {
 
     updateRequisition,
     fetchRequisitions,
+    getUserRequisitions,
 
     fetchTeamsSearch,
     addImage,
@@ -294,6 +305,6 @@ export const useTeamStore = defineStore("teams", () => {
 
     layout,
     menu_items,
-    apiRequest
+    apiRequest,
   };
 });

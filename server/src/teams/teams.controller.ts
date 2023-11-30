@@ -183,8 +183,8 @@ export class TeamsController {
     type: UserFunction,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-  teamsAndUsers(@Param('id') id: number) {
-    return this.teamsService.teamWithUsers(id);
+  teamsAndUsers(@Param('id') id: number, @Query() uFDto: UserFunctionDto) {
+    return this.teamsService.teamWithUsers(id, uFDto);
   }
 
   @Get(':id')

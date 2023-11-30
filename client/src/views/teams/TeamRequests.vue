@@ -98,23 +98,19 @@
     </div>
   </div>
 
-  <div v-if="req?.length <= 0" class="alert alert-warning" role="alert">
+  <div v-if="req?.length <= 0 && !teamStore.apiRequest.loading" class="alert alert-warning" role="alert">
     Заявок нет
   </div>
 
   <div v-for="item in req" v-bind:key="item.id">
     <div class="member-card mb-3 rounded-4 border-block">
-      <div class="row g-1">
+      <div class="row g-1 align-items-center">
         <div
-          class="col-md-2 img-container align-items-center d-flex justify-content-center"
+          class="col-lg-auto col-md-auto col-sm-auto img-container align-items-center d-flex justify-content-center"
         >
-          <img
-            src="@/assets/icon/user.png"
-            class="img-fluid rounded-4"
-            alt=""
-          />
+            <img class="" src="@/assets/icon/user.png" alt="" />
         </div>
-        <div class="col-md-10">
+        <div class="col-lg col-md col-sm p-3">
           <div class="card-body d-flex flex-column">
             <div class="member-title mb-2">{{ item.user?.fullname }}</div>
             <div class="member-desc mb-5">
@@ -208,11 +204,11 @@ import ModalQuestionnaireAnswers from "@/components/modals/ModalQuestionnaireAns
 import { useTeamStore } from "@/store/team_store";
 import { useUserFunctionsStore } from "@/store/user_functions.store";
 import { ref, onBeforeMount } from "vue";
-import type { IRequisition } from "@/store/models/forms/requisition.model";
+import type { IRequisition } from "@/store/models/teams/requisition.model";
 import type { Ref } from "vue";
 import SearchField from "@/components/SearchField.vue";
 import LoadingElem from "@/components/LoadingElem.vue";
-import type { IURequisition } from "@/store/models/teams/update-requisition.model";
+import type { RURequisition } from "@/store/models/teams/update-requisition.model";
 import { Status } from "@/store/enums/enum_event";
 
 const teamStore = useTeamStore();
@@ -259,7 +255,7 @@ async function handleTimerSearch(seachText: string) {
 }
 
 async function fetchRequisitions() {
-  let requis: IURequisition = {};
+  let requis: RURequisition = {};
   requis.fullname = searchTxt.value;
   requis.team_id = props.idTeam;
   requis.date_update_order = filters.value.selectedFilterDate.order;
@@ -272,7 +268,7 @@ async function fetchRequisitions() {
 }
 
 async function updateStatus(req: IRequisition, status_name: string) {
-  let requis: IURequisition = {};
+  let requis: RURequisition = {};
   requis.id = req.id;
   requis.status_name = status_name;
 
@@ -283,7 +279,7 @@ async function updateStatus(req: IRequisition, status_name: string) {
   }
 }
 
-async function updateRequisition(req: IURequisition) {
+async function updateRequisition(req: RURequisition) {
   await teamStore.updateRequisition(req);
   await fetchRequisitions();
 }
@@ -293,7 +289,7 @@ function setCurrentRequisition(req: IRequisition) {
 }
 
 async function sendComment(requis_id: number, comment: string) {
-  let requis: IURequisition = {};
+  let requis: RURequisition = {};
   requis.id = requis_id;
   requis.comment_leader = comment;
 
@@ -304,6 +300,22 @@ async function sendComment(requis_id: number, comment: string) {
 <style lang="scss" scoped>
 .comment {
   width: 100%;
+}
+
+.img-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  background-size: cover;
+  overflow: hidden;
+  border-radius: 25px;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 .img-fluid {
@@ -400,7 +412,6 @@ async function sendComment(requis_id: number, comment: string) {
 .member-card {
   width: 100%;
   margin-bottom: 12px;
-  padding: 15px;
   border-radius: var(--border-radius);
 }
 
@@ -426,7 +437,7 @@ async function sendComment(requis_id: number, comment: string) {
 
 @media (max-width: 768px) {
   .img-container {
-    display: none;
+    display: none !important;
   }
 }
 </style>

@@ -8,7 +8,6 @@
           <div class="container" v-if="team && team.title">
             <p>{{ team.title }}</p>
             <ModalQuestionnaire v-model="team.title" />
-
           </div>
         </div>
       </div>
@@ -44,15 +43,15 @@
       </div>
       <!-- участники -->
       <div v-if="selectedItem === 3">
-
-        <div v-for="item in teamUsers" v-bind:key="item.id">
-          <Participation
-            :onDeleteMemberEvent="handleDeleteMemberEvent"
-            :user="item.user"
-            :func="item.function"
-            :idTeam="idTeam"
-          />
-        </div>
+        <ParticipationsPage :idTeam="idTeam" />
+        <!--        <div v-for="item in teamUsers" v-bind:key="item.id">-->
+        <!--            <Participation-->
+        <!--                    :onDeleteMemberEvent="handleDeleteMemberEvent"-->
+        <!--                    :user="item.user"-->
+        <!--                    :func="item.function"-->
+        <!--                    :idTeam="idTeam"-->
+        <!--            />-->
+        <!--        </div>-->
       </div>
 
       <div v-if="selectedItem === 4">
@@ -70,52 +69,41 @@
 <script setup lang="ts">
 import "@/assets/nav-second.scss";
 import WIP from "@/components/WIP.vue";
-import {onBeforeMount, ref} from "vue";
+
+import { onBeforeMount, ref } from "vue";
 import Ankets from "@/views/teams/QuestionnairePage.vue";
 
 import axios from "axios";
 import { useRoute } from "vue-router";
-import { useTeamStore } from "@/store/team_store";
 import ModalQuestionnaire from "@/components/modals/ModalQuestionnaire.vue";
 import TeamNews from "./TeamNews.vue";
-import Participation from "./ParticipationPage.vue";
 import TeamRequests from "./TeamRequests.vue";
 import { usePermissionsStore } from "@/store/permissions_store";
 import TeamMain from "./TeamMain.vue";
-import type {ITeam} from "@/store/models/teams/team.model";
+import type { ITeam } from "@/store/models/teams/team.model";
 import type { Ref } from "vue";
+import ParticipationsPage from "@/views/teams/ParticipationsPage.vue";
 
 const route = useRoute();
-
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
 
 const idTeam = Number(route.params.id);
-
-const teamStore = useTeamStore();
 const show = ref(true);
+
 
 const team: Ref<ITeam> = ref({});
 
-const teamUsers = ref();
-
 onBeforeMount(async () => {
   await fetchCurrentTeam();
-  await fetchUsersOfTeam();
 });
 
-async function fetchUsersOfTeam() {
-  teamUsers.value = await teamStore.fetchUsersOfTeam(idTeam);
-}
-
 async function fetchCurrentTeam() {
-  // я эту хуйню позже перепишу
   await axios.get("/api/teams/" + route.params.id).then((respose) => {
     team.value = respose.data;
   });
 }
 
-////////////////////////////////////////////
 const selectedItem = ref(0);
 const showCreate = ref(false);
 
@@ -127,7 +115,7 @@ const itemList = [
   { name: "Редактор анкеты", permission: can("can create questionnaires") },
   { name: "Заявки", permission: can("can create questionnaires") },
 ];
-///////////////////////////////////////////////////////////
+
 const selectItem = (i: number) => {
   selectedItem.value = i;
 };
@@ -136,17 +124,9 @@ itemList.forEach((item, index) => {
   return item == itemList[index];
 });
 
-async function handleDeleteMemberEvent() {
-  await fetchUsersOfTeam();
-}
-
 async function handleUpdateTeam() {
   await fetchCurrentTeam();
 }
-
-////////////////////////////////////////////
-
-// const itemLink = [{ name: "Тег", path: "/news" }, { name: "Тег 2", path: "/teams" },]
 </script>
 
 <style lang="scss" scoped>

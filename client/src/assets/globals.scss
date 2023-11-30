@@ -8,7 +8,7 @@
 // для элемента формы
 @mixin form-elem {
   border: var(--border-block);
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   padding: var(--padding-form);
   background-color: #fff;
   font-family: var(--font-family-primary);
@@ -107,7 +107,7 @@ textarea {
   background: var(--main-color);
 }
 
-// вторичная кнопка
+// вторичная кнопка иконка с закруглением
 .btn-icon-rounded {
   background: white;
   border-radius: 50px;
@@ -120,6 +120,7 @@ textarea {
   }
 }
 
+// кнопка иконка
 .btn-icon {
   background: white;
   color: black;
@@ -201,6 +202,7 @@ a {
 
 .form-select {
   padding-right: 2rem;
+  border-radius: var(--border-radius);
 
   &:focus {
     box-shadow: none;
