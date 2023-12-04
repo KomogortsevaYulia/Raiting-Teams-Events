@@ -15,7 +15,7 @@ services:
       - "${DOCKER_PG_PORT}:${PG_PORT}"
     volumes:
       - "./db/psql_protected:/var/lib/postgresql/data/"
-      - "./db/backup.sql:/docker-entrypoint-initdb.d/01-dump.sql"
+      - "./db/dump.sql:/docker-entrypoint-initdb.d/01-dump.sql"
     networks:
       - be-bridge
 
