@@ -1,6 +1,8 @@
 **/node_modules/
 **/dist/
 **/__pycache__/
+
+**/package-lock.json
 .env
 .git
 *.log

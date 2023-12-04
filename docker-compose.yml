@@ -41,23 +41,23 @@ services:
       - be-bridge
       - fe-bridge
 
-  # fe:
-  #   container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_FE_CONTAINER_NAME}
-  #   env_file:
-  #     - ./client/.env
-  #   build: 
-  #     context: ./client
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - ${DOCKER_FE_PORT}:${FE_PORT}
-  #   environment:
-  #     - VITE_PUBLIC_HOST=localhost
-  #     - PORT=${FE_HOST}
-  #     - PROXY=http://${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}:${BE_PORT}
-  #   depends_on:
-  #     - ${DOCKER_BE_CONTAINER_NAME}
-  #   networks:
-  #     - fe-bridge
+  fe:
+    container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_FE_CONTAINER_NAME}
+    env_file:
+      - ./client/.env
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - ${DOCKER_FE_PORT}:${FE_PORT}
+    environment:
+      - VITE_PUBLIC_HOST=localhost
+      - PORT=${FE_PORT}
+      - PROXY=http://${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}:${BE_PORT}
+    depends_on:
+      - ${DOCKER_BE_CONTAINER_NAME}
+    networks:
+      - fe-bridge
 
 networks:
   fe-bridge:
