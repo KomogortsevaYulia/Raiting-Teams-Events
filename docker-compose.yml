@@ -19,27 +19,27 @@ services:
     networks:
       - be-bridge
 
-  # be:
-  #   container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}
-  #   env_file:
-  #     - ./server/.env
-  #   build:
-  #     context: ./server
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - ${DOCKER_BE_PORT}:${BE_PORT}
-  #   environment:
-  #     - PORT=${BE_PORT}
-  #     - DB_NAME=${DOCKER_DB_NAME}
-  #     - DB_USER=${DOCKER_DB_USER}
-  #     - DB_PASSWORD=${DOCKER_DB_PASSWORD}
-  #     - DB_HOST=${DOCKER_CONTAINER_PREFIX}${DOCKER_DB_CONTAINER_NAME}
-  #     - DB_PORT=${PG_PORT}
-  #   depends_on:
-  #     - ${DOCKER_DB_CONTAINER_NAME}
-  #   networks:
-  #     - be-bridge
-  #     - fe-bridge
+  be:
+    container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}
+    env_file:
+      - ./server/.env
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - ${DOCKER_BE_PORT}:${BE_PORT}
+    environment:
+      - PORT=${BE_PORT}
+      - DB_NAME=${DOCKER_DB_NAME}
+      - DB_USER=${DOCKER_DB_USER}
+      - DB_PASSWORD=${DOCKER_DB_PASSWORD}
+      - DB_HOST=${DOCKER_CONTAINER_PREFIX}${DOCKER_DB_CONTAINER_NAME}
+      - DB_PORT=${PG_PORT}
+    depends_on:
+      - ${DOCKER_DB_CONTAINER_NAME}
+    networks:
+      - be-bridge
+      - fe-bridge
 
   # fe:
   #   container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_FE_CONTAINER_NAME}
