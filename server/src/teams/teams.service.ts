@@ -1,8 +1,8 @@
 import {
-  BadRequestException,
-  forwardRef,
-  Inject,
-  Injectable,
+    BadRequestException,
+    forwardRef, HttpException,
+    Inject,
+    Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
@@ -30,6 +30,8 @@ import { TeamRoles } from '../shared/teamRoles';
 import { PermissionsActions } from '../general/enums/action-permissions';
 import { TeamFunction } from '../users/entities/function.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
+import { FindRequisitionDto } from '../forms/dto/find-requisition.dto';
+import { RequisitionFieldsC } from '../forms/dto/create-requisition.dto';
 
 @Injectable()
 export class TeamsService {
@@ -488,25 +490,94 @@ export class TeamsService {
       .getMany();
   }
 
-  async createRequisitionField(
+  async findRequisitionField(dto: CreateRequisitionFieldDto) {
+    let query = this.requisitionsFieldsRepository
+      .createQueryBuilder('requisition_fields')
+      .addSelect(['requisition_fields.id', 'requisition_fields.value']);
+
+    // form_field
+    dto.form_field
+      ? query.andWhere('requisition_fields.form_fields_id = :form_fields_id', {
+          form_fields_id: dto.form_field.id,
+        })
+      : query;
+
+    // requisition_id
+    dto.requisition
+      ? query.andWhere('requisition_fields.requisition_id = :requisition_id', {
+          requisition_id: dto.requisition.id,
+        })
+      : query;
+
+    return query.getOne();
+  }
+
+  async createRequisitionFieldOrUpdate(
     dto: CreateRequisitionFieldDto,
   ): Promise<RequisitionFields> {
     const { value, requisition, form_field } = dto;
+
+    let existingRequisitionField = await this.findRequisitionField(dto);
 
     const requisitionField = new RequisitionFields();
     requisitionField.value = value;
     requisitionField.requisition = requisition;
     requisitionField.form_field = form_field;
 
+    if (existingRequisitionField) {
+      requisitionField.id = existingRequisitionField.id;
+    }
+
     return await this.requisitionsFieldsRepository.save(requisitionField);
   }
 
-  async createRequisition(dto: CreateRequisitionDto): Promise<Requisitions> {
-    const { userId, teamId, fields } = dto;
-    const user = await this.usersService.findById(userId);
-    const team = await this.findOne(teamId);
-    const form = await this.formService.findOnFormFields(teamId);
+  async findOneRequisition(findRequisitionDto: FindRequisitionDto) {
+    let query = this.requisitionsRepository
+      .createQueryBuilder('requisition')
+      .addSelect(['requisition.id', 'requisition.date_create'])
+      .leftJoin('requisition.user', 'user')
+      .leftJoin('requisition.team', 'team');
+
+    //  requisition_id
+    findRequisitionDto.requisition_id
+      ? query.andWhere('requisition.id = :id', {
+          id: findRequisitionDto.requisition_id,
+        })
+      : query;
+
+    //  team_id
+    findRequisitionDto.team_id
+      ? query.andWhere('requisition.team_id = :team_id', {
+          team_id: findRequisitionDto.team_id,
+        })
+      : query;
+
+    //  user_id
+    findRequisitionDto.user_id
+      ? query.andWhere('requisition.user_id = :user_id', {
+          user_id: findRequisitionDto.user_id,
+        })
+      : query;
+
+    return query.getOne();
+  }
+
+  async createRequisitionOrUpdate(
+    dto: CreateRequisitionDto,
+    user:User
+  ): Promise<Requisitions> {
+    console.log(dto);
+    const { team_id, fields } = dto;
+    const team = await this.findOne(team_id);
+    if(!team)throw  new HttpException("Коллектив не найден", 401)
+    const form = await this.formService.findOnFormFields(team_id);
     const status = await this.dictionaryService.findOne(18);
+
+    let findRequisitionDto = new FindRequisitionDto();
+    // findRequisitionDto.user_id = user.id;
+    findRequisitionDto.team_id = team.id;
+
+    let existingRequisition = await this.findOneRequisition(findRequisitionDto);
 
     const requisition = new Requisitions();
     requisition.fullname = '-';
@@ -514,22 +585,24 @@ export class TeamsService {
     requisition.team = team;
     requisition.status = status;
 
-    const createdRequisition = await this.requisitionsRepository.save(
-      requisition,
-    );
+    if (existingRequisition) {
+      requisition.id = existingRequisition.id;
+    }
 
-    if (createdRequisition) {
+    existingRequisition = await this.requisitionsRepository.save(requisition);
+
+    if (existingRequisition) {
       for (let i = 0; i < fields.length; i++) {
         const requisitionFieldDto = new CreateRequisitionFieldDto();
         requisitionFieldDto.value = fields[i];
-        requisitionFieldDto.requisition = createdRequisition;
+        requisitionFieldDto.requisition = existingRequisition;
         requisitionFieldDto.form_field = form.form_field[i];
 
-        await this.createRequisitionField(requisitionFieldDto);
+        await this.createRequisitionFieldOrUpdate(requisitionFieldDto);
       }
     }
 
-    return createdRequisition;
+    return existingRequisition;
   }
 
   // requisition ------------------------------------------------------------------

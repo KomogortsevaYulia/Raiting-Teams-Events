@@ -1,11 +1,13 @@
-import { IsArray, IsInt, IsString } from 'class-validator';
+import {IsArray, IsInt, IsNumber, IsString} from 'class-validator';
+import {Type} from "class-transformer";
 
 export class CreateRequisitionDto {
-  @IsInt()
-  userId: number;
+  // @IsInt()
+  // userId: number;
 
-  @IsInt()
-  teamId: number;
+  @IsNumber()
+  @Type(() => Number)
+  team_id: number;
 
   @IsArray()
   @IsString({ each: true })

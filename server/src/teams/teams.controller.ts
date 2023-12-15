@@ -409,7 +409,8 @@ export class TeamsController {
     return await this.teamsService.findAllRequisitionsByUserId(userId);
   }
 
-  @Post('requisitions/new')
+  @Post('requisitions')
+  @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: 'Создание заяки на вступление в коллектив' })
   @ApiBody({
     type: CreateRequisitionDto,
@@ -420,9 +421,11 @@ export class TeamsController {
     type: Requisitions,
   })
   async createRequisition(
+    @UserDecorator() user: User,
     @Body() dto: CreateRequisitionDto,
   ): Promise<Requisitions> {
-    return await this.teamsService.createRequisition(dto);
+    user = await this.usersService.findById(user.userId);
+    return await this.teamsService.createRequisitionOrUpdate(dto, user);
   }
 
   // requisition --------------------------------------------------------------------

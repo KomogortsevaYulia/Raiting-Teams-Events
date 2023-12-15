@@ -6,6 +6,9 @@ import { Form } from './entities/form.entity';
 import { FormField } from './entities/form_field.entity';
 import { RequisitionFields } from './entities/requisition_fields.entity';
 import { UpdateFieldDto } from './dto/update-field';
+import { RequisitionFieldsC } from './dto/create-requisition.dto';
+import { Requisitions } from '../teams/entities/requisition.entity';
+import { FindRequisitionDto } from './dto/find-requisition.dto';
 
 @Injectable()
 export class FormsService {
@@ -14,8 +17,6 @@ export class FormsService {
     private readonly formRepository: Repository<Form>,
     @InjectRepository(FormField) // user //,
     private readonly formFieldsRepository: Repository<FormField>,
-    @InjectRepository(RequisitionFields)
-    private readonly userFormRepository: Repository<RequisitionFields>,
   ) {}
 
   async findOnIdForm(team_id: number) {
@@ -80,13 +81,15 @@ export class FormsService {
   }
 
   // получить ответы пользователей на анкету
-  async fetchRequisitionForm(req_id: number) {
-    return await this.formRepository
+  async findRequisitionForm(req_id: number) {
+    let query = this.formRepository
       .createQueryBuilder('form')
       .leftJoinAndSelect('form.form_field', 'form_fields')
       .leftJoinAndSelect('form_fields.requisition_field', 'req_field')
       .leftJoin('req_field.requisition', 'requisition')
-      .where('requisition.id = :id', { id: req_id })
-      .getOne();
+      .andWhere('requisition.id = :id', {
+        id: req_id,
+      });
+    return query.getOne();
   }
 }

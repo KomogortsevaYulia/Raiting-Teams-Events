@@ -100,6 +100,6 @@ export class FormsController {
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async fetchRequisitionForm(@Param('id') req_id: number) {
-    return await this.formsService.fetchRequisitionForm(req_id);
+    return await this.formsService.findRequisitionForm(req_id);
   }
 }

@@ -13,7 +13,8 @@ export class ApiRequest{
             return response.data;
         } catch (err) {
             const axiosError = err as AxiosError;
-            this.error.value = axiosError.message || "An error occurred";
+            this.error.value = axiosError.message + ": " + axiosError.response?.statusText || "An error occurred";
+
         } finally {
             this.loading.value = false;
         }

@@ -6,6 +6,7 @@ import type { RURequisition } from "@/store/models/teams/update-requisition.mode
 import axios from "axios";
 import { ApiRequest } from "@/store/handleApiRequest";
 import type { IRUFunction } from "./models/user/search-user-functions.model";
+import type {ICreateRequisition} from "@/store/models/forms/requisition-fields.model";
 
 export const useTeamStore = defineStore("teams", () => {
   const layout = ref(true);
@@ -111,6 +112,12 @@ export const useTeamStore = defineStore("teams", () => {
     });
 
     return responseMsg;
+  }
+
+  async function createRequisition(createRequisition: ICreateRequisition) {
+    return apiRequest.handleApiRequest(async () => {
+      return  await axios.post("/api/teams/requisitions", {...createRequisition})
+    });
   }
 
   // обновить коллектив
@@ -299,6 +306,7 @@ export const useTeamStore = defineStore("teams", () => {
     fetchTeamsSearch,
     addImage,
     fetchDirections,
+    createRequisition,
 
     // assign roles
     assignNewParticipant,
