@@ -16,6 +16,7 @@
   <div
     class="modal fade"
     id="exampleModal"
+    ref="exampleModal"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
@@ -24,8 +25,12 @@
       <div class="modal-content">
         <div class="modal-title" id="exampleModalLabel">Заполните анкету</div>
         <div class="modal-subtitle" :value="modelValue">{{ modelValue }}</div>
-        <div class="alert alert-danger " v-if="teamStore.apiRequest.error">{{teamStore.apiRequest.error}}</div>
+
+        <div class="alert alert-warning" v-if="msg">
+          {{ msg }}
+        </div>
         <LoadingElem v-if="teamStore.apiRequest.loading" size-fa-icon="" />
+
         <div
           v-for="(form, i) in data"
           class="wrapper-questions"
@@ -68,9 +73,11 @@ import type { ICreateRequisition } from "@/store/models/forms/requisition-fields
 import LoadingElem from "@/components/LoadingElem.vue";
 
 const permissions_store = usePermissionsStore();
+const exampleModal = ref(null);
 
 const teamStore = useTeamStore();
 const route = useRoute();
+const msg = ref("");
 
 const idTeam = Number(route.params.id);
 
@@ -93,7 +100,8 @@ onBeforeMount(async () => {
   await fetchFormFields();
   await fetchRequisition(); //проверить не подавал ли уже юзер заявку в этот колелктив
 
-  createRequisitionData.value.fields = new Array(data.value.length).fill("");
+  if (data.value?.length > 0)
+    createRequisitionData.value.fields = new Array(data.value?.length).fill("");
 });
 
 async function fetchFormFields() {
@@ -101,7 +109,9 @@ async function fetchFormFields() {
 }
 
 async function createRequisition() {
-  await teamStore.createRequisition(createRequisitionData.value);
+  await teamStore.createRequisition(createRequisitionData.value).then(() => {
+    msg.value = teamStore.apiRequest.error.length>0 ? teamStore.apiRequest.error :"Отправленго";
+  });
 }
 
 async function fetchRequisition() {

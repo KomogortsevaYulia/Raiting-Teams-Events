@@ -43,16 +43,18 @@ export class Requisitions {
   @ApiProperty()
   @ManyToOne(() => Team, (team) => team.id)
   @JoinColumn([{ name: 'team_id' }])
-  team: Team; // формат проведения
+  team: Team;
 
   @ApiProperty()
   @ManyToOne(() => Dictionary, (dict) => dict.id)
   @JoinColumn([{ name: 'status_id' }])
-  status: Dictionary; // формат проведения
+  status: Dictionary;
 
+  @ApiProperty()
   @OneToMany(
     () => RequisitionFields,
     (requisitionFields) => requisitionFields.requisition,
+    { cascade: true },
   )
   requisition_fields: RequisitionFields[];
 }

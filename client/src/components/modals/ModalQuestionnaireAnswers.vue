@@ -50,20 +50,20 @@ const formStore = useFormStore();
 const formAnswers: Ref<IForm> = ref({});
 
 const props = defineProps<{
-  requisition: IForm;
+  form: IForm;
 }>();
 
 watch(
-  () => props.requisition,
+  () => props.form,
   async () => {
-      const id = props.requisition.id
+      const id = props.form.id
     if (id && id  > 0) await fetchRequisitionAnswers();
   },
 );
 
 async function fetchRequisitionAnswers() {
   formAnswers.value = await formStore.fetchRequisitionAnswers(
-    props.requisition?.id ?? -1,
+    props.form?.id ?? -1,
   );
 }
 </script>

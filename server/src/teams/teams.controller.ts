@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   HttpStatus,
@@ -317,7 +318,9 @@ export class TeamsController {
       );
   }
 
-  // requisition --------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
+  // requisition ------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
   @Get('/:team_id/requisition')
   @ApiOperation({
     summary: 'Получить список заявок в коллектив по ид колектива',
@@ -330,7 +333,7 @@ export class TeamsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Успешно',
-    type: Function,
+    type: Requisitions,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async userRequisitionByTeam(
@@ -350,11 +353,18 @@ export class TeamsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Успешно',
-    type: Function,
+    type: Requisitions,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async userRequisition(@Param('id') id: number): Promise<Requisitions> {
     return await this.teamsService.findRequisition(id);
+  }
+
+  @Delete('requisition/:id')
+  @ApiOperation({ summary: 'Удалить заявку в коллектив по ид заявки' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+  async deleteRequisition(@Param('id') id: number) {
+    return await this.teamsService.deleteRequisition(id);
   }
 
   @Put('requisition/:id')

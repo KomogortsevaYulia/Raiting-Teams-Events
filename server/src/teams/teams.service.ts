@@ -355,7 +355,9 @@ export class TeamsService {
     return await query.getManyAndCount();
   }
 
-  // requisition --------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
+  // requisition ------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
 
   // обновить заявку пользователя на вступление
   async updateRequisition(id: number, updateRequisitionDto: RequisitionDto) {
@@ -406,19 +408,20 @@ export class TeamsService {
       .leftJoin('requisition.requisition_fields', 'rf')
       .leftJoin('rf.form_field', 'form_field')
       .leftJoin('form_field.form', 'form')
-      // .addSelect(["form.id"])
       .andWhere(
         new Brackets((sqb) => {
           sqb.where('form.team_id = :team_id', { team_id });
           sqb.orWhere('requisition.team_id = :team_id', { team_id });
         }),
       );
-    // пользователей с этим статусом н показывать
-    // .orderBy('status.name', 'DESC');
 
     query = await this.filterRequisition(reqDto, query);
 
     return await query.getMany();
+  }
+
+  async deleteRequisition(id: number) {
+    return await this.requisitionsRepository.delete(id);
   }
 
   async filterRequisition(
@@ -567,7 +570,7 @@ export class TeamsService {
     dto: CreateRequisitionDto,
     user: User,
   ): Promise<Requisitions> {
-    console.log(dto);
+    // console.log(dto);
     const { team_id, fields } = dto;
     const team = await this.findOne(team_id);
     if (!team) throw new HttpException('Коллектив не найден', 401);
@@ -592,7 +595,7 @@ export class TeamsService {
 
     existingRequisition = await this.requisitionsRepository.save(requisition);
 
-    if (existingRequisition) {
+    if (existingRequisition && form.form_field && form.form_field.length > 0) {
       for (let i = 0; i < fields.length; i++) {
         const requisitionFieldDto = new CreateRequisitionFieldDto();
         requisitionFieldDto.value = fields[i];

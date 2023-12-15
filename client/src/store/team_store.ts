@@ -6,7 +6,7 @@ import type { RURequisition } from "@/store/models/teams/update-requisition.mode
 import axios from "axios";
 import { ApiRequest } from "@/store/handleApiRequest";
 import type { IRUFunction } from "./models/user/search-user-functions.model";
-import type {ICreateRequisition} from "@/store/models/forms/requisition-fields.model";
+import type { ICreateRequisition } from "@/store/models/forms/requisition-fields.model";
 
 export const useTeamStore = defineStore("teams", () => {
   const layout = ref(true);
@@ -14,6 +14,12 @@ export const useTeamStore = defineStore("teams", () => {
 
   async function getUserRequisitions(id: number) {
     return (await axios.get("/api/teams/requisitions/user/" + id)).data;
+  }
+
+  async function deleteRequisition(id: number) {
+    return apiRequest.handleApiRequest(async () => {
+      return await axios.delete("/api/teams/requisition/" + id);
+    });
   }
 
   // data will be returned as index 0 - is data, index 1 is count
@@ -116,7 +122,9 @@ export const useTeamStore = defineStore("teams", () => {
 
   async function createRequisition(createRequisition: ICreateRequisition) {
     return apiRequest.handleApiRequest(async () => {
-      return  await axios.post("/api/teams/requisitions", {...createRequisition})
+      return await axios.post("/api/teams/requisitions", {
+        ...createRequisition,
+      });
     });
   }
 
@@ -299,6 +307,7 @@ export const useTeamStore = defineStore("teams", () => {
     updateTeam,
     archiveTeam,
 
+    deleteRequisition,
     updateRequisition,
     fetchRequisitions,
     getUserRequisitions,
