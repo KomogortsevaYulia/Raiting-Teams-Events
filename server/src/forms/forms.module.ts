@@ -10,7 +10,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Team } from 'src/teams/entities/team.entity';
 import { UserFunction } from 'src/users/entities/user_function.entity';
 import { TeamFunction } from '../users/entities/function.entity';
-import {Requisitions} from "../teams/entities/requisition.entity";
+import { Requisitions } from '../teams/entities/requisition.entity';
 
 @Module({
   imports: [

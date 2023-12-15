@@ -1,8 +1,9 @@
 import {
-    BadRequestException,
-    forwardRef, HttpException,
-    Inject,
-    Injectable,
+  BadRequestException,
+  forwardRef,
+  HttpException,
+  Inject,
+  Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
@@ -491,7 +492,7 @@ export class TeamsService {
   }
 
   async findRequisitionField(dto: CreateRequisitionFieldDto) {
-    let query = this.requisitionsFieldsRepository
+    const query = this.requisitionsFieldsRepository
       .createQueryBuilder('requisition_fields')
       .addSelect(['requisition_fields.id', 'requisition_fields.value']);
 
@@ -517,7 +518,7 @@ export class TeamsService {
   ): Promise<RequisitionFields> {
     const { value, requisition, form_field } = dto;
 
-    let existingRequisitionField = await this.findRequisitionField(dto);
+    const existingRequisitionField = await this.findRequisitionField(dto);
 
     const requisitionField = new RequisitionFields();
     requisitionField.value = value;
@@ -532,7 +533,7 @@ export class TeamsService {
   }
 
   async findOneRequisition(findRequisitionDto: FindRequisitionDto) {
-    let query = this.requisitionsRepository
+    const query = this.requisitionsRepository
       .createQueryBuilder('requisition')
       .addSelect(['requisition.id', 'requisition.date_create'])
       .leftJoin('requisition.user', 'user')
@@ -564,16 +565,16 @@ export class TeamsService {
 
   async createRequisitionOrUpdate(
     dto: CreateRequisitionDto,
-    user:User
+    user: User,
   ): Promise<Requisitions> {
     console.log(dto);
     const { team_id, fields } = dto;
     const team = await this.findOne(team_id);
-    if(!team)throw  new HttpException("Коллектив не найден", 401)
+    if (!team) throw new HttpException('Коллектив не найден', 401);
     const form = await this.formService.findOnFormFields(team_id);
     const status = await this.dictionaryService.findOne(18);
 
-    let findRequisitionDto = new FindRequisitionDto();
+    const findRequisitionDto = new FindRequisitionDto();
     // findRequisitionDto.user_id = user.id;
     findRequisitionDto.team_id = team.id;
 

@@ -1,5 +1,5 @@
-import {IsArray, IsInt, IsNumber, IsString} from 'class-validator';
-import {Type} from "class-transformer";
+import { IsArray, IsInt, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateRequisitionDto {
   // @IsInt()

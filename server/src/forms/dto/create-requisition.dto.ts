@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
-import {FormField} from "../entities/form_field.entity";
+import { FormField } from '../entities/form_field.entity';
 
 export class RequisitionFieldsC {
   value: string;
@@ -9,9 +9,8 @@ export class RequisitionFieldsC {
 }
 
 export class CreateRequisitionDto {
-
   @IsNumber()
-  team_id:number
+  team_id: number;
 
   @IsOptional()
   @IsNotEmpty({ message: 'Поля пустые' })

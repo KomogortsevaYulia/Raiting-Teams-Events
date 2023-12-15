@@ -82,7 +82,7 @@ export class FormsService {
 
   // получить ответы пользователей на анкету
   async findRequisitionForm(req_id: number) {
-    let query = this.formRepository
+    const query = this.formRepository
       .createQueryBuilder('form')
       .leftJoinAndSelect('form.form_field', 'form_fields')
       .leftJoinAndSelect('form_fields.requisition_field', 'req_field')
