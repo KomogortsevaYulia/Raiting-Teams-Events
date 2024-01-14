@@ -110,7 +110,7 @@ async function fetchFormFields() {
 
 async function createRequisition() {
   await teamStore.createRequisition(createRequisitionData.value).then(() => {
-    msg.value = teamStore.apiRequest.error.length>0 ? teamStore.apiRequest.error :"Отправленго";
+    msg.value = teamStore.apiRequest.error.length>0 ? teamStore.apiRequest.error :"Отправлено";
   });
 }
 

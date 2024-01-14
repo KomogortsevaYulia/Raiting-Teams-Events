@@ -24,7 +24,7 @@ export class RequisitionFields {
   form_field: FormField;
 
   @ManyToOne(() => Requisitions, (requisition) => requisition.id, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn([{ name: 'requisition_id' }])
   requisition: Requisitions;
