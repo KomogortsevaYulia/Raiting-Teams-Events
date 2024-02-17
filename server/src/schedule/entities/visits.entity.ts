@@ -17,7 +17,7 @@ export class TeamVisits {
 
   @ApiProperty()
   @Column()
-  dateVisit: Date;
+  date_visit: Date;
 
   @ApiProperty()
   @Column({ nullable: true })

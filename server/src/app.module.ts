@@ -11,6 +11,7 @@ import { GeneralModule } from './general/general.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ScheduleModule } from './schedule/schedule.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { join } from 'path';
     FormsModule,
     GeneralModule,
     UploadsModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,7 +12,7 @@ import { TeamFunction } from '../../users/entities/function.entity';
 import { Journal } from '../../events/entities/journal.entity';
 import { Form } from '../../forms/entities/form.entity';
 import { Requisitions } from './requisition.entity';
-import { TeamSchedule } from './schedule.entity';
+import { TeamSchedule } from '../../schedule/entities/schedule.entity';
 
 @Entity('teams')
 export class Team {
