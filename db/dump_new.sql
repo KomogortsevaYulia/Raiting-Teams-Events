@@ -5,7 +5,7 @@
 -- Dumped from database version 14.9
 -- Dumped by pg_dump version 14.9
 
--- Started on 2024-02-17 12:57:42
+-- Started on 2024-02-17 13:53:01
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -326,7 +326,7 @@ CREATE TABLE public.events (
     event_place character varying,
     team_size integer,
     event_goal character varying,
-    date_update timestamp without time zone DEFAULT '2024-02-17 04:51:41.619'::timestamp without time zone NOT NULL,
+    date_update timestamp without time zone DEFAULT '2024-02-17 05:42:38.832'::timestamp without time zone NOT NULL,
     user_id integer,
     status_id integer
 );
@@ -661,11 +661,11 @@ ALTER SEQUENCE public.requisition_id_seq OWNED BY public.requisition.id;
 
 CREATE TABLE public.team_schedule (
     id integer NOT NULL,
-    "dateStart" timestamp without time zone NOT NULL,
-    "dateEnd" timestamp without time zone NOT NULL,
     id_cabinet integer,
     id_user integer,
-    id_team integer
+    id_team integer,
+    date_start timestamp without time zone,
+    date_end timestamp without time zone
 );
 
 
@@ -703,7 +703,7 @@ ALTER SEQUENCE public.team_schedule_id_seq OWNED BY public.team_schedule.id;
 
 CREATE TABLE public.team_visits (
     id integer NOT NULL,
-    "dateVisit" timestamp without time zone NOT NULL,
+    date_visit timestamp without time zone NOT NULL,
     id_user integer,
     id_team_schedule integer,
     status_visit boolean,
@@ -1261,6 +1261,7 @@ COPY public.migrations (id, "timestamp", name) FROM stdin;
 67	1702644427391	Auto1702644427391
 68	1702646759598	Auto1702646759598
 69	1708145495471	Auto1708145495471
+71	1708148552484	Auto1708148552484
 \.
 
 
@@ -1323,8 +1324,8 @@ COPY public.requisition_fields (id, value, form_fields_id, requisition_id) FROM 
 -- Data for Name: team_schedule; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.team_schedule (id, "dateStart", "dateEnd", id_cabinet, id_user, id_team) FROM stdin;
-1	2017-05-09 00:00:00	2040-05-09 00:00:00	8	3	6
+COPY public.team_schedule (id, id_cabinet, id_user, id_team, date_start, date_end) FROM stdin;
+1	8	3	6	2010-05-09 00:00:00	2026-05-09 00:00:00
 \.
 
 
@@ -1334,7 +1335,7 @@ COPY public.team_schedule (id, "dateStart", "dateEnd", id_cabinet, id_user, id_t
 -- Data for Name: team_visits; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.team_visits (id, "dateVisit", id_user, id_team_schedule, status_visit, comment) FROM stdin;
+COPY public.team_visits (id, date_visit, id_user, id_team_schedule, status_visit, comment) FROM stdin;
 6	2017-05-09 09:00:00	8	1	\N	\N
 9	2017-05-09 14:00:00	11	1	\N	\N
 15	2017-05-11 12:00:00	7	1	\N	\N
@@ -1556,7 +1557,7 @@ SELECT pg_catalog.setval('public.journals_id_seq', 45, true);
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 69, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 71, true);
 
 
 --
@@ -2090,7 +2091,7 @@ ALTER TABLE ONLY public.events
     ADD CONSTRAINT "FK_fb98daef5570cb124e34c9ea42c" FOREIGN KEY (format_id) REFERENCES public.dictionary(id);
 
 
--- Completed on 2024-02-17 12:57:42
+-- Completed on 2024-02-17 13:53:01
 
 --
 -- PostgreSQL database dump complete
