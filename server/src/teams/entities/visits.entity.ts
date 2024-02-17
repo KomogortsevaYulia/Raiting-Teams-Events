@@ -19,6 +19,14 @@ export class TeamVisits {
   @Column()
   dateVisit: Date;
 
+  @ApiProperty()
+  @Column({ nullable: true })
+  status_visit: boolean;
+
+  @ApiProperty()
+  @Column({ nullable: true })
+  comment: string;
+
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn([{ name: 'id_user' }])
   user: User;

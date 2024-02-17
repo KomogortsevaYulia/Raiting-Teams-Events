@@ -100,15 +100,15 @@ export class User {
   @OneToMany(() => Event, (event) => event.user, { cascade: true })
   events: Event[];
 
-  @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.user, {
-    cascade: true,
-  })
-  team_schedules: TeamSchedule[];
+  // @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.user, {
+  //   cascade: true,
+  // })
+  // team_schedules: TeamSchedule[];
 
-  @OneToMany(() => TeamVisits, (team_visits) => team_visits.user, {
-    cascade: true,
-  })
-  team_visits: TeamVisits[];
+  // @OneToMany(() => TeamVisits, (team_visits) => team_visits.user, {
+  //   cascade: true,
+  // })
+  // team_visits: TeamVisits[];
 
   // use it as object class in classes
   userId: number;

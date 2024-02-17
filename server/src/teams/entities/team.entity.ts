@@ -89,10 +89,10 @@ export class Team {
   @OneToMany(() => Form, (form) => form.team, { cascade: true })
   forms: Form[];
 
-  @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.team, {
-    cascade: true,
-  })
-  team_schedules: TeamSchedule[];
+  // @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.team, {
+  //   cascade: true,
+  // })
+  // team_schedules: TeamSchedule[];
 
   @OneToMany(() => Requisitions, (requisition) => requisition.team)
   requisitions: Requisitions[];

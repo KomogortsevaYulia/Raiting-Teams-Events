@@ -6,9 +6,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
 import { Team } from './team.entity';
 import { Cabinets } from './cabinets.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('team_schedule')
 export class TeamSchedule {
