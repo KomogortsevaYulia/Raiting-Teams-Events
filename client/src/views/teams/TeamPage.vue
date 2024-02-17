@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import "@/assets/nav-second.scss";
-import WIP from "@/components/WIP.vue";
+import WIP from "@/views/teams/TeamSchedule.vue";
 
 import { onBeforeMount, ref } from "vue";
 import Ankets from "@/views/teams/QuestionnairePage.vue";

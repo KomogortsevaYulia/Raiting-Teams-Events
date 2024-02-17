@@ -493,18 +493,6 @@ function getLeader(team) {
           min-width: 100%;
           max-width: max-content;
           margin-bottom: 1rem;
-          font-family:
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            "Open Sans",
-            "Helvetica Neue",
-            sans-serif;
         }
 
         input {

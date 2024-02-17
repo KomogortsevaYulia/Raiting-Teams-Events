@@ -161,9 +161,10 @@
                     :key="index"
                   />
                 </div>
-                <div class="card-description row">
-                  {{ team.short_description }}
-                </div>
+<!--                  without description-->
+<!--                <div class="card-description row">-->
+<!--                  {{ team.short_description }}-->
+<!--                </div>-->
               </div>
             </div>
           </div>
@@ -554,9 +555,6 @@ async function handleTimerSearch(seachText: string) {
 
       //list
       .wrapper-list {
-        .card-description {
-          display: none;
-        }
 
         .cardEvent {
           margin: 1rem 0;

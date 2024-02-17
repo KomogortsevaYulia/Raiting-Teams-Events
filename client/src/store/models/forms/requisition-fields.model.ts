@@ -5,3 +5,8 @@ export interface IRequisitionField {
   value?: string;
   form_field?: IFormField[];
 }
+
+export interface ICreateRequisition {
+  team_id: number;
+  fields: string[];
+}

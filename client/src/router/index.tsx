@@ -72,7 +72,7 @@ const router = createRouter({
     {
       path: "/personal/:username",
       name: "Personal",
-      component: () => import("@/views/UserProfile.vue"),
+      component: () => import("@/views/user/UserProfile.vue"),
       meta: {
         requiresAuth: true,
       },
@@ -83,7 +83,7 @@ const router = createRouter({
       name: "Requests",
       props: (route) => ({ userId: route.query.user_id }),
 
-      component: () => import("@/views/user/EventsRequests.vue"),
+      component: () => import("@/views/user/UserRequests.vue"),
       meta: {
         requiresAuth: true,
       },

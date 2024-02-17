@@ -1,6 +1,8 @@
 <template>
   <!-- анкета -->
-  <ModalQuestionnaireAnswers :requisition="currentRequisition" />
+  <ModalQuestionnaireAnswers
+    :form="currentRequisition"
+  />
 
   <div class="filters row g-3">
     <!--   поиск -->
@@ -98,7 +100,11 @@
     </div>
   </div>
 
-  <div v-if="req?.length <= 0 && !teamStore.apiRequest.loading" class="alert alert-warning" role="alert">
+  <div
+    v-if="req?.length <= 0 && !teamStore.apiRequest.loading"
+    class="alert alert-warning"
+    role="alert"
+  >
     Заявок нет
   </div>
 
@@ -108,7 +114,7 @@
         <div
           class="col-lg-auto col-md-auto col-sm-auto img-container align-items-center d-flex justify-content-center"
         >
-            <img class="" src="@/assets/icon/user.png" alt="" />
+          <img class="" src="@/assets/icon/user.png" alt="" />
         </div>
         <div class="col-lg col-md col-sm p-3">
           <div class="card-body d-flex flex-column">
@@ -203,9 +209,9 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ModalQuestionnaireAnswers from "@/components/modals/ModalQuestionnaireAnswers.vue";
 import { useTeamStore } from "@/store/team_store";
 import { useUserFunctionsStore } from "@/store/user_functions.store";
-import { ref, onBeforeMount } from "vue";
-import type { IRequisition } from "@/store/models/teams/requisition.model";
 import type { Ref } from "vue";
+import { onBeforeMount, ref } from "vue";
+import type { IRequisition } from "@/store/models/teams/requisition.model";
 import SearchField from "@/components/SearchField.vue";
 import LoadingElem from "@/components/LoadingElem.vue";
 import type { RURequisition } from "@/store/models/teams/update-requisition.model";
@@ -302,7 +308,7 @@ async function sendComment(requis_id: number, comment: string) {
   width: 100%;
 }
 
-.img-container{
+.img-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
