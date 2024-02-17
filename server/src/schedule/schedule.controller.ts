@@ -1,8 +1,17 @@
-import {Controller, Get, Post, Body, Param, Delete, HttpStatus, Query} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  HttpStatus,
+  Query,
+} from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
-import {ApiOperation, ApiResponse} from "@nestjs/swagger";
-import {Team} from "../teams/entities/team.entity";
-import {SearchVisitsDto} from "./dto/search-visits.dto";
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Team } from '../teams/entities/team.entity';
+import { SearchVisitsDto } from './dto/search-visits.dto';
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
@@ -22,7 +31,7 @@ export class ScheduleController {
   @ApiOperation({ summary: 'Получение посещаемости по id коллектива' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Успешно', type: [Team] })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-  findOne( @Query() searchVisitsDto:SearchVisitsDto) {
+  findOne(@Query() searchVisitsDto: SearchVisitsDto) {
     return this.scheduleService.findOne(searchVisitsDto);
   }
 

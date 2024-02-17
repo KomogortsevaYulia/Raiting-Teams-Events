@@ -20,10 +20,17 @@ export class ScheduleService {
   }
 
   async findOne(searchVisitsDto: SearchVisitsDto) {
-    let res = this.teamSchedRepository
+    const res = this.teamSchedRepository
       .createQueryBuilder('team_schedule')
-      .select(['team_schedule.id', 'user.id', 'user.fullname', 'user.education_group',
-        'team_visits.id', 'team_visits.status_visit', "team_visits.date_visit"])
+      .select([
+        'team_schedule.id',
+        'user.id',
+        'user.fullname',
+        'user.education_group',
+        'team_visits.id',
+        'team_visits.status_visit',
+        'team_visits.date_visit',
+      ])
       .leftJoin('team_schedule.team', 'team')
       .leftJoin('team_schedule.team_visits', 'team_visits')
       .leftJoin('team_visits.user', 'user')

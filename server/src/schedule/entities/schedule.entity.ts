@@ -3,13 +3,14 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne, OneToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Team } from '../../teams/entities/team.entity';
 import { Cabinets } from './cabinets.entity';
 import { User } from '../../users/entities/user.entity';
-import {TeamVisits} from "./visits.entity";
+import { TeamVisits } from './visits.entity';
 
 @Entity('team_schedule')
 export class TeamSchedule {
@@ -18,11 +19,11 @@ export class TeamSchedule {
   id: number;
 
   @ApiProperty()
-  @Column({nullable:true})
+  @Column({ nullable: true })
   date_start: Date;
 
   @ApiProperty()
-  @Column({nullable:true})
+  @Column({ nullable: true })
   date_end: Date;
 
   @ManyToOne(() => Cabinets, (cabinet) => cabinet.id)
@@ -37,6 +38,8 @@ export class TeamSchedule {
   @JoinColumn([{ name: 'id_team' }])
   team: Team;
 
-  @OneToMany(() => TeamVisits, (teamVisits) => teamVisits.team_schedule, { cascade: true })
+  @OneToMany(() => TeamVisits, (teamVisits) => teamVisits.team_schedule, {
+    cascade: true,
+  })
   team_visits: TeamVisits[];
 }
