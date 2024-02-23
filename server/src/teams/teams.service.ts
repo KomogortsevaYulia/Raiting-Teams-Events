@@ -32,8 +32,6 @@ import { PermissionsActions } from '../general/enums/action-permissions';
 import { TeamFunction } from '../users/entities/function.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { FindRequisitionDto } from '../forms/dto/find-requisition.dto';
-import { RequisitionFieldsC } from '../forms/dto/create-requisition.dto';
-
 @Injectable()
 export class TeamsService {
   constructor(
