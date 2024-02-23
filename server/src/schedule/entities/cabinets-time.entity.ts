@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {Cabinets} from "./cabinets.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Cabinets } from './cabinets.entity';
 
 @Entity('cabinets_time')
 export class CabinetsTime {
@@ -9,11 +15,11 @@ export class CabinetsTime {
   id: number;
 
   @ApiProperty()
-  @Column({type:'time'})
+  @Column({ type: 'time' })
   time_start: string;
 
   @ApiProperty()
-  @Column({type:'time'})
+  @Column({ type: 'time' })
   time_end: string;
 
   @ApiProperty()
