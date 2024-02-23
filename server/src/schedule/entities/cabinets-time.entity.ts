@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Cabinets } from './cabinets.entity';
+import {TeamSchedule} from "./schedule.entity";
 
 @Entity('cabinets_time')
 export class CabinetsTime {
@@ -45,4 +46,8 @@ export class CabinetsTime {
   @ManyToOne(() => Cabinets, (cab) => cab.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'id_cabinet' }])
   cabinet: Cabinets;
+
+  @ManyToOne(() => TeamSchedule, (teamSchedule) => teamSchedule.id)
+  @JoinColumn([{ name: 'id_team_schedule' }])
+  team_schedule: TeamSchedule;
 }

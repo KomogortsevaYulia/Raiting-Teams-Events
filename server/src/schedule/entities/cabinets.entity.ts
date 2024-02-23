@@ -13,13 +13,8 @@ export class Cabinets {
   @Column()
   name: string;
 
-  @OneToMany(() => TeamSchedule, (schedule) => schedule.cabinet, {
-    cascade: true,
-  })
-  team_schedule: TeamSchedule[];
-
-  @OneToMany(() => CabinetsTime, (cabinetsTime) => cabinetsTime.cabinet, {
-    cascade: true,
-  })
-  cabinetsTime: CabinetsTime[];
+  // @OneToMany(() => CabinetsTime, (cabinetsTime) => cabinetsTime.cabinet, {
+  //   cascade: true,
+  // })
+  // cabinetsTime: CabinetsTime[];
 }

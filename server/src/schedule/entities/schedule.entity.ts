@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Team } from '../../teams/entities/team.entity';
-import { Cabinets } from './cabinets.entity';
 import { User } from '../../users/entities/user.entity';
 import { TeamVisits } from './visits.entity';
 
@@ -25,10 +24,6 @@ export class TeamSchedule {
   @ApiProperty()
   @Column({ nullable: true })
   date_end: Date;
-
-  @ManyToOne(() => Cabinets, (cabinet) => cabinet.id)
-  @JoinColumn([{ name: 'id_cabinet' }])
-  cabinet: Cabinets;
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn([{ name: 'id_user' }])
