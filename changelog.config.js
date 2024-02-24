@@ -111,7 +111,8 @@ module.exports = {
     'devops-tools',
     'sql',
     'husky',
-    'docker'
+    'docker',
+    'DB'
   ],
   types: getTypes(),
 };
