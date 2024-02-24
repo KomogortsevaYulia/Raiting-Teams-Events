@@ -84,6 +84,7 @@ module.exports = {
   questions: ['type', 'scope', 'subject', 'body'],
   scopes: [
     '',
+    'FE',
     'FE/assets',
     'FE/components',
     'FE/charts',
