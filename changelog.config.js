@@ -93,6 +93,7 @@ module.exports = {
     'FE/tests',
     'FE/views',
     'FE/app',
+    'BE',
     'BE/events',
     'BE/forms',
     'BE/general',

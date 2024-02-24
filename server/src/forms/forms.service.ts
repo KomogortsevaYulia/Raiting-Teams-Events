@@ -4,11 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateFormDto, CreateFormFieldsDto } from './dto/create-form.dto';
 import { Form } from './entities/form.entity';
 import { FormField } from './entities/form_field.entity';
-import { RequisitionFields } from './entities/requisition_fields.entity';
 import { UpdateFieldDto } from './dto/update-field';
-import { RequisitionFieldsC } from './dto/create-requisition.dto';
-import { Requisitions } from '../teams/entities/requisition.entity';
-import { FindRequisitionDto } from './dto/find-requisition.dto';
 
 @Injectable()
 export class FormsService {

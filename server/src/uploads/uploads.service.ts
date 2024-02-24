@@ -159,6 +159,7 @@ export class UploadsService {
   }
 
   // install excel file for events in direction
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   async getReportEvents(res: Response, events: Event[], countEvents: number) {
     res.setHeader(
       'Content-Type',

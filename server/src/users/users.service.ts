@@ -139,6 +139,7 @@ export class UsersService {
       .getOne();
 
     if (user && (await argon2.verify(user.password, pass))) {
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
       const { password, ...result } = user;
       return result;
     } else {

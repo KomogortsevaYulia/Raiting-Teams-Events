@@ -66,6 +66,7 @@ export class UsersController {
   @Get('/check-login')
   async checkLogin(@Request() req): Promise<any> {
     const user = await this.usersService.findById(req.session.user_id);
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     const { password, ...res } = user;
     return res;
   }
