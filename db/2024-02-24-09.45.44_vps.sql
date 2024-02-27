@@ -2,8 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.9 (Ubuntu 14.9-0ubuntu0.22.04.1)
--- Dumped by pg_dump version 14.9 (Ubuntu 14.9-0ubuntu0.22.04.1)
+-- Dumped from database version 14.9
+-- Dumped by pg_dump version 14.9
+
+-- Started on 2024-02-25 15:05:57
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,7 +18,135 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_fb98daef5570cb124e34c9ea42c";
+ALTER TABLE ONLY public.achievements DROP CONSTRAINT "FK_e2c799e4fa523f355079e1b06c0";
+ALTER TABLE ONLY public.journals DROP CONSTRAINT "FK_dcd8f26897887ea1ca19e9b910a";
+ALTER TABLE ONLY public.team_visits DROP CONSTRAINT "FK_daeed44bf925dce11d8f3a62439";
+ALTER TABLE ONLY public.cabinets_time DROP CONSTRAINT "FK_d2321248ef3678a824334c6619d";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_c5a362fc7d682923a6aa8f0072f";
+ALTER TABLE ONLY public.form_fields DROP CONSTRAINT "FK_c2076d2b47add1aaa07608e0cf2";
+ALTER TABLE ONLY public.teams DROP CONSTRAINT "FK_c0b0c479964469ab9fbbed02c8d";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_bf2f38672c0046c6328e69b71e6";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_bcb2ce0072504d624725e3ef826";
+ALTER TABLE ONLY public.user_functions DROP CONSTRAINT "FK_bc78d14d218fc2e57e7a6941ab3";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_b935d793584366f2a3c196ac9d7";
+ALTER TABLE ONLY public.forms DROP CONSTRAINT "FK_b8df7e99e28d225024e56783b8e";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_9025d02effbcfec592d24236f5c";
+ALTER TABLE ONLY public.journals DROP CONSTRAINT "FK_811c873435715b3eb624d256a11";
+ALTER TABLE ONLY public.team_visits DROP CONSTRAINT "FK_725f33cc8e48dabebb1a96dc8de";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_723091d08c3c5415a1999597464";
+ALTER TABLE ONLY public.functions DROP CONSTRAINT "FK_579f1e0cdab39bd43464fb882be";
+ALTER TABLE ONLY public.achievements DROP CONSTRAINT "FK_439fe2afbe76423baefd988dbd8";
+ALTER TABLE ONLY public.user_functions DROP CONSTRAINT "FK_414c47660792aa509c8f55adc7f";
+ALTER TABLE ONLY public.achievements DROP CONSTRAINT "FK_3e7e91763bdef262e9f727a1208";
+ALTER TABLE ONLY public.requisition_fields DROP CONSTRAINT "FK_3777bd9d0f2897d0d24faf345bf";
+ALTER TABLE ONLY public.requisition DROP CONSTRAINT "FK_3330bf1b3acd2568b818c72b226";
+ALTER TABLE ONLY public.requisition DROP CONSTRAINT "FK_2bc07f9556b7e089dc2785228ed";
+ALTER TABLE ONLY public.achievements DROP CONSTRAINT "FK_2888c1257c41913030b59369f96";
+ALTER TABLE ONLY public.journals DROP CONSTRAINT "FK_1b4d28fa4b326ecc43128e7d05b";
+ALTER TABLE ONLY public.requisition DROP CONSTRAINT "FK_1b08960843499439da23a3e0698";
+ALTER TABLE ONLY public.team_schedule DROP CONSTRAINT "FK_1985917dba88a2aa8a4ae1bd81a";
+ALTER TABLE ONLY public.team_schedule DROP CONSTRAINT "FK_177c2cbee73b0d3f3e75ffaa2a8";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_12ab9fec0ea7a5c0bd47f244fb7";
+ALTER TABLE ONLY public.achievements DROP CONSTRAINT "FK_0c0cd24bc6e722c12cd45750434";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_09f256fb7f9a05f0ed9927f406b";
+ALTER TABLE ONLY public.requisition_fields DROP CONSTRAINT "FK_087b7eeee30e9f5e62b7ba603fc";
+ALTER TABLE ONLY public.cabinets_time DROP CONSTRAINT "FK_01a4ae3266a1e821afb02f6f6de";
+ALTER TABLE ONLY public.users DROP CONSTRAINT "UQ_fe0bb3f6520ee0469504521e710";
+ALTER TABLE ONLY public.users DROP CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3";
+ALTER TABLE ONLY public.users DROP CONSTRAINT "UQ_19fa01fc1212bbc25d4b1ae5654";
+ALTER TABLE ONLY public.cabinets_time DROP CONSTRAINT "PK_ee23cf95c9f85c6accbfe56c2f8";
+ALTER TABLE ONLY public.team_visits DROP CONSTRAINT "PK_e0b94c1f167705efb98bcc3b305";
+ALTER TABLE ONLY public.form_fields DROP CONSTRAINT "PK_dc4b73290f2926c3a7d7c92d1e1";
+ALTER TABLE ONLY public.dictionary DROP CONSTRAINT "PK_d17df343bd5d01ed62dd0e55e4a";
+ALTER TABLE ONLY public.cabinets DROP CONSTRAINT "PK_bc7cc7e3c814364dbdde3d3be6c";
+ALTER TABLE ONLY public.forms DROP CONSTRAINT "PK_ba062fd30b06814a60756f233da";
+ALTER TABLE ONLY public.requisition_fields DROP CONSTRAINT "PK_b5114990d6fde9a186b1c5a896b";
+ALTER TABLE ONLY public.users DROP CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433";
+ALTER TABLE ONLY public.team_schedule DROP CONSTRAINT "PK_9d36326762f4ad471c8c3c03291";
+ALTER TABLE ONLY public.migrations DROP CONSTRAINT "PK_8c82d7f526340ab734260ea46be";
+ALTER TABLE ONLY public.teams DROP CONSTRAINT "PK_7e5523774a38b08a6236d322403";
+ALTER TABLE ONLY public.requisition DROP CONSTRAINT "PK_53f9ab966e1c2d2d96cc5ac944a";
+ALTER TABLE ONLY public.events DROP CONSTRAINT "PK_40731c7151fe4be3116e45ddf73";
+ALTER TABLE ONLY public.functions DROP CONSTRAINT "PK_203889d2ae5a98ffc137739301e";
+ALTER TABLE ONLY public.achievements DROP CONSTRAINT "PK_1bc19c37c6249f70186f318d71d";
+ALTER TABLE ONLY public.user_functions DROP CONSTRAINT "PK_1b04a9e32d9511b33fe11b6ffda";
+ALTER TABLE ONLY public.journals DROP CONSTRAINT "PK_157a30136385dd81cdd19111380";
+ALTER TABLE public.users ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.user_functions ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.teams ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.team_visits ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.team_schedule ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.requisition_fields ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.requisition ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.migrations ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.journals ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.functions ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.forms ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.form_fields ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.events ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.dictionary ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.cabinets_time ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.cabinets ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.achievements ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.users_id_seq;
+DROP TABLE public.users;
+DROP SEQUENCE public.user_functions_id_seq;
+DROP TABLE public.user_functions;
+DROP SEQUENCE public.teams_id_seq;
+DROP TABLE public.teams;
+DROP SEQUENCE public.team_visits_id_seq;
+DROP TABLE public.team_visits;
+DROP SEQUENCE public.team_schedule_id_seq;
+DROP TABLE public.team_schedule;
+DROP SEQUENCE public.requisition_id_seq;
+DROP SEQUENCE public.requisition_fields_id_seq;
+DROP TABLE public.requisition_fields;
+DROP TABLE public.requisition;
+DROP SEQUENCE public.migrations_id_seq;
+DROP TABLE public.migrations;
+DROP SEQUENCE public.journals_id_seq;
+DROP TABLE public.journals;
+DROP SEQUENCE public.functions_id_seq;
+DROP TABLE public.functions;
+DROP SEQUENCE public.forms_id_seq;
+DROP TABLE public.forms;
+DROP SEQUENCE public.form_fields_id_seq;
+DROP TABLE public.form_fields;
+DROP SEQUENCE public.events_id_seq;
+DROP TABLE public.events;
+DROP SEQUENCE public.dictionary_id_seq;
+DROP TABLE public.dictionary;
+DROP SEQUENCE public.cabinets_time_id_seq;
+DROP TABLE public.cabinets_time;
+DROP SEQUENCE public.cabinets_id_seq;
+DROP TABLE public.cabinets;
+DROP SEQUENCE public.achievements_id_seq;
+DROP TABLE public.achievements;
+DROP TYPE public.teams_type_team_enum;
+DROP TYPE public.requisition_status_id_enum;
+DROP TYPE public.functions_type_function_enum;
+DROP TYPE public.cabinets_time_day_week_enum;
 --
+-- TOC entry 912 (class 1247 OID 454828)
+-- Name: cabinets_time_day_week_enum; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.cabinets_time_day_week_enum AS ENUM (
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday'
+);
+
+
+ALTER TYPE public.cabinets_time_day_week_enum OWNER TO postgres;
+
+--
+-- TOC entry 855 (class 1247 OID 445844)
 -- Name: functions_type_function_enum; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -29,6 +159,7 @@ CREATE TYPE public.functions_type_function_enum AS ENUM (
 ALTER TYPE public.functions_type_function_enum OWNER TO postgres;
 
 --
+-- TOC entry 858 (class 1247 OID 445850)
 -- Name: requisition_status_id_enum; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -42,6 +173,7 @@ CREATE TYPE public.requisition_status_id_enum AS ENUM (
 ALTER TYPE public.requisition_status_id_enum OWNER TO postgres;
 
 --
+-- TOC entry 861 (class 1247 OID 445858)
 -- Name: teams_type_team_enum; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -59,6 +191,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- TOC entry 209 (class 1259 OID 445865)
 -- Name: achievements; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -84,6 +217,7 @@ CREATE TABLE public.achievements (
 ALTER TABLE public.achievements OWNER TO postgres;
 
 --
+-- TOC entry 210 (class 1259 OID 445871)
 -- Name: achievements_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -99,6 +233,8 @@ CREATE SEQUENCE public.achievements_id_seq
 ALTER TABLE public.achievements_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3548 (class 0 OID 0)
+-- Dependencies: 210
 -- Name: achievements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -106,6 +242,7 @@ ALTER SEQUENCE public.achievements_id_seq OWNED BY public.achievements.id;
 
 
 --
+-- TOC entry 236 (class 1259 OID 446465)
 -- Name: cabinets; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -118,6 +255,7 @@ CREATE TABLE public.cabinets (
 ALTER TABLE public.cabinets OWNER TO postgres;
 
 --
+-- TOC entry 235 (class 1259 OID 446464)
 -- Name: cabinets_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -133,6 +271,8 @@ CREATE SEQUENCE public.cabinets_id_seq
 ALTER TABLE public.cabinets_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3549 (class 0 OID 0)
+-- Dependencies: 235
 -- Name: cabinets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -140,6 +280,50 @@ ALTER SEQUENCE public.cabinets_id_seq OWNED BY public.cabinets.id;
 
 
 --
+-- TOC entry 242 (class 1259 OID 454844)
+-- Name: cabinets_time; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.cabinets_time (
+    id integer NOT NULL,
+    time_start time without time zone NOT NULL,
+    time_end time without time zone NOT NULL,
+    day_week public.cabinets_time_day_week_enum DEFAULT 'monday'::public.cabinets_time_day_week_enum NOT NULL,
+    repeat boolean DEFAULT true NOT NULL,
+    id_cabinet integer,
+    id_team_schedule integer
+);
+
+
+ALTER TABLE public.cabinets_time OWNER TO postgres;
+
+--
+-- TOC entry 241 (class 1259 OID 454843)
+-- Name: cabinets_time_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.cabinets_time_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cabinets_time_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3550 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: cabinets_time_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.cabinets_time_id_seq OWNED BY public.cabinets_time.id;
+
+
+--
+-- TOC entry 211 (class 1259 OID 445872)
 -- Name: dictionary; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -154,6 +338,7 @@ CREATE TABLE public.dictionary (
 ALTER TABLE public.dictionary OWNER TO postgres;
 
 --
+-- TOC entry 212 (class 1259 OID 445877)
 -- Name: dictionary_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -169,6 +354,8 @@ CREATE SEQUENCE public.dictionary_id_seq
 ALTER TABLE public.dictionary_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3551 (class 0 OID 0)
+-- Dependencies: 212
 -- Name: dictionary_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -176,6 +363,7 @@ ALTER SEQUENCE public.dictionary_id_seq OWNED BY public.dictionary.id;
 
 
 --
+-- TOC entry 213 (class 1259 OID 445878)
 -- Name: events; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -205,7 +393,7 @@ CREATE TABLE public.events (
     event_place character varying,
     team_size integer,
     event_goal character varying,
-    date_update timestamp without time zone DEFAULT '2024-02-17 05:42:38.832'::timestamp without time zone NOT NULL,
+    date_update timestamp without time zone DEFAULT '2024-02-23 10:07:01.334'::timestamp without time zone NOT NULL,
     user_id integer,
     status_id integer
 );
@@ -214,6 +402,7 @@ CREATE TABLE public.events (
 ALTER TABLE public.events OWNER TO postgres;
 
 --
+-- TOC entry 214 (class 1259 OID 445884)
 -- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -229,6 +418,8 @@ CREATE SEQUENCE public.events_id_seq
 ALTER TABLE public.events_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3552 (class 0 OID 0)
+-- Dependencies: 214
 -- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -236,6 +427,7 @@ ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
 
 
 --
+-- TOC entry 215 (class 1259 OID 445885)
 -- Name: form_fields; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -251,6 +443,7 @@ CREATE TABLE public.form_fields (
 ALTER TABLE public.form_fields OWNER TO postgres;
 
 --
+-- TOC entry 216 (class 1259 OID 445892)
 -- Name: form_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -266,6 +459,8 @@ CREATE SEQUENCE public.form_fields_id_seq
 ALTER TABLE public.form_fields_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3553 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: form_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -273,6 +468,7 @@ ALTER SEQUENCE public.form_fields_id_seq OWNED BY public.form_fields.id;
 
 
 --
+-- TOC entry 217 (class 1259 OID 445893)
 -- Name: forms; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -287,6 +483,7 @@ CREATE TABLE public.forms (
 ALTER TABLE public.forms OWNER TO postgres;
 
 --
+-- TOC entry 218 (class 1259 OID 445898)
 -- Name: forms_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -302,6 +499,8 @@ CREATE SEQUENCE public.forms_id_seq
 ALTER TABLE public.forms_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3554 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: forms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -309,6 +508,7 @@ ALTER SEQUENCE public.forms_id_seq OWNED BY public.forms.id;
 
 
 --
+-- TOC entry 219 (class 1259 OID 445899)
 -- Name: functions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -323,6 +523,7 @@ CREATE TABLE public.functions (
 ALTER TABLE public.functions OWNER TO postgres;
 
 --
+-- TOC entry 220 (class 1259 OID 445905)
 -- Name: functions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -338,6 +539,8 @@ CREATE SEQUENCE public.functions_id_seq
 ALTER TABLE public.functions_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3555 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: functions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -345,6 +548,7 @@ ALTER SEQUENCE public.functions_id_seq OWNED BY public.functions.id;
 
 
 --
+-- TOC entry 221 (class 1259 OID 445906)
 -- Name: journals; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -370,6 +574,7 @@ CREATE TABLE public.journals (
 ALTER TABLE public.journals OWNER TO postgres;
 
 --
+-- TOC entry 222 (class 1259 OID 445917)
 -- Name: journals_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -385,6 +590,8 @@ CREATE SEQUENCE public.journals_id_seq
 ALTER TABLE public.journals_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3556 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: journals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -392,6 +599,7 @@ ALTER SEQUENCE public.journals_id_seq OWNED BY public.journals.id;
 
 
 --
+-- TOC entry 223 (class 1259 OID 445918)
 -- Name: migrations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -405,6 +613,7 @@ CREATE TABLE public.migrations (
 ALTER TABLE public.migrations OWNER TO postgres;
 
 --
+-- TOC entry 224 (class 1259 OID 445923)
 -- Name: migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -420,6 +629,8 @@ CREATE SEQUENCE public.migrations_id_seq
 ALTER TABLE public.migrations_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3557 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -427,6 +638,7 @@ ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
 
 
 --
+-- TOC entry 225 (class 1259 OID 445924)
 -- Name: requisition; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -445,6 +657,7 @@ CREATE TABLE public.requisition (
 ALTER TABLE public.requisition OWNER TO postgres;
 
 --
+-- TOC entry 226 (class 1259 OID 445931)
 -- Name: requisition_fields; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -459,6 +672,7 @@ CREATE TABLE public.requisition_fields (
 ALTER TABLE public.requisition_fields OWNER TO postgres;
 
 --
+-- TOC entry 227 (class 1259 OID 445936)
 -- Name: requisition_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -474,6 +688,8 @@ CREATE SEQUENCE public.requisition_fields_id_seq
 ALTER TABLE public.requisition_fields_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3558 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: requisition_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -481,6 +697,7 @@ ALTER SEQUENCE public.requisition_fields_id_seq OWNED BY public.requisition_fiel
 
 
 --
+-- TOC entry 228 (class 1259 OID 445937)
 -- Name: requisition_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -496,6 +713,8 @@ CREATE SEQUENCE public.requisition_id_seq
 ALTER TABLE public.requisition_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3559 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: requisition_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -503,12 +722,12 @@ ALTER SEQUENCE public.requisition_id_seq OWNED BY public.requisition.id;
 
 
 --
+-- TOC entry 238 (class 1259 OID 446474)
 -- Name: team_schedule; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.team_schedule (
     id integer NOT NULL,
-    id_cabinet integer,
     id_user integer,
     id_team integer,
     date_start timestamp without time zone,
@@ -519,6 +738,7 @@ CREATE TABLE public.team_schedule (
 ALTER TABLE public.team_schedule OWNER TO postgres;
 
 --
+-- TOC entry 237 (class 1259 OID 446473)
 -- Name: team_schedule_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -534,6 +754,8 @@ CREATE SEQUENCE public.team_schedule_id_seq
 ALTER TABLE public.team_schedule_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3560 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: team_schedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -541,6 +763,7 @@ ALTER SEQUENCE public.team_schedule_id_seq OWNED BY public.team_schedule.id;
 
 
 --
+-- TOC entry 240 (class 1259 OID 446481)
 -- Name: team_visits; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -557,6 +780,7 @@ CREATE TABLE public.team_visits (
 ALTER TABLE public.team_visits OWNER TO postgres;
 
 --
+-- TOC entry 239 (class 1259 OID 446480)
 -- Name: team_visits_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -572,6 +796,8 @@ CREATE SEQUENCE public.team_visits_id_seq
 ALTER TABLE public.team_visits_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3561 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: team_visits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -579,6 +805,7 @@ ALTER SEQUENCE public.team_visits_id_seq OWNED BY public.team_visits.id;
 
 
 --
+-- TOC entry 229 (class 1259 OID 445938)
 -- Name: teams; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -604,6 +831,7 @@ CREATE TABLE public.teams (
 ALTER TABLE public.teams OWNER TO postgres;
 
 --
+-- TOC entry 230 (class 1259 OID 445947)
 -- Name: teams_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -619,6 +847,8 @@ CREATE SEQUENCE public.teams_id_seq
 ALTER TABLE public.teams_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3562 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -626,6 +856,7 @@ ALTER SEQUENCE public.teams_id_seq OWNED BY public.teams.id;
 
 
 --
+-- TOC entry 231 (class 1259 OID 445948)
 -- Name: user_functions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -643,6 +874,7 @@ CREATE TABLE public.user_functions (
 ALTER TABLE public.user_functions OWNER TO postgres;
 
 --
+-- TOC entry 232 (class 1259 OID 445951)
 -- Name: user_functions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -658,6 +890,8 @@ CREATE SEQUENCE public.user_functions_id_seq
 ALTER TABLE public.user_functions_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3563 (class 0 OID 0)
+-- Dependencies: 232
 -- Name: user_functions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -665,6 +899,7 @@ ALTER SEQUENCE public.user_functions_id_seq OWNED BY public.user_functions.id;
 
 
 --
+-- TOC entry 233 (class 1259 OID 445952)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -691,6 +926,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
+-- TOC entry 234 (class 1259 OID 445959)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -706,6 +942,8 @@ CREATE SEQUENCE public.users_id_seq
 ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 3564 (class 0 OID 0)
+-- Dependencies: 234
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -713,6 +951,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- TOC entry 3257 (class 2604 OID 445960)
 -- Name: achievements id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -720,6 +959,7 @@ ALTER TABLE ONLY public.achievements ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- TOC entry 3290 (class 2604 OID 446468)
 -- Name: cabinets id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -727,6 +967,15 @@ ALTER TABLE ONLY public.cabinets ALTER COLUMN id SET DEFAULT nextval('public.cab
 
 
 --
+-- TOC entry 3293 (class 2604 OID 454847)
+-- Name: cabinets_time id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cabinets_time ALTER COLUMN id SET DEFAULT nextval('public.cabinets_time_id_seq'::regclass);
+
+
+--
+-- TOC entry 3258 (class 2604 OID 445961)
 -- Name: dictionary id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -734,6 +983,7 @@ ALTER TABLE ONLY public.dictionary ALTER COLUMN id SET DEFAULT nextval('public.d
 
 
 --
+-- TOC entry 3259 (class 2604 OID 445962)
 -- Name: events id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -741,6 +991,7 @@ ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.event
 
 
 --
+-- TOC entry 3263 (class 2604 OID 445963)
 -- Name: form_fields id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -748,6 +999,7 @@ ALTER TABLE ONLY public.form_fields ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- TOC entry 3264 (class 2604 OID 445964)
 -- Name: forms id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -755,6 +1007,7 @@ ALTER TABLE ONLY public.forms ALTER COLUMN id SET DEFAULT nextval('public.forms_
 
 
 --
+-- TOC entry 3266 (class 2604 OID 445965)
 -- Name: functions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -762,6 +1015,7 @@ ALTER TABLE ONLY public.functions ALTER COLUMN id SET DEFAULT nextval('public.fu
 
 
 --
+-- TOC entry 3273 (class 2604 OID 445966)
 -- Name: journals id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -769,6 +1023,7 @@ ALTER TABLE ONLY public.journals ALTER COLUMN id SET DEFAULT nextval('public.jou
 
 
 --
+-- TOC entry 3274 (class 2604 OID 445967)
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -776,6 +1031,7 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
+-- TOC entry 3277 (class 2604 OID 445968)
 -- Name: requisition id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -783,6 +1039,7 @@ ALTER TABLE ONLY public.requisition ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- TOC entry 3278 (class 2604 OID 445969)
 -- Name: requisition_fields id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -790,6 +1047,7 @@ ALTER TABLE ONLY public.requisition_fields ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
+-- TOC entry 3291 (class 2604 OID 446477)
 -- Name: team_schedule id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -797,6 +1055,7 @@ ALTER TABLE ONLY public.team_schedule ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- TOC entry 3292 (class 2604 OID 446484)
 -- Name: team_visits id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -804,6 +1063,7 @@ ALTER TABLE ONLY public.team_visits ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- TOC entry 3283 (class 2604 OID 445970)
 -- Name: teams id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -811,6 +1071,7 @@ ALTER TABLE ONLY public.teams ALTER COLUMN id SET DEFAULT nextval('public.teams_
 
 
 --
+-- TOC entry 3284 (class 2604 OID 445971)
 -- Name: user_functions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -818,6 +1079,7 @@ ALTER TABLE ONLY public.user_functions ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- TOC entry 3289 (class 2604 OID 445972)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -825,6 +1087,8 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
+-- TOC entry 3509 (class 0 OID 445865)
+-- Dependencies: 209
 -- Data for Name: achievements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -840,6 +1104,8 @@ COPY public.achievements (id, title, points, date_get, date_add, file, date_last
 
 
 --
+-- TOC entry 3536 (class 0 OID 446465)
+-- Dependencies: 236
 -- Data for Name: cabinets; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -857,6 +1123,28 @@ COPY public.cabinets (id, name) FROM stdin;
 
 
 --
+-- TOC entry 3542 (class 0 OID 454844)
+-- Dependencies: 242
+-- Data for Name: cabinets_time; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.cabinets_time (id, time_start, time_end, day_week, repeat, id_cabinet, id_team_schedule) FROM stdin;
+12	15:45:00	17:30:00	monday	t	1	1
+13	15:30:00	16:30:00	monday	t	2	1
+14	15:30:00	19:30:00	monday	t	3	1
+15	17:30:00	18:45:00	monday	t	1	1
+16	16:30:00	17:30:00	friday	t	4	1
+17	15:30:00	17:30:00	sunday	f	5	1
+18	15:30:00	16:30:00	thursday	t	1	1
+19	15:30:00	19:30:00	saturday	t	1	1
+21	15:00:00	18:30:00	wednesday	t	1	1
+22	16:00:00	17:00:00	wednesday	t	2	1
+\.
+
+
+--
+-- TOC entry 3511 (class 0 OID 445872)
+-- Dependencies: 211
 -- Data for Name: dictionary; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -885,6 +1173,8 @@ COPY public.dictionary (id, name, class_name, class_id) FROM stdin;
 
 
 --
+-- TOC entry 3513 (class 0 OID 445878)
+-- Dependencies: 213
 -- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -910,6 +1200,8 @@ COPY public.events (id, title, "dateStart", "dateEnd", description, tags, "dateS
 
 
 --
+-- TOC entry 3515 (class 0 OID 445885)
+-- Dependencies: 215
 -- Data for Name: form_fields; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -929,6 +1221,8 @@ COPY public.form_fields (id, title, required, archive, form_id) FROM stdin;
 
 
 --
+-- TOC entry 3517 (class 0 OID 445893)
+-- Dependencies: 217
 -- Data for Name: forms; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -943,6 +1237,8 @@ COPY public.forms (id, date, description, team_id) FROM stdin;
 
 
 --
+-- TOC entry 3519 (class 0 OID 445899)
+-- Dependencies: 219
 -- Data for Name: functions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -971,6 +1267,8 @@ COPY public.functions (id, title, type_function, team_id) FROM stdin;
 
 
 --
+-- TOC entry 3521 (class 0 OID 445906)
+-- Dependencies: 221
 -- Data for Name: journals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1002,6 +1300,8 @@ COPY public.journals (id, "dateRegistration", comment, event_id, team_id, user_i
 
 
 --
+-- TOC entry 3523 (class 0 OID 445918)
+-- Dependencies: 223
 -- Data for Name: migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1056,10 +1356,14 @@ COPY public.migrations (id, "timestamp", name) FROM stdin;
 68	1702646759598	Auto1702646759598
 69	1708145495471	Auto1708145495471
 71	1708148552484	Auto1708148552484
+73	1708680717417	Auto1708680717417
+74	1708682807946	Auto1708682807946
 \.
 
 
 --
+-- TOC entry 3525 (class 0 OID 445924)
+-- Dependencies: 225
 -- Data for Name: requisition; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1097,6 +1401,8 @@ COPY public.requisition (id, fullname, date_create, date_update, user_id, status
 
 
 --
+-- TOC entry 3526 (class 0 OID 445931)
+-- Dependencies: 226
 -- Data for Name: requisition_fields; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1109,15 +1415,19 @@ COPY public.requisition_fields (id, value, form_fields_id, requisition_id) FROM 
 
 
 --
+-- TOC entry 3538 (class 0 OID 446474)
+-- Dependencies: 238
 -- Data for Name: team_schedule; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.team_schedule (id, id_cabinet, id_user, id_team, date_start, date_end) FROM stdin;
-1	8	3	6	2010-05-09 00:00:00	2026-05-09 00:00:00
+COPY public.team_schedule (id, id_user, id_team, date_start, date_end) FROM stdin;
+1	3	6	2010-05-09 00:00:00	2026-05-09 00:00:00
 \.
 
 
 --
+-- TOC entry 3540 (class 0 OID 446481)
+-- Dependencies: 240
 -- Data for Name: team_visits; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1125,8 +1435,6 @@ COPY public.team_visits (id, date_visit, id_user, id_team_schedule, status_visit
 6	2017-05-09 09:00:00	8	1	\N	\N
 9	2017-05-09 14:00:00	11	1	\N	\N
 15	2017-05-11 12:00:00	7	1	\N	\N
-1	2017-05-09 00:00:00	3	1	t	неплохо позанимался
-2	2017-05-09 00:00:00	5	1	t	отлично
 3	2017-05-10 00:00:00	7	1	f	\N
 4	2017-05-09 00:05:00	6	1	t	\N
 5	2017-05-09 09:00:00	7	1	t	\N
@@ -1143,10 +1451,16 @@ COPY public.team_visits (id, date_visit, id_user, id_team_schedule, status_visit
 19	2017-05-13 15:00:00	6	1	\N	\N
 20	2017-05-13 15:00:00	7	1	t	\N
 21	2017-05-13 15:00:00	3	1	t	\N
+1	2017-05-09 00:00:00	3	1	f	неплохо позанимался
+2	2017-05-09 00:00:00	5	1	t	отлично
+31	2017-05-09 00:00:00	10	1	t	\N
+25	2017-05-09 00:00:00	9	1	t	incredible person
 \.
 
 
 --
+-- TOC entry 3529 (class 0 OID 445938)
+-- Dependencies: 229
 -- Data for Name: teams; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1170,6 +1484,8 @@ COPY public.teams (id, title, creation_date, image, tags, description, shortname
 
 
 --
+-- TOC entry 3531 (class 0 OID 445948)
+-- Dependencies: 231
 -- Data for Name: user_functions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1189,6 +1505,8 @@ COPY public.user_functions (id, "dateStart", "dateEnd", function_id, user_id, "d
 
 
 --
+-- TOC entry 3533 (class 0 OID 445952)
+-- Dependencies: 233
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1260,6 +1578,8 @@ COPY public.users (id, studnumber, fullname, email, education_group, institute, 
 
 
 --
+-- TOC entry 3565 (class 0 OID 0)
+-- Dependencies: 210
 -- Name: achievements_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1267,6 +1587,8 @@ SELECT pg_catalog.setval('public.achievements_id_seq', 11, true);
 
 
 --
+-- TOC entry 3566 (class 0 OID 0)
+-- Dependencies: 235
 -- Name: cabinets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1274,6 +1596,17 @@ SELECT pg_catalog.setval('public.cabinets_id_seq', 9, true);
 
 
 --
+-- TOC entry 3567 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: cabinets_time_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.cabinets_time_id_seq', 22, true);
+
+
+--
+-- TOC entry 3568 (class 0 OID 0)
+-- Dependencies: 212
 -- Name: dictionary_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1281,6 +1614,8 @@ SELECT pg_catalog.setval('public.dictionary_id_seq', 21, true);
 
 
 --
+-- TOC entry 3569 (class 0 OID 0)
+-- Dependencies: 214
 -- Name: events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1288,6 +1623,8 @@ SELECT pg_catalog.setval('public.events_id_seq', 14, true);
 
 
 --
+-- TOC entry 3570 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: form_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1295,6 +1632,8 @@ SELECT pg_catalog.setval('public.form_fields_id_seq', 69, true);
 
 
 --
+-- TOC entry 3571 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: forms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1302,6 +1641,8 @@ SELECT pg_catalog.setval('public.forms_id_seq', 11, true);
 
 
 --
+-- TOC entry 3572 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1309,6 +1650,8 @@ SELECT pg_catalog.setval('public.functions_id_seq', 183, true);
 
 
 --
+-- TOC entry 3573 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: journals_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1316,13 +1659,17 @@ SELECT pg_catalog.setval('public.journals_id_seq', 45, true);
 
 
 --
+-- TOC entry 3574 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 71, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 74, true);
 
 
 --
+-- TOC entry 3575 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: requisition_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1330,6 +1677,8 @@ SELECT pg_catalog.setval('public.requisition_fields_id_seq', 42, true);
 
 
 --
+-- TOC entry 3576 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: requisition_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1337,6 +1686,8 @@ SELECT pg_catalog.setval('public.requisition_id_seq', 55, true);
 
 
 --
+-- TOC entry 3577 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: team_schedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1344,13 +1695,17 @@ SELECT pg_catalog.setval('public.team_schedule_id_seq', 1, true);
 
 
 --
+-- TOC entry 3578 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: team_visits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.team_visits_id_seq', 21, true);
+SELECT pg_catalog.setval('public.team_visits_id_seq', 31, true);
 
 
 --
+-- TOC entry 3579 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: teams_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1358,6 +1713,8 @@ SELECT pg_catalog.setval('public.teams_id_seq', 59, true);
 
 
 --
+-- TOC entry 3580 (class 0 OID 0)
+-- Dependencies: 232
 -- Name: user_functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1365,6 +1722,8 @@ SELECT pg_catalog.setval('public.user_functions_id_seq', 326, true);
 
 
 --
+-- TOC entry 3581 (class 0 OID 0)
+-- Dependencies: 234
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1372,6 +1731,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 66, true);
 
 
 --
+-- TOC entry 3309 (class 2606 OID 445976)
 -- Name: journals PK_157a30136385dd81cdd19111380; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1380,6 +1740,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
+-- TOC entry 3319 (class 2606 OID 445978)
 -- Name: user_functions PK_1b04a9e32d9511b33fe11b6ffda; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1388,6 +1749,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
+-- TOC entry 3297 (class 2606 OID 445980)
 -- Name: achievements PK_1bc19c37c6249f70186f318d71d; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1396,6 +1758,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
+-- TOC entry 3307 (class 2606 OID 445982)
 -- Name: functions PK_203889d2ae5a98ffc137739301e; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1404,6 +1767,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
+-- TOC entry 3301 (class 2606 OID 445984)
 -- Name: events PK_40731c7151fe4be3116e45ddf73; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1412,6 +1776,7 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3313 (class 2606 OID 445986)
 -- Name: requisition PK_53f9ab966e1c2d2d96cc5ac944a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1420,6 +1785,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
+-- TOC entry 3317 (class 2606 OID 445988)
 -- Name: teams PK_7e5523774a38b08a6236d322403; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1428,6 +1794,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
+-- TOC entry 3311 (class 2606 OID 445990)
 -- Name: migrations PK_8c82d7f526340ab734260ea46be; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1436,6 +1803,7 @@ ALTER TABLE ONLY public.migrations
 
 
 --
+-- TOC entry 3331 (class 2606 OID 446479)
 -- Name: team_schedule PK_9d36326762f4ad471c8c3c03291; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1444,6 +1812,7 @@ ALTER TABLE ONLY public.team_schedule
 
 
 --
+-- TOC entry 3321 (class 2606 OID 445992)
 -- Name: users PK_a3ffb1c0c8416b9fc6f907b7433; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1452,6 +1821,7 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- TOC entry 3315 (class 2606 OID 445994)
 -- Name: requisition_fields PK_b5114990d6fde9a186b1c5a896b; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1460,6 +1830,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
+-- TOC entry 3305 (class 2606 OID 445996)
 -- Name: forms PK_ba062fd30b06814a60756f233da; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1468,6 +1839,7 @@ ALTER TABLE ONLY public.forms
 
 
 --
+-- TOC entry 3329 (class 2606 OID 446472)
 -- Name: cabinets PK_bc7cc7e3c814364dbdde3d3be6c; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1476,6 +1848,7 @@ ALTER TABLE ONLY public.cabinets
 
 
 --
+-- TOC entry 3299 (class 2606 OID 445998)
 -- Name: dictionary PK_d17df343bd5d01ed62dd0e55e4a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1484,6 +1857,7 @@ ALTER TABLE ONLY public.dictionary
 
 
 --
+-- TOC entry 3303 (class 2606 OID 446000)
 -- Name: form_fields PK_dc4b73290f2926c3a7d7c92d1e1; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1492,6 +1866,7 @@ ALTER TABLE ONLY public.form_fields
 
 
 --
+-- TOC entry 3333 (class 2606 OID 446486)
 -- Name: team_visits PK_e0b94c1f167705efb98bcc3b305; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1500,6 +1875,16 @@ ALTER TABLE ONLY public.team_visits
 
 
 --
+-- TOC entry 3335 (class 2606 OID 454851)
+-- Name: cabinets_time PK_ee23cf95c9f85c6accbfe56c2f8; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cabinets_time
+    ADD CONSTRAINT "PK_ee23cf95c9f85c6accbfe56c2f8" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3323 (class 2606 OID 446460)
 -- Name: users UQ_19fa01fc1212bbc25d4b1ae5654; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1508,6 +1893,7 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- TOC entry 3325 (class 2606 OID 446002)
 -- Name: users UQ_97672ac88f789774dd47f7c8be3; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1516,6 +1902,7 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- TOC entry 3327 (class 2606 OID 446004)
 -- Name: users UQ_fe0bb3f6520ee0469504521e710; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1524,6 +1911,16 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- TOC entry 3368 (class 2606 OID 454853)
+-- Name: cabinets_time FK_01a4ae3266a1e821afb02f6f6de; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cabinets_time
+    ADD CONSTRAINT "FK_01a4ae3266a1e821afb02f6f6de" FOREIGN KEY (id_cabinet) REFERENCES public.cabinets(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3360 (class 2606 OID 446522)
 -- Name: requisition_fields FK_087b7eeee30e9f5e62b7ba603fc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1532,6 +1929,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
+-- TOC entry 3341 (class 2606 OID 446010)
 -- Name: events FK_09f256fb7f9a05f0ed9927f406b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1540,6 +1938,7 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3336 (class 2606 OID 446015)
 -- Name: achievements FK_0c0cd24bc6e722c12cd45750434; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1548,6 +1947,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
+-- TOC entry 3342 (class 2606 OID 446020)
 -- Name: events FK_12ab9fec0ea7a5c0bd47f244fb7; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1556,6 +1956,7 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3365 (class 2606 OID 446498)
 -- Name: team_schedule FK_177c2cbee73b0d3f3e75ffaa2a8; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1564,6 +1965,7 @@ ALTER TABLE ONLY public.team_schedule
 
 
 --
+-- TOC entry 3364 (class 2606 OID 446493)
 -- Name: team_schedule FK_1985917dba88a2aa8a4ae1bd81a; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1572,6 +1974,7 @@ ALTER TABLE ONLY public.team_schedule
 
 
 --
+-- TOC entry 3356 (class 2606 OID 446025)
 -- Name: requisition FK_1b08960843499439da23a3e0698; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1580,6 +1983,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
+-- TOC entry 3353 (class 2606 OID 446030)
 -- Name: journals FK_1b4d28fa4b326ecc43128e7d05b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1588,6 +1992,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
+-- TOC entry 3337 (class 2606 OID 446035)
 -- Name: achievements FK_2888c1257c41913030b59369f96; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1596,6 +2001,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
+-- TOC entry 3357 (class 2606 OID 446040)
 -- Name: requisition FK_2bc07f9556b7e089dc2785228ed; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1604,6 +2010,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
+-- TOC entry 3358 (class 2606 OID 446045)
 -- Name: requisition FK_3330bf1b3acd2568b818c72b226; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1612,6 +2019,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
+-- TOC entry 3359 (class 2606 OID 446050)
 -- Name: requisition_fields FK_3777bd9d0f2897d0d24faf345bf; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1620,6 +2028,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
+-- TOC entry 3338 (class 2606 OID 446055)
 -- Name: achievements FK_3e7e91763bdef262e9f727a1208; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1628,6 +2037,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
+-- TOC entry 3362 (class 2606 OID 446060)
 -- Name: user_functions FK_414c47660792aa509c8f55adc7f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1636,6 +2046,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
+-- TOC entry 3339 (class 2606 OID 446065)
 -- Name: achievements FK_439fe2afbe76423baefd988dbd8; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1644,6 +2055,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
+-- TOC entry 3352 (class 2606 OID 446070)
 -- Name: functions FK_579f1e0cdab39bd43464fb882be; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1652,6 +2064,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
+-- TOC entry 3343 (class 2606 OID 446075)
 -- Name: events FK_723091d08c3c5415a1999597464; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1660,6 +2073,7 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3366 (class 2606 OID 446503)
 -- Name: team_visits FK_725f33cc8e48dabebb1a96dc8de; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1668,14 +2082,7 @@ ALTER TABLE ONLY public.team_visits
 
 
 --
--- Name: team_schedule FK_75162e80c57d7f36cf2acfd29d0; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.team_schedule
-    ADD CONSTRAINT "FK_75162e80c57d7f36cf2acfd29d0" FOREIGN KEY (id_cabinet) REFERENCES public.cabinets(id);
-
-
---
+-- TOC entry 3354 (class 2606 OID 446080)
 -- Name: journals FK_811c873435715b3eb624d256a11; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1684,6 +2091,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
+-- TOC entry 3344 (class 2606 OID 446085)
 -- Name: events FK_9025d02effbcfec592d24236f5c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1692,6 +2100,7 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3351 (class 2606 OID 446090)
 -- Name: forms FK_b8df7e99e28d225024e56783b8e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1700,6 +2109,7 @@ ALTER TABLE ONLY public.forms
 
 
 --
+-- TOC entry 3345 (class 2606 OID 446095)
 -- Name: events FK_b935d793584366f2a3c196ac9d7; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1708,6 +2118,7 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3363 (class 2606 OID 446100)
 -- Name: user_functions FK_bc78d14d218fc2e57e7a6941ab3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1716,6 +2127,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
+-- TOC entry 3346 (class 2606 OID 446105)
 -- Name: events FK_bcb2ce0072504d624725e3ef826; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1724,6 +2136,7 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3347 (class 2606 OID 446110)
 -- Name: events FK_bf2f38672c0046c6328e69b71e6; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1732,6 +2145,7 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3361 (class 2606 OID 446115)
 -- Name: teams FK_c0b0c479964469ab9fbbed02c8d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1740,6 +2154,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
+-- TOC entry 3350 (class 2606 OID 446120)
 -- Name: form_fields FK_c2076d2b47add1aaa07608e0cf2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1748,6 +2163,7 @@ ALTER TABLE ONLY public.form_fields
 
 
 --
+-- TOC entry 3348 (class 2606 OID 446125)
 -- Name: events FK_c5a362fc7d682923a6aa8f0072f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1756,6 +2172,16 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- TOC entry 3369 (class 2606 OID 454859)
+-- Name: cabinets_time FK_d2321248ef3678a824334c6619d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cabinets_time
+    ADD CONSTRAINT "FK_d2321248ef3678a824334c6619d" FOREIGN KEY (id_team_schedule) REFERENCES public.team_schedule(id);
+
+
+--
+-- TOC entry 3367 (class 2606 OID 446508)
 -- Name: team_visits FK_daeed44bf925dce11d8f3a62439; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1764,6 +2190,7 @@ ALTER TABLE ONLY public.team_visits
 
 
 --
+-- TOC entry 3355 (class 2606 OID 446130)
 -- Name: journals FK_dcd8f26897887ea1ca19e9b910a; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1772,6 +2199,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
+-- TOC entry 3340 (class 2606 OID 446135)
 -- Name: achievements FK_e2c799e4fa523f355079e1b06c0; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1780,12 +2208,15 @@ ALTER TABLE ONLY public.achievements
 
 
 --
+-- TOC entry 3349 (class 2606 OID 446140)
 -- Name: events FK_fb98daef5570cb124e34c9ea42c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT "FK_fb98daef5570cb124e34c9ea42c" FOREIGN KEY (format_id) REFERENCES public.dictionary(id);
 
+
+-- Completed on 2024-02-25 15:05:58
 
 --
 -- PostgreSQL database dump complete

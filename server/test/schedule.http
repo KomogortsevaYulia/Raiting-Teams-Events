@@ -1,4 +1,31 @@
 
-###
+### visits
 GET http://localhost:3000/api/schedule/visits?date_visit_start=2017-05-10T02:27:52.713Z&
     date_visit_end=2023-08-17T07:33:52.713Z&team_id=6
+
+###
+POST http://localhost:3000/api/schedule/visits HTTP/1.1
+content-type: application/json
+
+{
+ "user_id":9,
+ "team_id":6,
+ "date_visit":"2017-05-09 00:00:00",
+ "status_visit":"true",
+  "comment": "incredible person"
+}
+
+### cabinets
+GET http://localhost:3000/api/schedule/cabinets
+
+###
+POST http://localhost:3000/api/schedule/cabinets HTTP/1.1
+content-type: application/json
+
+{
+  "name": "К-301"
+}
+
+###
+DELETE http://localhost:3000/api/schedule/cabinets/13
+
