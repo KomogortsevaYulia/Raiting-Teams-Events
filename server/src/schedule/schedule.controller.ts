@@ -3,7 +3,7 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
+  HttpStatus, Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -74,7 +74,7 @@ export class ScheduleController {
     return this.scheduleService.createCabinet(dto);
   }
 
-  @Delete('cabinets')
+  @Delete('cabinets/:id')
   @ApiOperation({ summary: 'Удаление аудитории' })
   @ApiOkResponse({
     type: DeleteCabinetResponse,
@@ -86,7 +86,7 @@ export class ScheduleController {
     description: 'Bad Request',
   })
   @ApiQuery({ name: 'id', required: true, type: Number })
-  deleteCabinet(@Query('id') id: number) {
+  deleteCabinet(@Param('id') id: number) {
     return this.scheduleService.deleteCabinet(id);
   }
 }
