@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Cabinets } from './cabinets.entity';
-import {TeamSchedule} from "./schedule.entity";
+import { TeamSchedule } from './schedule.entity';
 
 @Entity('cabinets_time')
 export class CabinetsTime {
