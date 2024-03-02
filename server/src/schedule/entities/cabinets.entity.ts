@@ -23,7 +23,7 @@ export class Cabinets {
   direction: Team;
 
   @ApiProperty()
-  @Column('simple-array', {nullable:true})
+  @Column('simple-array', { nullable: true })
   tags: string[]; // теги
 
   // @OneToMany(() => CabinetsTime, (cabinetsTime) => cabinetsTime.cabinet, {
