@@ -283,7 +283,7 @@ async function deleteAuditory(index: number) {
 watch(
   () => auditorySelect.value,
   async (value) => {
-    if (!auditories.value.includes(value.id)) {
+    if (value?.id && !auditories.value.includes(value?.id)) {
       auditories.value.push({ id: value.id, name: value.name });
     }
   },
