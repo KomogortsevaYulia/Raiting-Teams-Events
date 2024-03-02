@@ -60,8 +60,8 @@ export class Team {
   is_archive: boolean;
 
   @ApiProperty()
-  @Column({ nullable: true })
-  cabinet: string;
+  @Column('simple-array', { nullable: true })
+  cabinets: number[];
 
   @ApiProperty()
   @Column({ nullable: true })

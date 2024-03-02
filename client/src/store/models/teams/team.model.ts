@@ -8,7 +8,7 @@ export interface ITeam {
   id_parent?: ITeam;
   title?: string;
   shortname?: string;
-  cabinet?: string;
+  cabinets?: number[];
   is_archive?: boolean;
   charter_team?: string;
   document?: string;

@@ -66,7 +66,7 @@ export class TeamsService {
         'teams.description',
         'teams.short_description',
         'teams.type_team',
-        'teams.cabinet',
+        'teams.cabinets',
         'teams.is_archive',
         'teams.document',
         'teams.shortname',
@@ -98,6 +98,7 @@ export class TeamsService {
     const updatedTeam = await this.teamsRepository.save({
       id,
       ...updateTeamDto,
+      cabinets: updateTeamDto.cabinetsAsNumbers,
       charter_team: updateTeamDto.charterTeam,
     });
 
@@ -120,6 +121,7 @@ export class TeamsService {
   async create(user: User, createTeamDto: CreateTeamDto): Promise<Team> {
     const team = await this.teamsRepository.save({
       ...createTeamDto,
+      cabinets: createTeamDto.cabinetsAsNumbers,
       charter_team: createTeamDto.charterTeam,
       image: [],
       tags: [],
@@ -151,7 +153,7 @@ export class TeamsService {
         'teams.description',
         'teams.short_description',
         'teams.type_team',
-        'teams.cabinet',
+        'teams.cabinets',
         'teams.is_archive',
         'teams.document',
         'teams.shortname',
@@ -298,7 +300,7 @@ export class TeamsService {
         'teams.title',
         'teams.short_description',
         'teams.description',
-        'teams.cabinet',
+        'teams.cabinets',
       ])
       .andWhere('teams.type_team = :type', { type: 'direction' })
       .leftJoinAndSelect('teams.functions', 'functions')

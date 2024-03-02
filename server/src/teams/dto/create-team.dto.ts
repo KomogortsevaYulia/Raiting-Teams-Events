@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -38,10 +39,9 @@ export class CreateTeamDto {
   userID: number;
 
   @IsOptional()
-  @Length(1, 50, {
-    message: 'Кабинет, максимальная длина текста 1-50',
-  })
-  cabinet: string;
+  @IsArray()
+  @IsString({ each: true })
+  cabinets: string[];
 
   @IsOptional()
   @IsNotEmpty({ message: 'Ссылка на документ пустая' })
@@ -50,4 +50,8 @@ export class CreateTeamDto {
   @IsOptional()
   @IsNotEmpty({ message: 'Ссылка на устав пустая' })
   charterTeam: string;
+
+  get cabinetsAsNumbers(): number[] {
+    return this.cabinets.map((str) => parseInt(str));
+  }
 }

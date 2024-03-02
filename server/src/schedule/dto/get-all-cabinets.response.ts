@@ -8,4 +8,5 @@ export class GetAllCabinetsResponse {
     example: [{ id: 1, name: 'В-108' }],
   })
   cabinets: Cabinets[];
+  count: number;
 }

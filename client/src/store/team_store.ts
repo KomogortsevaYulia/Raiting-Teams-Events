@@ -72,7 +72,7 @@ export const useTeamStore = defineStore("teams", () => {
     description: string,
     shortname: string,
     userId: number,
-    cabinet: string,
+    cabinets: number[],
     fileUstav: File,
     fileDocument: File,
   ) {
@@ -86,7 +86,10 @@ export const useTeamStore = defineStore("teams", () => {
     formData.append("description", description);
     formData.append("shortname", shortname);
     formData.append("userID", userId.toString());
-    formData.append("cabinet", cabinet);
+    // cabinets
+    for(let i=0;i<cabinets.length;i++){
+      formData.append("cabinets[]", cabinets[i].toString())
+    }
 
     if (fileUstav && fileDocument) {
       formData.append(
@@ -139,7 +142,10 @@ export const useTeamStore = defineStore("teams", () => {
     formData.append("title", uT.title);
     formData.append("description", uT.description);
     formData.append("shortname", uT.shortname);
-    formData.append("cabinet", uT.cabinet);
+    // cabinets
+    for(let i=0;i<uT.cabinets.length;i++){
+      formData.append("cabinets[]", uT.cabinets[i].toString())
+    }
     // paths to files
     if (uT.charterPath != null && uT.charterPath.length > 0)
       formData.append("charterTeam", uT.charterPath);
