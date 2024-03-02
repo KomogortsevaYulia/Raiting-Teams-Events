@@ -713,7 +713,6 @@ export class TeamsService {
             oldLeader.userId = userFunc.user.id;
 
             if (!teamLeaderDto.userIds.includes(oldLeader.userId)) {
-
               await this.usersService.changePermissions(
                 oldLeader,
                 PermissionsRoles.LEADER_TEAM,

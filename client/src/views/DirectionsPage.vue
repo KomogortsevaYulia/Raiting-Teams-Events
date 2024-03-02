@@ -14,8 +14,7 @@
       >
     </div>
 
-    <div class="wrapper-team__c
-    reate">
+    <div class="wrapper-team__create">
       <div v-for="(direction, index) in directions" :key="index">
         <div class="content" v-if="index == selectedItem && !showCreate">
           <!--description  -->
@@ -23,31 +22,22 @@
           <div class="alert alert-info">
             <div
               v-if="
-                !direction.functions ||
-                (direction.functions[0] &&
-                  direction.functions[0].userFunctions[0])
+                direction.functions && direction.functions[0] &&
+                  direction.functions[0].userFunctions[0]
               "
             >
-              <p>
-                Руководитель:
-                {{ direction?.functions[0]?.userFunctions[0]?.user?.fullname }}
-              </p>
+              <div>
+                Руководители:
 
-              <p>
-                Почта:
-                {{
-                  direction?.functions[0]?.userFunctions[0]?.user?.email ?? "-"
-                }}
-              </p>
-              <p>
-                Телефон:
-                {{
-                  direction?.functions[0]?.userFunctions[0]?.user?.phone ?? "-"
-                }}
-              </p>
+                  <div v-for=" (usr, index) in  direction.functions[0].userFunctions" :key="index" class="my-2">
+                      {{ usr.user.fullname }}, &nbsp; e-mail: {{usr.user.email}}, &nbsp; Телефон:{{usr.user.phone ?? "-"}},
+                  </div>
+
+              </div>
+
             </div>
             <div v-else>Руководитель не назначен</div>
-            <p>Аудитория: {{ direction.cabinet ?? "-" }}</p>
+            <p>Аудитория: {{ direction?.cabinet ?? "-" }}</p>
           </div>
         </div>
       </div>
@@ -72,6 +62,7 @@ import type { Ref } from "vue";
 const selectedItem = ref(0);
 const showCreate = ref(false);
 const directions: Ref<ITeam[]> = ref([]);
+
 // store--------------------------------------------------------------
 const teamStore = useTeamStore();
 

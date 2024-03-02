@@ -1,4 +1,4 @@
-import {IsArray, IsNotEmpty, IsNumber} from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class AssignDirectionTeamLeaderDto {
   @IsNotEmpty({ message: 'usrIds Поле пустое' })
