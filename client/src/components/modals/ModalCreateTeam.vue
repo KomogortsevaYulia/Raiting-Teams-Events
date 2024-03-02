@@ -76,8 +76,26 @@
                     label="data"
                     @input="onTextChange"
                     :options="foundUsers"
-                    v-model="optionSelect"
+                    v-model="leaderSelect"
                   ></v-select>
+
+                  <div class="row g-2 mb-4">
+                    <!-- selected cabinets-->
+                    <div
+                      class="col-auto position-relative align-items-center d-flex"
+                      v-for="(leader, index) in leaders"
+                      v-bind:key="index"
+                    >
+                      <TagElem :text="leader.name" />
+                      <div class="position-absolute top-0 end-0">
+                        <font-awesome-icon
+                          @click="deleteLeader(index)"
+                          :icon="['fas', 'circle-xmark']"
+                          class="fa-lg btn-icon"
+                        />
+                      </div>
+                    </div>
+                  </div>
 
                   <div class="row">
                     <div class="col-auto">
@@ -231,7 +249,8 @@ const teamObj: Ref<ITeam> = ref({});
 // values from form
 const title = ref("");
 const shortname = ref("");
-const userLeader = ref();
+const leaders = ref<{ id: number; name: string; email: string }[]>([]);
+const searchTxtUser = ref();
 const auditories = ref<{ id: number; name: string }[]>([]);
 
 const description = ref("");
@@ -241,8 +260,6 @@ const charterTeamFile = ref();
 const documentFile = ref();
 
 const charterTeamBase64 = ref();
-
-const oldUserId = ref(-1);
 
 // сообщение об ошибках
 const responseMsg = ref();
@@ -260,17 +277,19 @@ const timerFetchUsers = _.debounce(() => {
   getUsers();
 }, 300);
 
-const optionSelect = ref();
+const leaderSelect = ref();
 const auditorySelect = ref();
-
-const teamLeaders = ref();
 
 //отслеживать изменение текста для v-select
 async function onTextChange(e: InputEvent) {
   const el = e.target as HTMLInputElement;
-  userLeader.value = el.value;
-  optionSelect.value = null;
+  searchTxtUser.value = el.value;
+  leaderSelect.value = null;
   timerFetchUsers();
+}
+
+async function deleteLeader(index: number) {
+  leaders.value.splice(index, 1);
 }
 
 // CABINETS------------------------------------------------------------------------------------------
@@ -290,6 +309,16 @@ watch(
 );
 // CABINETS------------------------------------------------------------------------------------------
 
+// on user selected
+watch(
+    () => leaderSelect.value,
+    async (value) => {
+        if (value?.id && !leaders.value.includes(value?.id)) {
+            leaders.value.push({ id: value.id, name: value.name, email:value.email});
+        }
+    },
+);
+
 watch(
   () => props.teamId,
   async (value) => {
@@ -307,7 +336,10 @@ async function fetchTeam(id: number) {
 
   responseMsg.value = "";
 
-  teamLeaders.value = getLeader(teamObj.value);
+  let ldrs = getLeaders(teamObj.value);
+  leaders.value = ldrs?.map((el) => {
+    return { id: el?.id ?? -1, name: el?.fullname ?? "", email: el?.email ?? "" };
+  });
 
   await fillForm();
 }
@@ -338,6 +370,7 @@ async function fillForm() {
   // make files is empty
   charterTeamFile.value = null;
   documentFile.value = null;
+  leaderSelect.value = null;
 
   if (teamObj.value) {
     let t = teamObj.value;
@@ -356,33 +389,18 @@ async function fillForm() {
 
       auditories.value =
         cabinets.length > 0
-          ? cabinets?.map((cab:{ id:number, name:string }) => {
+          ? cabinets?.map((cab: { id: number; name: string }) => {
               return cab;
             })
           : [];
-    }else  auditories.value = []
+    } else auditories.value = [];
 
-    //если есть руководитель коллектива
-
-    let uF = teamLeaders.value[0];
-    if (uF) {
-      optionSelect.value = {
-        name: uF.fullname,
-        email: uF.email,
-        id: uF.id,
-        data: uF.fullname + " " + uF.email,
-      };
-
-      oldUserId.value = uF.id ?? -1;
-    } else {
-      optionSelect.value = null;
-    }
     //если коллектив не задан , то очистить все поля
   } else {
     title.value = shortname.value = description.value = "";
-    optionSelect.value = auditorySelect.value = null;
+    auditorySelect.value = null;
     selectedDirection.value = 0;
-    auditories.value = []
+    auditories.value = [];
   }
 }
 
@@ -390,7 +408,7 @@ async function fillForm() {
 async function getUsers() {
   let filterUser = new FilterUser();
   filterUser.limit = 5;
-  filterUser.searchTxt = userLeader.value;
+  filterUser.searchTxt = searchTxtUser.value;
   let r = await useUserStore().getUsersByNameEmail(filterUser);
 
   //получить всех найденных юзеров
@@ -421,7 +439,7 @@ async function createTeam() {
   let userId = -1;
   //проверить является id числом или нет и выбрана ли опция
 
-  userId = optionSelect.value.id;
+  userId = leaderSelect.value.id;
 
   //create team
   await teamStore
@@ -446,19 +464,13 @@ async function createTeam() {
 
 // обночить коллектив
 async function updateTeam() {
-  let newUserId = -1;
-  //проверить является id числом или нет и выбрана ли опция
-
-  newUserId = optionSelect.value ? optionSelect.value.id : -1;
-
   //create team
   const uT = new UpdateTeam();
   uT.id_parent = selectedDirection.value;
   uT.cabinets = auditories.value.map((el) => el.id);
   uT.description = description.value;
   uT.id = teamObj.value.id ?? -1;
-  uT.oldUserId = oldUserId.value;
-  uT.newUserId = newUserId;
+  uT.leaders = leaders.value.map((el) => el.id);
   uT.shortname = shortname.value;
   uT.title = title.value;
   uT.documentPath = teamObj.value.document ?? "";
@@ -497,20 +509,21 @@ async function archiveTeam(id: number, isArchive: boolean) {
   if (res.isOK) teamObj.value.is_archive = isArchive;
 }
 
-function getLeader(team) {
-  const leaders = [];
-  if (!team && !team.functions) return [];
+function getLeaders(team: ITeam) {
+  const ldrs = [];
+  if (!team.functions) return [];
+
   for (let i = 0; i < team.functions.length; i++) {
     const func = team.functions[i];
-    if (func.title === TeamRoles.Leader) {
+    if (func.title === TeamRoles.Leader && func.userFunctions) {
       for (let io = 0; io < func.userFunctions.length; io++) {
         const userFunc = func.userFunctions[io];
-        leaders.push(userFunc.user);
+        ldrs.push(userFunc.user);
       }
     }
   }
 
-  return leaders;
+  return ldrs;
 }
 </script>
 

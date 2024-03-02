@@ -1,61 +1,3 @@
-# USERS--------------------------------------------------------
-
-### get all users from specific team
-GET http://localhost:3000/api/users?limit=4&email=mail
-
-### login
-POST http://localhost:3000/api/users/login
-content-type: application/json
-
-{
-  "user": {
-    "username": "admin",
-    "password": "123"
-  }
-}
-
-
-# TEAMS--------------------------------------------------------
-### get team by id
-GET http://localhost:3000/api/teams/5
-
-### get teams
-GET http://localhost:3000/api/teams?limit=4&offset=0
-
-### directions
-GET http://localhost:3000/api/teams/directions
-
-
-### select head user and teams
-GET http://localhost:3000/api/teams?limit=72&offset=3&fields[]=leaders
-
-
-### archive
-PUT  http://localhost:3000/api/teams/37/change_archive HTTP/1.1
-content-type: application/json
-
-{
-  "isArchive": true
-}
-
-### update team
-PUT http://localhost:3000/api/teams/62 HTTP/1.1
-content-type: application/json
-
-{
-  "cabinet": "dcd",
-  "charterTeam": "http://localhost:3000/public/media/2023.10/27/1698374663418_b1jy51ustav.docx",
-  "charter_team": "http://localhost:3000/public/media/2023.10/27/1698374663418_b1jy51ustav.docx",
-  "description": "g",
-  "document": "http://localhost:3000/public/media/2023.10/27/1698374663423_82cvdtdocument.docx",
-  "id_parent": 5,
-  "newLeaderId": -1,
-  "short_description": null,
-  "shortname": "jjjkk",
-  "title": "d"
-}
-
-
 ###
 # student-------------------------------------------------------
 POST http://localhost:3000/api/users HTTP/1.1
@@ -73,9 +15,6 @@ content-type: application/json
   "type_time_study": "string",
   "permissions": []
 }
-
-
-
 
 
 ###

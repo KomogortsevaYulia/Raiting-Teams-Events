@@ -458,7 +458,7 @@ export class TeamsController {
     const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
 
     directionTeamLeaderDto.teamId = userFDto.team;
-    directionTeamLeaderDto.userId = userFDto.user;
+    directionTeamLeaderDto.userIds = [userFDto.user];
     directionTeamLeaderDto.roleName = TeamRoles.Member;
 
     // назначить нового пользвоателя

@@ -104,12 +104,11 @@ export class TeamsService {
 
     await this.findOne(id);
 
-    if (updateTeamDto.newLeaderId != null) {
+    if (updateTeamDto.leaders && updateTeamDto.leaders.length > 0) {
       const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
       directionTeamLeaderDto.teamId = updatedTeam.id;
-      directionTeamLeaderDto.userId = updateTeamDto.newLeaderId;
+      directionTeamLeaderDto.userIds = updateTeamDto.leaders;
       directionTeamLeaderDto.roleName = TeamRoles.Leader;
-
       // назначить нового пользвоателя
       await this.assignTeamRole(user, directionTeamLeaderDto);
     }
@@ -131,8 +130,8 @@ export class TeamsService {
 
     const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
     directionTeamLeaderDto.teamId = team.id;
-    directionTeamLeaderDto.userId = createTeamDto.userID;
-    directionTeamLeaderDto.roleName = 'Руководитель';
+    directionTeamLeaderDto.userIds = createTeamDto.leaders;
+    directionTeamLeaderDto.roleName = TeamRoles.Leader;
 
     // назначить нового пользвоателя
     await this.assignTeamRole(user, directionTeamLeaderDto);
@@ -665,7 +664,7 @@ export class TeamsService {
         );
         await this.assignTeamLeader(teamLeaderDto, Roles.LEADER_DIRECTION);
       }
-      //   if it is team and want to assign leader
+      // if it is team and want to assign leaders
     } else if (teamLeaderDto.roleName == TeamRoles.Leader) {
       reqInitiatorPermission = Permissions.CAN_ASSIGN_LEADER_TEAM;
       // check permissions of user for specific team or throw err
@@ -683,16 +682,17 @@ export class TeamsService {
 
     // find existing function with role or create new
     const func = await this.usersService.createFunctionIfNotExist(funcDto);
+    for (const usrId of teamLeaderDto.userIds) {
+      const ufDto = new CreateUserFunctionDto();
+      ufDto.function = func.id;
+      ufDto.user = usrId;
+      ufDto.team = teamLeaderDto.teamId;
 
-    const ufDto = new CreateUserFunctionDto();
-    ufDto.function = func.id;
-    ufDto.user = teamLeaderDto.userId;
-    ufDto.team = teamLeaderDto.teamId;
-
-    // find existing user function or update
-    try {
-      await this.usersService.createUserFunctionOrUpdate(ufDto);
-    } catch (e) {}
+      // find existing user function or update
+      try {
+        await this.usersService.createUserFunctionOrUpdate(ufDto);
+      } catch (e) {}
+    }
 
     return true;
   }
@@ -704,11 +704,7 @@ export class TeamsService {
   ) {
     const team = await this.findOne(teamLeaderDto.teamId);
 
-    // add new perms to new user
-    const assignPermsUser = new User();
-    assignPermsUser.userId = teamLeaderDto.userId;
-
-    // revoke perms old leader
+    // revoke perms old leaders if they are not in list
     if (team.functions)
       team.functions.forEach((func) => {
         if (func.title == TeamRoles.Leader && func.userFunctions) {
@@ -716,13 +712,15 @@ export class TeamsService {
             const oldLeader = new User();
             oldLeader.userId = userFunc.user.id;
 
-            await this.usersService.changePermissions(
-              oldLeader,
-              PermissionsRoles.LEADER_TEAM,
-              PermissionsActions.REVOKE,
-            );
+            if (!teamLeaderDto.userIds.includes(oldLeader.userId)) {
 
-            await this.usersService.removeUserFunction(userFunc.id);
+              await this.usersService.changePermissions(
+                oldLeader,
+                PermissionsRoles.LEADER_TEAM,
+                PermissionsActions.REVOKE,
+              );
+              await this.usersService.removeUserFunction(userFunc.id);
+            }
           });
         }
       });
@@ -737,11 +735,16 @@ export class TeamsService {
         grantPerms = PermissionsRoles.LEADER_DIRECTION;
         break;
     }
+    // assign leadership to users
+    for (const item of teamLeaderDto.userIds) {
+      const assignPermsUser = new User();
+      assignPermsUser.userId = item;
 
-    await this.usersService.changePermissions(
-      assignPermsUser,
-      grantPerms,
-      PermissionsActions.GRANT,
-    );
+      await this.usersService.changePermissions(
+        assignPermsUser,
+        grantPerms,
+        PermissionsActions.GRANT,
+      );
+    }
   }
 }

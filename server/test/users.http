@@ -29,3 +29,6 @@ content-type: application/json
     "permissions":["kk"]
 
 }
+
+### get all users from specific team
+GET http://localhost:3000/api/users?limit=4&email=mail

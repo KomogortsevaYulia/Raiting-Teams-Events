@@ -1,11 +1,10 @@
 export default class UpdateTeam {
   id = 0;
-  oldUserId = 0;
-  newUserId = 0;
+  leaders: number[] = [];
   title = "";
   description = "";
   shortname = "";
-  cabinets:number[] = [];
+  cabinets: number[] = [];
   documentPath = "";
   charterPath = "";
   id_parent = 0;

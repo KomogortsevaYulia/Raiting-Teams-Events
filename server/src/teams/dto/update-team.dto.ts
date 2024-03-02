@@ -34,9 +34,8 @@ export class UpdateTeamDto {
   shortname: string;
 
   @IsOptional()
-  @IsNumber()
-  @Type(() => Number)
-  newLeaderId: number;
+  @IsArray()
+  leaders: number[];
 
   @IsOptional()
   @IsArray()
@@ -58,6 +57,6 @@ export class UpdateTeamDto {
   charterTeam: string;
 
   get cabinetsAsNumbers(): number[] {
-    return this.cabinets.map((str) => parseInt(str));
+    return this.cabinets?.map((str) => parseInt(str));
   }
 }

@@ -87,8 +87,8 @@ export const useTeamStore = defineStore("teams", () => {
     formData.append("shortname", shortname);
     formData.append("userID", userId.toString());
     // cabinets
-    for(let i=0;i<cabinets.length;i++){
-      formData.append("cabinets[]", cabinets[i].toString())
+    for (let i = 0; i < cabinets.length; i++) {
+      formData.append("cabinets[]", cabinets[i].toString());
     }
 
     if (fileUstav && fileDocument) {
@@ -143,17 +143,18 @@ export const useTeamStore = defineStore("teams", () => {
     formData.append("description", uT.description);
     formData.append("shortname", uT.shortname);
     // cabinets
-    for(let i=0;i<uT.cabinets.length;i++){
-      formData.append("cabinets[]", uT.cabinets[i].toString())
+    for (let i = 0; i < uT.cabinets.length; i++) {
+      formData.append("cabinets[]", uT.cabinets[i].toString());
     }
     // paths to files
     if (uT.charterPath != null && uT.charterPath.length > 0)
       formData.append("charterTeam", uT.charterPath);
     if (uT.documentPath != null && uT.documentPath.length > 0)
       formData.append("document", uT.documentPath);
-
-    formData.append("oldLeaderId", uT.oldUserId.toString());
-    formData.append("newLeaderId", uT.newUserId.toString());
+    // leaders
+    uT.leaders.forEach((el) => {
+      formData.append("leaders[]", el.toString());
+    });
 
     if (uT.fileUstav != null)
       formData.append(

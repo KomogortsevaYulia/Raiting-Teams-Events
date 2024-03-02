@@ -34,9 +34,9 @@ export class CreateTeamDto {
   })
   shortname: string;
 
-  @IsNumber()
-  @Type(() => Number)
-  userID: number;
+  @IsOptional()
+  @IsArray()
+  leaders: number[];
 
   @IsOptional()
   @IsArray()
