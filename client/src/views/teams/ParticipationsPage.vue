@@ -145,7 +145,7 @@
       </div>
     </div>
     <!--    table -->
-    <div v-if="isTable">
+    <div v-if="isTable" class="overflow-scroll">
       <table class="table table-hover">
         <thead>
           <tr>
