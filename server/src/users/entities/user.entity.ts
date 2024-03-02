@@ -81,22 +81,32 @@ export class User {
   @Column({ nullable: true, unique: true })
   bitrix_id: number;
 
-  @OneToMany((type) => UserFunction, (user_func) => user_func.function, {
+  @OneToMany(() => UserFunction, (user_func) => user_func.function, {
     cascade: true,
   })
   user_function: UserFunction[];
 
-  @OneToMany((type) => Journal, (journal) => journal.user, { cascade: true })
+  @OneToMany(() => Journal, (journal) => journal.user, { cascade: true })
   journal: Journal[];
 
-  @OneToMany((type) => Requisitions, (requisition) => requisition.user, {
+  @OneToMany(() => Requisitions, (requisition) => requisition.user, {
     cascade: true,
   })
   requisition: Requisitions[];
 
   @ApiProperty()
-  @OneToMany((type) => Event, (event) => event.user, { cascade: true })
+  @OneToMany(() => Event, (event) => event.user, { cascade: true })
   events: Event[];
+
+  // @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.user, {
+  //   cascade: true,
+  // })
+  // team_schedules: TeamSchedule[];
+
+  // @OneToMany(() => TeamVisits, (team_visits) => team_visits.user, {
+  //   cascade: true,
+  // })
+  // team_visits: TeamVisits[];
 
   // use it as object class in classes
   userId: number;

@@ -41,6 +41,7 @@
           <div
             class="col-auto position-relative align-items-center d-flex"
             v-for="(perm, index) in user?.permissions"
+            v-bind:key="index"
           >
             <TagElem :text="perm" />
             <div class="position-absolute top-0 end-0">

@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   modalId: string; //задать id модального окна для егов ызова
 }>();
 </script>

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   HttpStatus,
@@ -35,7 +36,7 @@ import { Requisitions } from './entities/requisition.entity';
 import { Request } from 'express';
 import { FileSizeValidationPipe } from 'src/uploads/validation/file.validation.pipe';
 import { FileImageValidationPipe } from 'src/uploads/validation/image_file.validation.pipe';
-import { RequisitionDto } from './dto/update-requisition.dto';
+import { RequisitionDto } from './dto/uc-requisition.dto';
 import { LocalAuthGuard } from 'src/users/guard/local-auth.guard';
 import { PermissionsGuard } from 'src/users/guard/check-permissions.guard';
 import { CreateRequisitionDto } from './dto/create-requisition.dto';
@@ -44,8 +45,8 @@ import { UserDecorator } from '../shared/user.decorator';
 import { User } from '../users/entities/user.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { AssignDirectionTeamLeaderDto } from '../users/dto/direction-leader.dto';
-import {Roles} from "../shared/permissionsRoles";
-import {TeamRoles} from "../shared/teamRoles";
+import { TeamRoles } from '../shared/teamRoles';
+import { extname } from 'path';
 
 @ApiTags('teams') //<---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -149,12 +150,14 @@ export class TeamsController {
         if (files[f].originalname.split('.').shift() == 'ustav') {
           ustavPath = await this.uploadsService.uploadFile(
             startPathUrl,
-            files[f],
+            files[f].buffer,
+            extname(files[f].originalname),
           );
         } else if (files[f].originalname.split('.').shift() == 'document') {
           docPath = await this.uploadsService.uploadFile(
             startPathUrl,
-            files[f],
+            files[f].buffer,
+            extname(files[f].originalname),
           );
         }
       }
@@ -181,8 +184,8 @@ export class TeamsController {
     type: UserFunction,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-  teamsAndUsers(@Param('id') id: number) {
-    return this.teamsService.teamWithUsers(id);
+  teamsAndUsers(@Param('id') id: number, @Query() uFDto: UserFunctionDto) {
+    return this.teamsService.teamWithUsers(id, uFDto);
   }
 
   @Get(':id')
@@ -250,12 +253,20 @@ export class TeamsController {
         files[f].originalname.split('.').shift() == 'ustav' &&
         ustav == null
       ) {
-        ustav = await this.uploadsService.uploadFile(startPathUrl, files[f]);
+        ustav = await this.uploadsService.uploadFile(
+          startPathUrl,
+          files[f].buffer,
+          extname(files[f].originalname),
+        );
       } else if (
         files[f].originalname.split('.').shift() == 'document' &&
         doc == null
       ) {
-        doc = await this.uploadsService.uploadFile(startPathUrl, files[f]);
+        doc = await this.uploadsService.uploadFile(
+          startPathUrl,
+          files[f].buffer,
+          extname(files[f].originalname),
+        );
       }
     }
 
@@ -295,7 +306,11 @@ export class TeamsController {
     if (hasPermissions) {
       const startPathUrl = `${request.protocol}://${request.get('host')}`;
 
-      const path = await this.uploadsService.uploadFile(startPathUrl, file);
+      const path = await this.uploadsService.uploadImage(
+        startPathUrl,
+        file.buffer,
+        // extname(file.originalname),
+      );
       return this.teamsService.addImage(id, path);
     } else
       throw new ForbiddenException(
@@ -303,7 +318,9 @@ export class TeamsController {
       );
   }
 
-  // requisition --------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
+  // requisition ------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
   @Get('/:team_id/requisition')
   @ApiOperation({
     summary: 'Получить список заявок в коллектив по ид колектива',
@@ -316,7 +333,7 @@ export class TeamsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Успешно',
-    type: Function,
+    type: Requisitions,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async userRequisitionByTeam(
@@ -336,11 +353,18 @@ export class TeamsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Успешно',
-    type: Function,
+    type: Requisitions,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async userRequisition(@Param('id') id: number): Promise<Requisitions> {
     return await this.teamsService.findRequisition(id);
+  }
+
+  @Delete('requisition/:id')
+  @ApiOperation({ summary: 'Удалить заявку в коллектив по ид заявки' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+  async deleteRequisition(@Param('id') id: number) {
+    return await this.teamsService.deleteRequisition(id);
   }
 
   @Put('requisition/:id')
@@ -395,7 +419,8 @@ export class TeamsController {
     return await this.teamsService.findAllRequisitionsByUserId(userId);
   }
 
-  @Post('requisitions/new')
+  @Post('requisitions')
+  @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: 'Создание заяки на вступление в коллектив' })
   @ApiBody({
     type: CreateRequisitionDto,
@@ -406,9 +431,11 @@ export class TeamsController {
     type: Requisitions,
   })
   async createRequisition(
+    @UserDecorator() user: User,
     @Body() dto: CreateRequisitionDto,
   ): Promise<Requisitions> {
-    return await this.teamsService.createRequisition(dto);
+    user = await this.usersService.findById(user.userId);
+    return await this.teamsService.createRequisitionOrUpdate(dto, user);
   }
 
   // requisition --------------------------------------------------------------------
@@ -435,10 +462,7 @@ export class TeamsController {
     directionTeamLeaderDto.roleName = TeamRoles.Member;
 
     // назначить нового пользвоателя
-    const newUserFunction = await this.teamsService.assignTeamRole(
-      user,
-      directionTeamLeaderDto,
-    );
+    await this.teamsService.assignTeamRole(user, directionTeamLeaderDto);
 
     return await this.teamsService.assignTeamRole(user, directionTeamLeaderDto);
   }

@@ -5,11 +5,11 @@ export default class UpdateTeam {
   title = "";
   description = "";
   shortname = "";
-  cabinet = "";
+  cabinets:number[] = [];
   documentPath = "";
   charterPath = "";
   id_parent = 0;
 
-  fileUstav: any;
-  fileDocument: any;
+  fileUstav: File | undefined;
+  fileDocument: File | undefined;
 }

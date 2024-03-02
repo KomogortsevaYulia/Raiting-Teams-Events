@@ -2,9 +2,9 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 npx validate-branch-name
-# TODO: fix eslint errors on client and server sides
-# cd client
-# npm run lint:script
-# npm run lint:styles
-# cd ../server
-# npm run lint
+
+cd client
+npm run lint:script
+npm run lint:styles
+cd ../server
+npm run lint

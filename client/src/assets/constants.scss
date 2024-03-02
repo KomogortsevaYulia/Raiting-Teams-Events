@@ -7,14 +7,14 @@
   --main-color-hover: #de234b;
   --main-border-card: 1px solid #d9d9d9;
   --main-navigation-color: #485485;
-  --border-color: rgba(61, 61, 61, 0.20);
+  --border-color: rgb(61 61 61 / 20%);
 
   // --second-color-hover
   --second-color: #7d97dc;
-  --second-color-50: rgba(103, 134, 218, 0.5);
+  --second-color-50: rgb(103 134 218 / 50%);
   --second-accept: #5f7ccb;
 
-  //colors for any cases
+  // colors for any cases
   --green-color: #b1d789;
   --red-color: #d79b89;
 
@@ -22,15 +22,15 @@
   // shadow
   //////////////////////////////////////////////////
 
-  --box-shadow: 0 0 5px 1px rgb(221, 221, 221);
+  --box-shadow: 0 0 5px 1px rgb(221 221 221);
   --hover-elem: 0 0 0.1rem 0.15rem #6786da;
 
   //////////////////////////////////////////////////
   // fonts
   //////////////////////////////////////////////////
 
-  --font-family-title: 'Montserrat';
-  --font-family-primary: 'Montserrat';
+  --font-family-title: "Montserrat";
+  --font-family-primary: "Montserrat";
 
   //////////////////////////////////////////////////
   // border
@@ -39,7 +39,5 @@
   --border-block: 1px solid var(--border-color);
   --border-radius: 15px;
   --main-border-bottom: 5px solid var(--main-color);
-
-
-  --padding-form: 0.5rem;
+  --padding-form: 0.5rem 0.7rem;
 }

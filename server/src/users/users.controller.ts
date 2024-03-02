@@ -66,6 +66,7 @@ export class UsersController {
   @Get('/check-login')
   async checkLogin(@Request() req): Promise<any> {
     const user = await this.usersService.findById(req.session.user_id);
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     const { password, ...res } = user;
     return res;
   }
@@ -76,7 +77,6 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
     @Request() req,
   ) {
-    const userData = new CreateUserDto();
     return this.usersService.update(req.body, +id);
   }
 
@@ -128,7 +128,6 @@ export class UsersController {
   @Post('/logout')
   async logout(@Request() req) {
     req.session.logged = false;
-    return;
   }
 
   // only for admin
@@ -147,7 +146,7 @@ export class UsersController {
   async changePermissions(
     @Body() params: { userId: number; permissions: Permissions[] },
   ) {
-    let user = new User();
+    const user = new User();
     user.userId = params.userId;
     return await this.usersService.changePermissions(
       user,
@@ -281,7 +280,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Получение пользователя' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: User })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-  async findOne(@Param("id") id:number) {
+  async findOne(@Param('id') id: number) {
     return await this.usersService.findOne(id);
   }
 }

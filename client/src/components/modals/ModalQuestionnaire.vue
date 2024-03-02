@@ -16,6 +16,7 @@
   <div
     class="modal fade"
     id="exampleModal"
+    ref="exampleModal"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
@@ -24,19 +25,34 @@
       <div class="modal-content">
         <div class="modal-title" id="exampleModalLabel">Заполните анкету</div>
         <div class="modal-subtitle" :value="modelValue">{{ modelValue }}</div>
-        <div v-for="form in data" class="wrapper-questions">
+
+        <div class="alert alert-warning" v-if="msg">
+          {{ msg }}
+        </div>
+        <LoadingElem v-if="teamStore.apiRequest.loading" size-fa-icon="" />
+
+        <div
+          v-for="(form, i) in data"
+          class="wrapper-questions"
+          v-bind:key="form.id"
+        >
           <div class="wrapper-one-question">
             <div class="question-label">
               {{ form.title }}{{ form.required ? "*" : "" }}
             </div>
-            <textarea class="input-answer" />
+            <textarea
+              class="input-answer"
+              v-model="createRequisitionData.fields[i]"
+            />
           </div>
         </div>
         <div class="wrap-button">
           <button type="button" class="close-btn" data-bs-dismiss="modal">
             Закрыть
           </button>
-          <button class="send-btn">Отправить ответы</button>
+          <button class="send-btn" @click="createRequisition()">
+            Отправить ответы
+          </button>
         </div>
       </div>
     </div>
@@ -50,17 +66,29 @@ import { useRoute } from "vue-router";
 import { useTeamStore } from "@/store/team_store";
 import { usePermissionsStore } from "@/store/permissions_store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import type { IFormField } from "@/store/models/forms/form-field.model";
+import type { Ref } from "vue";
+import type { RURequisition } from "@/store/models/teams/update-requisition.model";
+import type { ICreateRequisition } from "@/store/models/forms/requisition-fields.model";
+import LoadingElem from "@/components/LoadingElem.vue";
 
 const permissions_store = usePermissionsStore();
+const exampleModal = ref(null);
 
 const teamStore = useTeamStore();
 const route = useRoute();
+const msg = ref("");
 
 const idTeam = Number(route.params.id);
 
 const formStore = useFormStore();
 const userReq = ref(); //проверить не подавал ли уже юзер заявку в этот колелктив
-const data = ref();
+const data: Ref<IFormField[]> = ref([]);
+
+const createRequisitionData: Ref<ICreateRequisition> = ref({
+  team_id: idTeam,
+  fields: [],
+});
 
 defineProps({
   modelValue: {
@@ -69,43 +97,29 @@ defineProps({
 });
 
 onBeforeMount(async () => {
-  fetchFormFields();
-  fetchRequisition(); //проверить не подавал ли уже юзер заявку в этот колелктив
+  await fetchFormFields();
+  await fetchRequisition(); //проверить не подавал ли уже юзер заявку в этот колелктив
+
+  if (data.value?.length > 0)
+    createRequisitionData.value.fields = new Array(data.value?.length).fill("");
 });
 
 async function fetchFormFields() {
   data.value = await formStore.fetchFormFields(idTeam);
 }
 
-async function checkRequired() {}
-
-async function fetchRequisition() {
-  userReq.value = await teamStore.fetchRequisitions(
-    idTeam,
-    permissions_store.user_id,
-  );
+async function createRequisition() {
+  await teamStore.createRequisition(createRequisitionData.value).then(() => {
+    msg.value = teamStore.apiRequest.error.length>0 ? teamStore.apiRequest.error :"Отправлено";
+  });
 }
 
-//  export default {
-//   name: "ModalQuestionnaire",
-//   props: {
-//     inputs: {
-//       type: Array,
-//       required: true,
-//     },
-//   },
-//   data() {
-//     return {
-//       formValues: [],
-//     };
-//   },
-//   methods: {
-//     onSubmit() {
-//       const requiredFields = this.inputs.filter((input) => input.required);
-//       const hasEmptyFields = requiredFields.some((field, index) => !this.formValues[index]);
-//     },
-//   },
-//  };
+async function fetchRequisition() {
+  let requis: RURequisition = {};
+  requis.user_id = permissions_store.user_id;
+  requis.team_id = idTeam;
+  userReq.value = await teamStore.fetchRequisitions(requis);
+}
 </script>
 
 <style lang="scss" scoped>

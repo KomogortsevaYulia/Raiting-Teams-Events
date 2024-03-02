@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, Length } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 import { Team } from '../entities/team.entity';
 
 export class UpdateTeamDto {
@@ -32,10 +39,9 @@ export class UpdateTeamDto {
   newLeaderId: number;
 
   @IsOptional()
-  @Length(1, 50, {
-    message: 'Кабинет, максимальная длина текста 50',
-  })
-  cabinet: string;
+  @IsArray()
+  @IsString({ each: true })
+  cabinets: string[];
 
   @IsOptional()
   @IsNotEmpty({ message: 'Ссылка на документ пустая' })
@@ -50,4 +56,8 @@ export class UpdateTeamDto {
     message: 'ССсылка на устав, максимальная длина текста 300',
   })
   charterTeam: string;
+
+  get cabinetsAsNumbers(): number[] {
+    return this.cabinets.map((str) => parseInt(str));
+  }
 }

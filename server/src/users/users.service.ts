@@ -5,7 +5,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,7 +14,7 @@ import { CreateUserFunctionDto } from './dto/create-user-function.dto';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Function } from './entities/function.entity';
+import { TeamFunction } from './entities/function.entity';
 import { User } from './entities/user.entity';
 import { UserFunction } from './entities/user_function.entity';
 import * as argon2 from 'argon2';
@@ -24,10 +23,9 @@ import { Team } from '../teams/entities/team.entity';
 import { UserFunctionDto } from './dto/user-functions.dto';
 import { FunctionDto } from './dto/functions.dto';
 import { Permissions } from '../shared/permissions';
-import axios from 'axios';
 import { PermissionsActions } from '../general/enums/action-permissions';
-
-const jwt = require('jsonwebtoken');
+import { UnauthorizedException } from '@nestjs/common';
+import axios from 'axios';
 
 @Injectable()
 export class UsersService {
@@ -36,8 +34,9 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(UserFunction)
     private readonly userFunctionsRepository: Repository<UserFunction>,
-    @InjectRepository(Function)
-    private readonly functionsRepository: Repository<Function>,
+    @InjectRepository(TeamFunction)
+    private readonly functionsRepository: Repository<TeamFunction>,
+
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
   ) {}
@@ -133,12 +132,6 @@ export class UsersService {
     return this.usersRepository.update(+id, updateUserDto);
   }
 
-  async addRole(education_group, title_role) {}
-
-  async findAll(): Promise<User[]> {
-    return await this.usersRepository.createQueryBuilder('users').getMany();
-  }
-
   async login(username: string, pass: string): Promise<any> {
     const user = await this.usersRepository
       .createQueryBuilder('users')
@@ -146,6 +139,7 @@ export class UsersService {
       .getOne();
 
     if (user && (await argon2.verify(user.password, pass))) {
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
       const { password, ...result } = user;
       return result;
     } else {
@@ -164,7 +158,7 @@ export class UsersService {
   async create(dto: CreateUserDto): Promise<User> {
     // check uniqueness of username/email
     const { username, email, password } = dto;
-    const qb = await this.usersRepository
+    const qb = this.usersRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username })
       .orWhere('user.email = :email', { email });
@@ -193,8 +187,7 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     } else {
-      const savedUser = await this.usersRepository.save(newUser);
-      return savedUser;
+      return await this.usersRepository.save(newUser);
     }
   }
 
@@ -334,9 +327,7 @@ export class UsersService {
   // checkers---------------------------------------------------------------------------
 
   // function--------------------------------------------------------------------
-  async createFunctionIfNotExist(
-    createFunctionDto: CreateFunctionDto,
-  ): Promise<Function> {
+  async createFunctionIfNotExist(createFunctionDto: CreateFunctionDto) {
     // find existing function for team
     const fD = new FunctionDto();
     fD.team = createFunctionDto.team;

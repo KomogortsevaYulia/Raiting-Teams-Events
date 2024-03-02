@@ -4,7 +4,7 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UserFunction } from './entities/user_function.entity';
-import { Function } from './entities/function.entity';
+import { TeamFunction } from './entities/function.entity';
 import { Team } from '../teams/entities/team.entity';
 import { Achievement } from './entities/achievement.entity';
 import { TeamsService } from '../teams/teams.service';
@@ -21,7 +21,7 @@ import { FormsService } from '../forms/forms.service';
     TypeOrmModule.forFeature([
       User,
       UserFunction,
-      Function,
+      TeamFunction,
       Team,
       Achievement,
       Requisitions,

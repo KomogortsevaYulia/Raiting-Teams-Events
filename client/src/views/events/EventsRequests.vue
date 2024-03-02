@@ -9,7 +9,11 @@
         v-model="selectedDirection"
         @change="fetchEvents()"
       >
-        <option v-for="direction in directions" :value="direction.id">
+        <option
+          v-for="direction in directions"
+          :value="direction.id"
+          v-bind:key="direction.id"
+        >
           {{ direction.name }}
         </option>
       </select>
@@ -23,7 +27,9 @@
         v-model="selectedStatus"
         @change="fetchEvents()"
       >
-        <option v-for="st in status" :value="st.id">{{ st.name }}</option>
+        <option v-for="st in status" :value="st.id" v-bind:key="st.id">
+          {{ st.name }}
+        </option>
       </select>
     </div>
   </div>
@@ -31,15 +37,11 @@
   <!-- cards of events -->
   <div class="row">
     <div class="events-requests__wrapper">
-      <div
-        v-if="events == null || events.length <= 0"
-        class="alert alert-warning"
-        role="alert"
-      >
+      <div v-if="events.length <= 0" class="alert alert-warning" role="alert">
         Заявок нет
       </div>
 
-      <div v-else v-for="event in events">
+      <div v-else v-for="event in events" v-bind:key="event.id">
         <!-- карточка -->
         <CardApprove
           :positive-border-color="
@@ -150,7 +152,7 @@
             <div class="col d-flex justify-content-end">
               <button
                 class="button btn-custom-accept"
-                @click="changeStatus(event.id, Status.ACCEPTED)"
+                @click="changeStatus(event.id ?? -1, Status.ACCEPTED)"
               >
                 принять
               </button>
@@ -158,7 +160,7 @@
             <div class="col-auto">
               <button
                 class="button"
-                @click="changeStatus(event.id, Status.CANCELLED)"
+                @click="changeStatus(event.id ?? -1, Status.CANCELLED)"
               >
                 отклонить
               </button>
@@ -179,22 +181,24 @@
 </template>
 
 <script setup lang="ts">
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/PaginationElem.vue";
 import { useEventStore } from "@/store/events_store";
 import { useEventStore as useSingleEvent } from "@/store/event_store";
 import { DIRECTION } from "@/store/constants/constants_class_names";
 
 import { onBeforeMount, ref } from "vue";
+import type { Ref } from "vue";
+
 import { useDictionaryStore } from "@/store/dictionary_store";
 import CardApprove from "@/components/CardApprove.vue";
-import { Type, Status } from "@/store/enums/enum_event";
-import { Event } from "@/store/models/events.model";
+import { Status, Type } from "@/store/enums/enum_event";
+import type { IEvent, IEventSearch } from "@/store/models/event/events.model";
 
 const eventsStore = useEventStore();
 const singleEvent = useSingleEvent();
 const dictionaryStore = useDictionaryStore();
 
-const events = ref();
+const events: Ref<IEvent[]> = ref([]);
 const directions = ref([{ id: 0, name: "Все" }]);
 const status = [
   { id: 0, name: "Принятные", value: Status.ACCEPTED },
@@ -219,8 +223,8 @@ const visiblePages = 5;
 //pagination ---------------------------------------------------------------------
 
 onBeforeMount(async () => {
-  let direct = await dictionaryStore.getFromDictionaryByClassID(DIRECTION);
-  directions.value = direct;
+  directions.value =
+    await dictionaryStore.getFromDictionaryByClassID(DIRECTION);
   directions.value.unshift({ id: 0, name: "Все" });
 
   await fetchEvents();
@@ -231,15 +235,17 @@ async function fetchEvents() {
 
   const sDirection =
     selectedDirection.value > 0 ? selectedDirection.value : null;
-  let event = new Event();
-  event.limit = limit;
-  event.offset = offset.value;
-  event.type = Type.OUTSIDE;
-  event.status = status[selectedStatus.value].value;
-  event.direction = sDirection;
+
+  let event: IEventSearch = {
+    limit: limit,
+    offset: offset.value,
+    type: Type.OUTSIDE,
+    status: status[selectedStatus.value].value,
+    direction: sDirection ?? undefined,
+  };
 
   let d = await eventsStore.fetchEvents(event);
-  events.value = d[0];
+  events.value = d[0] as IEvent[];
 
   const eventsCount = d[1];
   maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1;
