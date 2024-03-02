@@ -11,6 +11,7 @@ import { GetAllCabinetsResponse } from './dto/get-all-cabinets.response';
 import { CreateCabinetDto } from './dto/create-cabinet.dto';
 import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
+import { SearchCabinetsDto } from './dto/search-cabinets.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -94,11 +95,23 @@ export class ScheduleService {
     return res;
   }
 
-  public async getAllCabinets(): Promise<GetAllCabinetsResponse> {
-    const cabinets = await this.cabinetsRepository.find();
+  public async getAllCabinets(
+    searchCabinetsDto: SearchCabinetsDto,
+  ): Promise<GetAllCabinetsResponse> {
+    const query = this.cabinetsRepository.createQueryBuilder('cabinets');
+
+    // find cabinets by ids
+    searchCabinetsDto.ids
+      ? query.where('cabinets.id IN (:...ids)', {
+          ids: searchCabinetsDto.ids,
+        })
+      : null;
+
+    const cabinets = await query.getManyAndCount();
 
     return {
-      cabinets,
+      cabinets: cabinets[0],
+      count: cabinets[1],
     };
   }
 

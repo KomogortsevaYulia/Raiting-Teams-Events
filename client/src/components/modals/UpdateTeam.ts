@@ -5,7 +5,7 @@ export default class UpdateTeam {
   title = "";
   description = "";
   shortname = "";
-  cabinet = "";
+  cabinets:number[] = [];
   documentPath = "";
   charterPath = "";
   id_parent = 0;

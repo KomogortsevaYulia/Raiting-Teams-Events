@@ -23,6 +23,7 @@ import { GetAllCabinetsResponse } from './dto/get-all-cabinets.response';
 import { CreateCabinetDto } from './dto/create-cabinet.dto';
 import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
+import { SearchCabinetsDto } from './dto/search-cabinets.dto';
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -56,8 +57,8 @@ export class ScheduleController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad Request',
   })
-  getAllCabinets() {
-    return this.scheduleService.getAllCabinets();
+  getAllCabinets(@Query() searchCabinetsDto: SearchCabinetsDto) {
+    return this.scheduleService.getAllCabinets(searchCabinetsDto);
   }
 
   @Post('cabinets')
