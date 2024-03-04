@@ -595,7 +595,7 @@ export class TeamsService {
 
     existingRequisition = await this.requisitionsRepository.save(requisition);
 
-    if (existingRequisition && form.form_field && form.form_field.length > 0) {
+    if (existingRequisition && form?.form_field && form?.form_field.length > 0) {
       for (let i = 0; i < fields.length; i++) {
         const requisitionFieldDto = new CreateRequisitionFieldDto();
         requisitionFieldDto.value = fields[i];

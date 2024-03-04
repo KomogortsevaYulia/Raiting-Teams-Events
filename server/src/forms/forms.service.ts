@@ -23,7 +23,7 @@ export class FormsService {
     return res_forms.id;
   }
 
-  async findOnFormFields(team_id: number) {
+  async findOnFormFields(team_id: number):Promise<Form | null> {
     const archive = false;
     return await this.formRepository
       .createQueryBuilder('form')
