@@ -32,6 +32,7 @@ import { PermissionsActions } from '../general/enums/action-permissions';
 import { TeamFunction } from '../users/entities/function.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { FindRequisitionDto } from '../forms/dto/find-requisition.dto';
+import { CreateFormDto } from '../forms/dto/create-form.dto';
 
 @Injectable()
 export class TeamsService {
@@ -135,6 +136,11 @@ export class TeamsService {
 
     // назначить нового пользвоателя
     await this.assignTeamRole(user, directionTeamLeaderDto);
+
+    // create form for team
+    let fDto = new CreateFormDto();
+    fDto.team_id = team.id;
+    await this.formService.createForm(fDto);
 
     return team;
   }
@@ -595,7 +601,11 @@ export class TeamsService {
 
     existingRequisition = await this.requisitionsRepository.save(requisition);
 
-    if (existingRequisition && form?.form_field && form?.form_field.length > 0) {
+    if (
+      existingRequisition &&
+      form?.form_field &&
+      form?.form_field.length > 0
+    ) {
       for (let i = 0; i < fields.length; i++) {
         const requisitionFieldDto = new CreateRequisitionFieldDto();
         requisitionFieldDto.value = fields[i];

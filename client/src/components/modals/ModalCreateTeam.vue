@@ -200,7 +200,7 @@
                         @click="
                           archiveTeam(
                             teamObj?.id ?? -1,
-                            teamObj?.is_archive ?? false,
+                             !teamObj?.is_archive,
                           )
                         "
                         data-bs-toggle="tooltip"

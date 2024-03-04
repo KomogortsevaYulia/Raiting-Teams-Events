@@ -107,7 +107,7 @@ export class TeamsController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad Request, какие то данные неверно введены',
   })
-  changeArchiveTeam(@Param('id') id, @Body() data) {
+  changeArchiveTeam(@Param('id') id:number, @Body() data:{isArchive:boolean}) {
     return this.teamsService.changeArchiveTeam(id, data.isArchive);
   }
 
