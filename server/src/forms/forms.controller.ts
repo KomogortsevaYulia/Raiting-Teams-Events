@@ -16,6 +16,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateFormDto, CreateFormFieldsDto } from './dto/create-form.dto';
 import { UpdateFieldDto } from './dto/update-field';
 import { LocalAuthGuard } from '../users/guard/local-auth.guard';
+import {Permissions} from "../shared/permissions";
 
 @ApiTags('forms') // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('forms')
@@ -24,11 +25,12 @@ export class FormsController {
 
   @Post()
   @UseGuards(LocalAuthGuard)
-  @SetMetadata('permissions', ['can create questionnaires'])
+  @SetMetadata('permissions', [Permissions.CAN_CREATE_QUESTIONNAIRES])
   @UsePipes(new ValidationPipe())
   @ApiOperation({ summary: 'Создать новую анкету' })
-  create(@Body() createFormDto: CreateFormDto) {
-    return this.formsService.createForm(createFormDto);
+  async create(@Body() createFormDto: CreateFormDto) {
+    await this.formsService.createForm(createFormDto);
+    return { message: 'Сохранено' };
   }
 
   // @Put(':id')
@@ -39,12 +41,14 @@ export class FormsController {
 
   @Post('field')
   @UseGuards(LocalAuthGuard)
-  @SetMetadata('permissions', ['can create questionnaires'])
+  @SetMetadata('permissions', [Permissions.CAN_CREATE_QUESTIONNAIRES])
   @UsePipes(new ValidationPipe())
   @ApiOperation({ summary: 'Создать новый вопрос' })
-  createFormField(@Body() createFormFieldsDto: CreateFormFieldsDto) {
-    return this.formsService.createFormField(createFormFieldsDto);
+  async createFormField(@Body() createFormFieldsDto: CreateFormFieldsDto) {
+    await this.formsService.createFormField(createFormFieldsDto);
+    return { message: 'Сохранено' };
   }
+
   // @Get()
   // findAll() {
   //   return this.formsService.findAll();
@@ -76,14 +80,14 @@ export class FormsController {
 
   @Put('field/:id')
   @UseGuards(LocalAuthGuard)
-  @SetMetadata('permissions', ['can create questionnaires'])
+  @SetMetadata('permissions', [Permissions.CAN_CREATE_QUESTIONNAIRES])
   @ApiOperation({ summary: 'Обновить поле' })
-  updateFormField(
-    @Param('id') field_id,
+  async updateFormField(
+    @Param('id') field_id: number,
     @Body() updateFieldDto: UpdateFieldDto,
   ) {
-    console.log(updateFieldDto);
-    return this.formsService.updateFormField(field_id, updateFieldDto);
+    await this.formsService.updateFormField(field_id, updateFieldDto);
+    return { message: 'Сохранено' };
   }
 
   @Get('requisition/:id')

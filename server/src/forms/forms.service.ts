@@ -52,7 +52,7 @@ export class FormsService {
   // }
 
   async createForm(createFormDto: CreateFormDto): Promise<Form> {
-    let team = await this.teamRepository.findOneBy({
+    const team = await this.teamRepository.findOneBy({
       id: createFormDto.team_id,
     });
     return await this.formRepository.save({

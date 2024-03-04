@@ -1,31 +1,46 @@
 <template>
+  <div v-if="responseMsg" class="alert alert-warning" role="alert">
+    {{ responseMsg }}
+  </div>
   <div class="form">
     <div
       class="wrapper-question"
       v-for="(field, index) in fields"
       v-bind:key="index"
     >
-      <div class="question-label">
-        <div class="num-question">Вопрос {{ index + 1 }}</div>
-        <label class="checkbox-label">
+      <div class="question-label row">
+        <div class="num-question col-auto">Вопрос {{ index + 1 }}</div>
+        <label class="checkbox-label col-auto">
           <input type="checkbox" v-model="field.required" />
           <div class="checkbox-custom"></div>
           <span class="checkbox-text">Обязательный</span>
         </label>
       </div>
-      <div class="wrap-input">
-        <textarea class="input-question" v-model="field.title" />
-        <button class="remove-btn" @click="removeInput(index)">Удалить</button>
+      <div class="row align-items-center justify-content-center">
+        <div class="col">
+          <textarea
+            class="input-question w-100"
+            style="min-width: 100px"
+            v-model="field.title"
+          />
+        </div>
+        <div class="col-auto">
+          <button class="remove-btn" @click="removeInput(index)">
+            Удалить
+          </button>
+        </div>
       </div>
     </div>
-    <button class="add-btn" @click="addInput">Добавить вопрос</button>
-
-    <button class="save-btn" @click="submit">Сохранить</button>
+    <div class="row">
+      <button class="add-btn" @click="addInput">Добавить вопрос</button>
+    </div>
+    <div class="row">
+      <button class="save-btn btn-custom-accept" @click="submit">Сохранить</button>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import axios from "axios";
 import { onBeforeMount, ref } from "vue";
 import { useFormStore } from "@/store/form_store";
 import { useRoute } from "vue-router";
@@ -63,14 +78,11 @@ const addInput = () => {
 };
 
 const submit = async () => {
-  const promises = [];
-
   for (let i = fields.value.length - 1; i >= 0; i--) {
     const field = fields.value[i];
 
     if (field.id == null && field.title && field.required) {
-      const promise = createFormFields(field.title, idForm, field.required);
-      promises.push(promise);
+      await createFormFields(field.title, idForm, field.required);
     }
   }
 
@@ -78,7 +90,6 @@ const submit = async () => {
     await createForm(idTeam);
   } else {
     await archiveFields(deletedFields.value, true);
-    // updateForm(idForm)
   }
 };
 
@@ -94,29 +105,23 @@ async function createFormFields(
   form_id: number,
   required: boolean,
 ) {
-  responseMsg.value = "сохранено";
-
-  try {
-    const response = await axios.post("/api/forms/field", {
-      title: title,
-      required: required,
-      form: form_id,
+  await formStore
+    .createFields(title, required, form_id)
+    .then((res) => {
+      responseMsg.value = res.message;
+    })
+    .catch((error) => {
+      if (error.response) {
+        responseMsg.value = error.response.data.message;
+      }
     });
-    return response.data.id.toString();
-  } catch (error) {
-    if (error.response) {
-      responseMsg.value = error.response.data.message;
-    }
-    return null;
-  }
 }
 
 async function createForm(idTeam: number) {
-  responseMsg.value = "сохранено";
-
-  await axios
-    .post("/api/forms", {
-      team_id: idTeam,
+  await formStore
+    .createForm(idTeam)
+    .then((res) => {
+      responseMsg.value = res.message;
     })
     .catch((err) => {
       if (err.response) {
@@ -129,13 +134,14 @@ async function archiveFields(deletedFields: IFormField[], is_archive: boolean) {
   for (const element of deletedFields) {
     let f = element;
     if (f.id) {
-      await axios
-        .put(`/api/forms/field/${f.id}`, {
-          archive: is_archive,
+      await formStore
+        .archiveField(f, is_archive)
+        .then((res) => {
+          responseMsg.value = res.message;
         })
-        .catch((err) => {
-          if (err.response) {
-            responseMsg.value = err.response.data.message;
+        .catch((error) => {
+          if (error.response) {
+            responseMsg.value = error.response.data.message;
           }
         });
     }
@@ -266,7 +272,7 @@ async function archiveFields(deletedFields: IFormField[], is_archive: boolean) {
     display: block;
     padding: 0;
     font-family: var(--font-family-title);
-    width: 230px;
+    width: 200px;
     height: 60px;
     font-weight: 400;
     font-size: 20px;
@@ -292,8 +298,6 @@ async function archiveFields(deletedFields: IFormField[], is_archive: boolean) {
     width: 290px;
     height: 80px;
 
-    color: #ffffff;
-    background: var(--second-accept);
   }
 }
 </style>
