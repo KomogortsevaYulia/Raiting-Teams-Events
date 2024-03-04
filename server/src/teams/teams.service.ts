@@ -108,7 +108,7 @@ export class TeamsService {
     if (updateTeamDto.leaders && updateTeamDto.leaders.length > 0) {
       const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
       directionTeamLeaderDto.teamId = updatedTeam.id;
-      directionTeamLeaderDto.userIds = updateTeamDto.leaders;
+      directionTeamLeaderDto.userIds = updateTeamDto.leaders ?? [];
       directionTeamLeaderDto.roleName = TeamRoles.Leader;
       // назначить нового пользвоателя
       await this.assignTeamRole(user, directionTeamLeaderDto);
@@ -131,14 +131,14 @@ export class TeamsService {
 
     const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
     directionTeamLeaderDto.teamId = team.id;
-    directionTeamLeaderDto.userIds = createTeamDto.leaders;
+    directionTeamLeaderDto.userIds = createTeamDto.leaders ?? [];
     directionTeamLeaderDto.roleName = TeamRoles.Leader;
 
     // назначить нового пользвоателя
     await this.assignTeamRole(user, directionTeamLeaderDto);
 
     // create form for team
-    let fDto = new CreateFormDto();
+    const fDto = new CreateFormDto();
     fDto.team_id = team.id;
     await this.formService.createForm(fDto);
 

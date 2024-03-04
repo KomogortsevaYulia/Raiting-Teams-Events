@@ -284,7 +284,6 @@ const auditorySelect = ref();
 async function onTextChange(e: InputEvent) {
   const el = e.target as HTMLInputElement;
   searchTxtUser.value = el.value;
-  leaderSelect.value = null;
   timerFetchUsers();
 }
 
@@ -436,10 +435,6 @@ async function getAuditories() {
 
 //создать коллектив
 async function createTeam() {
-  let userId = -1;
-  //проверить является id числом или нет и выбрана ли опция
-
-  userId = leaderSelect.value.id;
 
   //create team
   await teamStore
@@ -448,7 +443,7 @@ async function createTeam() {
       title.value,
       description.value,
       shortname.value,
-      userId,
+      leaders.value.map((el)=>el.id),
       auditories.value.map((item) => item.id),
       charterTeamFile.value,
       documentFile.value,

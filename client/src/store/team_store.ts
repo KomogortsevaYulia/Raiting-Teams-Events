@@ -71,7 +71,7 @@ export const useTeamStore = defineStore("teams", () => {
     title: string,
     description: string,
     shortname: string,
-    userId: number,
+    leaders: number[],
     cabinets: number[],
     fileUstav: File,
     fileDocument: File,
@@ -85,7 +85,10 @@ export const useTeamStore = defineStore("teams", () => {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("shortname", shortname);
-    formData.append("userID", userId.toString());
+    //add leaders
+    leaders.forEach((el) => {
+      formData.append("leaders[]", el.toString());
+    });
     // cabinets
     for (let i = 0; i < cabinets.length; i++) {
       formData.append("cabinets[]", cabinets[i].toString());
