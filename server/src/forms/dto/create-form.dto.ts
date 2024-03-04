@@ -23,7 +23,6 @@ export class createUserFormDto {
 }
 
 export class CreateFormDto {
-
   @IsNumber()
   @Type(() => Number)
   team_id: number;
