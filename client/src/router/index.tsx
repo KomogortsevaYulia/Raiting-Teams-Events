@@ -1,6 +1,7 @@
 import { usePermissionsStore } from "@/store/permissions_store";
 import { createRouter, createWebHistory } from "vue-router";
 import type {Permission} from "@/types";
+import { Permissions } from "@/common/permissions/permissions.enum";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,7 +45,7 @@ const router = createRouter({
 
       component: () => import("@/views/DirectionsPage.vue"),
       meta: {
-        permission: "can view directions",
+        permission: Permissions.CAN_VIEW_DIRECTIONS,
       },
     },
     {
@@ -54,7 +55,7 @@ const router = createRouter({
       component: () => import("@/views/report/StatisticPage.vue"),
       meta: {
         requiresAuth: true,
-        permission: "can view directions",
+        permission: Permissions.CAN_VIEW_DIRECTIONS,
       },
     },
     {
@@ -108,9 +109,18 @@ const router = createRouter({
       component: () => import("@/views/admin_panel/AdminMain.vue"),
       meta: {
         requiresAuth: true,
-        permission: "can all",
+        permission: Permissions.CAN_ALL,
       },
     },
+    {
+      path: "/schedule/add-class",
+      name: "create class to schedule",
+      component: () => import("@/views/schedule/create-page/ScheduleCreate.vue"),
+      meta: {
+        // requiresAuth: true,
+        // permission: Permissions.CAN_CREATE_CLASS_TO_SCHEDULE
+      }
+    }
   ],
 });
 
