@@ -17,7 +17,7 @@
         </div>
         <div class="image-container">
           <div v-for="(item, index) in team?.image" :key="index">
-            <img :src="item" v-if="currentPage === index" />
+            <img :src="item" v-if="currentPage === index"  alt=""/>
           </div>
         </div>
         <div class="arrow-right" @click="nextPage">
@@ -42,7 +42,7 @@
       <div class="adress block">г. Иркутск, ул. Лермонтова, 83,<br>главный корпус ИРНИТУ,<br>каб. А-203</div>
       <div class="schedule block">пн-пт 9:00 - 18:00,<br>сб 10:00 - 15:00<br>вс - выходной</div>
     </div>
-    <img src="https://i.imgur.com/0e7rWdZ.png">
+    <img src="https://i.imgur.com/0e7rWdZ.png" alt="">
   </div>
 </template>
 
