@@ -12,6 +12,7 @@ import { TeamFunction } from '../../users/entities/function.entity';
 import { Journal } from '../../events/entities/journal.entity';
 import { Form } from '../../forms/entities/form.entity';
 import { Requisitions } from './requisition.entity';
+import { TeamPhoto } from './team-photo.entity';
 
 @Entity('teams')
 export class Team {
@@ -44,6 +45,10 @@ export class Team {
   short_description: string;
 
   @ApiProperty()
+  @Column({ nullable: true })
+  phone: string;
+
+  @ApiProperty()
   @Column({
     type: 'enum',
     enum: ['direction', 'university', 'teams'],
@@ -62,6 +67,10 @@ export class Team {
   @ApiProperty()
   @Column('simple-array', { nullable: true })
   cabinets: number[];
+
+  @ApiProperty()
+  @Column('simple-array', { nullable: true })
+  links: string[];
 
   @ApiProperty()
   @Column({ nullable: true })
@@ -87,6 +96,9 @@ export class Team {
 
   @OneToMany(() => Form, (form) => form.team, { cascade: true })
   forms: Form[];
+
+  @OneToMany(() => TeamPhoto, (teamPhoto) => teamPhoto.team, { cascade: true })
+  team_photos: TeamPhoto[];
 
   // @OneToMany(() => TeamSchedule, (team_schedule) => team_schedule.team, {
   //   cascade: true,

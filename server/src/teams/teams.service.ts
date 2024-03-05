@@ -64,6 +64,8 @@ export class TeamsService {
         'teams.title',
         'teams.tags',
         'teams.image',
+        'teams.phone',
+        'teams.links',
         'teams.description',
         'teams.short_description',
         'teams.type_team',
@@ -73,12 +75,16 @@ export class TeamsService {
         'teams.shortname',
         'teams.charter_team',
         'teams.id_parent',
+        //     team photos
+        'team_photos.image',
+        'team_photos.id',
       ])
       .where('teams.id = :id', { id: id })
       // .andWhere('teams.type_team = :type', { type: 'teams' })
       // select direction
       .leftJoin('teams.id_parent', 'direction')
       .addSelect('direction.id')
+      .leftJoin('teams.team_photos', 'team_photos')
       .leftJoinAndSelect(
         'teams.functions',
         'functions',

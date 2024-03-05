@@ -15,6 +15,7 @@ import { Form } from '../forms/entities/form.entity';
 import { RequisitionFields } from 'src/forms/entities/requisition_fields.entity';
 import { FormField } from 'src/forms/entities/form_field.entity';
 import { FormsService } from 'src/forms/forms.service';
+import { TeamPhoto } from './entities/team-photo.entity';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FormsService } from 'src/forms/forms.service';
       Form,
       RequisitionFields,
       FormField,
+      TeamPhoto,
     ]),
   ],
   controllers: [TeamsController],

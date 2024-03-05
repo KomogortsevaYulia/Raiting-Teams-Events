@@ -1,4 +1,5 @@
 import type { IFunction } from "@/store/models/user/functions.model";
+import type {ITeamPhotos} from "@/store/models/teams/team-photos.model";
 
 export interface ITeam {
   id?: number;
@@ -7,6 +8,8 @@ export interface ITeam {
   description?: string;
   id_parent?: ITeam;
   title?: string;
+  phone?: string;
+  links?: string[];
   shortname?: string;
   cabinets?: number[];
   is_archive?: boolean;
@@ -14,5 +17,7 @@ export interface ITeam {
   document?: string;
   short_description?: string;
   set_open?: boolean;
+
+  team_photos?: ITeamPhotos[];
   functions?: IFunction[];
 }

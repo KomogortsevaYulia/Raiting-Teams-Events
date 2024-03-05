@@ -1,6 +1,11 @@
 <template>
   <div class="navigation-tags row g-1">
-    <Tag v-for="(item, index) in team?.tags" class="col-auto me-2" :text="item" :key="index" />
+    <Tag
+      v-for="(item, index) in team?.tags"
+      class="col-auto me-2"
+      :text="item"
+      :key="index"
+    />
   </div>
   <hr />
   <div class="block-title">О коллективе</div>
@@ -17,7 +22,7 @@
         </div>
         <div class="image-container">
           <div v-for="(item, index) in team?.image" :key="index">
-            <img :src="item" v-if="currentPage === index"  alt=""/>
+            <img :src="item" v-if="currentPage === index" alt="" />
           </div>
         </div>
         <div class="arrow-right" @click="nextPage">
@@ -29,20 +34,25 @@
   <div class="block-title">Галерея</div>
   <div class="middle-panel">
     <div class="gallery">
-      <img src="https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album" alt="" />
-      <img src="https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album" alt="" />
-      <img src="https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album" alt="" />
-      <img src="https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album" alt="" />
+      <img
+        v-for="(el, index) in team?.team_photos"
+        v-bind:key="index"
+        :src="el.image"
+        alt=""
+      />
     </div>
   </div>
   <div class="map">
     <div class="info">
       <div class="title">Наши контакты</div>
-      <div class="phone block">+7 (924) 601-90-94</div>
-      <div class="adress block">г. Иркутск, ул. Лермонтова, 83,<br>главный корпус ИРНИТУ,<br>каб. А-203</div>
-      <div class="schedule block">пн-пт 9:00 - 18:00,<br>сб 10:00 - 15:00<br>вс - выходной</div>
+      <div class="phone block">{{ team?.phone }}</div>
+      <!--      <div class="adress block">г. Иркутск, ул. Лермонтова, 83,<br>главный корпус ИРНИТУ,<br>каб. А-203</div>-->
+      <div class="links" v-for="(el, index) in team?.links" v-bind:key="index">
+        {{ el }}
+      </div>
+      <!--      <div class="schedule block">пн-пт 9:00 - 18:00,<br>сб 10:00 - 15:00<br>вс - выходной</div>-->
     </div>
-    <img src="https://i.imgur.com/0e7rWdZ.png" alt="">
+    <img src="https://i.imgur.com/0e7rWdZ.png" alt="map" />
   </div>
 </template>
 
@@ -133,6 +143,7 @@ function previousPage() {
       height: 2rem;
       font-family: var(--font-family-title);
     }
+
     .description {
       text-align: justify;
       font-size: 12px;
@@ -207,7 +218,7 @@ function previousPage() {
     }
 
     .arrow-left > *,
-    .arrow-right > *{
+    .arrow-right > * {
       color: #ababab;
       font-size: 18px;
     }
