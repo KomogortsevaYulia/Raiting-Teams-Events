@@ -4,7 +4,7 @@
     <!-- Навигация -->
     <div class="wrapper-team__navigation">
       <!-- создание коллектива -->
-      <div v-if="can('can create teams')">
+      <div v-if="can('can create teams')" >
         <!-- Button trigger modal -->
         <button
           @click="editTeam(false, null)"
@@ -82,9 +82,24 @@
           <div
             v-for="team in data"
             :class="[{ archive: team.is_archive }]"
-            class="cardEvent border-block row justify-content-center"
+            class="cardEvent border-block row justify-content-center position-relative"
             v-bind:key="team.id"
           >
+              <!-- edit -->
+              <div v-if="can('can create teams')"
+                   class="opacity-75 position-absolute w-auto top-0 end-0 p-2">
+                  <div
+                          @click="editTeam(true, team)"
+                          type="button"
+                          data-bs-toggle="modal"
+                          data-bs-target="#exampleModal"
+                  >
+                      <font-awesome-icon
+                              class="ic fa-1x btn-icon btn-icon-rounded"
+                              icon="pen-to-square"
+                      />
+                  </div>
+              </div>
             <div class="p-0 col-md-auto d-flex justify-content-center">
               <router-link :to="'/team/' + team.id">
                 <div class="card__banner">
@@ -107,12 +122,12 @@
             </div>
 
             <div class="wrapperContent col-lg col-md-auto px-4 py-4">
+
               <div class="row mb-2 g-2">
                 <!-- team title -->
                 <div class="col p-0">
                   <div class="row g-2">
                     <!-- набор -->
-
                     <div class="col-12">
                       <router-link :to="'/team/' + team.id">
                         <span
@@ -127,27 +142,10 @@
 
                     <div class="col-auto">
                       <span v-if="team.set_open" class="set set__open">
-                        Набор открыт</span
-                      >
+                        Набор открыт
+                      </span>
                       <span class="set set__closed" v-else> Набор закрыт</span>
                     </div>
-                  </div>
-                </div>
-                <!-- edit -->
-                <div
-                  v-if="can('can create teams')"
-                  class="col-auto d-flex justify-content-end align-items-end"
-                >
-                  <div
-                    @click="editTeam(true, team)"
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                  >
-                    <font-awesome-icon
-                      class="ic fa-1x btn-icon btn-icon-rounded"
-                      icon="pen-to-square"
-                    />
                   </div>
                 </div>
               </div>
@@ -156,15 +154,11 @@
                 <div class="navigation-tags my-2 row g-1">
                   <Tag
                     v-for="(item, index) in team.tags"
-                    class="col-auto me-2"
+                    class="col-auto me-1"
                     :text="item"
                     :key="index"
                   />
                 </div>
-<!--                  without description-->
-<!--                <div class="card-description row">-->
-<!--                  {{ team.short_description }}-->
-<!--                </div>-->
               </div>
             </div>
           </div>
@@ -255,7 +249,7 @@ function editTeam(editT: boolean, team: ITeam | null) {
 }
 
 function handleEventChangeStateLayout(stateL: boolean) {
-    stateLayout.value = stateL;
+  stateLayout.value = stateL;
 }
 
 // вытащить коллективы из бд
@@ -391,8 +385,6 @@ async function handleTimerSearch(seachText: string) {
 
   await fetchTeams();
 }
-
-//const itemLink = [{ name: "Новости", path: "/news" }, { name: "Коллективы", path: "/teams" },]
 </script>
 
 <style lang="scss" scoped>
@@ -412,7 +404,7 @@ async function handleTimerSearch(seachText: string) {
   .set {
     padding: 5px 15px;
     border-radius: var(--border-radius);
-    font-size: 16px;
+    font-size: 1rem;
 
     &__open {
       background: var(--green-color);
@@ -497,7 +489,6 @@ async function handleTimerSearch(seachText: string) {
           width: 250px;
           height: 350px;
           margin: 0 1rem 1rem 0;
-          flex-wrap: wrap;
           transition: all 0.5s;
 
           .cardTitle {
@@ -555,7 +546,6 @@ async function handleTimerSearch(seachText: string) {
 
       //list
       .wrapper-list {
-
         .cardEvent {
           margin: 1rem 0;
           border-radius: var(--border-radius);
@@ -563,8 +553,6 @@ async function handleTimerSearch(seachText: string) {
           height: 15rem;
           width: 100%;
           overflow: hidden;
-          display: flex;
-          flex-direction: row;
           transition: all 0.5s;
 
           .cardTitle {

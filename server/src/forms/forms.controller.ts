@@ -16,7 +16,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateFormDto, CreateFormFieldsDto } from './dto/create-form.dto';
 import { UpdateFieldDto } from './dto/update-field';
 import { LocalAuthGuard } from '../users/guard/local-auth.guard';
-import {Permissions} from "../shared/permissions";
+import { Permissions } from '../shared/permissions';
 
 @ApiTags('forms') // <---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('forms')
