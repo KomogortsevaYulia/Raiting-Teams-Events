@@ -14,8 +14,61 @@
         </div>
       </div>
   </section>
-  <footer>
-    {{classForm}}
+  <section></section>
+  <section class="mt-sm-4">
+    <div class="filters">
+      <GroupElements class="me-3">
+        <span option>
+          <font-awesome-icon :icon="['fas', 'star']" />
+          <span class="star__count ps-sm-2">{{ starCount }}</span>
+        </span>
+        <span option>
+          <font-awesome-icon :icon="['fas', 'star']" />
+        </span>
+      </GroupElements>
+      <GroupElements class="me-3">
+        <span option>
+          <font-awesome-icon :icon="['fas', 'star']" />
+        </span>
+        <span option no-divider>
+          Свободные
+        </span>
+      </GroupElements>
+      <GroupElements class="me-3">
+        <span option>
+          Тип
+        </span>
+        <span option>
+          <select class="form-select">
+            <option>Все</option>
+          </select>
+        </span>
+      </GroupElements>
+      <GroupElements class="me-3">
+        <span option>
+          Корпус
+        </span>
+        <span option>
+          <select class="form-select">
+            <option>Другие</option>
+          </select>
+        </span>
+      </GroupElements>
+      <GroupElements class="me-3">
+        <span option>
+          <font-awesome-icon :icon="['fas', 'star']" />
+        </span>
+        <span option>
+          <select class="form-select">
+            <option>Любая</option>
+          </select>
+        </span>
+      </GroupElements>
+      <button>icon Сброс</button>
+    </div>
+  </section>
+  <footer dev class="mt-sm-4">
+    classEntity: {{classForm}}
   </footer>
 </template>
 
@@ -23,14 +76,16 @@
   import { WeekDay, WeekDayRu } from '@/common/date/week-day.enum';
   import { PeriodOption, PeriodOptionRU } from './period-option.enum';
   import { ref } from 'vue';
+  import GroupElements from '@/common/group-elements/GroupElements.vue'
 
+  const starCount = 1;
   const shedule = ref({
     name: 'Калина'
-  })
+  });
   const classForm = ref({
     dayOfTheWeek: WeekDay.MONDAY,
     period: PeriodOption.ONCE,
-  })
+  }) 
 
   function setState(v: PeriodOption) {
     classForm.value.period = v;
@@ -50,6 +105,7 @@
     grid-template-columns: 270px minmax(200px, 300px);
   }
 
+  // TODO: move switch as common component
   .switch {
     --switch__bg-color: #ffffff;
     --switch__active_bg-color: #d9d9d9;

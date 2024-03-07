@@ -87,6 +87,7 @@ module.exports = {
     'FE',
     'FE/assets',
     'FE/components',
+    'FE/common',
     'FE/charts',
     'FE/modals',
     'FE/router',
