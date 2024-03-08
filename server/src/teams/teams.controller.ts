@@ -289,7 +289,7 @@ export class TeamsController {
 
   // ------------------------------------------------------------------------------------------------------
   // team photos
-  @Post(':id/photos')
+  @Post(':id/photo')
   @UseGuards(LocalAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Загрузить фото в коллектив' })
@@ -342,7 +342,7 @@ export class TeamsController {
     @UserDecorator() user: User,
     @Param('id_photo') id_photo: number,
   ) {
-    let photo = await this.teamsService.getTeamPhoto(id_photo);
+    const photo = await this.teamsService.getTeamPhoto(id_photo);
 
     const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
       user,

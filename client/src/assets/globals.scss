@@ -136,12 +136,13 @@ textarea {
 
 // кнопка иконка
 .btn-icon {
-  background: transparent;
+  background: white;
+  border-radius: var(--border-radius-small);
   color: black;
   transition: 0.3s;
 
   &:hover {
-    color: var(--main-color);
+    color: var(--main-color) !important;
   }
 }
 

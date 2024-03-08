@@ -194,25 +194,12 @@
                   ></textarea>
                 </div>
 
-                <!--team photos-->
-                <div class="row g-2 mb-4" v-if="can('can edit own teams')">
-                  <b>Фото</b>
-                  <div
-                    class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
-                    v-for="(teamPhoto, index) in teamObj?.team_photos"
-                    v-bind:key="index"
-                  >
-                    <AddImage
-                      :handle-on-delete="handleOnDeletePhoto"
-                      :index="index"
-                      :src="teamPhoto.image"
-                    />
-                  </div>
-                </div>
-
-                <!--team avatars-->
-                <div class="row g-2 mb-4" v-if="can('can edit own teams')">
-                  <b>Аватар</b>
+                <!-- main photos -->
+                <div
+                  class="row g-2 mb-4"
+                  v-if="can('can edit own teams') && isEditTeam"
+                >
+                  <b>Заглавные фотографии: </b>
                   <div
                     class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
                     v-for="(img, index) in teamObj?.image"
@@ -224,7 +211,50 @@
                       :src="img"
                     />
                   </div>
+                  <!--                    upload avatars-->
+                  <div class="col-auto btn-add">
+                    <div>
+                      <input
+                        class="form-control"
+                        type="file"
+                        id="formFile"
+                        @change="(e) => handleAvatarUpload(e)"
+                      />
+                      <!--                      <FontAwesomeIcon icon="add" />-->
+                      <!--                      Добавить изображение-->
+                    </div>
+                  </div>
                 </div>
+
+                <!-- photo gallery -->
+                <div
+                  class="row g-2 mb-4"
+                  v-if="can('can edit own teams') && isEditTeam"
+                >
+                  <b>Фотографии из галереи: </b>
+                  <div
+                    class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
+                    v-for="(teamPhoto, index) in teamObj?.team_photos"
+                    v-bind:key="index"
+                  >
+                    <AddImage
+                      :handle-on-delete="handleOnDeletePhoto"
+                      :index="index"
+                      :src="teamPhoto.image"
+                    />
+                  </div>
+                  <div class="col-auto btn-add">
+                    <div>
+                      <input
+                        class="form-control"
+                        type="file"
+                        id="formFile"
+                        @change="(e) => handlePhotoUpload(e)"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div class="fuck-off-btn">
                   <div class="row">
                     <div class="col">
@@ -261,7 +291,7 @@ import { onBeforeMount, ref, watch } from "vue";
 import _ from "lodash";
 import { useTeamStore } from "@/store/team_store";
 import { useUserStore } from "@/store/user_store";
-import UpdateTeam from "./UpdateTeam";
+import UpdateTeamModel from "../../store/models/teams/update-team.model";
 import type { ITeam } from "@/store/models/teams/team.model";
 import { TeamRoles } from "@/store/enums/team_roles";
 import { FilterUser } from "@/store/models/user.model";
@@ -270,6 +300,7 @@ import TagElem from "@/components/TagElem.vue";
 import type { ISchedule } from "@/store/models/schedule/schedule.model";
 import { usePermissionsStore } from "@/store/permissions_store";
 import AddImage from "@/components/AddImage.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const teamStore = useTeamStore();
 const auditoryStore = useAuditoriesStore();
@@ -333,6 +364,15 @@ async function deleteLeader(index: number) {
 async function deleteAuditory(index: number) {
   auditories.value.splice(index, 1);
 }
+
+watch(
+  () => props.teamId,
+  async (value) => {
+    if (value) {
+      await fetchTeam(value);
+    }
+  },
+);
 
 // on auditory selected
 watch(
@@ -493,7 +533,7 @@ async function createTeam() {
 // обночить коллектив
 async function updateTeam() {
   //create team
-  const uT = new UpdateTeam();
+  const uT = new UpdateTeamModel();
   uT.id_parent = selectedDirection.value;
   uT.cabinets = auditories.value.map((el) => el.id);
   uT.description = description.value;
@@ -520,6 +560,20 @@ async function handleFileUpload(
   else {
     documentFile.value = file;
   }
+}
+
+async function handleAvatarUpload(event: { target: { files: File[] } }) {
+  const file = event.target.files[0];
+  await teamStore.addImage(props.teamId, file).then(() => {
+    fetchTeam(props.teamId);
+  });
+}
+
+async function handlePhotoUpload(event: { target: { files: File[] } }) {
+  const file = event.target.files[0];
+  await teamStore.addPhoto(props.teamId, file).then(() => {
+    fetchTeam(props.teamId);
+  });
 }
 
 // архивировать коллектив
@@ -566,6 +620,17 @@ async function handleOnDeleteAvatar(index: number) {
 </script>
 
 <style lang="scss" scoped>
+.btn-add {
+  padding: var(--padding-form);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background: lightgray;
+  }
+}
+
 .btn-close {
   &:hover {
     background-color: var(--main-color-hover);

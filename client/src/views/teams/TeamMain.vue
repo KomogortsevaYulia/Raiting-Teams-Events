@@ -1,7 +1,7 @@
 <template>
     <div class="navigation-tags row g-1">
         <div class="col">
-            <div class="row">
+            <div class="row g-2">
                 <Tag
                         v-for="(item, index) in team?.tags"
                         class="col-auto me-2"

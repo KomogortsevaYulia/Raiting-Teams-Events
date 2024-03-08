@@ -1,4 +1,4 @@
-export default class UpdateTeam {
+export default class UpdateTeamModel {
   id = 0;
   leaders: number[] = [];
   title = "";

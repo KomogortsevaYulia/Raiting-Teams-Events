@@ -660,15 +660,14 @@ export class TeamsService {
   }
 
   async deleteTeamAvs(idTeam: number, imagePath: string) {
-
     const team = await this.findOne(idTeam);
     team.image = team.image.filter((img) => {
       return imagePath != img;
     });
 
-    let savedTeam = await this.teamsRepository.save(team);
+    const savedTeam = await this.teamsRepository.save(team);
     await this.uploadsService.deleteFileByUrl(imagePath);
-    return savedTeam
+    return savedTeam;
   }
 
   // team avatars photo

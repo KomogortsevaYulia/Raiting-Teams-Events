@@ -3,11 +3,12 @@
     <div class="img">
       <img class="w-100 h-100" :src="src" alt="" />
     </div>
-    <div class="position-absolute top-0 end-0 p-2">
+<!--       delete btn -->
+    <div class="position-absolute z-2 p-2 btn-icon shadow">
       <font-awesome-icon
         @click="onDelete(index)"
-        :icon="['fas', 'circle-xmark']"
-        class="fa-2x btn-icon"
+        :icon="['fas', 'trash']"
+        class="fa-1x "
       />
     </div>
   </div>
@@ -27,6 +28,11 @@ function onDelete(index: number) {
 </script>
 
 <style scoped lang="scss">
+.btn-icon{
+  color: indianred;
+  top:-10px;
+  right: -10px;
+}
 .img {
   background-color: lightgray;
   overflow: hidden;
