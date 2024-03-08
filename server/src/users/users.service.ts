@@ -303,8 +303,6 @@ export class UsersService {
     permissions: TeamPermissions[],
     throwErr = false,
   ) {
-    const user = new User();
-    user.userId = userId;
 
     const permissisonsInTeam = await this.userFunctionsRepository
       .createQueryBuilder('user_function')
@@ -342,6 +340,7 @@ export class UsersService {
       false,
     );
 
+    // console.log(systemP, teamP, user, teamId, teamPermissions, systemPermissions)
     if (!systemP && !teamP)
       throw new ForbiddenException(
         'У вас нет разрешений: ' +

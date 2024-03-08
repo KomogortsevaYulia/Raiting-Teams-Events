@@ -4,9 +4,8 @@
       <img class="w-100 h-100" :src="src" alt="" />
     </div>
 <!--       delete btn -->
-    <div class="position-absolute z-2 p-2 btn-icon shadow">
+    <div class="position-absolute z-2 p-2 btn-icon shadow"  @click="onDelete(index)">
       <font-awesome-icon
-        @click="onDelete(index)"
         :icon="['fas', 'trash']"
         class="fa-1x "
       />

@@ -343,20 +343,16 @@ export class TeamsController {
     @Param('id_photo') id_photo: number,
   ) {
     const photo = await this.teamsService.getTeamPhoto(id_photo);
+    // console.log(photo, id_photo,photo.team.id)
 
-    const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
-      user,
-      photo.team.id,
-      [TeamPermissions.SPECIAL],
-      [Permissions.CAN_CREATE_TEAMS],
+    await this.usersService.hasPermissionsSystemOrTeam(
+        user,
+        photo.team.id,
+        [TeamPermissions.SPECIAL],
+        [Permissions.CAN_CREATE_TEAMS],
     );
 
-    if (hasPermissions) {
-      return await this.teamsService.deleteTeamPhotos(id_photo);
-    } else
-      throw new ForbiddenException(
-        'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
-      );
+    return await this.teamsService.deleteTeamPhotos(id_photo);
   }
 
   // team photos
@@ -379,7 +375,6 @@ export class TeamsController {
     @Param('id') id: number,
     @UploadedFile(new FileImageValidationPipe()) file: Express.Multer.File,
   ) {
-
     const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
       user,
       id,

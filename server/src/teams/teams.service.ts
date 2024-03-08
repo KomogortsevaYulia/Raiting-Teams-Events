@@ -679,7 +679,7 @@ export class TeamsService {
     return await this.requisitionsTPhotoRepository
       .createQueryBuilder('team_photos')
       .leftJoinAndSelect('team_photos.team', 'team')
-      .where('', { id: id })
+      .where('team_photos.id = :id', { id: id })
       .getOne();
   }
 

@@ -212,7 +212,7 @@
                     />
                   </div>
                   <!--                    upload avatars-->
-                  <div class="col-auto btn-add">
+                  <div class="col-auto d-flex align-items-center">
                     <div>
                       <input
                         class="form-control"
@@ -243,15 +243,13 @@
                       :src="teamPhoto.image"
                     />
                   </div>
-                  <div class="col-auto btn-add">
-                    <div>
-                      <input
-                        class="form-control"
-                        type="file"
-                        id="formFile"
-                        @change="(e) => handlePhotoUpload(e)"
-                      />
-                    </div>
+                  <div class="col-auto d-flex align-items-center">
+                    <input
+                      class="form-control"
+                      type="file"
+                      id="formFile"
+                      @change="(e) => handlePhotoUpload(e)"
+                    />
                   </div>
                 </div>
 
@@ -547,7 +545,8 @@ async function updateTeam() {
   uT.fileUstav = charterTeamFile.value;
   uT.fileDocument = documentFile.value;
 
-  teamObj.value = await teamStore.updateTeam(uT);
+  await teamStore.updateTeam(uT);
+  await fetchTeam(props.teamId);
 }
 
 async function handleFileUpload(
@@ -625,10 +624,6 @@ async function handleOnDeleteAvatar(index: number) {
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: 0.3s;
-
-  &:hover {
-    background: lightgray;
-  }
 }
 
 .btn-close {
