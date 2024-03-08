@@ -33,6 +33,8 @@ import { TeamFunction } from '../users/entities/function.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { FindRequisitionDto } from '../forms/dto/find-requisition.dto';
 import { CreateFormDto } from '../forms/dto/create-form.dto';
+import { TeamPhoto } from './entities/team-photo.entity';
+import { UploadsService } from '../uploads/uploads.service';
 
 @Injectable()
 export class TeamsService {
@@ -47,10 +49,13 @@ export class TeamsService {
     private readonly requisitionsRepository: Repository<Requisitions>,
     @InjectRepository(RequisitionFields)
     private readonly requisitionsFieldsRepository: Repository<RequisitionFields>,
+    @InjectRepository(TeamPhoto)
+    private readonly requisitionsTPhotoRepository: Repository<TeamPhoto>,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly dictionaryService: GeneralService,
     private readonly formService: FormsService,
+    private readonly uploadsService: UploadsService,
   ) {}
 
   async findOne(id: number) {
@@ -369,7 +374,6 @@ export class TeamsService {
 
   // ----------------------------------------------------------------------------
   // requisition ------------------------------------------------------------------
-  // ----------------------------------------------------------------------------
 
   // обновить заявку пользователя на вступление
   async updateRequisition(id: number, updateRequisitionDto: RequisitionDto) {
@@ -642,7 +646,10 @@ export class TeamsService {
     return await this.teamsRepository.update(id, { is_archive: isArchive });
   }
 
-  async addImage(id: number, filePath: string): Promise<Team> {
+  // ------------------------------------------------------------------------------------------------------
+  // team avatars photo
+
+  async addTeamAvs(id: number, filePath: string): Promise<Team> {
     const team = await this.findOne(id);
     team.image.push(filePath);
 
@@ -652,9 +659,43 @@ export class TeamsService {
     });
   }
 
+  async deleteTeamAvs(idTeam: number, imagePath: string) {
+    const team = await this.findOne(idTeam);
+    team.image = team.image.map((img) => {
+      if (imagePath != img) return img;
+    });
+
+    await this.uploadsService.deleteFileByUrl(imagePath);
+
+    return await this.teamsRepository.update(team.id, team);
+  }
+
+  // team avatars photo
+  // ------------------------------------------------------------------------------------------------------
+
+  // ------------------------------------------------------------------------------------------------------
+  // team  photos
+  async addTeamPhotos(id: number, filePath: string) {
+    const team = await this.findOne(id);
+
+    return await this.requisitionsTPhotoRepository.save({
+      team: team,
+      image: filePath,
+    });
+  }
+
+  async deleteTeamPhotos(id: number) {
+    let teamPhoto = await this.requisitionsTPhotoRepository.findOneBy({ id });
+    await this.uploadsService.deleteFileByUrl(teamPhoto.image);
+
+    return await this.requisitionsTPhotoRepository.delete(id);
+  }
+
+  // team  photos
+  // ------------------------------------------------------------------------------------------------------
+
   // ----------------------------------------------------------------------------
   // add role and user in team
-  // ----------------------------------------------------------------------------
   async assignTeamRole(
     user: User,
     teamLeaderDto: AssignDirectionTeamLeaderDto,

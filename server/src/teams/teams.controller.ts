@@ -47,6 +47,7 @@ import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { AssignDirectionTeamLeaderDto } from '../users/dto/direction-leader.dto';
 import { TeamRoles } from '../shared/teamRoles';
 import { extname } from 'path';
+import { TeamPermissions } from '../shared/teamPermissions';
 
 @ApiTags('teams') //<---- Отдельная секция в Swagger для всех методов контроллера
 @Controller('teams')
@@ -115,10 +116,10 @@ export class TeamsController {
   }
 
   @Put(':id')
-  @UseGuards(LocalAuthGuard, PermissionsGuard)
-  @SetMetadata('permissions', [Permissions.CAN_CREATE_TEAMS])
+  @UseGuards(LocalAuthGuard)
+  // @SetMetadata('permissions', [Permissions.CAN_CREATE_TEAMS])
   @ApiOperation({
-    summary: 'Обновить коллектив (ответственный по направлению)',
+    summary: 'Обновить коллектив (ответственный по направлению) и руководитель',
   })
   @ApiBody({
     description: 'название коллектива, ФИО руководителя, описание проекта',
@@ -137,6 +138,13 @@ export class TeamsController {
     @UploadedFiles(new FileSizeValidationPipe()) files: Express.Multer.File[],
     @Body() updateTeamDto: UpdateTeamDto,
   ) {
+    await this.usersService.hasPermissionsSystemOrTeam(
+      user,
+      id,
+      [TeamPermissions.SPECIAL],
+      [Permissions.CAN_CREATE_TEAMS],
+    );
+
     const startPathUrl = `${request.protocol}://${request.get('host')}`;
 
     // устав коллектива
@@ -237,7 +245,7 @@ export class TeamsController {
     description: 'Bad Request, какие то данные неверно введены',
   })
   @UseInterceptors(FilesInterceptor('files'))
-  async create(
+  async createTeam(
     @UserDecorator() user: User,
     @Req() request: Request,
     @UploadedFiles(new FileSizeValidationPipe()) files: Express.Multer.File[],
@@ -279,10 +287,12 @@ export class TeamsController {
     return await this.teamsService.create(user, createTeamDto);
   }
 
-  @Post(':id/image')
-  @UseGuards(LocalAuthGuard, PermissionsGuard)
+  // ------------------------------------------------------------------------------------------------------
+  // team photos
+  @Post(':id/photos')
+  @UseGuards(LocalAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Загрузить изображение коллектива' })
+  @ApiOperation({ summary: 'Загрузить фото в коллектив' })
   @ApiParam({
     name: 'id',
     required: true,
@@ -293,17 +303,86 @@ export class TeamsController {
     description: 'Успешно',
     type: Function,
   })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-  async addImage(
+  async addTeamPhotos(
     @UserDecorator() user: User,
     @Req() request: Request,
     @Param('id') id: number,
     @UploadedFile(new FileImageValidationPipe()) file: Express.Multer.File,
   ) {
-    const hasPermissions = await this.usersService.hasPermissionsInTeam(
-      user.userId,
+    const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
+      user,
       id,
-      ['special'],
+      [TeamPermissions.SPECIAL],
+      [Permissions.CAN_CREATE_TEAMS],
+    );
+
+    if (hasPermissions) {
+      const startPathUrl = `${request.protocol}://${request.get('host')}`;
+
+      const path = await this.uploadsService.uploadImage(
+        startPathUrl,
+        file.buffer,
+      );
+      return this.teamsService.addTeamPhotos(id, path);
+    } else
+      throw new ForbiddenException(
+        'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
+      );
+  }
+
+  @Delete(':id/photos/:id_photo')
+  @UseGuards(LocalAuthGuard)
+  @ApiOperation({ summary: 'Загрузить фото в коллектив' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Идентификатор коллектива',
+  })
+  async deleteTeamPhotos(
+    @UserDecorator() user: User,
+    @Param('id') id: number,
+    @Param('id_photo') id_photo: number,
+  ) {
+    const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
+      user,
+      id,
+      [TeamPermissions.SPECIAL],
+      [Permissions.CAN_CREATE_TEAMS],
+    );
+
+    if (hasPermissions) {
+      return await this.teamsService.deleteTeamPhotos(id_photo);
+    } else
+      throw new ForbiddenException(
+        'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
+      );
+  }
+
+  // team photos
+  // ------------------------------------------------------------------------------------------------------
+
+  // ------------------------------------------------------------------------------------------------------
+  // team avs
+  @Post(':id/image')
+  @UseGuards(LocalAuthGuard, PermissionsGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Загрузить изображение коллектива' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Идентификатор коллектива',
+  })
+  async addTeamAvs(
+    @UserDecorator() user: User,
+    @Req() request: Request,
+    @Param('id') id: number,
+    @UploadedFile(new FileImageValidationPipe()) file: Express.Multer.File,
+  ) {
+    const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
+      user,
+      id,
+      [TeamPermissions.SPECIAL],
+      [Permissions.CAN_CREATE_TEAMS],
     );
 
     if (hasPermissions) {
@@ -314,16 +393,45 @@ export class TeamsController {
         file.buffer,
         // extname(file.originalname),
       );
-      return this.teamsService.addImage(id, path);
+      return this.teamsService.addTeamAvs(id, path);
     } else
       throw new ForbiddenException(
         'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
       );
   }
 
+  @Delete(':id/image')
+  @UseGuards(LocalAuthGuard)
+  @ApiOperation({ summary: 'Загрузить фото в коллектив' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Идентификатор коллектива',
+  })
+  async deleteTeamAvs(
+      @UserDecorator() user: User,
+      @Param('id') id: number,
+      @Query() params: {path:string},
+  ) {
+    const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
+        user,
+        id,
+        [TeamPermissions.SPECIAL],
+        [Permissions.CAN_CREATE_TEAMS],
+    );
+
+    if (hasPermissions) {
+      return await this.teamsService.deleteTeamAvs(id, params.path);
+    } else
+      throw new ForbiddenException(
+          'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
+      );
+  }
+  // team avs
+  // ------------------------------------------------------------------------------------------------------
+
   // ----------------------------------------------------------------------------
   // requisition ------------------------------------------------------------------
-  // ----------------------------------------------------------------------------
   @Get('/:team_id/requisition')
   @ApiOperation({
     summary: 'Получить список заявок в коллектив по ид колектива',
@@ -390,7 +498,7 @@ export class TeamsController {
     const hasPermissions = await this.usersService.hasPermissionsInTeam(
       user.userId,
       requisition.team.id,
-      ['special'],
+      [TeamPermissions.SPECIAL],
     );
 
     if (hasPermissions) {
@@ -447,7 +555,7 @@ export class TeamsController {
   @Post('user-functions/new-participant')
   @UseGuards(LocalAuthGuard, PermissionsGuard)
   @SetMetadata('permissions', [Permissions.CAN_EDIT_STATUS_REQUISITIONS])
-  @ApiOperation({ summary: 'создать нового учатстника коллектива' })
+  @ApiOperation({ summary: 'создать нового участника коллектива' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Успешно',
@@ -458,6 +566,13 @@ export class TeamsController {
     @UserDecorator() user: User,
     @Body() userFDto: UserFunctionDto,
   ) {
+    await this.usersService.hasPermissionsInTeam(
+      user.userId,
+      userFDto.team,
+      [TeamPermissions.SPECIAL],
+      true,
+    );
+
     const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
 
     directionTeamLeaderDto.teamId = userFDto.team;
@@ -465,7 +580,7 @@ export class TeamsController {
     directionTeamLeaderDto.roleName = TeamRoles.Member;
 
     // назначить нового пользвоателя
-    await this.teamsService.assignTeamRole(user, directionTeamLeaderDto);
+    // await this.teamsService.assignTeamRole(user, directionTeamLeaderDto);
 
     return await this.teamsService.assignTeamRole(user, directionTeamLeaderDto);
   }
