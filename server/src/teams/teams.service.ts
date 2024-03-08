@@ -660,14 +660,15 @@ export class TeamsService {
   }
 
   async deleteTeamAvs(idTeam: number, imagePath: string) {
+
     const team = await this.findOne(idTeam);
-    team.image = team.image.map((img) => {
-      if (imagePath != img) return img;
+    team.image = team.image.filter((img) => {
+      return imagePath != img;
     });
 
+    let savedTeam = await this.teamsRepository.save(team);
     await this.uploadsService.deleteFileByUrl(imagePath);
-
-    return await this.teamsRepository.update(team.id, team);
+    return savedTeam
   }
 
   // team avatars photo
@@ -675,6 +676,14 @@ export class TeamsService {
 
   // ------------------------------------------------------------------------------------------------------
   // team  photos
+  async getTeamPhoto(id: number) {
+    return await this.requisitionsTPhotoRepository
+      .createQueryBuilder('team_photos')
+      .leftJoinAndSelect('team_photos.team', 'team')
+      .where('', { id: id })
+      .getOne();
+  }
+
   async addTeamPhotos(id: number, filePath: string) {
     const team = await this.findOne(id);
 

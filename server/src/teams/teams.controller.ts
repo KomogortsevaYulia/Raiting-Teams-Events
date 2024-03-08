@@ -330,7 +330,7 @@ export class TeamsController {
       );
   }
 
-  @Delete(':id/photos/:id_photo')
+  @Delete('photos/:id_photo')
   @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: 'Загрузить фото в коллектив' })
   @ApiParam({
@@ -340,12 +340,13 @@ export class TeamsController {
   })
   async deleteTeamPhotos(
     @UserDecorator() user: User,
-    @Param('id') id: number,
     @Param('id_photo') id_photo: number,
   ) {
+    let photo = await this.teamsService.getTeamPhoto(id_photo);
+
     const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
       user,
-      id,
+      photo.team.id,
       [TeamPermissions.SPECIAL],
       [Permissions.CAN_CREATE_TEAMS],
     );
@@ -378,6 +379,7 @@ export class TeamsController {
     @Param('id') id: number,
     @UploadedFile(new FileImageValidationPipe()) file: Express.Multer.File,
   ) {
+
     const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
       user,
       id,
@@ -391,7 +393,6 @@ export class TeamsController {
       const path = await this.uploadsService.uploadImage(
         startPathUrl,
         file.buffer,
-        // extname(file.originalname),
       );
       return this.teamsService.addTeamAvs(id, path);
     } else
@@ -427,6 +428,7 @@ export class TeamsController {
         'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
       );
   }
+
   // team avs
   // ------------------------------------------------------------------------------------------------------
 
