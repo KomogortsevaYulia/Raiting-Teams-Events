@@ -1,90 +1,128 @@
 <template>
-  <div class="navigation-tags row g-1">
-    <Tag
-      v-for="(item, index) in team?.tags"
-      class="col-auto me-2"
-      :text="item"
-      :key="index"
-    />
-  </div>
-  <hr />
-  <div class="block-title">О коллективе</div>
-  <div class="middle-panel row g-3">
-    <div class="column-left col-md-7 col-sm-12">
-      <div class="description">
-        {{ team?.description }}
-      </div>
-    </div>
-    <div class="column-right col-md-5 col-sm-12">
-      <div class="image-box">
-        <div class="arrow-left" @click="previousPage">
-          <FontAwesomeIcon icon="angle-left" />
+    <div class="navigation-tags row g-1">
+        <div class="col">
+            <div class="row">
+                <Tag
+                        v-for="(item, index) in team?.tags"
+                        class="col-auto me-2"
+                        :text="item"
+                        :key="index"
+                />
+            </div>
         </div>
-        <div class="image-container">
-          <div v-for="(item, index) in team?.image" :key="index">
-            <img :src="item" v-if="currentPage === index" alt="" />
-          </div>
+
+        <div v-if="can('can edit own teams')" class="col-auto justify-content-end">
+            <button
+                    type="button"
+                    class="btn-neutral"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editTeamModal"
+            >
+                <FontAwesomeIcon icon="pencil" size="2x"/>
+            </button>
         </div>
-        <div class="arrow-right" @click="nextPage">
-          <FontAwesomeIcon icon="angle-right" />
+    </div>
+    <hr/>
+    <div class="block-title">О коллективе</div>
+    <div class="middle-panel row g-3">
+        <div class="column-left col-md-7 col-sm-12">
+            <div class="description">
+                {{ team?.description }}
+            </div>
         </div>
-      </div>
+        <div class="column-right col-md-5 col-sm-12">
+            <div class="image-box">
+                <div class="arrow-left" @click="previousPage">
+                    <FontAwesomeIcon icon="angle-left"/>
+                </div>
+                <div class="image-container">
+                    <div v-for="(item, index) in team?.image" :key="index">
+                        <img :src="item" v-if="currentPage === index" alt=""/>
+                    </div>
+                </div>
+                <div class="arrow-right" @click="nextPage">
+                    <FontAwesomeIcon icon="angle-right"/>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="block-title">Галерея</div>
-  <div class="middle-panel">
-    <div class="gallery">
-      <img
-        v-for="(el, index) in team?.team_photos"
-        v-bind:key="index"
-        :src="el.image"
-        alt=""
-      />
+    <div class="block-title">Галерея</div>
+    <div class="middle-panel">
+        <div class="gallery">
+            <img
+                    v-for="(el, index) in team?.team_photos"
+                    v-bind:key="index"
+                    :src="el.image"
+                    alt=""
+            />
+        </div>
     </div>
-  </div>
-  <div class="map">
-    <div class="info">
-      <div class="title">Наши контакты</div>
-      <div class="phone block">{{ team?.phone }}</div>
-      <!--      <div class="adress block">г. Иркутск, ул. Лермонтова, 83,<br>главный корпус ИРНИТУ,<br>каб. А-203</div>-->
-      <div class="links" v-for="(el, index) in team?.links" v-bind:key="index">
-        {{ el }}
-      </div>
-      <!--      <div class="schedule block">пн-пт 9:00 - 18:00,<br>сб 10:00 - 15:00<br>вс - выходной</div>-->
+    <div class="map">
+        <div class="info">
+            <div class="title">Наши контакты</div>
+            <div class="phone block">{{ team?.phone }}</div>
+            <!--      <div class="adress block">г. Иркутск, ул. Лермонтова, 83,<br>главный корпус ИРНИТУ,<br>каб. А-203</div>-->
+            <div class="links" v-for="(el, index) in team?.links" v-bind:key="index">
+                {{ el }}
+            </div>
+            <!--      <div class="schedule block">пн-пт 9:00 - 18:00,<br>сб 10:00 - 15:00<br>вс - выходной</div>-->
+        </div>
+        <img src="https://i.imgur.com/0e7rWdZ.png" alt="map"/>
+
+        <ModalCreateTeam
+                :is-edit-team="true"
+                :team-id="teamId"
+                :on-save-changes="handleModalSaveChanges"
+                id="editTeamModal"/>
     </div>
-    <img src="https://i.imgur.com/0e7rWdZ.png" alt="map" />
-  </div>
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { ref } from "vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {ref, watch} from "vue";
 import Tag from "@/components/TagElem.vue";
-import type { ITeam } from "@/store/models/teams/team.model";
+import type {ITeam} from "@/store/models/teams/team.model";
+import {usePermissionsStore} from "@/store/permissions_store";
+import ModalCreateTeam from "@/components/modals/ModalCreateTeam.vue";
+import {useTeamStore} from "@/store/team_store";
 
 const props = defineProps<{
-  team: ITeam; //коллектив
-  onUpdateTeam: () => void;
+    teamId: number;
+    onUpdateTeam: () => void;
 }>();
 
+const teamStore = useTeamStore();
+
+const team = ref<ITeam>({}); //коллектив
+
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
+
 const currentPage = ref(0);
+
+watch(
+    () => props.teamId,
+    async () => {
+        await fetchTeam();
+    },
+);
 
 // const image = ref<File>();
 
 function nextPage() {
-  if (props.team.image && currentPage.value + 1 < props.team.image.length) {
-    currentPage.value++;
-  } else {
-    currentPage.value = 0;
-  }
+    if (team.value.image && currentPage.value + 1 < team.value.image.length) {
+        currentPage.value++;
+    } else {
+        currentPage.value = 0;
+    }
 }
 
 function previousPage() {
-  if (currentPage.value - 1 >= 0) {
-    currentPage.value--;
-  } else if (props.team.image) {
-    currentPage.value = props.team.image.length - 1;
-  }
+    if (currentPage.value - 1 >= 0) {
+        currentPage.value--;
+    } else if (team.value.image) {
+        currentPage.value = team.value.image.length - 1;
+    }
 }
 
 // TODO: сделать загрузку изображений в коллективе
@@ -103,6 +141,14 @@ function previousPage() {
 //     props.onUpdateTeam();
 //   }
 // }
+
+async function fetchTeam() {
+    team.value = await teamStore.fetchTeam(props.teamId);
+}
+
+async function handleModalSaveChanges() {
+    await fetchTeam();
+}
 </script>
 
 <style lang="scss" scoped>

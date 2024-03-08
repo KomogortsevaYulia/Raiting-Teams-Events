@@ -180,7 +180,7 @@ export const useTeamStore = defineStore("teams", () => {
     };
 
     const team = await axios
-      .put("api/teams/" + uT.id, formData, config)
+      .put("/api/teams/" + uT.id, formData, config)
       .catch((err) => {
         if (err.response) {
           responseMsg = err.response.data.message;
@@ -196,7 +196,7 @@ export const useTeamStore = defineStore("teams", () => {
     let isOK = true;
 
     await axios
-      .put(`api/teams/${id}/archive`, {
+      .put(`/api/teams/${id}/archive`, {
         isArchive: isArchive,
       })
       .catch((err) => {

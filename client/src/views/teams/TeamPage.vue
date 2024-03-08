@@ -30,7 +30,7 @@
       </div>
 
       <div v-if="selectedItem === 0">
-        <TeamMain :onUpdateTeam="handleUpdateTeam" :team="team" />
+        <TeamMain :onUpdateTeam="handleUpdateTeam" :teamId="team.id" />
       </div>
 
       <div v-if="selectedItem === 1">

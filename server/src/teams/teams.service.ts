@@ -685,7 +685,7 @@ export class TeamsService {
   }
 
   async deleteTeamPhotos(id: number) {
-    let teamPhoto = await this.requisitionsTPhotoRepository.findOneBy({ id });
+    const teamPhoto = await this.requisitionsTPhotoRepository.findOneBy({ id });
     await this.uploadsService.deleteFileByUrl(teamPhoto.image);
 
     return await this.requisitionsTPhotoRepository.delete(id);

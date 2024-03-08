@@ -1,5 +1,5 @@
 <template>
-  <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId"  :on-save-changes="handleSaveChanges" />
+  <ModalCreateTeam :is-edit-team="isEditTeam" :team-id="teamId"  :on-save-changes="handleSaveChanges"  id="editTeamModal"/>
 
   <div class="wrapper-admin-teams">
     <div class="row mb-4 align-items-end">
@@ -57,7 +57,7 @@
             <td
               @click="editTeam(true, team.id)"
               data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
+              data-bs-target="#editTeamModal"
               class="text-end"
             >
               <button class="btn-icon-rounded">

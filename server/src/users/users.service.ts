@@ -350,7 +350,7 @@ export class UsersService {
           Permissions.CAN_CREATE_TEAMS,
       );
 
-    return true
+    return true;
   }
 
   // checkers---------------------------------------------------------------------------

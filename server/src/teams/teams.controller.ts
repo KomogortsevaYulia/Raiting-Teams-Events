@@ -409,22 +409,22 @@ export class TeamsController {
     description: 'Идентификатор коллектива',
   })
   async deleteTeamAvs(
-      @UserDecorator() user: User,
-      @Param('id') id: number,
-      @Query() params: {path:string},
+    @UserDecorator() user: User,
+    @Param('id') id: number,
+    @Query() params: { path: string },
   ) {
     const hasPermissions = await this.usersService.hasPermissionsSystemOrTeam(
-        user,
-        id,
-        [TeamPermissions.SPECIAL],
-        [Permissions.CAN_CREATE_TEAMS],
+      user,
+      id,
+      [TeamPermissions.SPECIAL],
+      [Permissions.CAN_CREATE_TEAMS],
     );
 
     if (hasPermissions) {
       return await this.teamsService.deleteTeamAvs(id, params.path);
     } else
       throw new ForbiddenException(
-          'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
+        'Вы имеете недостаточно прав в коллективе, обратитесь к руководителю',
       );
   }
   // team avs

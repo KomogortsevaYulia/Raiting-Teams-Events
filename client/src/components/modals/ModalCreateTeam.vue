@@ -2,17 +2,17 @@
   <!-- Modal -->
   <div
     class="modal fade bd-example-modal-lg"
-    id="exampleModal"
+    :id="id"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-lg">
       <div class="modal-content px-3 py-4">
-        <div class="modal-header">
+        <div class="modal-header text-center">
           <h1 class="modal-title fs-5" id="exampleModalLabel">
             <!-- редактирование или создание нвого колелктива -->
-            <b v-if="isEditTeam"> Редактировать коллектив </b>
+            <b v-if="isEditTeam"> Редактировать коллектив {{teamObj.shortname}} </b>
             <b v-else>Создать коллектив </b>
 
             <!-- если коллектив в архиве -->
@@ -71,6 +71,7 @@
                   />
 
                   <v-select
+                    v-if="can('can create teams')"
                     placeholder="ФИО Руководителя или email"
                     class="v-select"
                     label="data"
@@ -79,8 +80,8 @@
                     v-model="leaderSelect"
                   ></v-select>
 
-                  <div class="row g-2 mb-4">
-                    <!-- selected cabinets-->
+                  <div v-if="can('can create teams')" class="row g-2 mb-4">
+                    <!-- selected leaders-->
                     <div
                       class="col-auto position-relative align-items-center d-flex"
                       v-for="(leader, index) in leaders"
@@ -97,7 +98,7 @@
                     </div>
                   </div>
 
-                  <div class="row">
+                  <div class="row" v-if="can('can create teams')">
                     <div class="col-auto">
                       <!-- select direction -->
                       <select
@@ -127,7 +128,7 @@
                     </div>
                   </div>
 
-                  <div class="row g-2 mb-4">
+                  <div class="row g-2 mb-4" v-if="can('can create teams')">
                     <!-- selected cabinets-->
                     <div
                       class="col-auto position-relative align-items-center d-flex"
@@ -145,7 +146,7 @@
                     </div>
                   </div>
 
-                  <div class="mb-2">
+                  <div v-if="can('can create teams')" class="mb-2">
                     <label for="formFile" class="form-label"
                       >загрузить устав</label
                     >
@@ -166,7 +167,7 @@
                     />
                   </div>
 
-                  <div class="mb-2">
+                  <div v-if="can('can create teams')" class="mb-2">
                     <label for="formFile1" class="form-label"
                       >загрузить документ(ы)</label
                     >
@@ -198,10 +199,7 @@
                         type="button"
                         class="btn btn-secondary"
                         @click="
-                          archiveTeam(
-                            teamObj?.id ?? -1,
-                             !teamObj?.is_archive,
-                          )
+                          archiveTeam(teamObj?.id ?? -1, !teamObj?.is_archive)
                         "
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
@@ -234,13 +232,18 @@ import { FilterUser } from "@/store/models/user.model";
 import { useAuditoriesStore } from "@/store/schedule/cabinets_store";
 import TagElem from "@/components/TagElem.vue";
 import type { ISchedule } from "@/store/models/schedule/schedule.model";
+import { usePermissionsStore } from "@/store/permissions_store";
 
 const teamStore = useTeamStore();
 const auditoryStore = useAuditoriesStore();
 
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
+
 const props = defineProps<{
   isEditTeam: boolean; //если модальное окно вызвано для редактирования (не создание нового коллектива)
   teamId: number;
+  id: string;
   onSaveChanges: () => void;
 }>();
 
@@ -310,12 +313,16 @@ watch(
 
 // on user selected
 watch(
-    () => leaderSelect.value,
-    async (value) => {
-        if (value?.id && !leaders.value.includes(value?.id)) {
-            leaders.value.push({ id: value.id, name: value.name, email:value.email});
-        }
-    },
+  () => leaderSelect.value,
+  async (value) => {
+    if (value?.id && !leaders.value.includes(value?.id)) {
+      leaders.value.push({
+        id: value.id,
+        name: value.name,
+        email: value.email,
+      });
+    }
+  },
 );
 
 watch(
@@ -337,7 +344,11 @@ async function fetchTeam(id: number) {
 
   let ldrs = getLeaders(teamObj.value);
   leaders.value = ldrs?.map((el) => {
-    return { id: el?.id ?? -1, name: el?.fullname ?? "", email: el?.email ?? "" };
+    return {
+      id: el?.id ?? -1,
+      name: el?.fullname ?? "",
+      email: el?.email ?? "",
+    };
   });
 
   await fillForm();
@@ -435,7 +446,6 @@ async function getAuditories() {
 
 //создать коллектив
 async function createTeam() {
-
   //create team
   await teamStore
     .createTeam(
@@ -443,7 +453,7 @@ async function createTeam() {
       title.value,
       description.value,
       shortname.value,
-      leaders.value.map((el)=>el.id),
+      leaders.value.map((el) => el.id),
       auditories.value.map((item) => item.id),
       charterTeamFile.value,
       documentFile.value,

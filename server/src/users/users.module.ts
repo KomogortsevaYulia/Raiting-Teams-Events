@@ -15,8 +15,8 @@ import { RequisitionFields } from '../forms/entities/requisition_fields.entity';
 import { FormField } from '../forms/entities/form_field.entity';
 import { GeneralService } from '../general/general.service';
 import { FormsService } from '../forms/forms.service';
-import {TeamPhoto} from "../teams/entities/team-photo.entity";
-import {UploadsService} from "../uploads/uploads.service";
+import { TeamPhoto } from '../teams/entities/team-photo.entity';
+import { UploadsService } from '../uploads/uploads.service';
 
 @Module({
   imports: [
@@ -38,7 +38,13 @@ import {UploadsService} from "../uploads/uploads.service";
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService, TeamsService, GeneralService, FormsService,   UploadsService],
+  providers: [
+    UsersService,
+    TeamsService,
+    GeneralService,
+    FormsService,
+    UploadsService,
+  ],
   exports: [UsersService],
 })
 export class UsersModule {}
