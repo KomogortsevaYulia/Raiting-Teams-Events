@@ -12,9 +12,10 @@
         <div class="modal-header text-center">
           <h1 class="modal-title fs-5" id="exampleModalLabel">
             <!-- редактирование или создание нвого колелктива -->
-            <b v-if="isEditTeam"> Редактировать коллектив {{teamObj.shortname}} </b>
+            <b v-if="isEditTeam">
+              Редактировать коллектив {{ teamObj.shortname }}
+            </b>
             <b v-else>Создать коллектив </b>
-
             <!-- если коллектив в архиве -->
             <sup
               v-if="
@@ -46,8 +47,12 @@
               приказом!
             </div>
 
-            <div v-if="responseMsg" class="alert alert-warning" role="alert">
-              {{ responseMsg }}
+            <div
+              v-if="teamStore.apiRequest.message || teamStore.apiRequest.error"
+              class="alert alert-warning"
+              role="alert"
+            >
+              {{ teamStore.apiRequest.message ?? teamStore.apiRequest.error }}
             </div>
 
             <!-- Форма с полями для создания -->
@@ -189,6 +194,37 @@
                   ></textarea>
                 </div>
 
+                <!--team photos-->
+                <div class="row g-2 mb-4" v-if="can('can edit own teams')">
+                  <b>Фото</b>
+                  <div
+                    class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
+                    v-for="(teamPhoto, index) in teamObj?.team_photos"
+                    v-bind:key="index"
+                  >
+                    <AddImage
+                      :handle-on-delete="handleOnDeletePhoto"
+                      :index="index"
+                      :src="teamPhoto.image"
+                    />
+                  </div>
+                </div>
+
+                <!--team avatars-->
+                <div class="row g-2 mb-4" v-if="can('can edit own teams')">
+                  <b>Аватар</b>
+                  <div
+                    class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
+                    v-for="(img, index) in teamObj?.image"
+                    v-bind:key="index"
+                  >
+                    <AddImage
+                      :handle-on-delete="handleOnDeleteAvatar"
+                      :index="index"
+                      :src="img"
+                    />
+                  </div>
+                </div>
                 <div class="fuck-off-btn">
                   <div class="row">
                     <div class="col">
@@ -233,6 +269,7 @@ import { useAuditoriesStore } from "@/store/schedule/cabinets_store";
 import TagElem from "@/components/TagElem.vue";
 import type { ISchedule } from "@/store/models/schedule/schedule.model";
 import { usePermissionsStore } from "@/store/permissions_store";
+import AddImage from "@/components/AddImage.vue";
 
 const teamStore = useTeamStore();
 const auditoryStore = useAuditoriesStore();
@@ -263,9 +300,6 @@ const charterTeamFile = ref();
 const documentFile = ref();
 
 const charterTeamBase64 = ref();
-
-// сообщение об ошибках
-const responseMsg = ref();
 
 // найденные юзеры
 const foundUsers = ref();
@@ -325,22 +359,15 @@ watch(
   },
 );
 
-watch(
-  () => props.teamId,
-  async (value) => {
-    if (value) await fetchTeam(value);
-
-    responseMsg.value = "";
-    await fillForm();
-  },
-);
+onBeforeMount(() => {
+  fetchTeam(props.teamId);
+  fillForm();
+});
 
 async function fetchTeam(id: number) {
   if (id) {
     teamObj.value = await teamStore.fetchTeam(id);
   } else teamObj.value = {};
-
-  responseMsg.value = "";
 
   let ldrs = getLeaders(teamObj.value);
   leaders.value = ldrs?.map((el) => {
@@ -458,12 +485,8 @@ async function createTeam() {
       charterTeamFile.value,
       documentFile.value,
     )
-    .then((msg) => {
-      if (msg) responseMsg.value = msg;
-      else {
-        responseMsg.value = "Сохранено";
-        props.onSaveChanges();
-      }
+    .then(() => {
+      props.onSaveChanges();
     });
 }
 
@@ -484,14 +507,7 @@ async function updateTeam() {
   uT.fileUstav = charterTeamFile.value;
   uT.fileDocument = documentFile.value;
 
-  await teamStore.updateTeam(uT).then((res) => {
-    if (res.responseMsg) responseMsg.value = res.responseMsg;
-    else {
-      responseMsg.value = "Сохранено";
-      teamObj.value = res.team?.data;
-      props.onSaveChanges();
-    }
-  });
+  teamObj.value = await teamStore.updateTeam(uT);
 }
 
 async function handleFileUpload(
@@ -508,10 +524,9 @@ async function handleFileUpload(
 
 // архивировать коллектив
 async function archiveTeam(id: number, isArchive: boolean) {
-  let res = await teamStore.archiveTeam(id, isArchive);
-  responseMsg.value = res.responseMsg;
-
-  if (res.isOK) teamObj.value.is_archive = isArchive;
+  await teamStore.archiveTeam(id, isArchive).then(() => {
+    teamObj.value.is_archive = isArchive;
+  });
 }
 
 function getLeaders(team: ITeam) {
@@ -529,6 +544,24 @@ function getLeaders(team: ITeam) {
   }
 
   return ldrs;
+}
+
+async function handleOnDeletePhoto(index: number) {
+  if (teamObj.value.team_photos) {
+    let photo = teamObj.value.team_photos[index];
+    await teamStore.deletePhotos(photo.id).then(() => {
+      fetchTeam(props.teamId);
+    });
+  }
+}
+
+async function handleOnDeleteAvatar(index: number) {
+  if (teamObj.value.image && teamObj.value.id) {
+    let img = teamObj.value.image[index];
+    await teamStore.deleteAvs(teamObj.value.id, img).then(() => {
+      fetchTeam(props.teamId);
+    });
+  }
 }
 </script>
 

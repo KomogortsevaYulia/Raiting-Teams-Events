@@ -79,7 +79,7 @@
 
 <script setup lang="ts">
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {ref, watch} from "vue";
+import {onBeforeMount, ref} from "vue";
 import Tag from "@/components/TagElem.vue";
 import type {ITeam} from "@/store/models/teams/team.model";
 import {usePermissionsStore} from "@/store/permissions_store";
@@ -100,12 +100,9 @@ const can = permissions_store.can;
 
 const currentPage = ref(0);
 
-watch(
-    () => props.teamId,
-    async () => {
-        await fetchTeam();
-    },
-);
+onBeforeMount(()=>{
+    fetchTeam();
+})
 
 // const image = ref<File>();
 

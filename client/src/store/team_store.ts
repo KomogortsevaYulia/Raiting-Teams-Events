@@ -38,22 +38,6 @@ export const useTeamStore = defineStore("teams", () => {
     return res.data;
   }
 
-  async function addImage(id: number, formData: FormData) {
-    let responseMsg = "сохранено";
-    await axios
-      .post(`/api/teams/${id}/image`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .catch((err) => {
-        if (err.response) {
-          responseMsg = err.response.data.message[0];
-        }
-      });
-    return responseMsg;
-  }
-
   async function fetchUsersOfTeam(id: number, params: IRUFunction) {
     const res = await axios.get("/api/teams/" + id + "/users", {
       params: { ...params },
@@ -62,8 +46,9 @@ export const useTeamStore = defineStore("teams", () => {
   }
 
   async function fetchTeam(id: number) {
-    const res = await axios.get("/api/teams/" + id);
-    return res.data;
+    return apiRequest.handleApiRequest(async () => {
+      return await axios.get("/api/teams/" + id);
+    });
   }
 
   async function createTeam(
@@ -76,7 +61,6 @@ export const useTeamStore = defineStore("teams", () => {
     fileUstav: File,
     fileDocument: File,
   ) {
-    let responseMsg = "";
 
     const formData = new FormData();
     if (direction > 0) {
@@ -105,9 +89,6 @@ export const useTeamStore = defineStore("teams", () => {
         fileDocument,
         `document.${fileDocument.name.split(".").pop()}`,
       );
-    } else {
-      responseMsg = `вы забыли добавить файлы`;
-      return responseMsg;
     }
 
     const config = {
@@ -116,14 +97,10 @@ export const useTeamStore = defineStore("teams", () => {
       },
     };
 
-    //create team
-    await axios.post("api/teams", formData, config).catch((err) => {
-      if (err.response) {
-        responseMsg = err.response.data.message;
-      }
+    return apiRequest.handleApiRequest(async () => {
+      return await axios.post("api/teams", formData, config)
     });
-
-    return responseMsg;
+    //create team
   }
 
   async function createRequisition(createRequisition: ICreateRequisition) {
@@ -136,7 +113,6 @@ export const useTeamStore = defineStore("teams", () => {
 
   // обновить коллектив
   async function updateTeam(uT: UpdateTeam) {
-    let responseMsg = "";
 
     const formData = new FormData();
     if (uT.id_parent > 0) {
@@ -179,34 +155,20 @@ export const useTeamStore = defineStore("teams", () => {
       },
     };
 
-    const team = await axios
-      .put("/api/teams/" + uT.id, formData, config)
-      .catch((err) => {
-        if (err.response) {
-          responseMsg = err.response.data.message;
-        }
-      });
-
-    return { team, responseMsg };
+    return apiRequest.handleApiRequest(async () => {
+      return await axios.put("/api/teams/" + uT.id, formData, config);
+    });
   }
 
   //архивировать или нет колелктив
   async function archiveTeam(id: number, isArchive: boolean) {
-    let responseMsg = isArchive ? "архивировано" : "разархивировано";
-    let isOK = true;
 
-    await axios
-      .put(`/api/teams/${id}/archive`, {
-        isArchive: isArchive,
-      })
-      .catch((err) => {
-        if (err.response) {
-          responseMsg = err.response.data.message;
-          isOK = false;
-        }
-      });
-
-    return { responseMsg, isOK };
+    return apiRequest.handleApiRequest(async () => {
+      return await axios
+          .put(`/api/teams/${id}/archive`, {
+            isArchive: isArchive,
+          })
+    });
   }
 
   //fetch teams by some filters
@@ -270,6 +232,54 @@ export const useTeamStore = defineStore("teams", () => {
     return res.data;
   }
 
+  //  photos-------------------------------------------------------------
+  async function deletePhotos(id: number) {
+    return apiRequest.handleApiRequest(async () => {
+      return await axios.delete(`/api/teams/photos/${id}`);
+    });
+  }
+
+  async function addPhoto(id: number, formData: FormData) {
+    let responseMsg = "сохранено";
+    await axios
+      .post(`/api/teams/${id}/photo`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .catch((err) => {
+        if (err.response) {
+          responseMsg = err.response.data.message[0];
+        }
+      });
+    return responseMsg;
+  }
+
+  async function deleteAvs(teamId: number, image: string) {
+    return apiRequest.handleApiRequest(async () => {
+      return await axios.delete(`/api/teams/${teamId}/image`, {
+        params: { path: image },
+      });
+    });
+  }
+
+  async function addImage(id: number, formData: FormData) {
+    let responseMsg = "сохранено";
+    await axios
+      .post(`/api/teams/${id}/image`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .catch((err) => {
+        if (err.response) {
+          responseMsg = err.response.data.message[0];
+        }
+      });
+    return responseMsg;
+  }
+  //  photos-------------------------------------------------------------
+
   // Переключение Switch_toggle в стр. Коллективы и Мероприятия
   function setLayout(res: boolean) {
     layout.value = res;
@@ -323,12 +333,16 @@ export const useTeamStore = defineStore("teams", () => {
     getUserRequisitions,
 
     fetchTeamsSearch,
-    addImage,
     fetchDirections,
     createRequisition,
 
     // assign roles
     assignNewParticipant,
+
+    addImage,
+    deleteAvs,
+    deletePhotos,
+    addPhoto,
 
     layout,
     menu_items,

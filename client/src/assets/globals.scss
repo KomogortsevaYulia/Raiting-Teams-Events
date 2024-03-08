@@ -136,8 +136,9 @@ textarea {
 
 // кнопка иконка
 .btn-icon {
-  background: white;
+  background: transparent;
   color: black;
+  transition: 0.3s;
 
   &:hover {
     color: var(--main-color);

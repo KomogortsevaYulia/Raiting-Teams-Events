@@ -1,4 +1,4 @@
 export interface ITeamPhotos {
-  id?: number;
-  image?: string;
+  id: number;
+  image: string;
 }

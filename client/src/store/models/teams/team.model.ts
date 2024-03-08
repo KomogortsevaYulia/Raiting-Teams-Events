@@ -3,7 +3,7 @@ import type {ITeamPhotos} from "@/store/models/teams/team-photos.model";
 
 export interface ITeam {
   id?: number;
-  image?: string;
+  image?: string[];
   tags?: string[];
   description?: string;
   id_parent?: ITeam;
