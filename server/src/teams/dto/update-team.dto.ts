@@ -48,6 +48,11 @@ export class UpdateTeamDto {
   tags: string[];
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  links: string[];
+
+  @IsOptional()
   @IsNotEmpty({ message: 'Ссылка на документ пустая' })
   @Length(1, 300, {
     message: 'Ссылка на документ, максимальная длина текста 300',

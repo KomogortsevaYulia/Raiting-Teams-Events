@@ -145,6 +145,7 @@ async function addPermission() {
   border: var(--main-border-card);
   border-radius: 50px;
   overflow: hidden;
+
  input{
    border: none;
   &:hover, &:focus, &:active {

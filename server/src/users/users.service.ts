@@ -303,7 +303,6 @@ export class UsersService {
     permissions: TeamPermissions[],
     throwErr = false,
   ) {
-
     const permissisonsInTeam = await this.userFunctionsRepository
       .createQueryBuilder('user_function')
       .leftJoin('user_function.function', 'function')

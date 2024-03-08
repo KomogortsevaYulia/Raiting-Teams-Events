@@ -112,6 +112,7 @@ export const useTeamStore = defineStore("teams", () => {
 
   // обновить коллектив
   async function updateTeam(uT: UpdateTeamModel) {
+
     const formData = new FormData();
     if (uT.id_parent > 0) {
       formData.append("id_parent", uT.id_parent.toString());
@@ -119,6 +120,14 @@ export const useTeamStore = defineStore("teams", () => {
     formData.append("title", uT.title);
     formData.append("description", uT.description);
     formData.append("shortname", uT.shortname);
+    // tags
+    for (let i = 0; i < uT.tags.length; i++) {
+      formData.append("tags[]", uT.tags[i].toString());
+    }
+    // links
+    for (let i = 0; i < uT.links.length; i++) {
+      formData.append("links[]", uT.links[i].toString());
+    }
     // cabinets
     for (let i = 0; i < uT.cabinets.length; i++) {
       formData.append("cabinets[]", uT.cabinets[i].toString());

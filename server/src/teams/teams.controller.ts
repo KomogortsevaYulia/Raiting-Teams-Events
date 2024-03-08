@@ -346,10 +346,10 @@ export class TeamsController {
     // console.log(photo, id_photo,photo.team.id)
 
     await this.usersService.hasPermissionsSystemOrTeam(
-        user,
-        photo.team.id,
-        [TeamPermissions.SPECIAL],
-        [Permissions.CAN_CREATE_TEAMS],
+      user,
+      photo.team.id,
+      [TeamPermissions.SPECIAL],
+      [Permissions.CAN_CREATE_TEAMS],
     );
 
     return await this.teamsService.deleteTeamPhotos(id_photo);

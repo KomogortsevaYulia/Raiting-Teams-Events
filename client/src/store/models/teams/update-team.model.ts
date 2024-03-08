@@ -8,6 +8,8 @@ export default class UpdateTeamModel {
   documentPath = "";
   charterPath = "";
   id_parent = 0;
+  tags:string[] = [];
+  links:string[] = [];
 
   fileUstav: File | undefined;
   fileDocument: File | undefined;

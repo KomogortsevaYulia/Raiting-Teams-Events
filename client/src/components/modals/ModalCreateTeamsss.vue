@@ -17,20 +17,11 @@
             </b>
             <b v-else>Создать коллектив </b>
             <!-- если коллектив в архиве -->
-            <sup
-              v-if="
-                teamObj != null &&
-                teamObj.is_archive != null &&
-                teamObj.is_archive
-              "
-              class="text-bg-danger"
-            >
-              (В архиве)</sup
+            <sup v-if="teamObj.is_archive" class="text-bg-danger"
+              >(В архиве)</sup
             >
             <!-- если он действующий -->
-            <sup v-else-if="teamObj != null" class="text-bg-success">
-              (действующий)</sup
-            >
+            <sup v-else class="text-bg-success"> (действующий)</sup>
           </h1>
           <div
             class="btn-close"
@@ -62,39 +53,14 @@
             >
               <div class="create-filds">
                 <div class="filds-area">
-                  <div class="fw-bold">Название:</div>
                   <input
                     type="text"
                     placeholder="Название коллектива"
                     v-model="title"
                     required
                   />
-                  <div class="fw-bold">Краткое название:</div>
-                  <input
-                    type="text"
-                    placeholder="Краткое название"
-                    v-model="shortname"
-                    required
-                  />
-
-                  <div
-                    v-if="can('can edit own teams') && isEditTeam"
-                    class="row g-2 mb-4"
-                  >
-                    <!--  tags-->
-                    <div class="fw-bold">Теги:</div>
-                    <div class="col-auto create-field">
-                      <input
-                        type="text"
-                        placeholder="Добавить"
-                        v-model="newTag"
-                      />
-                      <font-awesome-icon
-                        :icon="['fas', 'circle-plus']"
-                        class="btn-icon fa-lg"
-                        @click="addTag()"
-                      />
-                    </div>
+                  <!--  tags-->
+                  <template v-if="can('can edit own teams')">
                     <div
                       class="col-auto position-relative align-items-center d-flex"
                       v-for="(tag, index) in teamObj?.tags"
@@ -111,22 +77,9 @@
                     </div>
 
                     <!-- links-->
-                    <div class="fw-bold">Ссылки:</div>
-                    <div class="col-auto create-field">
-                      <input
-                        type="text"
-                        placeholder="Добавить"
-                        v-model="newLink"
-                      />
-                      <font-awesome-icon
-                        :icon="['fas', 'circle-plus']"
-                        class="btn-icon fa-lg"
-                        @click="addLink()"
-                      />
-                    </div>
                     <div
                       class="col-auto position-relative align-items-center d-flex"
-                      v-for="(link, index) in links"
+                      v-for="(link, index) in teamObj?.links"
                       v-bind:key="index"
                     >
                       <TagElem :text="link" />
@@ -138,205 +91,210 @@
                         />
                       </div>
                     </div>
-                  </div>
+                  </template>
+                </div>
+              </div>
 
-                  <div class="fw-bold">Руководители:</div>
+              <input
+                type="text"
+                placeholder="Краткое название"
+                v-model="shortname"
+                required
+              />
+
+              <v-select
+                v-if="can('can create teams')"
+                placeholder="ФИО Руководителя или email"
+                class="v-select"
+                label="data"
+                @input="onTextChange"
+                :options="foundUsers"
+                v-model="leaderSelect"
+              ></v-select>
+
+              <div v-if="can('can create teams')" class="row g-2 mb-4">
+                <!-- selected leaders-->
+                <div
+                  class="col-auto position-relative align-items-center d-flex"
+                  v-for="(leader, index) in leaders"
+                  v-bind:key="index"
+                >
+                  <TagElem :text="leader.name" />
+                  <div class="position-absolute top-0 end-0">
+                    <font-awesome-icon
+                      @click="deleteLeader(index)"
+                      :icon="['fas', 'circle-xmark']"
+                      class="fa-lg btn-icon"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" v-if="can('can create teams')">
+                <div class="col-auto">
+                  <!-- select direction -->
+                  <select
+                    class="form-select mb-3"
+                    style="min-width: 80px"
+                    aria-label="Default select example"
+                    v-model="selectedDirection"
+                  >
+                    <option
+                      v-for="direction in directions"
+                      :value="direction.id"
+                      v-bind:key="direction.id"
+                    >
+                      {{ direction.shortname }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col">
                   <v-select
-                    v-if="can('can create teams')"
-                    placeholder="ФИО Руководителя или email"
+                    placeholder="Аудитория(кабинет)"
                     class="v-select"
-                    label="data"
-                    @input="onTextChange"
-                    :options="foundUsers"
-                    v-model="leaderSelect"
+                    label="name"
+                    :options="foundAuditories"
+                    v-model="auditorySelect"
                   ></v-select>
+                </div>
+              </div>
 
-                  <div v-if="can('can create teams')" class="row g-2 mb-4">
-                    <!-- selected leaders-->
-                    <div
-                      class="col-auto position-relative align-items-center d-flex"
-                      v-for="(leader, index) in leaders"
-                      v-bind:key="index"
-                    >
-                      <TagElem :text="leader.name" />
-                      <div class="position-absolute top-0 end-0">
-                        <font-awesome-icon
-                          @click="deleteLeader(index)"
-                          :icon="['fas', 'circle-xmark']"
-                          class="fa-lg btn-icon"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row" v-if="can('can create teams')">
-                    <div class="col-auto">
-                      <div class="fw-bold">Направление:</div>
-                      <!-- select direction -->
-                      <select
-                        class="form-select mb-3"
-                        style="min-width: 80px"
-                        aria-label="Default select example"
-                        v-model="selectedDirection"
-                      >
-                        <option
-                          v-for="direction in directions"
-                          :value="direction.id"
-                          v-bind:key="direction.id"
-                        >
-                          {{ direction.shortname }}
-                        </option>
-                      </select>
-                    </div>
-
-                    <div class="col">
-                      <div class="fw-bold">Аудитория:</div>
-                      <v-select
-                        placeholder="Аудитория(кабинет)"
-                        class="v-select"
-                        label="name"
-                        :options="foundAuditories"
-                        v-model="auditorySelect"
-                      ></v-select>
-                    </div>
-                  </div>
-
-                  <div class="row g-2 mb-4" v-if="can('can create teams')">
-                    <!-- selected cabinets-->
-                    <div
-                      class="col-auto position-relative align-items-center d-flex"
-                      v-for="(audit, index) in auditories"
-                      v-bind:key="index"
-                    >
-                      <TagElem :text="audit.name" />
-                      <div class="position-absolute top-0 end-0">
-                        <font-awesome-icon
-                          @click="deleteAuditory(index)"
-                          :icon="['fas', 'circle-xmark']"
-                          class="fa-lg btn-icon"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div v-if="can('can create teams')" class="mb-2">
-                      <div class="fw-bold">Устав:</div>
-                      <input
-                      class="form-control"
-                      type="file"
-                      id="formFile"
-                      @change="(e) => handleFileUpload(e, false)"
-                    />
-                    <p v-if="isEditTeam && teamObj != null">
-                      {{ teamObj.charter_team }}
-                    </p>
-                    <img
-                      v-if="isEditTeam"
-                      :src="charterTeamBase64"
-                      style="width: 100px; height: 100px"
-                      alt="Устав"
+              <div class="row g-2 mb-4" v-if="can('can create teams')">
+                <!-- selected cabinets-->
+                <div
+                  class="col-auto position-relative align-items-center d-flex"
+                  v-for="(audit, index) in auditories"
+                  v-bind:key="index"
+                >
+                  <TagElem :text="audit.name" />
+                  <div class="position-absolute top-0 end-0">
+                    <font-awesome-icon
+                      @click="deleteAuditory(index)"
+                      :icon="['fas', 'circle-xmark']"
+                      class="fa-lg btn-icon"
                     />
                   </div>
+                </div>
+              </div>
 
-                  <div v-if="can('can create teams')" class="mb-2">
-                      <div class="fw-bold">Документы:</div>
+              <div v-if="can('can create teams')" class="mb-2">
+                <label for="formFile" class="form-label">загрузить устав</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  @change="(e) => handleFileUpload(e, false)"
+                />
+                <p v-if="isEditTeam && teamObj != null">
+                  {{ teamObj.charter_team }}
+                </p>
+                <img
+                  v-if="isEditTeam"
+                  :src="charterTeamBase64"
+                  style="width: 100px; height: 100px"
+                  alt="Устав"
+                />
+              </div>
+
+              <div v-if="can('can create teams')" class="mb-2">
+                <label for="formFile1" class="form-label"
+                  >загрузить документ(ы)</label
+                >
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile1"
+                  @change="(e) => handleFileUpload(e, true)"
+                />
+                <p v-if="isEditTeam && teamObj != null">
+                  {{ teamObj.document }}
+                </p>
+              </div>
+
+              <textarea
+                placeholder="Описание"
+                v-model="description"
+                required
+              ></textarea>
+
+              <!-- main photos -->
+              <div
+                class="row g-2 mb-4"
+                v-if="can('can edit own teams') && isEditTeam"
+              >
+                <b>Заглавные фотографии: </b>
+                <div
+                  class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
+                  v-for="(img, index) in teamObj?.image"
+                  v-bind:key="index"
+                >
+                  <AddImage
+                    :handle-on-delete="handleOnDeleteAvatar"
+                    :index="index"
+                    :src="img"
+                  />
+                </div>
+                <!--                    upload avatars-->
+                <div class="col-auto d-flex align-items-center">
+                  <div>
                     <input
                       class="form-control"
                       type="file"
-                      id="formFile1"
-                      @change="(e) => handleFileUpload(e, true)"
+                      id="formFile"
+                      @change="(e) => handleAvatarUpload(e)"
                     />
-                    <p v-if="isEditTeam && teamObj != null">
-                      {{ teamObj.document }}
-                    </p>
+                    <!--                      <FontAwesomeIcon icon="add" />-->
+                    <!--                      Добавить изображение-->
                   </div>
-
-                  <textarea
-                    placeholder="Описание"
-                    v-model="description"
-                    required
-                  ></textarea>
                 </div>
+              </div>
 
-                <!-- main photos -->
+              <!-- photo gallery -->
+              <div
+                class="row g-2 mb-4"
+                v-if="can('can edit own teams') && isEditTeam"
+              >
+                <b>Фотографии из галереи: </b>
                 <div
-                  class="row g-2 mb-4"
-                  v-if="can('can edit own teams') && isEditTeam"
+                  class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
+                  v-for="(teamPhoto, index) in teamObj?.team_photos"
+                  v-bind:key="index"
                 >
-                  <b>Заглавные фотографии: </b>
-                  <!--       images      -->
-                  <div
-                    class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
-                    v-for="(img, index) in teamObj?.image"
-                    v-bind:key="index"
-                  >
-                    <AddedImage
-                      :handle-on-delete="handleOnDeleteAvatar"
-                      :index="index"
-                      :src="img"
-                    />
-                  </div>
-                  <!--  upload images-->
-                  <div class="col-12 d-flex align-items-center">
-                    <div>
-                      <input
-                        class="form-control"
-                        type="file"
-                        id="formFile"
-                        @change="(e) => handleAvatarUpload(e)"
-                      />
-                    </div>
-                  </div>
+                  <AddImage
+                    :handle-on-delete="handleOnDeletePhoto"
+                    :index="index"
+                    :src="teamPhoto.image"
+                  />
                 </div>
-
-                <!-- photo gallery -->
-                <div
-                  class="row g-2 mb-4"
-                  v-if="can('can edit own teams') && isEditTeam"
-                >
-                  <b>Фотографии из галереи: </b>
-                  <div
-                    class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
-                    v-for="(teamPhoto, index) in teamObj?.team_photos"
-                    v-bind:key="index"
-                  >
-                    <AddedImage
-                      :handle-on-delete="handleOnDeletePhoto"
-                      :index="index"
-                      :src="teamPhoto.image"
-                    />
-                  </div>
-                  <div class="col-12 d-flex align-items-center">
-                    <div>
-                      <input
-                        class="form-control"
-                        type="file"
-                        id="formFile"
-                        @change="(e) => handlePhotoUpload(e)"
-                      />
-                    </div>
-                  </div>
+                <div class="col-auto d-flex align-items-center">
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="formFile"
+                    @change="(e) => handlePhotoUpload(e)"
+                  />
                 </div>
+              </div>
 
-                <div class="fuck-off-btn">
-                  <div class="row">
-                    <div class="col">
-                      <button type="submit">Сохранить коллектив</button>
-                    </div>
-                    <div class="col-auto" v-if="isEditTeam">
-                      <button
-                        type="button"
-                        class="btn btn-secondary"
-                        @click="
-                          archiveTeam(teamObj?.id ?? -1, !teamObj?.is_archive)
-                        "
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Архивировать коллектив"
-                      >
-                        <font-awesome-icon icon="archive" />
-                      </button>
-                    </div>
+              <div class="fuck-off-btn">
+                <div class="row">
+                  <div class="col">
+                    <button type="submit">Сохранить коллектив</button>
+                  </div>
+                  <div class="col-auto" v-if="isEditTeam">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      @click="
+                        archiveTeam(teamObj?.id ?? -1, !teamObj?.is_archive)
+                      "
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Архивировать коллектив"
+                    >
+                      <font-awesome-icon icon="archive" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -362,7 +320,7 @@ import { useAuditoriesStore } from "@/store/schedule/cabinets_store";
 import TagElem from "@/components/TagElem.vue";
 import type { ISchedule } from "@/store/models/schedule/schedule.model";
 import { usePermissionsStore } from "@/store/permissions_store";
-import AddedImage from "@/components/AddImage.vue";
+import AddImage from "@/components/AddImage.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const teamStore = useTeamStore();
@@ -383,10 +341,6 @@ const teamObj: Ref<ITeam> = ref({});
 // values from form
 const title = ref("");
 const shortname = ref("");
-
-const newLink = ref("");
-const newTag = ref("");
-
 const leaders = ref<{ id: number; name: string; email: string }[]>([]);
 const tags = ref<string[]>([]);
 const links = ref<string[]>([]);
@@ -427,6 +381,14 @@ async function onTextChange(e: InputEvent) {
 
 async function deleteLeader(index: number) {
   leaders.value.splice(index, 1);
+}
+
+async function deleteTag(index: number) {
+  tags.value.splice(index, 1);
+}
+
+async function deleteLink(index: number) {
+  links.value.splice(index, 1);
 }
 
 // CABINETS------------------------------------------------------------------------------------------
@@ -478,9 +440,6 @@ async function fetchTeam(id: number) {
   if (id) {
     teamObj.value = await teamStore.fetchTeam(id);
   } else teamObj.value = {};
-
-  tags.value = teamObj.value.tags ?? [];
-  links.value = teamObj.value.links ?? [];
 
   let ldrs = getLeaders(teamObj.value);
   leaders.value = ldrs?.map((el) => {
@@ -616,9 +575,6 @@ async function updateTeam() {
   uT.title = title.value;
   uT.documentPath = teamObj.value.document ?? "";
   uT.charterPath = teamObj.value.charter_team ?? "";
-  uT.tags = tags.value;
-  uT.links = links.value;
-
   // files
   uT.fileUstav = charterTeamFile.value;
   uT.fileDocument = documentFile.value;
@@ -694,24 +650,6 @@ async function handleOnDeleteAvatar(index: number) {
     });
   }
 }
-
-async function deleteTag(index: number) {
-  tags.value.splice(index, 1);
-}
-
-async function deleteLink(index: number) {
-  links.value.splice(index, 1);
-}
-
-async function addLink() {
-  links.value = teamObj.value.links ?? [];
-  links.value.push(newLink.value);
-}
-
-async function addTag() {
-  tags.value = teamObj.value.tags ?? [];
-  tags.value.push(newTag.value);
-}
 </script>
 
 <style lang="scss" scoped>
@@ -766,24 +704,6 @@ async function addTag() {
           margin-bottom: 1rem;
         }
       }
-    }
-  }
-}
-
-.create-field {
-  border: var(--main-border-card);
-  border-radius: 50px;
-  overflow: hidden;
-
-  input {
-    border: none;
-    margin-bottom: 0 !important;
-
-    &:hover,
-    &:focus,
-    &:active {
-      border: none;
-      box-shadow: none;
     }
   }
 }
