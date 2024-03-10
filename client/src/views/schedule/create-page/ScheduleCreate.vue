@@ -14,7 +14,16 @@
         </div>
       </div>
   </section>
-  <section></section>
+  <section class="class-booking-wrapper">
+    <ClassBooking
+      v-for="(data) in classBooking"
+      :key="data.header"
+      :header="data.header"
+      :isPrimary="data.isPrimary"
+      :date="data.date"
+      :location="data.location"
+    ></ClassBooking>
+  </section>
   <section class="mt-sm-4">
     <div class="filters">
       <GroupElements class="me-3">
@@ -77,6 +86,7 @@
   import { PeriodOption, PeriodOptionRU } from './period-option.enum';
   import { ref } from 'vue';
   import GroupElements from '@/common/group-elements/GroupElements.vue'
+  import ClassBooking from './ClassBooking.vue'
 
   const starCount = 1;
   const shedule = ref({
@@ -86,6 +96,30 @@
     dayOfTheWeek: WeekDay.MONDAY,
     period: PeriodOption.ONCE,
   }) 
+  // TODO: вынести в туллтинг
+  const weekInSec = 1000 * 60 * 60 * 24 * 7;
+  const nowDateInSec = Date.now();
+  const getDate = (v: number | string | Date): Date => new Date(v); 
+  const classBooking = [
+    {
+      header: 'текущая неделя',
+      isPrimary: true,
+      date: new Date,
+      location: 'Зал вокала'
+    },
+    {
+      header: 'следующая неделя',
+      isPrimary: false,
+      date: getDate(nowDateInSec + weekInSec),
+      location: ''
+    },
+    {
+      header: 'последующая неделя',
+      isPrimary: false,
+      date: getDate(nowDateInSec + weekInSec * 2),
+      location: ''
+    },
+  ];
 
   function setState(v: PeriodOption) {
     classForm.value.period = v;
@@ -103,6 +137,10 @@
   .class-options {
     display: grid;
     grid-template-columns: 270px minmax(200px, 300px);
+  }
+
+  .class-booking-wrapper {
+    display: flex;
   }
 
   // TODO: move switch as common component
