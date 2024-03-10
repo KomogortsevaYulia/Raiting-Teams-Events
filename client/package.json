@@ -4,6 +4,7 @@
   "scripts": {
     "prepare": "cd .. && husky install",
     "dev": "vite",
+    "start": "npm run dev",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "build-only": "vite build",
