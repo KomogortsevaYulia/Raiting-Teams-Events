@@ -28,7 +28,7 @@
     <div class="filters">
       <GroupElements class="me-3">
         <span option>
-          <font-awesome-icon :icon="['fas', 'star-o']" />
+          <font-awesome-icon :icon="['fas', 'star']" />
           <span class="star__count ps-sm-2">{{ starCount }}</span>
         </span>
         <span option>
