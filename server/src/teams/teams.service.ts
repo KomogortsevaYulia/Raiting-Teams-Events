@@ -164,7 +164,7 @@ export class TeamsService {
     await this.formService.createForm(fDto);
 
     // create schedule for team
-    let u = await this.usersService.findById(user.userId);
+    const u = await this.usersService.findById(user.userId);
     await this.entityManager.save(TeamSchedule, { team: team, user: u });
 
     return team;
