@@ -25,7 +25,7 @@ import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
 import { SearchCabinetsDto } from './dto/search-cabinets.dto';
 import { SearchScheduleDto } from './dto/search-schedule.dto';
-import {CreateCabinetTimeDto} from "./dto/create-cabinet-time.dto";
+import { CreateCabinetTimeDto } from './dto/create-cabinet-time.dto';
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -102,7 +102,7 @@ export class ScheduleController {
     return this.scheduleService.findSchedule(searchScheduleDto);
   }
 
-  @Post('cabinet-time')
+  @Post('cabinets-time')
   @ApiOperation({ summary: 'Резервирование аудитории' })
   @ApiOkResponse({
     type: CreateCabinetResponse,

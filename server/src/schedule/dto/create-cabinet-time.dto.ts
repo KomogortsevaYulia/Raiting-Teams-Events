@@ -1,8 +1,7 @@
-import {IsBoolean, IsNumber, IsOptional} from "class-validator";
-import {Transform, Type} from "class-transformer";
+import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 
 export class CreateCabinetTimeDto {
-
   @IsNumber()
   id_team_schedule: number;
 

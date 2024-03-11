@@ -196,7 +196,6 @@ export class ScheduleService {
   }
 
   public async createCabinetTime(dto: CreateCabinetTimeDto) {
-
     const cabinet = await this.cabinetsRepository.findOneBy({
       id: dto.id_cabinet,
     });
