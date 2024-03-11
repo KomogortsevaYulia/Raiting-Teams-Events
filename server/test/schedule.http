@@ -40,13 +40,25 @@ content-type: application/json
 
 {
   "id_team_schedule": 1,
-  "id_cabinet": 1,
-  "id_day_week": 28,
-  "time_start": "15:00:00",
-  "time_end": "16:00:00",
+  "id_cabinet": 4,
+  "id_day_week": 26,
+  "time_start": "8:00:00",
+  "time_end": "9:00:00",
   "repeat": true
 }
 
 ###
 DELETE http://localhost:3000/api/schedule/cabinets-time/30
+
+### cabinet-time
+PUT http://localhost:3000/api/schedule/cabinets-time/13 HTTP/1.1
+content-type: application/json
+
+{
+  "id_cabinet": 1,
+  "id_day_week": 28,
+  "time_start": "15:00:00",
+  "time_end": "17:00:00",
+  "repeat": false
+}
 

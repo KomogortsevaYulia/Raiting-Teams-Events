@@ -16,6 +16,7 @@ import { SearchScheduleDto } from './dto/search-schedule.dto';
 import { CreateCabinetTimeDto } from './dto/create-cabinet-time.dto';
 import { CabinetsTime } from './entities/cabinets-time.entity';
 import { Dictionary } from '../general/entities/dictionary.entity';
+import { UpdateCabinetTimeDto } from './dto/update-cabinet-time.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -219,6 +220,30 @@ export class ScheduleService {
   public async deleteCabinetTime(id: number) {
     const result = await this.cabinetsTimeRepository.delete(id);
     const message = 'Кабинет успешно удален';
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Кабинет не найден!`);
+    }
+
+    return { message: message };
+  }
+
+  public async updateCabinetTime(id: number, dto: UpdateCabinetTimeDto) {
+    const cabinet = await this.cabinetsRepository.findOneBy({
+      id: dto.id_cabinet,
+    });
+    const dayWeek = await this.dictionaryRepository.findOneBy({
+      id: dto.id_day_week,
+    });
+
+    const result = await this.cabinetsTimeRepository.update(id, {
+      time_start: dto.time_start,
+      time_end: dto.time_end,
+      repeat: dto.repeat,
+      cabinet: cabinet,
+      day_week: dayWeek,
+    });
+    const message = 'Кабинет успешно обновлен';
 
     if (result.affected === 0) {
       throw new NotFoundException(`Кабинет не найден!`);

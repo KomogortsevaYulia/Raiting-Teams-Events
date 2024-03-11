@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
@@ -26,6 +27,7 @@ import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
 import { SearchCabinetsDto } from './dto/search-cabinets.dto';
 import { SearchScheduleDto } from './dto/search-schedule.dto';
 import { CreateCabinetTimeDto } from './dto/create-cabinet-time.dto';
+import { UpdateCabinetTimeDto } from './dto/update-cabinet-time.dto';
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -105,7 +107,6 @@ export class ScheduleController {
   @Post('cabinets-time')
   @ApiOperation({ summary: 'Резервирование аудитории' })
   @ApiOkResponse({
-    type: CreateCabinetResponse,
     status: HttpStatus.OK,
     description: 'Успешно',
   })
@@ -120,7 +121,6 @@ export class ScheduleController {
   @Delete('cabinets-time/:id')
   @ApiOperation({ summary: 'Удаление зарезирвированной аудитории' })
   @ApiOkResponse({
-    type: DeleteCabinetResponse,
     status: HttpStatus.OK,
     description: 'Успешно',
   })
@@ -131,5 +131,23 @@ export class ScheduleController {
   @ApiQuery({ name: 'id', required: true, type: Number })
   deleteCabinetTime(@Param('id') id: number) {
     return this.scheduleService.deleteCabinetTime(id);
+  }
+
+  @Put('cabinets-time/:id')
+  @ApiOperation({ summary: 'Обновление зарезирвированной аудитории' })
+  @ApiOkResponse({
+    status: HttpStatus.OK,
+    description: 'Успешно',
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request',
+  })
+  @ApiQuery({ name: 'id', required: true, type: Number })
+  updateCabinetTime(
+    @Param('id') id: number,
+    @Body() updateCabinetTimeDto: UpdateCabinetTimeDto,
+  ) {
+    return this.scheduleService.updateCabinetTime(id, updateCabinetTimeDto);
   }
 }
