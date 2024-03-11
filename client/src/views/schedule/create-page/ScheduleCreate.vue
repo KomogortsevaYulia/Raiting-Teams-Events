@@ -28,16 +28,16 @@
     <div class="filters">
       <GroupElements class="me-3">
         <span option>
-          <font-awesome-icon :icon="['fas', 'star']" />
+          <font-awesome-icon :icon="['fas', 'star-o']" />
           <span class="star__count ps-sm-2">{{ starCount }}</span>
         </span>
         <span option>
-          <font-awesome-icon :icon="['fas', 'star']" />
+          <font-awesome-icon :icon="['fas', 'fa-cog']" />
         </span>
       </GroupElements>
       <GroupElements class="me-3">
         <span option>
-          <font-awesome-icon :icon="['fas', 'star']" />
+          <font-awesome-icon :icon="['fas', 'fa-calendar']" />
         </span>
         <span option no-divider>
           Свободные
@@ -65,7 +65,7 @@
       </GroupElements>
       <GroupElements class="me-3">
         <span option>
-          <font-awesome-icon :icon="['fas', 'star']" />
+          <font-awesome-icon :icon="['fas', 'fa-users']" />
         </span>
         <span option>
           <select class="form-select">
@@ -73,7 +73,7 @@
           </select>
         </span>
       </GroupElements>
-      <button>icon Сброс</button>
+      <button><font-awesome-icon :icon="['fas', 'fa-refresh']" /> Сброс</button>
     </div>
   </section>
   <footer dev class="mt-sm-4">
