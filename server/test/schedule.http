@@ -16,7 +16,9 @@ content-type: application/json
 }
 
 ### cabinets -----------------------------------------------------------------------------------------------------------
-GET http://localhost:3000/api/schedule/cabinets/?tag=Со сценой
+# ?tag=Со сценой
+# ids[]=1
+GET http://localhost:3000/api/schedule/cabinets/
 
 ###
 POST http://localhost:3000/api/schedule/cabinets HTTP/1.1
@@ -31,4 +33,20 @@ DELETE http://localhost:3000/api/schedule/cabinets/13
 
 ### edit schedule ------------------------------------------------------------------------------------------------------
 GET http://localhost:3000/api/schedule?team_id=6&day_week_id=22&time_start='15:00:00'&time_end='19:30:00'
+
+### cabinet-time
+POST http://localhost:3000/api/schedule/cabinet-time HTTP/1.1
+content-type: application/json
+
+{
+  "id_team_schedule": 1,
+  "id_cabinet": 1,
+  "id_day_week": 28,
+  "time_start": "15:00:00",
+  "time_end": "16:00:00",
+  "repeat": true
+}
+
+###
+DELETE http://localhost:3000/api/schedule/cabinets-time/30
 

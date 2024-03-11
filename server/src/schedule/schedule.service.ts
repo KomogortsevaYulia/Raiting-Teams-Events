@@ -13,6 +13,9 @@ import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
 import { SearchCabinetsDto } from './dto/search-cabinets.dto';
 import { SearchScheduleDto } from './dto/search-schedule.dto';
+import { CreateCabinetTimeDto } from './dto/create-cabinet-time.dto';
+import { CabinetsTime } from './entities/cabinets-time.entity';
+import { Dictionary } from '../general/entities/dictionary.entity';
 
 @Injectable()
 export class ScheduleService {
@@ -23,6 +26,10 @@ export class ScheduleService {
     private readonly teamVisitsRepository: Repository<TeamVisits>,
     @InjectRepository(Cabinets)
     private readonly cabinetsRepository: Repository<Cabinets>,
+    @InjectRepository(CabinetsTime)
+    private readonly cabinetsTimeRepository: Repository<CabinetsTime>,
+    @InjectRepository(Dictionary)
+    private readonly dictionaryRepository: Repository<Dictionary>,
     private readonly usersService: UsersService,
   ) {}
 
@@ -99,7 +106,6 @@ export class ScheduleService {
   public async getAllCabinets(
     searchCabinetsDto: SearchCabinetsDto,
   ): Promise<GetAllCabinetsResponse> {
-
     const query = this.cabinetsRepository
       .createQueryBuilder('cabinets')
       .leftJoinAndSelect('cabinets.cabinets_time', 'cabinets_time')
@@ -112,12 +118,12 @@ export class ScheduleService {
         })
       : null;
 
-      // tags
-      searchCabinetsDto.tag
-          ? query.where(":tag = ANY(string_to_array(cabinets.tags, ','))", {
-              tag: searchCabinetsDto.tag,
-          })
-          : null;
+    // tags
+    searchCabinetsDto.tag
+      ? query.where(":tag = ANY(string_to_array(cabinets.tags, ','))", {
+          tag: searchCabinetsDto.tag,
+        })
+      : null;
 
     const cabinets = await query
       .orderBy('cabinets.name', 'ASC')
@@ -187,5 +193,38 @@ export class ScheduleService {
       : query;
 
     return await query.orderBy('cabinets_time.time_start', 'ASC').getOne();
+  }
+
+  public async createCabinetTime(dto: CreateCabinetTimeDto) {
+
+    const cabinet = await this.cabinetsRepository.findOneBy({
+      id: dto.id_cabinet,
+    });
+    const teamSchedule = await this.teamSchedRepository.findOneBy({
+      id: dto.id_team_schedule,
+    });
+    const dayWeek = await this.dictionaryRepository.findOneBy({
+      id: dto.id_day_week,
+    });
+
+    const newCabinetT = await this.cabinetsTimeRepository.save({
+      ...dto,
+      cabinet: cabinet,
+      team_schedule: teamSchedule,
+      day_week: dayWeek,
+    });
+
+    return newCabinetT;
+  }
+
+  public async deleteCabinetTime(id: number) {
+    const result = await this.cabinetsTimeRepository.delete(id);
+    const message = 'Кабинет успешно удален';
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Кабинет не найден!`);
+    }
+
+    return { message: message };
   }
 }
