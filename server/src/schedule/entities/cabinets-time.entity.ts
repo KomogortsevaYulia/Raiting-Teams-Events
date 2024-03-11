@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Cabinets } from './cabinets.entity';
 import { TeamSchedule } from './schedule.entity';
-import {Dictionary} from "../../general/entities/dictionary.entity";
+import { Dictionary } from '../../general/entities/dictionary.entity';
 
 @Entity('cabinets_time')
 export class CabinetsTime {

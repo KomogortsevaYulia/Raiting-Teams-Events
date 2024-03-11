@@ -16,7 +16,7 @@ content-type: application/json
 }
 
 ### cabinets -----------------------------------------------------------------------------------------------------------
-GET http://localhost:3000/api/schedule/cabinets
+GET http://localhost:3000/api/schedule/cabinets/?tag=Со сценой
 
 ###
 POST http://localhost:3000/api/schedule/cabinets HTTP/1.1

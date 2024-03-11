@@ -99,6 +99,7 @@ export class ScheduleService {
   public async getAllCabinets(
     searchCabinetsDto: SearchCabinetsDto,
   ): Promise<GetAllCabinetsResponse> {
+
     const query = this.cabinetsRepository
       .createQueryBuilder('cabinets')
       .leftJoinAndSelect('cabinets.cabinets_time', 'cabinets_time')
@@ -110,6 +111,13 @@ export class ScheduleService {
           ids: searchCabinetsDto.ids,
         })
       : null;
+
+      // tags
+      searchCabinetsDto.tag
+          ? query.where(":tag = ANY(string_to_array(cabinets.tags, ','))", {
+              tag: searchCabinetsDto.tag,
+          })
+          : null;
 
     const cabinets = await query
       .orderBy('cabinets.name', 'ASC')

@@ -24,7 +24,7 @@ import { CreateCabinetDto } from './dto/create-cabinet.dto';
 import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
 import { SearchCabinetsDto } from './dto/search-cabinets.dto';
-import {SearchScheduleDto} from "./dto/search-schedule.dto";
+import { SearchScheduleDto } from './dto/search-schedule.dto';
 
 @ApiTags('schedule')
 @Controller('schedule')

@@ -1,4 +1,4 @@
-import { IsArray, IsOptional } from 'class-validator';
+import {IsArray, IsOptional, IsString} from 'class-validator';
 
 export class SearchCabinetsDto {
   @IsOptional()
@@ -6,8 +6,11 @@ export class SearchCabinetsDto {
   ids: number[];
 
   @IsOptional()
-  time_start:string
+  tag: string;
 
   @IsOptional()
-  time_end:string
+  time_start: string;
+
+  @IsOptional()
+  time_end: string;
 }

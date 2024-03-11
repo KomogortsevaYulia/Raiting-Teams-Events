@@ -3,17 +3,21 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne, OneToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Team } from '../../teams/entities/team.entity';
-import {CabinetsTime} from "./cabinets-time.entity";
+import { CabinetsTime } from './cabinets-time.entity';
 
 @Entity('cabinets')
 export class Cabinets {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ApiProperty()
+  people_count: number; //число людей
 
   @ApiProperty()
   @Column()
