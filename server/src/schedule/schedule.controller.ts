@@ -24,6 +24,7 @@ import { CreateCabinetDto } from './dto/create-cabinet.dto';
 import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
 import { SearchCabinetsDto } from './dto/search-cabinets.dto';
+import {SearchScheduleDto} from "./dto/search-schedule.dto";
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -90,5 +91,13 @@ export class ScheduleController {
   @ApiQuery({ name: 'id', required: true, type: Number })
   deleteCabinet(@Param('id') id: number) {
     return this.scheduleService.deleteCabinet(id);
+  }
+
+  @Get('')
+  @ApiOperation({ summary: 'Получение расписания по id коллектива' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Успешно' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+  findSchedule(@Query() searchScheduleDto: SearchScheduleDto) {
+    return this.scheduleService.findSchedule(searchScheduleDto);
   }
 }

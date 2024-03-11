@@ -3,10 +3,11 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne,
+  ManyToOne, OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Team } from '../../teams/entities/team.entity';
+import {CabinetsTime} from "./cabinets-time.entity";
 
 @Entity('cabinets')
 export class Cabinets {
@@ -26,8 +27,8 @@ export class Cabinets {
   @Column('simple-array', { nullable: true })
   tags: string[]; // теги
 
-  // @OneToMany(() => CabinetsTime, (cabinetsTime) => cabinetsTime.cabinet, {
-  //   cascade: true,
-  // })
-  // cabinetsTime: CabinetsTime[];
+  @OneToMany(() => CabinetsTime, (cabinetsTime) => cabinetsTime.cabinet, {
+    cascade: true,
+  })
+  cabinets_time: CabinetsTime[];
 }

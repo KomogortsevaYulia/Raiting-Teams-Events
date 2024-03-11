@@ -12,6 +12,7 @@ import { CreateCabinetDto } from './dto/create-cabinet.dto';
 import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
 import { SearchCabinetsDto } from './dto/search-cabinets.dto';
+import { SearchScheduleDto } from './dto/search-schedule.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -98,7 +99,10 @@ export class ScheduleService {
   public async getAllCabinets(
     searchCabinetsDto: SearchCabinetsDto,
   ): Promise<GetAllCabinetsResponse> {
-    const query = this.cabinetsRepository.createQueryBuilder('cabinets');
+    const query = this.cabinetsRepository
+      .createQueryBuilder('cabinets')
+      .leftJoinAndSelect('cabinets.cabinets_time', 'cabinets_time')
+      .leftJoinAndSelect('cabinets_time.day_week', 'day_week');
 
     // find cabinets by ids
     searchCabinetsDto.ids
@@ -107,7 +111,9 @@ export class ScheduleService {
         })
       : null;
 
-    const cabinets = await query.getManyAndCount();
+    const cabinets = await query
+      .orderBy('cabinets.name', 'ASC')
+      .getManyAndCount();
 
     return {
       cabinets: cabinets[0],
@@ -134,5 +140,44 @@ export class ScheduleService {
     }
 
     return { message };
+  }
+
+  async findSchedule(searchScheduleDto: SearchScheduleDto) {
+    const query = this.teamSchedRepository
+      .createQueryBuilder('team_schedule')
+      .select(['team_schedule.id'])
+      .leftJoin('team_schedule.team', 'team')
+      // cabinets_time
+      .leftJoinAndSelect('team_schedule.cabinets_time', 'cabinets_time')
+      .leftJoinAndSelect('cabinets_time.day_week', 'day_week')
+      .leftJoinAndSelect('cabinets_time.cabinet', 'cabinet');
+
+    // team_id
+    searchScheduleDto.team_id
+      ? query.andWhere('team.id = :id', { id: searchScheduleDto.team_id })
+      : query;
+
+    // day_week_id
+    searchScheduleDto.day_week_id
+      ? query.andWhere('day_week.id = :day_week_id', {
+          day_week_id: searchScheduleDto.day_week_id,
+        })
+      : query;
+
+    // time_start
+    searchScheduleDto.time_start
+      ? query.andWhere('cabinets_time.time_start >= :time_start', {
+          time_start: searchScheduleDto.time_start,
+        })
+      : query;
+
+    // time_end
+    searchScheduleDto.time_end
+      ? query.andWhere('cabinets_time.time_end <= :time_end', {
+          time_end: searchScheduleDto.time_end,
+        })
+      : query;
+
+    return await query.orderBy('cabinets_time.time_start', 'ASC').getOne();
   }
 }

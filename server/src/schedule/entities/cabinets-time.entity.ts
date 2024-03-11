@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Cabinets } from './cabinets.entity';
 import { TeamSchedule } from './schedule.entity';
+import {Dictionary} from "../../general/entities/dictionary.entity";
 
 @Entity('cabinets_time')
 export class CabinetsTime {
@@ -24,20 +25,9 @@ export class CabinetsTime {
   time_end: string;
 
   @ApiProperty()
-  @Column({
-    type: 'enum',
-    enum: [
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-      'sunday',
-    ],
-    default: 'monday',
-  })
-  day_week: string;
+  @ManyToOne(() => Dictionary, (dict) => dict.id)
+  @JoinColumn([{ name: 'id_day_week' }])
+  day_week: Dictionary;
 
   @ApiProperty()
   @Column({ default: true })

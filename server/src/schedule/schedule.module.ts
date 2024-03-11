@@ -20,6 +20,7 @@ import { TeamVisits } from './entities/visits.entity';
 import { Cabinets } from './entities/cabinets.entity';
 import { TeamPhoto } from '../teams/entities/team-photo.entity';
 import { UploadsService } from '../uploads/uploads.service';
+import {CabinetsTime} from "./entities/cabinets-time.entity";
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { UploadsService } from '../uploads/uploads.service';
 
       TeamSchedule,
       TeamVisits,
+      CabinetsTime,
       Cabinets,
     ]),
   ],
