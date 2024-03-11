@@ -25,7 +25,7 @@ POST http://localhost:3000/api/schedule/cabinets HTTP/1.1
 content-type: application/json
 
 {
-  "name": "К-301"
+  "name": "4-я Железнодорожная, 159"
 }
 
 ###
@@ -34,23 +34,24 @@ DELETE http://localhost:3000/api/schedule/cabinets/13
 ### edit schedule ------------------------------------------------------------------------------------------------------
 GET http://localhost:3000/api/schedule?team_id=6&day_week_id=22&time_start='15:00:00'&time_end='19:30:00'
 
-### cabinet-time
+
+### cabinets-time ------------------------------------------------------------------------------------------------------
 POST http://localhost:3000/api/schedule/cabinets-time HTTP/1.1
 content-type: application/json
 
 {
   "id_team_schedule": 1,
-  "id_cabinet": 4,
-  "id_day_week": 26,
-  "time_start": "8:00:00",
-  "time_end": "9:00:00",
+  "id_cabinet": 5,
+  "id_day_week": 23,
+  "time_start": "17:00:00",
+  "time_end": "18:30:00",
   "repeat": true
 }
 
 ###
 DELETE http://localhost:3000/api/schedule/cabinets-time/30
 
-### cabinet-time
+###
 PUT http://localhost:3000/api/schedule/cabinets-time/13 HTTP/1.1
 content-type: application/json
 

@@ -5,10 +5,15 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  Brackets,
+  EntityManager,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
@@ -35,6 +40,8 @@ import { FindRequisitionDto } from '../forms/dto/find-requisition.dto';
 import { CreateFormDto } from '../forms/dto/create-form.dto';
 import { TeamPhoto } from './entities/team-photo.entity';
 import { UploadsService } from '../uploads/uploads.service';
+import { ScheduleService } from '../schedule/schedule.service';
+import { TeamSchedule } from '../schedule/entities/schedule.entity';
 
 @Injectable()
 export class TeamsService {
@@ -51,9 +58,12 @@ export class TeamsService {
     private readonly requisitionsFieldsRepository: Repository<RequisitionFields>,
     @InjectRepository(TeamPhoto)
     private readonly requisitionsTPhotoRepository: Repository<TeamPhoto>,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly dictionaryService: GeneralService,
+    // private readonly scheduleService: ScheduleService,
     private readonly formService: FormsService,
     private readonly uploadsService: UploadsService,
   ) {}
@@ -152,6 +162,10 @@ export class TeamsService {
     const fDto = new CreateFormDto();
     fDto.team_id = team.id;
     await this.formService.createForm(fDto);
+
+    // create schedule for team
+    let u = await this.usersService.findById(user.userId);
+    await this.entityManager.save(TeamSchedule, { team: team, user: u });
 
     return team;
   }
