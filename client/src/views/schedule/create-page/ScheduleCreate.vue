@@ -1,4 +1,4 @@
-<template>            //TODO: change 
+<template> 
   <header>
     <h1 class="text-uppercase">Добавление занятия в расписание коллектива “{{ shedule.name }}”</h1>
   </header>
@@ -141,10 +141,6 @@
 
   .class-booking-wrapper {
     display: flex;
-  }
-
-  .valign-text-bottom {
-    align-items: end;
   }
 
   // TODO: move switch as common component
