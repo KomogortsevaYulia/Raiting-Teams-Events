@@ -1,14 +1,14 @@
-<template>
+<template>            //TODO: change 
   <header>
-    <h1>Добавление занятия в расписание коллектива “{{ shedule.name }}”</h1>
+    <h1 class="text-uppercase">Добавление занятия в расписание коллектива “{{ shedule.name }}”</h1>
   </header>
-  <section class="class-options">
-      <span>День недели:</span>
+  <section class="class-options mt-sm-5">
+      <span class="fw-bold">День недели:</span>
       <select class="col form-select" v-model="classForm.dayOfTheWeek">
         <option v-for="(day, i) in WeekDay" :key="day" :value="day">{{ WeekDayRu[i] }}</option>
       </select>
-      <span>Добавление занятия:</span>
-      <div class="switch border-block">
+      <span class="fw-bold">Добавление занятия:</span>
+      <div class="switch border-block mt-3">
         <div v-for="(periodOption, i) in PeriodOption" :key="periodOption" @click="setState(periodOption)" class="switch-item" :class="{ active: classForm.period === periodOption }">
           {{ PeriodOptionRU[i] }}
         </div>
@@ -141,6 +141,10 @@
 
   .class-booking-wrapper {
     display: flex;
+  }
+
+  .valign-text-bottom {
+    align-items: end;
   }
 
   // TODO: move switch as common component
