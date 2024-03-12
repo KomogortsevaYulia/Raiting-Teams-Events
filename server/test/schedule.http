@@ -31,8 +31,9 @@ content-type: application/json
 ###
 DELETE http://localhost:3000/api/schedule/cabinets/13
 
-### edit schedule ------------------------------------------------------------------------------------------------------
-GET http://localhost:3000/api/schedule?team_id=6&day_week_id=22&time_start='15:00:00'&time_end='19:30:00'
+### schedule ------------------------------------------------------------------------------------------------------
+#&day_week_id=22
+GET http://localhost:3000/api/schedule?team_id=6&time_start='15:00:00'&time_end='19:30:00'
 
 
 ### cabinets-time ------------------------------------------------------------------------------------------------------
@@ -40,11 +41,12 @@ POST http://localhost:3000/api/schedule/cabinets-time HTTP/1.1
 content-type: application/json
 
 {
-  "id_team_schedule": 1,
-  "id_cabinet": 5,
-  "id_day_week": 23,
-  "time_start": "17:00:00",
-  "time_end": "18:30:00",
+  "id_team_schedule": 2,
+  "id_cabinet": 4,
+  "date": "2024-03-15",
+  "time_start": "18:00:00",
+  "time_end": "19:00:00",
+  "user_id": 3,
   "repeat": true
 }
 
@@ -57,9 +59,10 @@ content-type: application/json
 
 {
   "id_cabinet": 1,
-  "id_day_week": 28,
+  "date": "2024-03-14",
   "time_start": "15:00:00",
   "time_end": "17:00:00",
+  "user_id": 3,
   "repeat": false
 }
 

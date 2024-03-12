@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { SearchVisitsDto } from './dto/search-visits.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -160,12 +164,13 @@ export class ScheduleService {
   async findSchedule(searchScheduleDto: SearchScheduleDto) {
     const query = this.teamSchedRepository
       .createQueryBuilder('team_schedule')
-      .select(['team_schedule.id'])
+      .select(['team_schedule.id', 'user.id', 'user.fullname'])
       .leftJoin('team_schedule.team', 'team')
       // cabinets_time
       .leftJoinAndSelect('team_schedule.cabinets_time', 'cabinets_time')
       .leftJoinAndSelect('cabinets_time.day_week', 'day_week')
-      .leftJoinAndSelect('cabinets_time.cabinet', 'cabinet');
+      .leftJoinAndSelect('cabinets_time.cabinet', 'cabinet')
+      .leftJoin('cabinets_time.user', 'user')
 
     // team_id
     searchScheduleDto.team_id
@@ -197,24 +202,43 @@ export class ScheduleService {
   }
 
   public async createCabinetTime(dto: CreateCabinetTimeDto) {
-    const cabinet = await this.cabinetsRepository.findOneBy({
-      id: dto.id_cabinet,
-    });
-    const teamSchedule = await this.teamSchedRepository.findOneBy({
-      id: dto.id_team_schedule,
-    });
-    const dayWeek = await this.dictionaryRepository.findOneBy({
-      id: dto.id_day_week,
-    });
+    const daysOfWeek = [
+      'Воскресенье',
+      'Понедельник',
+      'Вторник',
+      'Среда',
+      'Четверг',
+      'Пятница',
+      'Суббота',
+    ];
+    const date = new Date(dto.date);
+    const week = daysOfWeek[date.getDay()];
 
-    const newCabinetT = await this.cabinetsTimeRepository.save({
-      ...dto,
-      cabinet: cabinet,
-      team_schedule: teamSchedule,
-      day_week: dayWeek,
-    });
+    try {
+      const cabinet = await this.cabinetsRepository.findOneByOrFail({
+        id: dto.id_cabinet,
+      });
+      const teamSchedule = await this.teamSchedRepository.findOneByOrFail({
+        id: dto.id_team_schedule,
+      });
 
-    return newCabinetT;
+      const user = await this.usersService.findOne(dto.user_id);
+
+      const dayWeek = await this.dictionaryRepository.findOneBy({
+        name: week,
+        class_id: 7,
+      });
+
+      return await this.cabinetsTimeRepository.save({
+        ...dto,
+        user: user,
+        cabinet: cabinet,
+        team_schedule: teamSchedule,
+        day_week: dayWeek,
+      });
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
   }
 
   public async deleteCabinetTime(id: number) {

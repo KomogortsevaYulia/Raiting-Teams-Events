@@ -360,7 +360,7 @@ import { TeamRoles } from "@/store/enums/team_roles";
 import { FilterUser } from "@/store/models/user.model";
 import { useAuditoriesStore } from "@/store/schedule/cabinets_store";
 import TagElem from "@/components/TagElem.vue";
-import type { ISchedule } from "@/store/models/schedule/schedule.model";
+import type { IScheduleSearch } from "@/store/models/schedule/schedule.model";
 import { usePermissionsStore } from "@/store/permissions_store";
 import AddedImage from "@/components/AddImage.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -579,7 +579,7 @@ async function getUsers() {
 }
 
 async function getAuditories() {
-  let sch: ISchedule = { ids: auditories.value.map((el) => el.id) };
+  let sch: IScheduleSearch = { ids: auditories.value.map((el) => el.id) };
   let r = await auditoryStore.getCabinets(sch);
   foundAuditories.value = r.cabinets;
 }

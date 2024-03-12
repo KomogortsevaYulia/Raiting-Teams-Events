@@ -9,6 +9,7 @@ import {
 import { Cabinets } from './cabinets.entity';
 import { TeamSchedule } from './schedule.entity';
 import { Dictionary } from '../../general/entities/dictionary.entity';
+import {User} from "../../users/entities/user.entity";
 
 @Entity('cabinets_time')
 export class CabinetsTime {
@@ -30,12 +31,20 @@ export class CabinetsTime {
   day_week: Dictionary;
 
   @ApiProperty()
+  @Column({default:'now()'})
+  date: Date;
+
+  @ApiProperty()
   @Column({ default: true })
   repeat: boolean;
 
   @ManyToOne(() => Cabinets, (cab) => cab.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'id_cabinet' }])
   cabinet: Cabinets;
+
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @JoinColumn([{ name: 'id_user' }])
+  user: User;
 
   @ManyToOne(() => TeamSchedule, (teamSchedule) => teamSchedule.id)
   @JoinColumn([{ name: 'id_team_schedule' }])

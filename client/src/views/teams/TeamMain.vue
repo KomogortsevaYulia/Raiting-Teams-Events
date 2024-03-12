@@ -14,7 +14,7 @@
         <div v-if="can('can edit own teams')" class="col-auto justify-content-end">
             <button
                     type="button"
-                    class="btn-neutral"
+                    class="btn-custom-neutral"
                     data-bs-toggle="modal"
                     data-bs-target="#editTeamModal"
             >
