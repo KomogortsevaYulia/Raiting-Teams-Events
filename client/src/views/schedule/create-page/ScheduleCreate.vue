@@ -75,6 +75,17 @@
       </GroupElements>
       <button><font-awesome-icon :icon="['fas', 'fa-refresh']" /> Сброс</button>
     </div>
+    <div class="filter-enabled">задействован фильтр</div>
+    <div class="class-list-card-wrapper">
+      <ClassListCard
+        v-for="(el, i) in classLists"
+        :key="i"
+        :disabled="el.disabled"
+        :enum="i + 1"
+        :time="el.time"
+        :list="el.list"
+      ></ClassListCard>
+    </div>
   </section>
   <footer dev class="mt-sm-4">
     classEntity: {{classForm}}
@@ -87,6 +98,7 @@
   import { ref } from 'vue';
   import GroupElements from '@/common/group-elements/GroupElements.vue'
   import ClassBooking from './ClassBooking.vue'
+  import ClassListCard from './ClassListCard.vue'
 
   const starCount = 1;
   const shedule = ref({
@@ -96,6 +108,81 @@
     dayOfTheWeek: WeekDay.MONDAY,
     period: PeriodOption.ONCE,
   }) 
+  const classLists = [
+    {
+      disabled: false,
+      time: '14:00',
+      list: [
+        {
+          starred: true,
+          title: 'title',
+          points: 100,
+        }
+      ]
+    },
+    {
+      disabled: false,
+      time: '14:00',
+      list: [
+        {
+          starred: true,
+          title: 'title',
+          points: 100,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 200,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 300,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 100,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 200,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 300,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 100,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 200,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 300,
+        },
+      ]
+    },
+    {
+      disabled: true,
+      time: '14:00',
+      list: [
+        {
+          starred: true,
+          title: 'title',
+          points: 100,
+        }
+      ]
+    }
+  ];
   // TODO: вынести в туллтинг
   const weekInSec = 1000 * 60 * 60 * 24 * 7;
   const nowDateInSec = Date.now();
@@ -177,5 +264,27 @@
     .active {
       background-color: var(--switch__active_bg-color);
     }
+  }
+
+  .filters {
+    margin-bottom: 25px;
+  }
+
+  .filter-enabled {
+    --filter-enabled__color: #AF1E3B;
+
+    border: 1px solid var(--filter-enabled__color);
+    color:  var(--filter-enabled__color);
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    
+    font-style: var(--font-family-title);
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .class-list-card-wrapper {
+    display: flex;
   }
 </style>
