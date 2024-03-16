@@ -1,7 +1,7 @@
 <template>
   <div class="class-list-card" :class="disabled? 'secondary' : 'primary'">
     <div class="class-list-card__header-wrapper">
-      <span class="class-list-card__header__enum">{{ 1 }}</span>
+      <span class="class-list-card__header__enum">{{ num }}</span>
       <span class="class-list-card__header">
         {{ time }}
       </span>
@@ -33,7 +33,7 @@
 
   defineProps<{
     disabled: boolean | undefined;
-    enum: number | undefined;
+    num: number | undefined;
     time: string;
     list: ClassListCardList[];
   }>();

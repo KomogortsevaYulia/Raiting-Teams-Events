@@ -81,7 +81,7 @@
         v-for="(el, i) in classLists"
         :key="i"
         :disabled="el.disabled"
-        :enum="i + 1"
+        :num="i + 1"
         :time="el.time"
         :list="el.list"
       ></ClassListCard>
