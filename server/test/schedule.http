@@ -1,0 +1,65 @@
+
+### visits -------------------------------------------------------------------------------------------------------------
+GET http://localhost:3000/api/schedule/visits?date_visit_start=2017-05-10T02:27:52.713Z&
+    date_visit_end=2023-08-17T07:33:52.713Z&team_id=6
+
+###
+POST http://localhost:3000/api/schedule/visits HTTP/1.1
+content-type: application/json
+
+{
+ "user_id":9,
+ "team_id":6,
+ "date_visit":"2017-05-09 00:00:00",
+ "status_visit":"true",
+  "comment": "incredible person"
+}
+
+### cabinets -----------------------------------------------------------------------------------------------------------
+# ?tag=Со сценой
+# ids[]=1
+GET http://localhost:3000/api/schedule/cabinets/
+
+###
+POST http://localhost:3000/api/schedule/cabinets HTTP/1.1
+content-type: application/json
+
+{
+  "name": "4-я Железнодорожная, 159"
+}
+
+###
+DELETE http://localhost:3000/api/schedule/cabinets/13
+
+### edit schedule ------------------------------------------------------------------------------------------------------
+GET http://localhost:3000/api/schedule?team_id=6&day_week_id=22&time_start='15:00:00'&time_end='19:30:00'
+
+
+### cabinets-time ------------------------------------------------------------------------------------------------------
+POST http://localhost:3000/api/schedule/cabinets-time HTTP/1.1
+content-type: application/json
+
+{
+  "id_team_schedule": 1,
+  "id_cabinet": 5,
+  "id_day_week": 23,
+  "time_start": "17:00:00",
+  "time_end": "18:30:00",
+  "repeat": true
+}
+
+###
+DELETE http://localhost:3000/api/schedule/cabinets-time/30
+
+###
+PUT http://localhost:3000/api/schedule/cabinets-time/13 HTTP/1.1
+content-type: application/json
+
+{
+  "id_cabinet": 1,
+  "id_day_week": 28,
+  "time_start": "15:00:00",
+  "time_end": "17:00:00",
+  "repeat": false
+}
+
