@@ -9,7 +9,7 @@ import {
 import { Cabinets } from './cabinets.entity';
 import { TeamSchedule } from './schedule.entity';
 import { Dictionary } from '../../general/entities/dictionary.entity';
-import {User} from "../../users/entities/user.entity";
+import { User } from '../../users/entities/user.entity';
 
 @Entity('cabinets_time')
 export class CabinetsTime {
@@ -31,7 +31,7 @@ export class CabinetsTime {
   day_week: Dictionary;
 
   @ApiProperty()
-  @Column({default:'now()'})
+  @Column({ default: 'now()' })
   date: Date;
 
   @ApiProperty()

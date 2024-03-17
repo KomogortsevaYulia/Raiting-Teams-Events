@@ -1,9 +1,9 @@
 <template>
   <!--    schedule-->
   <!--  time {{ time }} -->
-<!--  timeDayWeek {{ timeDayWeek }}-->
+  <!--  timeDayWeek {{ timeDayWeek }}-->
   <div class="row">
-    <div class="col-12 overflow-scroll">
+    <div class="col-12 overflow-scroll" style="max-height: 500px">
       <table class="table">
         <thead>
           <tr class="header">
@@ -22,18 +22,30 @@
           </tr>
         </thead>
         <tbody>
-          <!--        hours-->
+          <!--   hours-->
           <tr v-for="(hour, index1) in time" :key="index1" class="">
             <td class="header fw-bold">{{ hour }}</td>
-            <!--              weeks-->
-            <td v-for="(week, index2) in dates.weeks" :key="index2" class="p-0">
-              <!--                data-->
+            <!--  weeks-->
+            <td
+              v-for="(week, index2) in dates.weeks"
+              :key="index2"
+              class="p-0 position-relative week-cell"
+            >
+              <!--  cell settings -->
+              <div class="cell-settings position-absolute top-0 start-0 p-2">
+                <div class="btn-search mb-3">
+                  <FontAwesomeIcon icon="search"/>
+                </div>
+
+                <button class="btn-order">забронировать</button>
+              </div>
+              <!--  data-->
               <div v-if="timeDayWeek[week] && timeDayWeek[week][hour]">
                 <div
                   v-for="(lesson, index3) in timeDayWeek[week][hour]"
                   :key="index3"
                 >
-                  <!--                    DATA-->
+                  <!--  DATA in cell-->
                   <div
                     v-if="
                       lesson.repeat ||
@@ -54,6 +66,11 @@
           </tr>
         </tbody>
       </table>
+      <div v-if="!time || time.length <= 0" class="">
+        <div class="alert alert-danger" role="alert">
+          Время занятий не задано
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -65,6 +82,7 @@ import { onBeforeMount, ref } from "vue";
 import type { ISchedule } from "@/store/models/schedule/schedule.model";
 import type { ICabinet } from "@/store/models/schedule/cabinet.model";
 import type { IUser } from "@/store/models/user/user.model";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 interface TimeData {
   [time: string]: {
@@ -165,20 +183,43 @@ function checkDatesYMDEquivalent(date1: Date, date2: Date) {
 th,
 td {
   border: var(--main-border-card);
-  min-width: 100px; /* Adjust the number of columns here */
-  max-width: 100px;
-  max-height: 10px; /* Adjust the height of rows as needed */
+  min-width: 120px; /* Adjust the number of columns here */
+  max-width: 120px;
+  height: 80px;
 
   text-align: center; /* Center-align horizontally */
   vertical-align: middle; /* Vertical centering */
   display: table-cell; /* Required for vertical centering */
 }
 
-tr {
-}
-
 .selected-day {
   background: var(--second-color);
   color: white;
+}
+
+.week-cell {
+  &:hover {
+    .cell-settings {
+      display: block;
+    }
+  }
+
+  .cell-settings {
+    display: none;
+  }
+}
+
+.btn-order {
+  padding: 5px;
+  font-size: 0.7rem;
+}
+
+.btn-search{
+  background: var(--dusk-color);
+  border-radius: 5px;
+  width: fit-content;
+  padding: 2px 5px;
+
+  cursor: pointer;
 }
 </style>

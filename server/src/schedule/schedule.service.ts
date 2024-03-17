@@ -170,7 +170,7 @@ export class ScheduleService {
       .leftJoinAndSelect('team_schedule.cabinets_time', 'cabinets_time')
       .leftJoinAndSelect('cabinets_time.day_week', 'day_week')
       .leftJoinAndSelect('cabinets_time.cabinet', 'cabinet')
-      .leftJoin('cabinets_time.user', 'user')
+      .leftJoin('cabinets_time.user', 'user');
 
     // team_id
     searchScheduleDto.team_id

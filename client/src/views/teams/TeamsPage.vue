@@ -182,7 +182,7 @@
 </template>
 
 <script setup lang="ts">
-import Switch_toggle from "@/components/SwitchToggle.vue";
+import Switch_toggle from "@/components/Buttons/SwitchToggle.vue";
 import {onBeforeMount, ref} from "vue";
 import {usePermissionsStore} from "@/store/permissions_store";
 import CheckBox_Menu from "@/components/CheckBoxMenu.vue";

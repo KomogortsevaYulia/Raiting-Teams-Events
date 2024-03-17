@@ -111,9 +111,11 @@ textarea {
 .btn-custom-neutral {
   border-radius: var(--border-radius);
   background: transparent;
-  padding: 0.6rem 0.7rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
   color: black;
   transition:0.3s;
+  width: fit-content;
 
   &:hover {
     background: lightgray;
