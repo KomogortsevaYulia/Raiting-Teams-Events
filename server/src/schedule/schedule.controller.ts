@@ -28,6 +28,8 @@ import { SearchCabinetsDto } from './dto/search-cabinets.dto';
 import { SearchScheduleDto } from './dto/search-schedule.dto';
 import { CreateCabinetTimeDto } from './dto/create-cabinet-time.dto';
 import { UpdateCabinetTimeDto } from './dto/update-cabinet-time.dto';
+import { CreateTeamScheduleResponse } from './dto/create-team-schedule.response';
+import { CreateTeamScheduleDto } from './dto/create-team-schedule.dto';
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -149,5 +151,20 @@ export class ScheduleController {
     @Body() updateCabinetTimeDto: UpdateCabinetTimeDto,
   ) {
     return this.scheduleService.updateCabinetTime(id, updateCabinetTimeDto);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Создание нового расписания' })
+  @ApiOkResponse({
+    type: CreateTeamScheduleResponse,
+    status: HttpStatus.OK,
+    description: 'Успешно',
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request',
+  })
+  createTeamSchedule(@Body() dto: CreateTeamScheduleDto) {
+    return this.scheduleService.createTeamSchedule(dto);
   }
 }

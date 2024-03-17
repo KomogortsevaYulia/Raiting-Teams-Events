@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -148,7 +149,12 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return await this.usersRepository.findOne({ where: { id: id } });
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user)
+      throw new NotFoundException(`Пользователь с  ID "${id}" не найден!`);
+
+    return user;
   }
 
   async remove(id: string): Promise<void> {

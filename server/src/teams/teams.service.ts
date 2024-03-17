@@ -4,6 +4,7 @@ import {
   HttpException,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
@@ -67,6 +68,15 @@ export class TeamsService {
     private readonly formService: FormsService,
     private readonly uploadsService: UploadsService,
   ) {}
+
+  public async findTeamById(id: number) {
+    const team = await this.teamsRepository.findOne({ where: { id } });
+
+    if (!team)
+      throw new NotFoundException(`Коллектив с  ID "${id}" не найден!`);
+
+    return team;
+  }
 
   async findOne(id: number) {
     const head = TeamRoles.Leader;

@@ -21,6 +21,9 @@ import { CreateCabinetTimeDto } from './dto/create-cabinet-time.dto';
 import { CabinetsTime } from './entities/cabinets-time.entity';
 import { Dictionary } from '../general/entities/dictionary.entity';
 import { UpdateCabinetTimeDto } from './dto/update-cabinet-time.dto';
+import { CreateTeamScheduleDto } from './dto/create-team-schedule.dto';
+import { CreateTeamScheduleResponse } from './dto/create-team-schedule.response';
+import { TeamsService } from 'src/teams/teams.service';
 
 @Injectable()
 export class ScheduleService {
@@ -36,6 +39,7 @@ export class ScheduleService {
     @InjectRepository(Dictionary)
     private readonly dictionaryRepository: Repository<Dictionary>,
     private readonly usersService: UsersService,
+    private readonly teamsService: TeamsService,
   ) {}
 
   async findVisits(searchVisitsDto: SearchVisitsDto) {
@@ -274,5 +278,20 @@ export class ScheduleService {
     }
 
     return { message: message };
+  }
+
+  public async createTeamSchedule(
+    dto: CreateTeamScheduleDto,
+  ): Promise<CreateTeamScheduleResponse> {
+    const { id_user } = dto;
+
+    await this.usersService.findOne(id_user);
+    // await this.teamsService.findTeamById(id_team);
+
+    const teamSchedule = await this.teamSchedRepository.save(dto);
+
+    return {
+      teamSchedule,
+    };
   }
 }
