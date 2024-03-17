@@ -32,12 +32,14 @@
               class="p-0 position-relative week-cell"
             >
               <!--  cell settings -->
-              <div class="cell-settings position-absolute top-0 start-0 p-2">
+              <div
+                v-if="can('can edit own teams')"
+                class="cell-settings position-absolute top-0 start-0 p-2"
+              >
                 <div class="btn-search mb-3">
-                  <FontAwesomeIcon icon="search"/>
+                  <FontAwesomeIcon icon="search" />
                 </div>
-
-                <button class="btn-order">забронировать</button>
+                <button class="btn-order">Забронировать</button>
               </div>
               <!--  data-->
               <div v-if="timeDayWeek[week] && timeDayWeek[week][hour]">
@@ -69,6 +71,7 @@
       <div v-if="!time || time.length <= 0" class="">
         <div class="alert alert-danger" role="alert">
           Время занятий не задано
+          <button  v-if="can('can edit own teams')" class="btn-order">Забронировать</button>
         </div>
       </div>
     </div>
@@ -83,6 +86,10 @@ import type { ISchedule } from "@/store/models/schedule/schedule.model";
 import type { ICabinet } from "@/store/models/schedule/cabinet.model";
 import type { IUser } from "@/store/models/user/user.model";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { usePermissionsStore } from "@/store/permissions_store";
+
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
 
 interface TimeData {
   [time: string]: {
@@ -214,7 +221,7 @@ td {
   font-size: 0.7rem;
 }
 
-.btn-search{
+.btn-search {
   background: var(--dusk-color);
   border-radius: 5px;
   width: fit-content;
