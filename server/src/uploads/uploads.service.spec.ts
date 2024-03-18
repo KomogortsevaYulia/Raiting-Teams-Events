@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UploadsService } from './uploads.service';
-import { createReadStream } from 'fs';
 import { Readable } from 'stream';
 import { HttpException, HttpStatus } from '@nestjs/common';
 describe('UploadsService', () => {
@@ -15,41 +14,41 @@ describe('UploadsService', () => {
   });
 
   describe('get file by path', () => {
-
     it('должен собщить что файл по пути не найден', async () => {
-      await expect(service.getFileBuffer("none")).rejects.toThrow(new HttpException('Путь не найден', HttpStatus.BAD_REQUEST));
+      await expect(service.getFileBuffer('none')).rejects.toThrow(
+        new HttpException('Путь не найден', HttpStatus.BAD_REQUEST),
+      );
     });
 
     it('должен вернуть файл по указанному пути', async () => {
-      await expect(service.getFileBuffer("./public/media/c8fa4705bb127ee6eadcf35b7771043ab.jpg")).resolves.toBeDefined();
+      await expect(
+        service.getFileBuffer(
+          './public/media/c8fa4705bb127ee6eadcf35b7771043ab.jpg',
+        ),
+      ).resolves.toBeDefined();
     });
-
   });
 
   describe('load file ', () => {
     it('should throw an error if file buffer is empty', async () => {
+      console.log('Reading the file');
 
-
-      console.log("Reading the file");
-
-      let file: Express.Multer.File = {
+      const file: Express.Multer.File = {
         buffer: null,
-        fieldname: "fieldname",
-        originalname: "imageName.jpg",
-        encoding: "binary",
-        mimetype: "image/jpg",
+        fieldname: 'fieldname',
+        originalname: 'imageName.jpg',
+        encoding: 'binary',
+        mimetype: 'image/jpg',
         destination: __dirname,
         size: 1024 * 1024 * 2,
-        stream: new Readable,
+        stream: new Readable(),
         filename: '',
-        path: ''
-      }
-   
-      await expect(service.uploadFile(file)).rejects.toThrow(new HttpException('Буфер файла пустой', HttpStatus.BAD_REQUEST));
+        path: '',
+      };
+
+      await expect(service.uploadFile(file)).rejects.toThrow(
+        new HttpException('Буфер файла пустой', HttpStatus.BAD_REQUEST),
+      );
     });
-
   });
-
 });
-
-

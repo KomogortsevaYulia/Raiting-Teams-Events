@@ -1,0 +1,52 @@
+### get requisition by team
+GET http://localhost:3000/api/teams/6/requisition?statuses[]=Принята&statuses[]=Создана&fullname=а&date_update_order=DESC
+
+### get requisition by id
+GET http://localhost:3000/api/forms/requisition/6
+
+### get team by id
+GET http://localhost:3000/api/teams/60
+
+### get teams
+GET http://localhost:3000/api/teams?limit=4&offset=0
+
+### directions
+GET http://localhost:3000/api/teams/directions
+
+
+### select head user and teams
+GET http://localhost:3000/api/teams?limit=72&offset=3&fields[]=leaders
+
+### archive
+PUT  http://localhost:3000/api/teams/37/change_archive HTTP/1.1
+content-type: application/json
+
+{
+  "isArchive": true
+}
+
+### login
+POST http://localhost:3000/api/users/login HTTP/1.1
+content-type: application/json
+
+{
+  "user":{
+    "username":"admin",
+    "password":"123"
+  }
+
+}
+
+### update team
+PUT http://localhost:3000/api/teams/60 HTTP/1.1
+content-type: application/json
+
+{
+  "description": "no",
+  "id_parent": 5,
+  "short_description": null,
+  "shortname": "ttt",
+  "title": "test",
+  "leaders": [4,5]
+}
+
