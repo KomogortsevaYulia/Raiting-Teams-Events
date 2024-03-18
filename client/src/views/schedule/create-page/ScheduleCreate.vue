@@ -222,8 +222,15 @@
     text-align: center;
   }
   .class-options {
+    --options-font-color: #a4a4a4;
     display: grid;
     grid-template-columns: 270px minmax(200px, 300px);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: var(--options-font-color)
   }
 
   .class-booking-wrapper {
