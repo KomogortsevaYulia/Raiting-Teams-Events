@@ -52,13 +52,13 @@
       --class-list-card__border-color: var(--class-list-card__primary-color);
 
       .class-list-card__header-wrapper {
-        font-family: "Montserrat",sans-serif;
+        font-style: var(--font-family-title);
         font-weight: 600;
         color: #ffffff;
       }
 
       .class-list-card__footer-wrapper {
-        font-family: "Montserrat",sans-serif;
+        font-style: var(--font-family-title);
         font-weight: 600;
         align-self: center;
         color: var(--class-list-card__primary-color);
@@ -69,13 +69,13 @@
       --class-list-card__border-color: var(--class-list-card__secondary-color);
 
       .class-list-card__header-wrapper {
-        font-family: "Montserrat",sans-serif;
+        font-style: var(--font-family-title);
         font-weight: 600;
         color: var(--class-list-card__secondary-text-color);
       }
 
       .class-list-card__content {
-        font-family: "Montserrat",sans-serif;
+        font-style: var(--font-family-title);
         font-weight: 600;
         height: 326px;
         display: flex;
@@ -84,14 +84,14 @@
       }
 
       .class-list-card__footer-wrapper {
-        font-family: "Montserrat",sans-serif;
+        font-style: var(--font-family-title);
         font-weight: 600;
         display: none;
       }  
     }
 
     .class-list-card__header-wrapper {
-      font-family: "Montserrat",sans-serif;
+      font-style: var(--font-family-title);
       font-weight: 600;
       border-bottom: 1px solid var(--class-list-card__border-color);
       background-color: var(--class-list-card__border-color);
@@ -100,7 +100,7 @@
     }
 
     .class-list-card__header {
-      font-family: "Montserrat",sans-serif;
+      font-style: var(--font-family-title);
       font-weight: 600;
       font-size: 100;
       width: 100%;
@@ -108,14 +108,14 @@
     }
 
     .class-list-card__content {
-      font-family: "Montserrat",sans-serif;
+      font-style: var(--font-family-title);
       font-weight: 600;
       height: 260px;
       overflow-y: auto;
     }
 
     .class-list-card__footer-wrapper {
-      font-family: "Montserrat",sans-serif;
+      font-style: var(--font-family-title);
       font-weight: 600;
       height: 66px;
       text-align: center;
@@ -124,7 +124,7 @@
     }
 
     .list__row {
-      font-family: "Montserrat",sans-serif;
+      font-style: var(--font-family-title);
       font-weight: 600;
       height: 35px;
       display: flex;
@@ -135,7 +135,7 @@
       }
 
       .row-card {
-        font-family: "Montserrat",sans-serif;
+        font-style: var(--font-family-title);
         font-weight: 600;
         width: 100%;
         background-color: var(--class-list-card__secondary-color);

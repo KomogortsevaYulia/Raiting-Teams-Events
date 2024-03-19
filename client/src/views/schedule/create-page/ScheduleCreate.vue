@@ -2,12 +2,12 @@
   <header>
     <h1 class="text-uppercase">Добавление занятия в расписание коллектива “{{ shedule.name }}”</h1>
   </header>
-  <section class="class-options mt-sm-5">
-      <span class="fw-bold">День недели:</span>
+  <section class="class-options px-5 mt-sm-5">
+      <span class="fw-bold pt-2 my-2">День недели:</span>
       <select class="col form-select" v-model="classForm.dayOfTheWeek">
         <option v-for="(day, i) in WeekDay" :key="day" :value="day">{{ WeekDayRu[i] }}</option>
       </select>
-      <span class="fw-bold">Добавление занятия:</span>
+      <span class="fw-bold pt-4">Добавление занятия:</span>
       <div class="switch border-block mt-3">
         <div v-for="(periodOption, i) in PeriodOption" :key="periodOption" @click="setState(periodOption)" class="switch-item" :class="{ active: classForm.period === periodOption }">
           {{ PeriodOptionRU[i] }}
@@ -222,11 +222,11 @@
     text-align: center;
   }
   .class-options {
-    --options-font-color: #a4a4a4;
+    --options-font-color: #747474;
     display: grid;
     grid-template-columns: 270px minmax(200px, 300px);
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     line-height: 20px;
     letter-spacing: 0em;
     text-align: left;

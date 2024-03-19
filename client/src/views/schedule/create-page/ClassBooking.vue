@@ -26,8 +26,9 @@
 
 <style lang="scss" scoped>
   .class-booking {
-    font-family: "Montserrat",sans-serif;
-    font-weight: 600;
+    margin-top: 2%;
+    font-style: var(--font-family-title);
+    font-weight: 500;
     font-size: 16px;
     display: grid;
     grid-template-columns: 1.0fr 1fr;
