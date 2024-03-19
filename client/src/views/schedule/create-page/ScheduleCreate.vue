@@ -126,6 +126,21 @@
       list: [
         {
           starred: true,
+          title: 'the title is so long that it cannot fit into a line',
+          points: 100,
+        },
+        {
+          starred: false,
+          title: 'title',
+          points: 200,
+        },
+        {
+          starred: true,
+          title: 'title',
+          points: 300,
+        },
+        {
+          starred: false,
           title: 'title',
           points: 100,
         },
@@ -145,22 +160,7 @@
           points: 100,
         },
         {
-          starred: true,
-          title: 'title',
-          points: 200,
-        },
-        {
-          starred: true,
-          title: 'title',
-          points: 300,
-        },
-        {
-          starred: true,
-          title: 'title',
-          points: 100,
-        },
-        {
-          starred: true,
+          starred: false,
           title: 'title',
           points: 200,
         },

@@ -9,10 +9,12 @@
     <div class="class-list-card__content">
       <div v-if="!disabled" class="class-list-card__list">
         <div class="list__row" v-for="(el, i) in list" :key="i">
-          <font-awesome-icon :icon="['fas', 'star']" />
+          <span class="list__row__star" :class="{ selected: el.starred }" @click="toggleStar(el)">
+            <font-awesome-icon :v-if="el.starred" :icon="['fas', 'star']" />
+          </span>
           <div class="row-card">
-            <span>{{ el.title }}</span>
-            <span>{{ el.points }}</span>
+            <span class="row-card__title">{{ el.title }}</span>
+            <span class="row-card__points">{{ el.points }}</span>
           </div>
         </div>
       </div>
@@ -35,6 +37,10 @@
     time: string;
     list: ClassListCardList[];
   }>();
+
+  function toggleStar(el: ClassListCardList) {
+    el.starred = !el.starred;
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -46,6 +52,8 @@
     width: 400px;
     height: 365px;
     border: 1px solid var(--class-list-card__border-color);
+    border-radius: 5px;
+    margin-left: 25px;
     font-weight: 600;
 
     &.primary {
@@ -93,10 +101,16 @@
     .class-list-card__header-wrapper {
       font-style: var(--font-family-title);
       font-weight: 600;
+      font-size: 16px;
       border-bottom: 1px solid var(--class-list-card__border-color);
       background-color: var(--class-list-card__border-color);
       display: flex;
       height: 40px;
+      align-items: center;
+
+      .class-list-card__header__enum {
+        margin-left: 15px;
+      }
     }
 
     .class-list-card__header {
@@ -112,6 +126,7 @@
       font-weight: 600;
       height: 260px;
       overflow-y: auto;
+      scrollbar-width: thin;
     }
 
     .class-list-card__footer-wrapper {
@@ -121,15 +136,19 @@
       text-align: center;
       text-transform: uppercase;
       border-top: 1px solid var(--class-list-card__border-color);
+      align-items: center;
+      display: flex;
+      justify-content: center;
     }
 
     .list__row {
       font-style: var(--font-family-title);
       font-weight: 600;
-      height: 35px;
+      min-height: 35px;
       display: flex;
       align-items: center;
-      
+      margin-top: 15px;
+
       & + & {
         margin-top: 10px;
       }
@@ -139,6 +158,27 @@
         font-weight: 600;
         width: 100%;
         background-color: var(--class-list-card__secondary-color);
+        border-radius: 5px;
+        margin-right: 15px;
+        padding: 9px 0;
+
+        .row-card__title {
+          display: inline-block;
+          margin-left: 15px;
+          width: 266px;
+        }
+        .row-card__points {
+          float: right;
+          margin-right: 10px;
+        }
+      }
+      .list__row__star {
+        cursor: pointer;
+        margin: 0 15px;
+
+        &.selected {
+          color: yellow;
+        }
       }
     }
 
