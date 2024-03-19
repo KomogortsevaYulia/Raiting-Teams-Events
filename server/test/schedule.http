@@ -35,6 +35,16 @@ DELETE http://localhost:3000/api/schedule/cabinets/13
 #&day_week_id=22
 GET http://localhost:3000/api/schedule?team_id=6&time_start='15:00:00'&time_end='19:30:00'
 
+###
+POST http://localhost:3000/api/schedule/ HTTP/1.1
+content-type: application/json
+
+{
+"date_start": "2024-05-10T02:27:52.713Z",
+"date_end": "2025-09-10T02:27:52.713Z",
+"id_user": 3,
+"id_team": 9
+}
 
 ### cabinets-time ------------------------------------------------------------------------------------------------------
 POST http://localhost:3000/api/schedule/cabinets-time HTTP/1.1
