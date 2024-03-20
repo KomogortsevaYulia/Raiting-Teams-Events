@@ -572,6 +572,7 @@ export class TeamsService {
       .leftJoin('requisition.user', 'user')
       .leftJoin('requisition.team', 'team');
 
+    console.log(findRequisitionDto)
     //  requisition_id
     findRequisitionDto.requisition_id
       ? query.andWhere('requisition.id = :id', {
@@ -599,7 +600,7 @@ export class TeamsService {
   async createRequisitionOrUpdate(
     dto: CreateRequisitionDto,
     user: User,
-  ): Promise<Requisitions> {
+  ){
     // console.log(dto);
     const { team_id, fields } = dto;
     const team = await this.findOne(team_id);
@@ -608,7 +609,7 @@ export class TeamsService {
     const status = await this.dictionaryService.findOne(18);
 
     const findRequisitionDto = new FindRequisitionDto();
-    // findRequisitionDto.user_id = user.id;
+    findRequisitionDto.user_id = user.id;
     findRequisitionDto.team_id = team.id;
 
     let existingRequisition = await this.findOneRequisition(findRequisitionDto);
