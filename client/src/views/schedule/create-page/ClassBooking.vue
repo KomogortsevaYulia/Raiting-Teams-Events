@@ -26,7 +26,8 @@
 
 <style lang="scss" scoped>
   .class-booking {
-    margin-top: 2%;
+    min-width: 33%;
+    margin-top: 1.25%;
     font-style: var(--font-family-title);
     font-weight: 500;
     font-size: 16px;
@@ -51,6 +52,7 @@
 
   .class-booking__chip-cards { 
     grid-area: chip-cards;
+    margin: auto;
     .chip {
       margin-left: 5px;
     }

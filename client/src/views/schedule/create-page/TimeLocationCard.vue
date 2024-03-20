@@ -3,7 +3,7 @@
     <div class="date">
       <div class="day">{{ dateInfo.dayNumber }}</div>  
       <div class="month">{{ dateInfo.monthName }}</div>  
-      <div class="week-day">{{ dateInfo.weekDay }}</div>  
+      <div class="week-day hr-line">{{ dateInfo.weekDay }}</div>  
     </div>
     <div class="time-location-card__right">
       <div class="time" v-if="isPrimary">{{ dateInfo.time }}</div>
@@ -52,6 +52,8 @@
 
 <style lang="scss" scoped>
   .time-location-card {
+    margin: auto;
+    text-align: center;
     --time-location-card-primary__bg-color: #43517E;
     --time-location-card-secondary__bg-color: #D22043;
     --time-location-card-secondary__text-color1: #ffffff;
@@ -62,7 +64,7 @@
     border-radius: var(--time-location-card__border-radius);
 
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 2fr;
     grid-template-rows: 1fr;
     grid-auto-rows: 1fr;
     grid-auto-flow: row;
@@ -74,6 +76,8 @@
     }
 
     &.secondary {
+      // min-width: 110%;
+      // min-height: 130%;
       background-color: var(--time-location-card-secondary__bg-color);
 
       & .time, & .location {
@@ -85,7 +89,7 @@
 
   .time-location-card__right {
     grid-area: right;
-
+    margin:auto;
     border: 1px solid #3D3D3D;
     border-top-right-radius: var(--time-location-card__border-radius);
     border-bottom-right-radius: var(--time-location-card__border-radius);
@@ -95,4 +99,14 @@
     grid-area: time;
     text-align: center;
   }
+ 
+
+.hr-line {
+	margin: 20px 0;
+	padding: 0;
+	height: 0;
+	border: none;
+	border-top: 1px solid #000000;
+  position:relative;
+}
 </style>
