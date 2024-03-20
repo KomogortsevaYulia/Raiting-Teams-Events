@@ -572,7 +572,7 @@ export class TeamsService {
       .leftJoin('requisition.user', 'user')
       .leftJoin('requisition.team', 'team');
 
-    console.log(findRequisitionDto)
+    console.log(findRequisitionDto);
     //  requisition_id
     findRequisitionDto.requisition_id
       ? query.andWhere('requisition.id = :id', {
@@ -597,10 +597,7 @@ export class TeamsService {
     return query.getOne();
   }
 
-  async createRequisitionOrUpdate(
-    dto: CreateRequisitionDto,
-    user: User,
-  ){
+  async createRequisitionOrUpdate(dto: CreateRequisitionDto, user: User) {
     // console.log(dto);
     const { team_id, fields } = dto;
     const team = await this.findOne(team_id);
