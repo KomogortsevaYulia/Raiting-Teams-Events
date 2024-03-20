@@ -4,15 +4,15 @@
       <div class="col-auto">
         <b
           >Свободны
-          <span class="badge rounded-pill bg-danger">02 октября</span> в
-          <span class="badge rounded-pill bg-danger">14:00</span></b
+          <span class="badge rounded-pill bg-danger"
+            >{{ date.toLocaleDateString() }} октября</span
+          >
+          в <span class="badge rounded-pill bg-danger">{{ time }}</span></b
         >
       </div>
       <!--  close btn-->
       <div class="col-auto">
-        <div class="btn btn-close" @click="onCloseAuditories()">
-
-        </div>
+        <div class="btn btn-close" @click="onCloseAuditories()"></div>
       </div>
     </div>
     <div class="dropdown">
@@ -52,7 +52,7 @@
       <input class="col-auto me-2" type="checkbox" v-model="filterQuery" />
       На весь семестр
     </div>
-    <input class="rounded" placeholder="Фильтр по названию аудитории" />
+    <SearchField :handle-timer-search="handleOnSearch" />
     <div>
       <button
         type="button"
@@ -61,7 +61,9 @@
         :key="auditorium.id"
       >
         {{ auditorium.name }}
-        <span class="badge bg-light text-dark">{{ auditorium.capacity }}</span>
+        <span class="badge bg-light text-dark">{{
+          auditorium.people_count
+        }}</span>
       </button>
     </div>
   </div>
@@ -69,14 +71,42 @@
 
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
+import { useAuditoriesStore } from "@/store/schedule/cabinets_store";
+import type { ICabinet } from "@/store/models/schedule/cabinet.model";
+import type { ICabinetsSearch } from "@/store/models/schedule/schedule.model";
+import SearchField from "@/components/SearchField.vue";
+
+const auditsStore = useAuditoriesStore();
 
 const isCategoryListExpanded = ref(false);
 const filterQuery = ref("");
 
-defineProps<{
+const props = defineProps<{
   onCloseAuditories: () => void;
+  date: Date;
+  time: string;
 }>();
+
+const cabinetsSearch = ref<ICabinetsSearch>({});
+
+watch(
+  () => props.time,
+  async () => {
+    cabinetsSearch.value.free_time = props.time;
+  },
+);
+
+watch(
+  () => cabinetsSearch.value,
+  async () => {
+    await getCabinets();
+  },
+);
+
+onBeforeMount(() => {
+  getCabinets();
+});
 
 const categoryList = [
   { id: 0, name: "Для занятия вокалом" },
@@ -84,18 +114,21 @@ const categoryList = [
   { id: 2, name: "Для занятия с музыкальными инструментами" },
 ];
 
-const auditoriumList = [
-  { id: 0, name: "Актовый зал", capacity: 200 },
-  { id: 1, name: "Спорт. зал", capacity: 550 },
-  { id: 2, name: "Б-00", capacity: 30 },
-  { id: 3, name: "В-010", capacity: 25 },
-  { id: 4, name: "Г-014", capacity: 20 },
-];
+const auditoriumList = ref<ICabinet[]>();
 
 const selectedCategory = ref({
   category: categoryList[0],
 });
 
+async function handleOnSearch(searchTxt: string) {
+  cabinetsSearch.value.search = searchTxt;
+  await getCabinets();
+}
+
+async function getCabinets() {
+  let data = await auditsStore.getCabinets(cabinetsSearch.value);
+  auditoriumList.value = data.cabinets;
+}
 </script>
 
 <style scoped lang="scss"></style>

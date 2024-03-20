@@ -17,4 +17,7 @@ export class SearchCabinetsDto {
   // additional fields
   @IsOptional()
   search: string;
+
+  @IsOptional()
+  free_time: string;
 }

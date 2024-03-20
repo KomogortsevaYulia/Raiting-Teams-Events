@@ -37,7 +37,10 @@
                     class="cell-settings position-absolute top-0 start-0 p-2"
                   >
                     <!--    search auditories -->
-                    <div class="btn-search mb-3" @click="seeTime = !seeTime">
+                    <div
+                      class="btn-search mb-3"
+                      @click="onSearchClick(dates.dateRange[index2], hour)"
+                    >
                       <FontAwesomeIcon icon="search" />
                     </div>
                     <button class="btn-order">Забронировать</button>
@@ -81,7 +84,11 @@
       </div>
       <!-- select auditory-->
       <div class="col-lg-4 col-12" v-if="seeTime">
-        <AuditoriumField :onCloseAuditories="handleCloseAuditories" />
+        <AuditoriumField
+          :onCloseAuditories="handleCloseAuditories"
+          :date="selectedCell.date"
+          :time="selectedCell.time"
+        />
       </div>
     </div>
   </div>
@@ -96,10 +103,11 @@ import type { ICabinet } from "@/store/models/schedule/cabinet.model";
 import type { IUser } from "@/store/models/user/user.model";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { usePermissionsStore } from "@/store/permissions_store";
-import AuditoriumField from "@/views/teams/schedule/AuditoriumField.vue";
+import AuditoriumField from "@/views/teams/schedule/AuditoriesWindow.vue";
 
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
+const selectedCell = ref({ date: new Date(), time: "" });
 
 interface TimeData {
   [time: string]: {
@@ -141,6 +149,11 @@ onBeforeMount(() => {
     setTime();
   });
 });
+
+function onSearchClick(date: Date, time: string) {
+  seeTime.value = true;
+  selectedCell.value = { date: date, time: time };
+}
 
 function handleCloseAuditories() {
   seeTime.value = false;

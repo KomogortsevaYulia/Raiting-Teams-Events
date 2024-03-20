@@ -137,6 +137,22 @@ export class ScheduleService {
         })
       : null;
 
+    // free_time
+    if (searchCabinetsDto.free_time) {
+      const subQuery = this.cabinetsRepository
+        .createQueryBuilder('inner_cabinets_time')
+        .select('inner_cabinets_time.id')
+        .leftJoin('inner_cabinets_time.cabinets_time', 'cabinets_time')
+        .andWhere(
+          '(cabinets_time.time_start <= :free_time OR :free_time >= cabinets_time.time_end)',
+        )
+        .getQuery();
+
+      query.andWhere(`cabinets.id NOT IN (${subQuery})`, {
+        free_time: searchCabinetsDto.free_time,
+      });
+    }
+
     const cabinets = await query
       .orderBy('cabinets.name', 'ASC')
       .getManyAndCount();
