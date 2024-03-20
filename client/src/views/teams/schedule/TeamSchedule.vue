@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="row">
+    <div class="row overflow-hidden p-2">
       <!--        schedule table-->
       <div :class="['col-12', { 'col-lg-8': seeTime }]">
         <div class="col-12 overflow-scroll" style="max-height: 500px">
@@ -89,7 +89,8 @@
           :onCloseAuditories="handleCloseAuditories"
           :date="selectedCell.date"
           :time="selectedCell.time"
-         :handle-on-auditory-click="onAuditoryClick"/>
+          :handle-on-auditory-click="onAuditoryClick"
+        />
       </div>
     </div>
   </div>
@@ -172,6 +173,8 @@ async function getCabinetsTime() {
 
 async function setTime() {
   time.value = [];
+  timeDayWeek.value = {};
+
   const cT = schedule.value.cabinets_time;
   cT?.forEach((el) => {
     const dayWeek = el.day_week.name;

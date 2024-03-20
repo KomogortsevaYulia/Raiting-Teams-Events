@@ -53,7 +53,8 @@
       На весь семестр
     </div>
     <SearchField :handle-timer-search="handleOnSearch" />
-    <div>
+<!--  auditories -->
+    <div class="overflow-scroll" style="max-height: 400px">
       <button
         type="button"
         class="btn btn-light m-1"
