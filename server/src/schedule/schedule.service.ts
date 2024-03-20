@@ -200,6 +200,13 @@ export class ScheduleService {
       ? query.andWhere('team.id = :id', { id: searchScheduleDto.team_id })
       : query;
 
+    // cabinet_id
+    searchScheduleDto.cabinet_id
+      ? query.andWhere('cabinet.id = :cabinet_id', {
+          cabinet_id: searchScheduleDto.cabinet_id,
+        })
+      : query;
+
     // day_week_id
     searchScheduleDto.day_week_id
       ? query.andWhere('day_week.id = :day_week_id', {

@@ -88,6 +88,7 @@
           :onCloseAuditories="handleCloseAuditories"
           :date="selectedCell.date"
           :time="selectedCell.time"
+          :on-auditory-click="onAuditoryClick"
         />
       </div>
     </div>
@@ -145,10 +146,13 @@ const time = ref<string[]>([]);
 const seeTime = ref(false);
 
 onBeforeMount(() => {
-  getCabinetsTime().then(() => {
-    setTime();
-  });
+  getCabinetsTime();
 });
+
+async function onAuditoryClick(auditory: ICabinet) {
+  cabinetsTimeSearch.value.cabinet_id = auditory.id;
+  await getCabinetsTime();
+}
 
 function onSearchClick(date: Date, time: string) {
   seeTime.value = true;
@@ -163,9 +167,11 @@ async function getCabinetsTime() {
   schedule.value = await cabinetsTimeStore.getCabinetsTime(
     cabinetsTimeSearch.value,
   );
+  await setTime();
 }
 
 async function setTime() {
+  time.value = [];
   const cT = schedule.value.cabinets_time;
   cT?.forEach((el) => {
     const dayWeek = el.day_week.name;

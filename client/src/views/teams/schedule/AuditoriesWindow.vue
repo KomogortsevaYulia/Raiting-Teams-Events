@@ -38,12 +38,12 @@
       </div>
       <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
         <li
-          v-for="value in categoryList"
-          @click="selectedCategory.category = value"
-          v-bind:key="value.id"
+          v-for="cabinet in categoryList"
+          @click="selectedCategory.category = cabinet"
+          v-bind:key="cabinet.id"
         >
           <div class="dropdown-item">
-            {{ value.name }}
+            {{ cabinet.name }}
           </div>
         </li>
       </ul>
@@ -59,11 +59,12 @@
         class="btn btn-light m-1"
         v-for="auditorium in auditoriumList"
         :key="auditorium.id"
+        @click="onAuditoryClick(auditorium)"
       >
         {{ auditorium.name }}
-        <span class="badge bg-light text-dark">{{
-          auditorium.people_count
-        }}</span>
+        <span class="badge bg-light text-dark"
+          >{{ auditorium.people_count }}
+        </span>
       </button>
     </div>
   </div>
@@ -86,6 +87,7 @@ const props = defineProps<{
   onCloseAuditories: () => void;
   date: Date;
   time: string;
+  handleOnAuditoryClick: (auditory: ICabinet) => void;
 }>();
 
 const cabinetsSearch = ref<ICabinetsSearch>({});
@@ -123,6 +125,10 @@ const selectedCategory = ref({
 async function handleOnSearch(searchTxt: string) {
   cabinetsSearch.value.search = searchTxt;
   await getCabinets();
+}
+
+function onAuditoryClick(auditory: ICabinet) {
+  props.handleOnAuditoryClick(auditory);
 }
 
 async function getCabinets() {

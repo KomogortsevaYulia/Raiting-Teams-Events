@@ -20,4 +20,7 @@ export interface ICabinetsTimeSearch {
   day_week_id?: number;
   time_start?: string;
   time_end?: string;
+
+  // additional
+  cabinet_id?: number;
 }
