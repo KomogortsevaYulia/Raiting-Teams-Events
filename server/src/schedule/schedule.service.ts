@@ -130,6 +130,13 @@ export class ScheduleService {
         })
       : null;
 
+    // search text
+    searchCabinetsDto.search
+      ? query.andWhere('LOWER(cabinets.name) like LOWER(:search)', {
+          search: `%${searchCabinetsDto.search}%`,
+        })
+      : null;
+
     const cabinets = await query
       .orderBy('cabinets.name', 'ASC')
       .getManyAndCount();

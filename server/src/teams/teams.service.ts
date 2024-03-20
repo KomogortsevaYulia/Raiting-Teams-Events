@@ -252,12 +252,14 @@ export class TeamsService {
             title: `%${params.title}%`,
           })
         : query;
+
       //if description
       params.description
         ? query.andWhere('LOWER(teams.description) like :description', {
             description: `%${params.description}%`,
           })
         : query;
+
       //if tags
       params.tags
         ? query.andWhere('LOWER(teams.tags) like :tags', {
