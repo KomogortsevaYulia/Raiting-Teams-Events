@@ -1,78 +1,87 @@
 <template>
-  <!--    schedule-->
-  <!--  time {{ time }} -->
-  <!--  timeDayWeek {{ timeDayWeek }}-->
   <div class="row">
-    <div class="col-12 overflow-scroll" style="max-height: 500px">
-      <table class="table">
-        <thead>
-          <tr class="header">
-            <th class="p-2 bg-transparent"></th>
-            <th
-              v-for="(week, index) in dates.weeks"
-              v-bind:key="index"
-              class="p-2 bg-transparent"
-            >
-              <div class="text-center">{{ week }}</div>
-
-              <div class="text-center">
-                {{ dates.dateRange[index].getDate() }}
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <!--   hours-->
-          <tr v-for="(hour, index1) in time" :key="index1" class="">
-            <td class="header fw-bold">{{ hour }}</td>
-            <!--  weeks-->
-            <td
-              v-for="(week, index2) in dates.weeks"
-              :key="index2"
-              class="p-0 position-relative week-cell"
-            >
-              <!--  cell settings -->
-              <div
-                v-if="can('can edit own teams')"
-                class="cell-settings position-absolute top-0 start-0 p-2"
-              >
-                <div class="btn-search mb-3">
-                  <FontAwesomeIcon icon="search" />
-                </div>
-                <button class="btn-order">Забронировать</button>
-              </div>
-              <!--  data-->
-              <div v-if="timeDayWeek[week] && timeDayWeek[week][hour]">
-                <div
-                  v-for="(lesson, index3) in timeDayWeek[week][hour]"
-                  :key="index3"
+    <div class="row">
+      <!--        schedule table-->
+      <div :class="['col-12', { 'col-lg-8': seeTime }]">
+        <div class="col-12 overflow-scroll" style="max-height: 500px">
+          <table class="table">
+            <thead>
+              <tr class="header">
+                <th class="p-2 bg-transparent"></th>
+                <th
+                  v-for="(week, index) in dates.weeks"
+                  v-bind:key="index"
+                  class="p-2 bg-transparent"
                 >
-                  <!--  DATA in cell-->
-                  <div
-                    v-if="
-                      lesson.repeat ||
-                      checkDatesYMDEquivalent(
-                        lesson.date,
-                        dates.dateRange[index2],
-                      )
-                    "
-                    class="selected-day p-1"
-                  >
-                    <p>{{ lesson.cabinet.name }}</p>
-                    <div class="">{{ lesson?.user?.fullname }}</div>
-                    <div>{{ lesson?.endTime }}</div>
+                  <div class="text-center">{{ week }}</div>
+
+                  <div class="text-center">
+                    {{ dates.dateRange[index].getDate() }}
                   </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-if="!time || time.length <= 0" class="">
-        <div class="alert alert-danger" role="alert">
-          Время занятий не задано
-          <button  v-if="can('can edit own teams')" class="btn-order">Забронировать</button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!--   hours-->
+              <tr v-for="(hour, index1) in time" :key="index1" class="">
+                <td class="header fw-bold">{{ hour }}</td>
+                <!--  weeks-->
+                <td
+                  v-for="(week, index2) in dates.weeks"
+                  :key="index2"
+                  class="p-0 position-relative week-cell"
+                >
+                  <!--  cell settings -->
+                  <div
+                    v-if="can('can edit own teams')"
+                    class="cell-settings position-absolute top-0 start-0 p-2"
+                  >
+                    <!--    search auditories -->
+                    <div class="btn-search mb-3" @click="seeTime = !seeTime">
+                      <FontAwesomeIcon icon="search" />
+                    </div>
+                    <button class="btn-order">Забронировать</button>
+                  </div>
+                  <!--  data-->
+                  <div v-if="timeDayWeek[week] && timeDayWeek[week][hour]">
+                    <div
+                      v-for="(lesson, index3) in timeDayWeek[week][hour]"
+                      :key="index3"
+                    >
+                      <!--  DATA in cell-->
+                      <div
+                        v-if="
+                          lesson.repeat ||
+                          checkDatesYMDEquivalent(
+                            lesson.date,
+                            dates.dateRange[index2],
+                          )
+                        "
+                        class="selected-day p-1"
+                      >
+                        <p>{{ lesson.cabinet.name }}</p>
+                        <div class="">{{ lesson?.user?.fullname }}</div>
+                        <div>{{ lesson?.endTime }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div v-if="!time || time.length <= 0" class="">
+            <div class="alert alert-danger" role="alert">
+              Время занятий не задано
+              <button v-if="can('can edit own teams')" class="btn-order">
+                Забронировать
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+      <!-- select auditory-->
+      <div class="col-lg-4 col-12" v-if="seeTime">
+        <AuditoriumField :onCloseAuditories="handleCloseAuditories" />
       </div>
     </div>
   </div>
@@ -87,6 +96,7 @@ import type { ICabinet } from "@/store/models/schedule/cabinet.model";
 import type { IUser } from "@/store/models/user/user.model";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { usePermissionsStore } from "@/store/permissions_store";
+import AuditoriumField from "@/views/teams/schedule/AuditoriumField.vue";
 
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
@@ -124,12 +134,17 @@ const schedule = ref<ISchedule>({});
 const timeDayWeek = ref<DayWeek>({});
 
 const time = ref<string[]>([]);
+const seeTime = ref(false);
 
 onBeforeMount(() => {
   getCabinetsTime().then(() => {
     setTime();
   });
 });
+
+function handleCloseAuditories() {
+  seeTime.value = false;
+}
 
 async function getCabinetsTime() {
   schedule.value = await cabinetsTimeStore.getCabinetsTime(
