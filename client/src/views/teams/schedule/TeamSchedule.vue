@@ -46,6 +46,7 @@
                     <button class="btn-order">Забронировать</button>
                   </div>
                   <!--  data-->
+
                   <div v-if="timeDayWeek[week] && timeDayWeek[week][hour]">
                     <div
                       v-for="(lesson, index3) in timeDayWeek[week][hour]"
@@ -88,8 +89,7 @@
           :onCloseAuditories="handleCloseAuditories"
           :date="selectedCell.date"
           :time="selectedCell.time"
-          :on-auditory-click="onAuditoryClick"
-        />
+         :handle-on-auditory-click="onAuditoryClick"/>
       </div>
     </div>
   </div>

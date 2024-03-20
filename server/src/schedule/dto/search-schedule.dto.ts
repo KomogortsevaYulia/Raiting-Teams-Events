@@ -24,5 +24,5 @@ export class SearchScheduleDto {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  cabinet_id:number
+  cabinet_id: number;
 }
