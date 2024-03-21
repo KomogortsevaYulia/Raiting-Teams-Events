@@ -1,95 +1,97 @@
 <template> 
-  <header>
-    <h1 class="text-uppercase">Добавление занятия в расписание коллектива “{{ shedule.name }}”</h1>
-  </header>
-  <section class="class-options px-5 mt-sm-5">
-      <span class="fw-bold pt-2 my-2">День недели:</span>
-      <select class="col form-select" v-model="classForm.dayOfTheWeek">
-        <option v-for="(day, i) in WeekDay" :key="day" :value="day">{{ WeekDayRu[i] }}</option>
-      </select>
-      <span class="fw-bold pt-4">Добавление занятия:</span>
-      <div class="switch border-block mt-3">
-        <div v-for="(periodOption, i) in PeriodOption" :key="periodOption" @click="setState(periodOption)" class="switch-item" :class="{ active: classForm.period === periodOption }">
-          {{ PeriodOptionRU[i] }}
+  <div class="schedule-create">
+    <header>
+      <h1 class="text-uppercase">Добавление занятия в расписание коллектива “{{ shedule.name }}”</h1>
+    </header>
+    <section class="class-options px-5 mt-sm-5">
+        <span class="fw-bold pt-2 my-2">День недели:</span>
+        <select class="col form-select week-day-select" v-model="classForm.dayOfTheWeek">
+          <option v-for="(day, i) in WeekDay" :key="day" :value="day">{{ WeekDayRu[i] }}</option>
+        </select>
+        <span class="fw-bold pt-4">Добавление занятия:</span>
+        <div class="switch border-block mt-3">
+          <div v-for="(periodOption, i) in PeriodOption" :key="periodOption" @click="setState(periodOption)" class="switch-item" :class="{ active: classForm.period === periodOption }">
+            {{ PeriodOptionRU[i] }}
+          </div>
         </div>
+    </section>
+    <section class="class-booking-wrapper">
+      <ClassBooking
+        v-for="(data) in classBooking"
+        :key="data.header"
+        :header="data.header"
+        :isPrimary="data.isPrimary"
+        :date="data.date"
+        :location="data.location"
+      ></ClassBooking>
+    </section>
+    <section class="mt-sm-4">
+      <div class="filters">
+        <GroupElements class="me-3">
+          <span option>
+            <font-awesome-icon :icon="['fas', 'star']" />
+            <span class="star__count ps-sm-2">{{ starCount }}</span>
+          </span>
+          <span option>
+            <font-awesome-icon :icon="['fas', 'fa-cog']" />
+          </span>
+        </GroupElements>
+        <GroupElements class="me-3">
+          <span option>
+            <font-awesome-icon :icon="['fas', 'fa-calendar']" />
+          </span>
+          <span option no-divider>
+            Свободные
+          </span>
+        </GroupElements>
+        <GroupElements class="me-3">
+          <span option>
+            Тип
+          </span>
+          <span option>
+            <select class="form-select">
+              <option>Все</option>
+            </select>
+          </span>
+        </GroupElements>
+        <GroupElements class="me-3">
+          <span option>
+            Корпус
+          </span>
+          <span option>
+            <select class="form-select">
+              <option>Другие</option>
+            </select>
+          </span>
+        </GroupElements>
+        <GroupElements class="me-3">
+          <span option>
+            <font-awesome-icon :icon="['fas', 'fa-users']" />
+          </span>
+          <span option>
+            <select class="form-select">
+              <option>Любая</option>
+            </select>
+          </span>
+        </GroupElements>
+        <button><font-awesome-icon :icon="['fas', 'fa-refresh']" /> Сброс</button>
       </div>
-  </section>
-  <section class="class-booking-wrapper">
-    <ClassBooking
-      v-for="(data) in classBooking"
-      :key="data.header"
-      :header="data.header"
-      :isPrimary="data.isPrimary"
-      :date="data.date"
-      :location="data.location"
-    ></ClassBooking>
-  </section>
-  <section class="mt-sm-4">
-    <div class="filters">
-      <GroupElements class="me-3">
-        <span option>
-          <font-awesome-icon :icon="['fas', 'star']" />
-          <span class="star__count ps-sm-2">{{ starCount }}</span>
-        </span>
-        <span option>
-          <font-awesome-icon :icon="['fas', 'fa-cog']" />
-        </span>
-      </GroupElements>
-      <GroupElements class="me-3">
-        <span option>
-          <font-awesome-icon :icon="['fas', 'fa-calendar']" />
-        </span>
-        <span option no-divider>
-          Свободные
-        </span>
-      </GroupElements>
-      <GroupElements class="me-3">
-        <span option>
-          Тип
-        </span>
-        <span option>
-          <select class="form-select">
-            <option>Все</option>
-          </select>
-        </span>
-      </GroupElements>
-      <GroupElements class="me-3">
-        <span option>
-          Корпус
-        </span>
-        <span option>
-          <select class="form-select">
-            <option>Другие</option>
-          </select>
-        </span>
-      </GroupElements>
-      <GroupElements class="me-3">
-        <span option>
-          <font-awesome-icon :icon="['fas', 'fa-users']" />
-        </span>
-        <span option>
-          <select class="form-select">
-            <option>Любая</option>
-          </select>
-        </span>
-      </GroupElements>
-      <button><font-awesome-icon :icon="['fas', 'fa-refresh']" /> Сброс</button>
-    </div>
-    <div class="filter-enabled">задействован фильтр</div>
-    <div class="class-list-card-wrapper">
-      <ClassListCard
-        v-for="(el, i) in classLists"
-        :key="i"
-        :disabled="el.disabled"
-        :num="i + 1"
-        :time="el.time"
-        :list="el.list"
-      ></ClassListCard>
-    </div>
-  </section>
-  <footer dev class="mt-sm-4">
-    classEntity: {{classForm}}
-  </footer>
+      <div class="filter-enabled">задействован фильтр</div>
+      <div class="class-list-card-wrapper">
+        <ClassListCard
+          v-for="(el, i) in classLists"
+          :key="i"
+          :disabled="el.disabled"
+          :num="i + 1"
+          :time="el.time"
+          :list="el.list"
+        ></ClassListCard>
+      </div>
+    </section>
+    <footer dev class="mt-sm-4">
+      classEntity: {{classForm}}
+    </footer>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -215,6 +217,18 @@
 </script>
 
 <style lang="scss" scoped>
+  header {
+    box-shadow: none;
+  }
+  .schedule-create {
+    background-color: #ffffff;
+    border: var(--border-block);
+    border-radius: 5px;
+    padding: 15px 25px;
+  }
+  .week-day-select {
+    height: 39px;
+  }
   h1 {
     font-style: var(--font-family-title);
     font-weight: 600;
@@ -230,7 +244,8 @@
     line-height: 20px;
     letter-spacing: 0em;
     text-align: left;
-    color: var(--options-font-color)
+    color: var(--options-font-color);
+    align-items: center
   }
 
   .class-booking-wrapper {
@@ -269,8 +284,13 @@
     }
 
     .active {
+      color: #383838;
       background-color: var(--switch__active_bg-color);
     }
+  }
+
+  ::v-deep .class-booking:first-child .class-booking__header {
+    border-left: 1px solid #000000;
   }
 
   .filters {
@@ -289,6 +309,9 @@
     font-style: var(--font-family-title);
     font-weight: 600;
     font-size: 16px;
+
+    padding: 5.5px 0;
+    line-height: normal
   }
 
   .class-list-card-wrapper {

@@ -3,13 +3,13 @@
     <div class="date">
       <div class="day">{{ dateInfo.dayNumber }}</div>  
       <div class="month">{{ dateInfo.monthName }}</div>  
-      <div class="week-day hr-line">{{ dateInfo.weekDay }}</div>  
+      <div class="week-day">{{ dateInfo.weekDay }}</div>  
     </div>
     <div class="time-location-card__right">
       <div class="time" v-if="isPrimary">{{ dateInfo.time }}</div>
       <div class="time" v-if="!isPrimary">Аудитория НЕ<br>забронирована</div>
       <div class="location" v-if="isPrimary">{{ location }}</div>
-      <select v-if="!isPrimary">
+      <select>
         <option>Завершить</option>
         <option>Бронировать </option>
       </select>  
@@ -19,8 +19,8 @@
 
 <script lang="ts" setup>
   import { computed, onMounted } from 'vue';
-  import { MonthRU } from '@/common/date/month.enum';
-  import { WeekDayRu } from '@/common/date/week-day.enum';
+  import { MonthShortRU } from '@/common/date/month.enum';
+  import { WeekDayShortRu } from '@/common/date/week-day.enum';
 
   const props = defineProps<{
     date: Date;
@@ -42,17 +42,16 @@
   const dateInfo = computed(() => {
     return {
       dayNumber: props.date.getDate(),
-      monthName: Object.values(MonthRU)[props.date.getMonth()],
-      weekDay: Object.values(WeekDayRu)[transformUsWeekDayToRu(props.date.getDay())],
+      monthName: Object.values(MonthShortRU)[props.date.getMonth()],
+      weekDay: Object.values(WeekDayShortRu)[transformUsWeekDayToRu(props.date.getDay())],
       time: `${props.date.getHours()}:${props.date.getMinutes()}`,
-
     }
   });
 </script>
 
 <style lang="scss" scoped>
   .time-location-card {
-    margin: auto;
+    margin-left: 6px;
     text-align: center;
     --time-location-card-primary__bg-color: #43517E;
     --time-location-card-secondary__bg-color: #D22043;
@@ -76,8 +75,6 @@
     }
 
     &.secondary {
-      // min-width: 110%;
-      // min-height: 130%;
       background-color: var(--time-location-card-secondary__bg-color);
 
       & .time, & .location {
@@ -90,23 +87,25 @@
   .time-location-card__right {
     grid-area: right;
     margin:auto;
-    border: 1px solid #3D3D3D;
     border-top-right-radius: var(--time-location-card__border-radius);
     border-bottom-right-radius: var(--time-location-card__border-radius);
   }
 
+  .date {
+    padding: 29px 20px;
+
+    & > * {
+      line-height: normal;
+    }
+
+    .week-day {
+      border-top: 1px solid #ffffff;
+      margin-top: 5px;
+      padding-top: 5px;
+    }
+  }
   .time {
     grid-area: time;
     text-align: center;
   }
- 
-
-.hr-line {
-	margin: 20px 0;
-	padding: 0;
-	height: 0;
-	border: none;
-	border-top: 1px solid #000000;
-  position:relative;
-}
 </style>

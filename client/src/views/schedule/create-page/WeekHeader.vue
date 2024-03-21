@@ -26,14 +26,12 @@
     border-top: none;
     border-bottom: none;
     text-transform: uppercase;
-    margin: 0 5px;
+    margin: 6px 5px;
 
     &__wrapper {
       --header__out-border-color: #000000;
 
-      border: 1px solid var(--header__out-border-color);
-      border-top: none;
-      border-bottom: none;
+      border-right: 1px solid var(--header__out-border-color);
 
       align-self: center;
     }

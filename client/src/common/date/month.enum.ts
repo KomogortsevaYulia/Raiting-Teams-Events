@@ -27,3 +27,18 @@ export enum MonthRU {
   NOVEMBER = "Ноябрь",
   DECEMBER = "Декабрь",
 }
+
+export enum MonthShortRU {
+  JANUARY = "Янв",
+  FEBRUARY = "Фев",
+  MARCH = "Мар",
+  APRIL = "Апр",
+  MAY = "Май",
+  JUNE = "Июнь",
+  JULY = "Июль",
+  AUGUST = "Авг",
+  OCTOBER = "Окт",
+  SEPTEMBER = "Сен",
+  NOVEMBER = "Ноя",
+  DECEMBER = "Дек",
+}

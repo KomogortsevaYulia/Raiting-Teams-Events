@@ -33,7 +33,7 @@
     font-size: 16px;
     display: grid;
     grid-template-columns: 1.0fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 70px 1fr;
     grid-auto-rows: 1fr;
     gap: 0px 0px;
     grid-auto-flow: row;
