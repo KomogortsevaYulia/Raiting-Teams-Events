@@ -165,7 +165,7 @@
         .row-card__title {
           display: inline-block;
           margin-left: 15px;
-          width: 266px;
+          width: 250px;
         }
         .row-card__points {
           float: right;

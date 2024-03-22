@@ -61,7 +61,7 @@
 
     color: var(--time-location-card-secondary__text-color1);
     border-radius: var(--time-location-card__border-radius);
-
+    background-color: var(--time-location-card-primary__bg-color);
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: 1fr;
@@ -71,11 +71,18 @@
       "date right";
 
     &.primary {
-      background-color: var(--time-location-card-primary__bg-color);
+      .date {
+        background-color: var(--time-location-card-primary__bg-color);
+      }
+      border: 1px solid #3D3D3D33;
     }
 
     &.secondary {
-      background-color: var(--time-location-card-secondary__bg-color);
+      .date {
+        background-color: #D22043;
+      }
+      background-color: white;
+      border: 1px solid #3D3D3D33;
 
       & .time, & .location {
         background-color: white;
@@ -93,7 +100,7 @@
 
   .date {
     padding: 29px 20px;
-
+    background-color: var(--time-location-card-primary__bg-color);
     & > * {
       line-height: normal;
     }
