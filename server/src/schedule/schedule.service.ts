@@ -283,15 +283,21 @@ export class ScheduleService {
   public async createTeamSchedule(
     dto: CreateTeamScheduleDto,
   ): Promise<CreateTeamScheduleResponse> {
-    const { id_user } = dto;
+    const { id_user, date_end, date_start, id_team } = dto;
 
-    await this.usersService.findOne(id_user);
-    // await this.teamsService.findTeamById(id_team);
+    const user = await this.usersService.findOne(id_user);
+    const team = await this.teamsService.findTeamById(id_team);
 
-    const teamSchedule = await this.teamSchedRepository.save(dto);
+    const teamSchedule = new TeamSchedule();
+    teamSchedule.user = user;
+    teamSchedule.team = team;
+    teamSchedule.date_start = date_start;
+    teamSchedule.date_end = date_end;
+
+    const newTeamShedule = await this.teamSchedRepository.save(teamSchedule);
 
     return {
-      teamSchedule,
+      teamSchedule: newTeamShedule,
     };
   }
 }
