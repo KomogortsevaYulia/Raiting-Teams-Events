@@ -134,6 +134,29 @@ export class ScheduleService {
         })
       : null;
 
+    // search text
+    searchCabinetsDto.search
+      ? query.andWhere('LOWER(cabinets.name) like LOWER(:search)', {
+          search: `%${searchCabinetsDto.search}%`,
+        })
+      : null;
+
+    // free_time
+    if (searchCabinetsDto.free_time) {
+      const subQuery = this.cabinetsRepository
+        .createQueryBuilder('inner_cabinets_time')
+        .select('inner_cabinets_time.id')
+        .leftJoin('inner_cabinets_time.cabinets_time', 'cabinets_time')
+        .andWhere(
+          '(cabinets_time.time_start <= :free_time OR :free_time >= cabinets_time.time_end)',
+        )
+        .getQuery();
+
+      query.andWhere(`cabinets.id NOT IN (${subQuery})`, {
+        free_time: searchCabinetsDto.free_time,
+      });
+    }
+
     const cabinets = await query
       .orderBy('cabinets.name', 'ASC')
       .getManyAndCount();
@@ -179,6 +202,13 @@ export class ScheduleService {
     // team_id
     searchScheduleDto.team_id
       ? query.andWhere('team.id = :id', { id: searchScheduleDto.team_id })
+      : query;
+
+    // cabinet_id
+    searchScheduleDto.cabinet_id
+      ? query.andWhere('cabinet.id = :cabinet_id', {
+          cabinet_id: searchScheduleDto.cabinet_id,
+        })
       : query;
 
     // day_week_id

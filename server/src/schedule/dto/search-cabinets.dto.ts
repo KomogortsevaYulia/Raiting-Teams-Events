@@ -13,4 +13,11 @@ export class SearchCabinetsDto {
 
   @IsOptional()
   time_end: string;
+
+  // additional fields
+  @IsOptional()
+  search: string;
+
+  @IsOptional()
+  free_time: string;
 }

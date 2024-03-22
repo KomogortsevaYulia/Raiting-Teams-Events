@@ -18,7 +18,7 @@ content-type: application/json
 ### cabinets -----------------------------------------------------------------------------------------------------------
 # ?tag=Со сценой
 # ids[]=1
-GET http://localhost:3000/api/schedule/cabinets/
+GET http://localhost:3000/api/schedule/cabinets?free_time=16:40:00
 
 ###
 POST http://localhost:3000/api/schedule/cabinets HTTP/1.1
