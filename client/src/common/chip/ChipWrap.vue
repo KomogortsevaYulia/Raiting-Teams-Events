@@ -13,7 +13,7 @@
     color: var(--chip__text-color-custom, var(--chip__text-color));
     background-color: var(--chip__bg-color-custom, var(--chip__bg-color));
     border-radius: var(--chip__border-radius-custom, var(--chip__border-radius));
-    padding: 6px;
+    padding: var(--chip__padding-custom, 6px);
 
     font-style: var(--font-family-title);
     font-weight: 600;

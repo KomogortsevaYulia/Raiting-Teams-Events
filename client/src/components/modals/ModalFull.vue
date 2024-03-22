@@ -9,12 +9,13 @@
   >
     <div class="modal-dialog modal-lg">
       <div class="modal-content px-3 py-4">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">
+        <div class="modal-header" :class="{ center: !hasClose }">
+          <h1 class="modal-title" id="exampleModalLabel">
             <!-- заголовок -->
             <slot name="header"> </slot>
           </h1>
           <div
+            v-if="hasClose"
             class="btn-close"
             data-bs-dismiss="modal"
             aria-label="Close"
@@ -30,16 +31,23 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  modalId: string; //задать id модального окна для егов ызова
-}>();
+  const props = defineProps({
+    modalId: { type: String, required: false },
+    hasClose: { type: Boolean, required: false },
+  });
+
+  const hasClose = props.hasClose ?? true;
 </script>
 
 <style lang="scss" scoped>
-.btn-close {
-  &:hover {
-    background-color: var(--main-color-hover);
-    transition: 0.3s;
+  .modal-header.center {
+    width: 100%;
+    justify-content: center;
   }
-}
+  .btn-close {
+    &:hover {
+      background-color: var(--main-color-hover);
+      transition: 0.3s;
+    }
+  }
 </style>

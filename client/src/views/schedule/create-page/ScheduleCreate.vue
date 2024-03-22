@@ -88,9 +88,14 @@
         ></ClassListCard>
       </div>
     </section>
-    <footer dev class="mt-sm-4">
-      classEntity: {{classForm}}
-    </footer>
+    <button
+      type="button"
+      data-bs-toggle="modal"
+      data-bs-target="#createScheduleSubmitModal"
+    >
+      SUBMIT
+    </button>
+    <SubmitModal :date="new Date()" :union="shedule.name" :location="'актовый зал'"></SubmitModal>
   </div>
 </template>
 
@@ -101,6 +106,7 @@
   import GroupElements from '@/common/group-elements/GroupElements.vue'
   import ClassBooking from './ClassBooking.vue'
   import ClassListCard from './ClassListCard.vue'
+  import SubmitModal from './SubmitModal.vue'
 
   const starCount = 1;
   const shedule = ref({
@@ -289,7 +295,7 @@
     }
   }
 
-  ::v-deep .class-booking:first-child .class-booking__header {
+  :deep(.class-booking:first-child) .class-booking__header {
     border-left: 1px solid #000000;
   }
 
