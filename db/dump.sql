@@ -5,7 +5,7 @@
 -- Dumped from database version 14.9
 -- Dumped by pg_dump version 14.9
 
--- Started on 2024-03-11 21:51:26
+-- Started on 2024-03-22 22:15:25
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -39,6 +39,7 @@ ALTER TABLE ONLY public.team_visits DROP CONSTRAINT "FK_725f33cc8e48dabebb1a96dc
 ALTER TABLE ONLY public.events DROP CONSTRAINT "FK_723091d08c3c5415a1999597464";
 ALTER TABLE ONLY public.cabinets_time DROP CONSTRAINT "FK_6975311213f5864319ee5c9203e";
 ALTER TABLE ONLY public.functions DROP CONSTRAINT "FK_579f1e0cdab39bd43464fb882be";
+ALTER TABLE ONLY public.cabinets_time DROP CONSTRAINT "FK_4e8c4114978e749fc9e42136852";
 ALTER TABLE ONLY public.achievements DROP CONSTRAINT "FK_439fe2afbe76423baefd988dbd8";
 ALTER TABLE ONLY public.user_functions DROP CONSTRAINT "FK_414c47660792aa509c8f55adc7f";
 ALTER TABLE ONLY public.achievements DROP CONSTRAINT "FK_3e7e91763bdef262e9f727a1208";
@@ -240,7 +241,7 @@ CREATE SEQUENCE public.achievements_id_seq
 ALTER TABLE public.achievements_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3561 (class 0 OID 0)
+-- TOC entry 3563 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: achievements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -280,7 +281,7 @@ CREATE SEQUENCE public.cabinets_id_seq
 ALTER TABLE public.cabinets_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3562 (class 0 OID 0)
+-- TOC entry 3564 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: cabinets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -300,7 +301,9 @@ CREATE TABLE public.cabinets_time (
     repeat boolean DEFAULT true NOT NULL,
     id_cabinet integer,
     id_team_schedule integer,
-    id_day_week integer
+    id_day_week integer,
+    date timestamp without time zone DEFAULT '2024-03-20 21:17:07.548899'::timestamp without time zone NOT NULL,
+    id_user integer
 );
 
 
@@ -323,7 +326,7 @@ CREATE SEQUENCE public.cabinets_time_id_seq
 ALTER TABLE public.cabinets_time_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3563 (class 0 OID 0)
+-- TOC entry 3565 (class 0 OID 0)
 -- Dependencies: 241
 -- Name: cabinets_time_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -363,7 +366,7 @@ CREATE SEQUENCE public.dictionary_id_seq
 ALTER TABLE public.dictionary_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3564 (class 0 OID 0)
+-- TOC entry 3566 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: dictionary_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -402,7 +405,7 @@ CREATE TABLE public.events (
     event_place character varying,
     team_size integer,
     event_goal character varying,
-    date_update timestamp without time zone DEFAULT '2024-03-11 05:46:35.653'::timestamp without time zone NOT NULL,
+    date_update timestamp without time zone DEFAULT '2024-03-20 13:16:43.739'::timestamp without time zone NOT NULL,
     user_id integer,
     status_id integer
 );
@@ -427,7 +430,7 @@ CREATE SEQUENCE public.events_id_seq
 ALTER TABLE public.events_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3565 (class 0 OID 0)
+-- TOC entry 3567 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -468,7 +471,7 @@ CREATE SEQUENCE public.form_fields_id_seq
 ALTER TABLE public.form_fields_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3566 (class 0 OID 0)
+-- TOC entry 3568 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: form_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -508,7 +511,7 @@ CREATE SEQUENCE public.forms_id_seq
 ALTER TABLE public.forms_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3567 (class 0 OID 0)
+-- TOC entry 3569 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: forms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -548,7 +551,7 @@ CREATE SEQUENCE public.functions_id_seq
 ALTER TABLE public.functions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3568 (class 0 OID 0)
+-- TOC entry 3570 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: functions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -599,7 +602,7 @@ CREATE SEQUENCE public.journals_id_seq
 ALTER TABLE public.journals_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3569 (class 0 OID 0)
+-- TOC entry 3571 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: journals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -638,7 +641,7 @@ CREATE SEQUENCE public.migrations_id_seq
 ALTER TABLE public.migrations_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3570 (class 0 OID 0)
+-- TOC entry 3572 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -697,7 +700,7 @@ CREATE SEQUENCE public.requisition_fields_id_seq
 ALTER TABLE public.requisition_fields_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3571 (class 0 OID 0)
+-- TOC entry 3573 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: requisition_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -722,7 +725,7 @@ CREATE SEQUENCE public.requisition_id_seq
 ALTER TABLE public.requisition_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3572 (class 0 OID 0)
+-- TOC entry 3574 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: requisition_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -762,7 +765,7 @@ CREATE SEQUENCE public.team_photo_id_seq
 ALTER TABLE public.team_photo_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3573 (class 0 OID 0)
+-- TOC entry 3575 (class 0 OID 0)
 -- Dependencies: 243
 -- Name: team_photo_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -803,7 +806,7 @@ CREATE SEQUENCE public.team_schedule_id_seq
 ALTER TABLE public.team_schedule_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3574 (class 0 OID 0)
+-- TOC entry 3576 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: team_schedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -845,7 +848,7 @@ CREATE SEQUENCE public.team_visits_id_seq
 ALTER TABLE public.team_visits_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3575 (class 0 OID 0)
+-- TOC entry 3577 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: team_visits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -898,7 +901,7 @@ CREATE SEQUENCE public.teams_id_seq
 ALTER TABLE public.teams_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3576 (class 0 OID 0)
+-- TOC entry 3578 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -941,7 +944,7 @@ CREATE SEQUENCE public.user_functions_id_seq
 ALTER TABLE public.user_functions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3577 (class 0 OID 0)
+-- TOC entry 3579 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: user_functions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -993,7 +996,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3578 (class 0 OID 0)
+-- TOC entry 3580 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1098,7 +1101,7 @@ ALTER TABLE ONLY public.requisition_fields ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 3300 (class 2604 OID 454893)
+-- TOC entry 3301 (class 2604 OID 454893)
 -- Name: team_photo id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1146,7 +1149,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3520 (class 0 OID 445865)
+-- TOC entry 3522 (class 0 OID 445865)
 -- Dependencies: 209
 -- Data for Name: achievements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1163,7 +1166,7 @@ COPY public.achievements (id, title, points, date_get, date_add, file, date_last
 
 
 --
--- TOC entry 3547 (class 0 OID 446465)
+-- TOC entry 3549 (class 0 OID 446465)
 -- Dependencies: 236
 -- Data for Name: cabinets; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1187,23 +1190,25 @@ COPY public.cabinets (id, name, tags, id_direction) FROM stdin;
 
 
 --
--- TOC entry 3553 (class 0 OID 454844)
+-- TOC entry 3555 (class 0 OID 454844)
 -- Dependencies: 242
 -- Data for Name: cabinets_time; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.cabinets_time (id, time_start, time_end, repeat, id_cabinet, id_team_schedule, id_day_week) FROM stdin;
-16	16:30:00	17:30:00	t	4	2	23
-17	15:30:00	17:30:00	f	5	2	27
-30	10:00:00	11:00:00	f	3	2	28
-31	08:00:00	09:00:00	t	4	2	26
-14	15:00:00	23:00:00	t	18	1	22
-32	17:00:00	18:30:00	t	5	1	23
+COPY public.cabinets_time (id, time_start, time_end, repeat, id_cabinet, id_team_schedule, id_day_week, date, id_user) FROM stdin;
+16	16:30:00	17:30:00	t	4	2	23	2024-03-12 23:06:09.372484	\N
+17	15:30:00	17:30:00	f	5	2	27	2024-03-12 23:06:09.372484	\N
+31	08:00:00	09:00:00	t	4	2	26	2024-03-12 23:06:09.372484	\N
+14	15:00:00	23:00:00	t	18	1	22	2024-03-12 23:06:09.372484	\N
+32	17:00:00	18:30:00	t	5	1	23	2024-03-12 23:06:09.372484	\N
+35	15:00:00	17:00:00	f	3	1	26	2024-03-15 00:00:00	3
+36	15:00:00	17:00:00	f	3	2	26	2024-03-15 00:00:00	3
+37	18:00:00	19:00:00	f	4	2	26	2024-03-15 00:00:00	3
 \.
 
 
 --
--- TOC entry 3522 (class 0 OID 445872)
+-- TOC entry 3524 (class 0 OID 445872)
 -- Dependencies: 211
 -- Data for Name: dictionary; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1240,7 +1245,7 @@ COPY public.dictionary (id, name, class_name, class_id) FROM stdin;
 
 
 --
--- TOC entry 3524 (class 0 OID 445878)
+-- TOC entry 3526 (class 0 OID 445878)
 -- Dependencies: 213
 -- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1267,7 +1272,7 @@ COPY public.events (id, title, "dateStart", "dateEnd", description, tags, "dateS
 
 
 --
--- TOC entry 3526 (class 0 OID 445885)
+-- TOC entry 3528 (class 0 OID 445885)
 -- Dependencies: 215
 -- Data for Name: form_fields; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1288,7 +1293,7 @@ COPY public.form_fields (id, title, required, archive, form_id) FROM stdin;
 
 
 --
--- TOC entry 3528 (class 0 OID 445893)
+-- TOC entry 3530 (class 0 OID 445893)
 -- Dependencies: 217
 -- Data for Name: forms; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1301,7 +1306,7 @@ COPY public.forms (id, date, description, team_id) FROM stdin;
 
 
 --
--- TOC entry 3530 (class 0 OID 445899)
+-- TOC entry 3532 (class 0 OID 445899)
 -- Dependencies: 219
 -- Data for Name: functions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1332,7 +1337,7 @@ COPY public.functions (id, title, type_function, team_id) FROM stdin;
 
 
 --
--- TOC entry 3532 (class 0 OID 445906)
+-- TOC entry 3534 (class 0 OID 445906)
 -- Dependencies: 221
 -- Data for Name: journals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1365,7 +1370,7 @@ COPY public.journals (id, "dateRegistration", comment, event_id, team_id, user_i
 
 
 --
--- TOC entry 3534 (class 0 OID 445918)
+-- TOC entry 3536 (class 0 OID 445918)
 -- Dependencies: 223
 -- Data for Name: migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1427,11 +1432,13 @@ COPY public.migrations (id, "timestamp", name) FROM stdin;
 77	1709348545479	Auto1709348545479
 78	1709611308529	Auto1709611308529
 83	1710135986330	Auto1710135986330
+84	1710255942421	Auto1710255942421
+85	1710940594332	Auto1710940594332
 \.
 
 
 --
--- TOC entry 3536 (class 0 OID 445924)
+-- TOC entry 3538 (class 0 OID 445924)
 -- Dependencies: 225
 -- Data for Name: requisition; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1460,17 +1467,18 @@ COPY public.requisition (id, fullname, date_create, date_update, user_id, status
 22	-	2022-06-24 00:00:00	2022-07-29 00:00:00	22	18	\N	\N
 23	-	2022-07-24 00:00:00	2022-07-25 00:00:00	23	18	\N	\N
 8	-	2022-06-25 00:00:00	2022-06-26 00:00:00	8	18	\N	\N
-51	-	2024-01-14 11:34:52.210584	2024-01-14 11:34:52.210584	3	18	16	\N
 53	-	2024-01-14 11:35:17.92095	2024-01-14 11:35:17.92095	3	18	8	\N
 54	-	2024-02-17 11:36:44.630503	2024-02-17 11:36:44.630503	3	18	15	\N
 55	-	2024-02-17 11:37:28.298195	2024-02-17 11:37:28.298195	3	18	12	\N
 52	-	2024-01-14 11:35:02.3149	2024-02-17 11:37:57.633	3	20	9	\N
 50	-	2023-12-16 11:21:52.993246	2024-03-02 15:35:36.386	3	19	6	\N
+51	-	2024-01-14 11:34:52.210584	2024-03-20 14:08:20.306902	16	18	16	\N
+59	-	2024-03-20 14:09:54.604092	2024-03-20 14:09:54.604092	3	18	16	\N
 \.
 
 
 --
--- TOC entry 3537 (class 0 OID 445931)
+-- TOC entry 3539 (class 0 OID 445931)
 -- Dependencies: 226
 -- Data for Name: requisition_fields; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1484,7 +1492,7 @@ COPY public.requisition_fields (id, value, form_fields_id, requisition_id) FROM 
 
 
 --
--- TOC entry 3555 (class 0 OID 454890)
+-- TOC entry 3557 (class 0 OID 454890)
 -- Dependencies: 244
 -- Data for Name: team_photo; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1495,7 +1503,7 @@ COPY public.team_photo (id, image, creation_date, id_team) FROM stdin;
 
 
 --
--- TOC entry 3549 (class 0 OID 446474)
+-- TOC entry 3551 (class 0 OID 446474)
 -- Dependencies: 238
 -- Data for Name: team_schedule; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1503,11 +1511,12 @@ COPY public.team_photo (id, image, creation_date, id_team) FROM stdin;
 COPY public.team_schedule (id, id_user, id_team, date_start, date_end) FROM stdin;
 1	3	15	2010-05-09 00:00:00	2026-05-09 00:00:00
 2	3	6	2010-05-09 00:00:00	2026-05-09 00:00:00
+7	\N	\N	2024-05-10 10:27:52.713	2025-09-10 10:27:52.713
 \.
 
 
 --
--- TOC entry 3551 (class 0 OID 446481)
+-- TOC entry 3553 (class 0 OID 446481)
 -- Dependencies: 240
 -- Data for Name: team_visits; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1540,7 +1549,7 @@ COPY public.team_visits (id, date_visit, id_user, id_team_schedule, status_visit
 
 
 --
--- TOC entry 3540 (class 0 OID 445938)
+-- TOC entry 3542 (class 0 OID 445938)
 -- Dependencies: 229
 -- Data for Name: teams; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1557,15 +1566,15 @@ COPY public.teams (id, title, creation_date, image, tags, description, shortname
 14	Учебная деятельность	2010-05-09 00:00:00	/image_study.jpg	учеба\nстатьи	учеба	УД	2	direction	\N	f	\N	\N	t	\N	+79877744444	\N
 10	Студенческие отряды	2011-05-09 00:00:00	https://sun4-11.userapi.com/impg/aCk6mxpkQUL_AxEkfjkQWTeza0M377--LxgOfw/3Yffdw2EJpw.jpg?size=1080x1080&quality=96&sign=6fdb94b4cb1447bd09b8d7aa222176a3&type=album	Лидерство,Экология,Друзья	Коллектив Студенческие отряды - это добровольческое сообщество студентов, которые объединены общей идеей помощи окружающим и улучшения условий жизни в своих городах и селах. Мы проводим различные социальные проекты, в том числе благоустройство территорий, помощь в организации мероприятий, помощь в оздоровлении, экологические и образовательные программы. Отряды работают в разных направлениях, в зависимости от интересов и возможностей участников. Участие в отряде - это не только возможность помочь другим, но и развить лидерские качества, научиться работать в команде и получить новые знания и навыки. Присоединяйтесь к нам, чтобы стать частью большого и дружного сообщества, которое делает мир лучше!	СтудОтряды	4	teams	Студенческие отряды - это сообщество студентов, которые добровольно участвуют в общественных работах, экологических акциях и организации культурных мероприятий, чтобы сделать мир лучше. 	f	\N	\N	t	2,5	+79877700000	https://m.me/246813579,\nhttps://m.me/135792468,\nhttps://m.me/369258147,\nhttps://m.me/582147963
 11	Добровольцы	2011-05-09 00:00:00	https://sun9-52.userapi.com/impg/-oj1T-Lc1UZVu3064uQY0DvwT2UAUTOI5Z6RXQ/pqpI4ROX38Q.jpg?size=1240x1240&quality=95&sign=1eb111e2c7e8ca9323f9c89afe787e9e&type=album	Добро,Благотворительность,Волонтёрство,Помощь,Сообщество	Коллектив Добровольцы - это сообщество студентов, которые стремятся к саморазвитию, укреплению своих навыков и знаний, а также помощи другим. У нас вы сможете проявить свою социальную ответственность и волю к действию, принимая участие в различных благотворительных мероприятиях, таких как сбор и переработка мусора, помощь в приютах для бездомных животных, работа с детьми и многое другое. Мы уверены, что работа в команде и совместные проекты помогут вам раскрыть свой потенциал и стать лучшими версиями себя. Присоединяйтесь к "Добровольцам", чтобы сделать свой вклад в улучшение нашей общей жизни!	Страдание	4	teams	"Добровольцы" - это сообщество студентов, готовых помочь людям и сделать мир лучше, участвуя в благотворительных мероприятиях, волонтёрстве и акциях, нацеленных на поддержку нуждающихся, окружающей среды и животных. Наша команда действует в различных областях и всегда открыта для новых участников, готовых помочь в реализации благотворительных проектов.	t	\N	\N	t	\N	+71111166655	\N
-16	Танцевально-спортивный клуб «Академик». Народный коллектив Ансамбль бального танца «Академик»	2011-05-09 00:00:00.177	https://sun9-28.userapi.com/impg/_bkYuxPNFqGqlYD9KHykzrfRbCvVwdllh_qzWw/EU6SEeABpaU.jpg?size=2146x1874&quality=95&sign=c621426bcb42e6f722d659e4e4445ae6&type=album,http://localhost:3000/public/media/2023.11/12/1699789966724_054b8q.webp,http://localhost:3000/public/media/2023.11/13/1699880236509_9qcayr.webp,http://localhost:3000/public/media/2023.11/13/1699880377400_bxibta.webp,http://localhost:3000/public/media/2024.03/08/1709886116771_xlz7a1.webp	Бальные танцы,Выступления,Мероприятия	«Академик» – это один из лидеров в области танцевального спорта среди клубов Иркутской области и России. Успехи клуба определяются многолетними традициями, профессионализмом и бескомпромиссным качеством обучения, достигаемым благодаря работе лучших преподавателей, созданию прекрасных условий для занятий и великолепной атмосферы, царящей в зале.\r\n\r\nРуководитель Скоморовский Максим Валерьевич\r\n\r\nПедагоги коллектива: Камалдина Эльмира Ибрагимовна, Балясин Владислав Игоревич, Бутаков Евгений Александрович\r\n\r\nОсновная информация о коллективе:\r\n\r\nфиналист Чемпионата России среди команд "формейшн", Чемпион Сибири "формейшн", обладатель Гран-При фестиваля "Солнечный ветер" г. Барнаул\r\nТанец - школа, способная воспитать в человеке множество незаменимых качеств, начиная от красивых линий тела и стремительной его подвижности и заканчивая железной волей, закалённым характером. А прелесть бальных танцев в том, что два человека соединяются вместе и танцуют как одно целое. Участие в соревнованиях, исполнение шоу-номеров, выступление в составе ансамбля дают широкое поле для творческого развития молодёжи	Академик	5	teams	Ансамбль занимается бальными танцами, проводит мастер-классы и выступает на конкурсах и фестивалях. Участники коллектива не только танцуют, но и создают костюмы и украшения для своих выступлений.	f	http://localhost:3000/public/media/2023.12/12/1702374545848_k3g8lf..docx	http://localhost:3000/public/media/2023.12/12/1702374505473_kqz8ei..docx	t	2,3,4,5,6	\N	\N
 15	Народный коллектив ансамбль русской песни "Калина"	2011-05-09 00:00:00	https://sun9-13.userapi.com/impf/c857420/v857420789/64aae/1vOABDL67UU.jpg?size=2560x1707&quality=96&sign=1d99c14e2c3627c364c1bf87db709bf9&type=album,http://localhost:3000/public/media/2023.11/13/1699881084974_29gsdm.webp,http://localhost:3000/public/media/2023.11/13/1699881173172_v637to.webp,http://localhost:3000/public/media/2023.11/13/1699881225277_iywohf.webp,http://localhost:3000/public/media/2023.11/13/1699881254856_6w232s.webp	КАЛИНА,РусскаяПесня,Ансамбль,НародныйКоллектив	Коллектив "КАЛИНА" - народный ансамбль русской песни Иркутского национального технического университета, который существует уже более 50 лет и является одним из самых известных и уважаемых коллективов в Иркутске и регионе.\r\nВ состав ансамбля входят студенты и выпускники университета, которые соединили свой талант, любовь к народной музыке и желание сохранить и продолжить традиции русской культуры.\r\n"КАЛИНА" выступает на различных мероприятиях, таких как гала-концерты, праздники и фестивали, как в Иркутске, так и за его пределами. Ансамбль гордится своей богатой репертуарной программой, которая включает в себя как народные песни, так и авторские произведения в жанре русской песни.\r\nКроме того, в коллективе существует активная творческая работа, которая включает в себя создание новых аранжировок, песен и музыкальных номеров, что позволяет ансамблю постоянно развиваться и быть в тренде.\r\nПрисоединяйтесь к "КАЛИНЕ", чтобы раскрыть свой творческий потенциал, насладиться уникальной атмосферой и принять участие в прекрасных мероприятиях вместе с душевной командой профессионалов.	Калина	5	teams	КАЛИНА - это народный коллектив ансамбля русской песни ИРНИТУ, состоящий из студентов, которые исполняют народные песни и танцы разных регионов России. Ансамбль уже более 50 лет радует своей музыкой и выступает на различных концертах и фестивалях. Присоединяйтесь к нам, чтобы узнать больше о культурном наследии России и стать частью нашей творческой команды.	f	\N	\N	t	\N	\N	\N
+16	Танцевально-спортивный клуб «Академик». Народный коллектив Ансамбль бального танца «Академик»	2011-05-09 00:00:00.177	https://sun9-28.userapi.com/impg/_bkYuxPNFqGqlYD9KHykzrfRbCvVwdllh_qzWw/EU6SEeABpaU.jpg?size=2146x1874&quality=95&sign=c621426bcb42e6f722d659e4e4445ae6&type=album,http://localhost:3000/public/media/2023.11/12/1699789966724_054b8q.webp,http://localhost:3000/public/media/2023.11/13/1699880236509_9qcayr.webp	Бальные танцы,Выступления,Мероприятия	«Академик» – это один из лидеров в области танцевального спорта среди клубов Иркутской области и России. Успехи клуба определяются многолетними традициями, профессионализмом и бескомпромиссным качеством обучения, достигаемым благодаря работе лучших преподавателей, созданию прекрасных условий для занятий и великолепной атмосферы, царящей в зале.\r\n\r\nРуководитель Скоморовский Максим Валерьевич\r\n\r\nПедагоги коллектива: Камалдина Эльмира Ибрагимовна, Балясин Владислав Игоревич, Бутаков Евгений Александрович\r\n\r\nОсновная информация о коллективе:\r\n\r\nфиналист Чемпионата России среди команд "формейшн", Чемпион Сибири "формейшн", обладатель Гран-При фестиваля "Солнечный ветер" г. Барнаул\r\nТанец - школа, способная воспитать в человеке множество незаменимых качеств, начиная от красивых линий тела и стремительной его подвижности и заканчивая железной волей, закалённым характером. А прелесть бальных танцев в том, что два человека соединяются вместе и танцуют как одно целое. Участие в соревнованиях, исполнение шоу-номеров, выступление в составе ансамбля дают широкое поле для творческого развития молодёжи	Академик	5	teams	Ансамбль занимается бальными танцами, проводит мастер-классы и выступает на конкурсах и фестивалях. Участники коллектива не только танцуют, но и создают костюмы и украшения для своих выступлений.	f	http://localhost:3000/public/media/2023.12/12/1702374545848_k3g8lf..docx	http://localhost:3000/public/media/2023.12/12/1702374505473_kqz8ei..docx	t	5,3,4	\N	\N
 8	Баскетбол юноши	2011-05-09 00:00:00	https://static.tildacdn.com/tild3961-6562-4834-a333-306661303635/_.gif	Баскетбол,Команда,Соревнования,Тренировки	Коллектив Баскетбол юноши - это сообщество студентов, увлеченных спортом и баскетболом в частности. У нас есть опытные тренеры, которые помогают нам развиваться в спорте и участвовать в разных соревнованиях на разных уровнях, от вузовских до международных. Наш коллектив - это не только возможность заниматься любимым делом, но и дружеская команда, в которой каждый член может развиваться и находить новых друзей. Мы проводим тренировки, на которых учимся работать в команде, развиваем технику и тактику игры, а также физическую подготовку. У нас также есть возможность посещать лагеря и сборы, где мы можем показать свои навыки в соревнованиях. Присоединяйтесь к нам и попробуйте себя в баскетболе!	Баскетбол	3	teams	Коллектив "Баскетбол юноши" - это студенческая команда, занимающаяся баскетболом и участвующая в соревнованиях. Тренировки проводятся квалифицированными тренерами, готовящими спортсменов к достижению высоких результатов.	f	\N	\N	t	\N	+79877798765	https://m.me/246813579,\nhttps://m.me/135792468,\nhttps://m.me/369258147,\nhttps://m.me/582147963
 6	Студенческое научное общество «Квантум»	2011-05-09 00:00:00	https://static.tildacdn.com/tild3961-6562-4834-a333-306661303635/_.gif	Инновации,Исследования,НаучноеCooбщество	Студенческое научное общество Квантум - это сообщество студентов, которые интересуются квантовой физикой, желают углубить свои знания в этой области, участвовать в научных исследованиях и общаться с единомышленниками.\r\n\r\nВ рамках "Квантума" вы сможете участвовать в научных симпозиумах, конференциях и семинарах, узнавать о последних тенденциях в квантовой физике и делиться своим опытом.\r\n\r\nВы также сможете получить доступ к лабораториям, оборудованию и инструментам, необходимым для проведения исследований.\r\n\r\nКроме того, вы сможете знакомиться с научными работниками и профессорами, которые разделяют ваш интерес к квантовой физике, и получать от них консультации и рекомендации.\r\n\r\nПрисоединяйтесь к нашему сообществу "Квантум" и откройте для себя новые горизонты в науке, сделайте новые знакомства и обретите опыт, который поможет вам в будущем!	Наука	2	teams	Студенческое научное общество «Квантум» - сообщество студентов, увлеченных квантовой физикой. Мы исследуем явления квантовой механики, проводим исследования и участвуем в научных мероприятиях.	f	\N	\N	t	\N	+79877767654	https://m.me/246813579,\nhttps://m.me/135792468,\nhttps://m.me/369258147,\nhttps://m.me/582147963
 \.
 
 
 --
--- TOC entry 3542 (class 0 OID 445948)
+-- TOC entry 3544 (class 0 OID 445948)
 -- Dependencies: 231
 -- Data for Name: user_functions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1578,18 +1587,19 @@ COPY public.user_functions (id, "dateStart", "dateEnd", function_id, user_id, "d
 352	2024-03-05 11:07:46.153	2025-03-05 11:07:46.153	102	54	2024-03-05 11:07:46.162053	2024-03-05 11:07:46.162053
 325	2023-12-15 22:32:14.844	2024-12-15 22:32:14.844	182	3	2023-12-15 22:32:14.832722	2023-12-15 22:32:14.851423
 320	2024-03-02 15:35:36.441	2025-03-02 15:35:36.441	174	3	2023-11-26 18:35:40.155288	2024-03-02 15:35:36.444288
+427	2024-03-20 14:16:46.483	2025-03-20 14:16:46.483	128	16	2024-03-20 14:16:46.502444	2024-03-20 14:16:46.502444
+428	2024-03-20 14:16:46.52	2025-03-20 14:16:46.52	128	3	2024-03-20 14:16:46.532597	2024-03-20 14:16:46.532597
 282	2010-05-09 00:00:00	2010-05-09 00:00:00	180	3	2023-11-25 16:11:43.746113	2023-11-26 16:11:43.746113
 286	2023-11-10 20:47:02.579	2024-11-10 20:47:02.579	100	54	2023-11-20 16:11:43.746113	2023-11-26 16:11:43.746113
 290	2023-11-10 21:00:45.678	2024-11-10 21:00:45.678	101	30	2023-11-21 16:11:43.746113	2023-11-26 16:11:43.746113
 300	2023-11-13 19:02:34.526	2024-11-13 19:02:34.526	179	30	2023-11-27 16:11:43.746113	2023-11-26 16:11:43.746113
-340	2024-03-02 18:08:31.947	2025-03-02 18:08:31.947	128	16	2024-03-02 18:08:31.950968	2024-03-02 18:08:31.950968
 341	2024-03-02 18:14:02.862	2025-03-02 18:14:02.862	181	26	2024-03-02 18:14:02.865777	2024-03-02 18:14:02.865777
 342	2024-03-02 18:14:02.871	2025-03-02 18:14:02.871	181	32	2024-03-02 18:14:02.87435	2024-03-02 18:14:02.87435
 \.
 
 
 --
--- TOC entry 3544 (class 0 OID 445952)
+-- TOC entry 3546 (class 0 OID 445952)
 -- Dependencies: 233
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1606,7 +1616,6 @@ COPY public.users (id, studnumber, fullname, email, education_group, institute, 
 31	5683292	Соболев Никита Львович	student28@mail.ru	УПКм-22-1	Институт высоких технологий	Муж	\N	\N	Очно-заочно	\N	student28	$argon2id$v=19$m=65536,t=3,p=4$h9yDYoK300JN410HAPdf2g$PUb6jlOUbvDGKthWgtduyAEax6b7jrFrXW+PiT0ICC4	\N	\N	\N
 13	2844304	Киселев Владимир Андреевич	student10@mail.ru	БТПб-20-1	Институт высоких технологий	Муж	\N	\N	Очно	\N	student10	$argon2id$v=19$m=65536,t=3,p=4$9rEyAjBbVJidbR6mJAR3og$CjszEbcMLAia13XjamKxJyJd7wNBFjUoyc0K4G1AoS0	\N	\N	\N
 14	6770115	Самсонов Кирилл Львович	student11@mail.ru	ТХб-19-2	Институт недропользования	Муж	\N	\N	Очно-заочно	\N	student11	$argon2id$v=19$m=65536,t=3,p=4$4ot2szGSTdSQ12CXOGAwww$lxdth5jQRoGnAwLyiTMiSRRIDheio4Hp+OV9XQkt9oA	\N	\N	\N
-16	4025438	Васильева Ева Матвеевна	student13@mail.ru	ДСб-20-1	Институт высоких технологий	Жен	\N	\N	Очно		student13	$argon2id$v=19$m=65536,t=3,p=4$hQAs6G/0LaJyC1M9Y5cAzA$QE39+ki/HwCmuEmsVXIEUPY8MlZUGU43/2hMhZQbzfQ	\N	\N	\N
 29	7961870	Соколов Макар Миронович	student26@mail.ru	ТХб-19-2	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно	can create events,can view directions	student26	$argon2id$v=19$m=65536,t=3,p=4$ctdM2xCDcLrHnhwPz3sCeA$5ZVhxRAQX69b0WfcFWEiGzGr9oxKqkE+QhrgVcolqUY	\N	\N	\N
 32	4956830	Голованова Вера Павловна	student29@mail.ru	ИСТб-19-2	Институт информационных технологий и анализа данных	Жен	\N	\N	Очно	can create teams,can view reports directions,can view reports teams,can edit status events,can assign leader teams	student29	$argon2id$v=19$m=65536,t=3,p=4$VPSuTPNweoGoNbJSVEoOSA$zKnJOSWu9XMP/uuU5SKRXg86ylyNfR6Kg/W8g4ASHks	\N	\N	\N
 11	9613358	Пономарева Мария Марковна	student8@mail.ru	ИСТб-19-2	Институт недропользования	Жен	\N	\N	Очно		student8	$argon2id$v=19$m=65536,t=3,p=4$7kXwegSAO0fSk+TP3QRlJw$TrLJ+sqAbzFLGVJcWMI8IIPIW14lZ2qSEt2LyvTVsP0	\N	\N	\N
@@ -1615,6 +1624,7 @@ COPY public.users (id, studnumber, fullname, email, education_group, institute, 
 4	4108046	Иванов Степан Максимович	student1@mail.ru	БТПб-20-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно		student1	$argon2id$v=19$m=65536,t=3,p=4$RwgUCAEy+DvqeBJnuKrKBg$w4+V+SBcWAJgizdLvJ1iP3NVPhxhnjy8JP2R9BtSJOE	\N	\N	\N
 12	5328175	Смирнова Виктория Петровна	student9@mail.ru	ЛМБм-21-1	Институт недропользования	Жен	\N	\N	Очно		student9	$argon2id$v=19$m=65536,t=3,p=4$Z7QPxKUVkBETJ58w/EdI6Q$/5rDD27KWojYUzRRaxZO52f8LPZT4JCPev8ZscpAfLc	\N	\N	\N
 17	9153407	Сахарова Елизавета Михайловна	student14@mail.ru	ИСТб-19-2	Институт авиамашиностроения и транспорта	Жен	\N	\N	Очно		student14	$argon2id$v=19$m=65536,t=3,p=4$P6tcxJsL3S7BIDiNenewVg$DLmALMweeYwtFAHLWJfgohcpCCnnmTo5s1Sa//XHi8Q	\N	\N	\N
+16	4025438	Васильева Ева Матвеевна	student13@mail.ru	ДСб-20-1	Институт высоких технологий	Жен	\N	\N	Очно	can create team roles,can create questionnaires,can edit status requisitions,can edit own teams	student13	$argon2id$v=19$m=65536,t=3,p=4$hQAs6G/0LaJyC1M9Y5cAzA$QE39+ki/HwCmuEmsVXIEUPY8MlZUGU43/2hMhZQbzfQ	\N	\N	\N
 7	7072966	Агафонова Алиса Денисовна	student4@mail.ru	УПКм-22-1	Институт высоких технологий	Жен	\N	\N	Очно	can create teams,can view reports teams,can create team roles,can create questionnaires,can edit status requisitions,can edit own teams	student4	$argon2id$v=19$m=65536,t=3,p=4$Itvq1HzrXhR8TYdEghkC3Q$NZMtpIPg7qRybwPtMkOqyEW00gHCG9cqQiLakMb7Q7M	\N	\N	\N
 18	5797251	Иванов Роман Павлович	student15@mail.ru	ТХб-19-2	Институт недропользования	Муж	\N	\N	Очно-заочно	\N	student15	$argon2id$v=19$m=65536,t=3,p=4$7/FKzG76XZ+HaZzHaGH7Dg$TyrZseGcomd5fonVMPCPJcZAkIg4JSCw5xcM4b7rm+8	\N	\N	\N
 20	2946288	Семенова Алиса Андреевна	student17@mail.ru	ИСТб-19-2	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно	\N	student17	$argon2id$v=19$m=65536,t=3,p=4$GqqeKzTr0C3zGZYKQRXW6Q$3PRQnuIhno0JbLb6yMiuZ+2KHflJpoZi22p74G9uEhQ	\N	\N	\N
@@ -1654,15 +1664,15 @@ COPY public.users (id, studnumber, fullname, email, education_group, institute, 
 26	3362967	Савельев Валерий Иванович	student23@mail.ru	ЛМБм-21-1	Институт информационных технологий и анализа данных	Муж	\N	\N	Очно-заочно	can create teams,can view reports directions,can view reports teams,can edit status events,can assign leader teams	student23	$argon2id$v=19$m=65536,t=3,p=4$5qMV3eHD0Ef1Q526N0DQ8w$8ccS34gH+44ZYG00hfEtUZHL5XHfiAcQFnMi73B9lmE	\N	\N	\N
 30	7907050	Баранова Варвара Владиславовна	student27@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Жен	\N	\N	Очно-заочно	can create teams,can view reports directions,can view reports teams,can edit status events,can assign leader teams,can create team roles,can create questionnaires,can edit status requisitions,can edit own teams	student27	$argon2id$v=19$m=65536,t=3,p=4$ckE4L8Znnix3WzCnuOrfVw$oiEBi2QEnJMLwFRfBuX6Thc1SaKNDTaTst5muktDCmQ	\N	\N	\N
 59	\N	Пономарев Иван Робертович	directorTeam3@mail.ru	\N	\N	\N	\N	\N	\N		directorTeam3	$argon2id$v=19$m=65536,t=3,p=4$lmEUM6G/qkPWvPyxbwE9Bg$JWFB2Dlmm3q5LFXaf8CP72decxtHsVhZcBgvJW1m9fA	\N	\N	\N
-3	4108046	Иванов Иван Иванович	admin@mail.ru	\N	Институт информационных технологий и анализа данных	Муж	\N	\N	\N	can all,can create teams,can view directions,can view reports directions,can view reports teams,can view reports,can edit status events,can view teams reports,can edit status events,can create events	admin	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	https://sun9-4.userapi.com/impg/PlbA1QKETnQLakTWa4D66ByJYgXxFRDT2abOZA/TNkYrlgxyn0.jpg?size=2560x1920&quality=96&sign=726c0677fb1e31e6f3d7e5003c43fe9e&type=album	4	\N
 5	8271949	Пономарев Александр Артёмович	student2@mail.ru	УПКм-22-1	Институт архитектуры, строительства и дизайна	Муж	\N	\N	Очно	can create team roles,can create questionnaires,can edit status requisitions,can edit own teams	student2	$argon2id$v=19$m=65536,t=3,p=4$hIbco9n2Zie74DU0DZnZCg$uxfETfrgx6Tjnxx2NIi8F+BPQ3jBLp2zuoqbr1aXw4s	\N	\N	\N
 54	\N	Агафонова Алиса Денисовна	bossDirections@mail.ru	\N	\N	\N	\N	\N	\N	can create events,can create teams,can view reports directions,can edit status events,can assign leader teams,can view reports teams,can create team roles,can create questionnaires,can edit status requisitions,can edit own teams	bossDirections	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	\N	\N	\N
+3	4108046	Иванов Иван Иванович	admin@mail.ru	\N	Институт информационных технологий и анализа данных	Муж	\N	\N	\N	can all,can create teams,can view directions,can view reports directions,can view reports teams,can view reports,can edit status events,can view teams reports,can edit status events,can create events,can create team roles,can create questionnaires,can edit status requisitions,can edit own teams	admin	$argon2id$v=19$m=65536,t=3,p=4$eYagnHph8wdEB0R0QMTlMw$RvRIdnvaS9BpPGt0+I6NmHqqO5D3dD4ethpHp92rlNA	https://sun9-4.userapi.com/impg/PlbA1QKETnQLakTWa4D66ByJYgXxFRDT2abOZA/TNkYrlgxyn0.jpg?size=2560x1920&quality=96&sign=726c0677fb1e31e6f3d7e5003c43fe9e&type=album	4	\N
 43	5724564	Васильева Ева Матвеевна	student40@mail.ru	БТПб-20-1	Институт архитектуры, строительства и дизайна	\N	\N	\N	Очно-заочно		student40	$argon2id$v=19$m=65536,t=3,p=4$GMmcynaWPbLXcesC1PslKg$UixWhm1fzNGLHq6qPl+fdWnU9eSBlWmPnhuMmBEFewc	\N	\N	\N
 \.
 
 
 --
--- TOC entry 3579 (class 0 OID 0)
+-- TOC entry 3581 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: achievements_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1671,7 +1681,7 @@ SELECT pg_catalog.setval('public.achievements_id_seq', 11, true);
 
 
 --
--- TOC entry 3580 (class 0 OID 0)
+-- TOC entry 3582 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: cabinets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1680,16 +1690,16 @@ SELECT pg_catalog.setval('public.cabinets_id_seq', 24, true);
 
 
 --
--- TOC entry 3581 (class 0 OID 0)
+-- TOC entry 3583 (class 0 OID 0)
 -- Dependencies: 241
 -- Name: cabinets_time_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.cabinets_time_id_seq', 32, true);
+SELECT pg_catalog.setval('public.cabinets_time_id_seq', 38, true);
 
 
 --
--- TOC entry 3582 (class 0 OID 0)
+-- TOC entry 3584 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: dictionary_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1698,7 +1708,7 @@ SELECT pg_catalog.setval('public.dictionary_id_seq', 28, true);
 
 
 --
--- TOC entry 3583 (class 0 OID 0)
+-- TOC entry 3585 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1707,7 +1717,7 @@ SELECT pg_catalog.setval('public.events_id_seq', 14, true);
 
 
 --
--- TOC entry 3584 (class 0 OID 0)
+-- TOC entry 3586 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: form_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1716,7 +1726,7 @@ SELECT pg_catalog.setval('public.form_fields_id_seq', 84, true);
 
 
 --
--- TOC entry 3585 (class 0 OID 0)
+-- TOC entry 3587 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: forms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1725,7 +1735,7 @@ SELECT pg_catalog.setval('public.forms_id_seq', 25, true);
 
 
 --
--- TOC entry 3586 (class 0 OID 0)
+-- TOC entry 3588 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1734,7 +1744,7 @@ SELECT pg_catalog.setval('public.functions_id_seq', 199, true);
 
 
 --
--- TOC entry 3587 (class 0 OID 0)
+-- TOC entry 3589 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: journals_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1743,16 +1753,16 @@ SELECT pg_catalog.setval('public.journals_id_seq', 45, true);
 
 
 --
--- TOC entry 3588 (class 0 OID 0)
+-- TOC entry 3590 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 83, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 85, true);
 
 
 --
--- TOC entry 3589 (class 0 OID 0)
+-- TOC entry 3591 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: requisition_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1761,16 +1771,16 @@ SELECT pg_catalog.setval('public.requisition_fields_id_seq', 44, true);
 
 
 --
--- TOC entry 3590 (class 0 OID 0)
+-- TOC entry 3592 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: requisition_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.requisition_id_seq', 58, true);
+SELECT pg_catalog.setval('public.requisition_id_seq', 59, true);
 
 
 --
--- TOC entry 3591 (class 0 OID 0)
+-- TOC entry 3593 (class 0 OID 0)
 -- Dependencies: 243
 -- Name: team_photo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1779,16 +1789,16 @@ SELECT pg_catalog.setval('public.team_photo_id_seq', 7, true);
 
 
 --
--- TOC entry 3592 (class 0 OID 0)
+-- TOC entry 3594 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: team_schedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.team_schedule_id_seq', 6, true);
+SELECT pg_catalog.setval('public.team_schedule_id_seq', 7, true);
 
 
 --
--- TOC entry 3593 (class 0 OID 0)
+-- TOC entry 3595 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: team_visits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1797,7 +1807,7 @@ SELECT pg_catalog.setval('public.team_visits_id_seq', 31, true);
 
 
 --
--- TOC entry 3594 (class 0 OID 0)
+-- TOC entry 3596 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: teams_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1806,16 +1816,16 @@ SELECT pg_catalog.setval('public.teams_id_seq', 79, true);
 
 
 --
--- TOC entry 3595 (class 0 OID 0)
+-- TOC entry 3597 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: user_functions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_functions_id_seq', 426, true);
+SELECT pg_catalog.setval('public.user_functions_id_seq', 428, true);
 
 
 --
--- TOC entry 3596 (class 0 OID 0)
+-- TOC entry 3598 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1824,7 +1834,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 66, true);
 
 
 --
--- TOC entry 3315 (class 2606 OID 445976)
+-- TOC entry 3316 (class 2606 OID 445976)
 -- Name: journals PK_157a30136385dd81cdd19111380; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1833,7 +1843,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
--- TOC entry 3325 (class 2606 OID 445978)
+-- TOC entry 3326 (class 2606 OID 445978)
 -- Name: user_functions PK_1b04a9e32d9511b33fe11b6ffda; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1842,7 +1852,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3303 (class 2606 OID 445980)
+-- TOC entry 3304 (class 2606 OID 445980)
 -- Name: achievements PK_1bc19c37c6249f70186f318d71d; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1851,7 +1861,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3313 (class 2606 OID 445982)
+-- TOC entry 3314 (class 2606 OID 445982)
 -- Name: functions PK_203889d2ae5a98ffc137739301e; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1860,7 +1870,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
--- TOC entry 3307 (class 2606 OID 445984)
+-- TOC entry 3308 (class 2606 OID 445984)
 -- Name: events PK_40731c7151fe4be3116e45ddf73; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1869,7 +1879,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3319 (class 2606 OID 445986)
+-- TOC entry 3320 (class 2606 OID 445986)
 -- Name: requisition PK_53f9ab966e1c2d2d96cc5ac944a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1878,7 +1888,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
--- TOC entry 3323 (class 2606 OID 445988)
+-- TOC entry 3324 (class 2606 OID 445988)
 -- Name: teams PK_7e5523774a38b08a6236d322403; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1887,7 +1897,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
--- TOC entry 3343 (class 2606 OID 454898)
+-- TOC entry 3344 (class 2606 OID 454898)
 -- Name: team_photo PK_7eb0a99a14749ad1b1bcb9be7a8; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1896,7 +1906,7 @@ ALTER TABLE ONLY public.team_photo
 
 
 --
--- TOC entry 3317 (class 2606 OID 445990)
+-- TOC entry 3318 (class 2606 OID 445990)
 -- Name: migrations PK_8c82d7f526340ab734260ea46be; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1905,7 +1915,7 @@ ALTER TABLE ONLY public.migrations
 
 
 --
--- TOC entry 3337 (class 2606 OID 446479)
+-- TOC entry 3338 (class 2606 OID 446479)
 -- Name: team_schedule PK_9d36326762f4ad471c8c3c03291; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1914,7 +1924,7 @@ ALTER TABLE ONLY public.team_schedule
 
 
 --
--- TOC entry 3327 (class 2606 OID 445992)
+-- TOC entry 3328 (class 2606 OID 445992)
 -- Name: users PK_a3ffb1c0c8416b9fc6f907b7433; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1923,7 +1933,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3321 (class 2606 OID 445994)
+-- TOC entry 3322 (class 2606 OID 445994)
 -- Name: requisition_fields PK_b5114990d6fde9a186b1c5a896b; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1932,7 +1942,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
--- TOC entry 3311 (class 2606 OID 445996)
+-- TOC entry 3312 (class 2606 OID 445996)
 -- Name: forms PK_ba062fd30b06814a60756f233da; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1941,7 +1951,7 @@ ALTER TABLE ONLY public.forms
 
 
 --
--- TOC entry 3335 (class 2606 OID 446472)
+-- TOC entry 3336 (class 2606 OID 446472)
 -- Name: cabinets PK_bc7cc7e3c814364dbdde3d3be6c; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1950,7 +1960,7 @@ ALTER TABLE ONLY public.cabinets
 
 
 --
--- TOC entry 3305 (class 2606 OID 445998)
+-- TOC entry 3306 (class 2606 OID 445998)
 -- Name: dictionary PK_d17df343bd5d01ed62dd0e55e4a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1959,7 +1969,7 @@ ALTER TABLE ONLY public.dictionary
 
 
 --
--- TOC entry 3309 (class 2606 OID 446000)
+-- TOC entry 3310 (class 2606 OID 446000)
 -- Name: form_fields PK_dc4b73290f2926c3a7d7c92d1e1; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1968,7 +1978,7 @@ ALTER TABLE ONLY public.form_fields
 
 
 --
--- TOC entry 3339 (class 2606 OID 446486)
+-- TOC entry 3340 (class 2606 OID 446486)
 -- Name: team_visits PK_e0b94c1f167705efb98bcc3b305; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1977,7 +1987,7 @@ ALTER TABLE ONLY public.team_visits
 
 
 --
--- TOC entry 3341 (class 2606 OID 454851)
+-- TOC entry 3342 (class 2606 OID 454851)
 -- Name: cabinets_time PK_ee23cf95c9f85c6accbfe56c2f8; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1986,7 +1996,7 @@ ALTER TABLE ONLY public.cabinets_time
 
 
 --
--- TOC entry 3329 (class 2606 OID 446460)
+-- TOC entry 3330 (class 2606 OID 446460)
 -- Name: users UQ_19fa01fc1212bbc25d4b1ae5654; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1995,7 +2005,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3331 (class 2606 OID 446002)
+-- TOC entry 3332 (class 2606 OID 446002)
 -- Name: users UQ_97672ac88f789774dd47f7c8be3; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2004,7 +2014,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3333 (class 2606 OID 446004)
+-- TOC entry 3334 (class 2606 OID 446004)
 -- Name: users UQ_fe0bb3f6520ee0469504521e710; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2013,7 +2023,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3377 (class 2606 OID 454853)
+-- TOC entry 3378 (class 2606 OID 454853)
 -- Name: cabinets_time FK_01a4ae3266a1e821afb02f6f6de; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2022,7 +2032,7 @@ ALTER TABLE ONLY public.cabinets_time
 
 
 --
--- TOC entry 3368 (class 2606 OID 446522)
+-- TOC entry 3369 (class 2606 OID 446522)
 -- Name: requisition_fields FK_087b7eeee30e9f5e62b7ba603fc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2031,7 +2041,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
--- TOC entry 3349 (class 2606 OID 446010)
+-- TOC entry 3350 (class 2606 OID 446010)
 -- Name: events FK_09f256fb7f9a05f0ed9927f406b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2040,7 +2050,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3344 (class 2606 OID 446015)
+-- TOC entry 3345 (class 2606 OID 446015)
 -- Name: achievements FK_0c0cd24bc6e722c12cd45750434; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2049,7 +2059,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3350 (class 2606 OID 446020)
+-- TOC entry 3351 (class 2606 OID 446020)
 -- Name: events FK_12ab9fec0ea7a5c0bd47f244fb7; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2058,7 +2068,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3374 (class 2606 OID 446498)
+-- TOC entry 3375 (class 2606 OID 446498)
 -- Name: team_schedule FK_177c2cbee73b0d3f3e75ffaa2a8; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2067,7 +2077,7 @@ ALTER TABLE ONLY public.team_schedule
 
 
 --
--- TOC entry 3373 (class 2606 OID 446493)
+-- TOC entry 3374 (class 2606 OID 446493)
 -- Name: team_schedule FK_1985917dba88a2aa8a4ae1bd81a; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2076,7 +2086,7 @@ ALTER TABLE ONLY public.team_schedule
 
 
 --
--- TOC entry 3364 (class 2606 OID 446025)
+-- TOC entry 3365 (class 2606 OID 446025)
 -- Name: requisition FK_1b08960843499439da23a3e0698; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2085,7 +2095,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
--- TOC entry 3361 (class 2606 OID 446030)
+-- TOC entry 3362 (class 2606 OID 446030)
 -- Name: journals FK_1b4d28fa4b326ecc43128e7d05b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2094,7 +2104,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
--- TOC entry 3345 (class 2606 OID 446035)
+-- TOC entry 3346 (class 2606 OID 446035)
 -- Name: achievements FK_2888c1257c41913030b59369f96; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2103,7 +2113,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3365 (class 2606 OID 446040)
+-- TOC entry 3366 (class 2606 OID 446040)
 -- Name: requisition FK_2bc07f9556b7e089dc2785228ed; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2112,7 +2122,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
--- TOC entry 3366 (class 2606 OID 446045)
+-- TOC entry 3367 (class 2606 OID 446045)
 -- Name: requisition FK_3330bf1b3acd2568b818c72b226; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2121,7 +2131,7 @@ ALTER TABLE ONLY public.requisition
 
 
 --
--- TOC entry 3367 (class 2606 OID 446050)
+-- TOC entry 3368 (class 2606 OID 446050)
 -- Name: requisition_fields FK_3777bd9d0f2897d0d24faf345bf; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2130,7 +2140,7 @@ ALTER TABLE ONLY public.requisition_fields
 
 
 --
--- TOC entry 3346 (class 2606 OID 446055)
+-- TOC entry 3347 (class 2606 OID 446055)
 -- Name: achievements FK_3e7e91763bdef262e9f727a1208; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2139,7 +2149,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3370 (class 2606 OID 446060)
+-- TOC entry 3371 (class 2606 OID 446060)
 -- Name: user_functions FK_414c47660792aa509c8f55adc7f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2148,7 +2158,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3347 (class 2606 OID 446065)
+-- TOC entry 3348 (class 2606 OID 446065)
 -- Name: achievements FK_439fe2afbe76423baefd988dbd8; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2157,7 +2167,16 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3360 (class 2606 OID 446070)
+-- TOC entry 3381 (class 2606 OID 454933)
+-- Name: cabinets_time FK_4e8c4114978e749fc9e42136852; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cabinets_time
+    ADD CONSTRAINT "FK_4e8c4114978e749fc9e42136852" FOREIGN KEY (id_user) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3361 (class 2606 OID 446070)
 -- Name: functions FK_579f1e0cdab39bd43464fb882be; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2166,7 +2185,7 @@ ALTER TABLE ONLY public.functions
 
 
 --
--- TOC entry 3379 (class 2606 OID 454926)
+-- TOC entry 3380 (class 2606 OID 454926)
 -- Name: cabinets_time FK_6975311213f5864319ee5c9203e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2175,7 +2194,7 @@ ALTER TABLE ONLY public.cabinets_time
 
 
 --
--- TOC entry 3351 (class 2606 OID 446075)
+-- TOC entry 3352 (class 2606 OID 446075)
 -- Name: events FK_723091d08c3c5415a1999597464; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2184,7 +2203,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3375 (class 2606 OID 446503)
+-- TOC entry 3376 (class 2606 OID 446503)
 -- Name: team_visits FK_725f33cc8e48dabebb1a96dc8de; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2193,7 +2212,7 @@ ALTER TABLE ONLY public.team_visits
 
 
 --
--- TOC entry 3362 (class 2606 OID 446080)
+-- TOC entry 3363 (class 2606 OID 446080)
 -- Name: journals FK_811c873435715b3eb624d256a11; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2202,7 +2221,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
--- TOC entry 3352 (class 2606 OID 446085)
+-- TOC entry 3353 (class 2606 OID 446085)
 -- Name: events FK_9025d02effbcfec592d24236f5c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2211,7 +2230,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3359 (class 2606 OID 446090)
+-- TOC entry 3360 (class 2606 OID 446090)
 -- Name: forms FK_b8df7e99e28d225024e56783b8e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2220,7 +2239,7 @@ ALTER TABLE ONLY public.forms
 
 
 --
--- TOC entry 3353 (class 2606 OID 446095)
+-- TOC entry 3354 (class 2606 OID 446095)
 -- Name: events FK_b935d793584366f2a3c196ac9d7; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2229,7 +2248,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3371 (class 2606 OID 446100)
+-- TOC entry 3372 (class 2606 OID 446100)
 -- Name: user_functions FK_bc78d14d218fc2e57e7a6941ab3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2238,7 +2257,7 @@ ALTER TABLE ONLY public.user_functions
 
 
 --
--- TOC entry 3354 (class 2606 OID 446105)
+-- TOC entry 3355 (class 2606 OID 446105)
 -- Name: events FK_bcb2ce0072504d624725e3ef826; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2247,7 +2266,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3355 (class 2606 OID 446110)
+-- TOC entry 3356 (class 2606 OID 446110)
 -- Name: events FK_bf2f38672c0046c6328e69b71e6; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2256,7 +2275,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3369 (class 2606 OID 446115)
+-- TOC entry 3370 (class 2606 OID 446115)
 -- Name: teams FK_c0b0c479964469ab9fbbed02c8d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2265,7 +2284,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
--- TOC entry 3358 (class 2606 OID 446120)
+-- TOC entry 3359 (class 2606 OID 446120)
 -- Name: form_fields FK_c2076d2b47add1aaa07608e0cf2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2274,7 +2293,7 @@ ALTER TABLE ONLY public.form_fields
 
 
 --
--- TOC entry 3380 (class 2606 OID 454900)
+-- TOC entry 3382 (class 2606 OID 454900)
 -- Name: team_photo FK_c53476b078c64e25bd7ac7d0d85; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2283,7 +2302,7 @@ ALTER TABLE ONLY public.team_photo
 
 
 --
--- TOC entry 3356 (class 2606 OID 446125)
+-- TOC entry 3357 (class 2606 OID 446125)
 -- Name: events FK_c5a362fc7d682923a6aa8f0072f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2292,7 +2311,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3378 (class 2606 OID 454859)
+-- TOC entry 3379 (class 2606 OID 454859)
 -- Name: cabinets_time FK_d2321248ef3678a824334c6619d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2301,7 +2320,7 @@ ALTER TABLE ONLY public.cabinets_time
 
 
 --
--- TOC entry 3372 (class 2606 OID 454873)
+-- TOC entry 3373 (class 2606 OID 454873)
 -- Name: cabinets FK_d29de50b3ab5d01023844a151e6; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2310,7 +2329,7 @@ ALTER TABLE ONLY public.cabinets
 
 
 --
--- TOC entry 3376 (class 2606 OID 446508)
+-- TOC entry 3377 (class 2606 OID 446508)
 -- Name: team_visits FK_daeed44bf925dce11d8f3a62439; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2319,7 +2338,7 @@ ALTER TABLE ONLY public.team_visits
 
 
 --
--- TOC entry 3363 (class 2606 OID 446130)
+-- TOC entry 3364 (class 2606 OID 446130)
 -- Name: journals FK_dcd8f26897887ea1ca19e9b910a; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2328,7 +2347,7 @@ ALTER TABLE ONLY public.journals
 
 
 --
--- TOC entry 3348 (class 2606 OID 446135)
+-- TOC entry 3349 (class 2606 OID 446135)
 -- Name: achievements FK_e2c799e4fa523f355079e1b06c0; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2337,7 +2356,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 3357 (class 2606 OID 446140)
+-- TOC entry 3358 (class 2606 OID 446140)
 -- Name: events FK_fb98daef5570cb124e34c9ea42c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2345,7 +2364,7 @@ ALTER TABLE ONLY public.events
     ADD CONSTRAINT "FK_fb98daef5570cb124e34c9ea42c" FOREIGN KEY (format_id) REFERENCES public.dictionary(id);
 
 
--- Completed on 2024-03-11 21:51:26
+-- Completed on 2024-03-22 22:15:25
 
 --
 -- PostgreSQL database dump complete
