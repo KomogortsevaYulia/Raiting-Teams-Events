@@ -50,7 +50,7 @@
           </span>
           <span option>
             <select class="form-select">
-              <option>Все</option>
+              <option v-for="(day, i) in TypeOption" :key="day" :value="day">{{ TypeOptionRU[i] }}</option>
             </select>
           </span>
         </GroupElements>
@@ -70,11 +70,11 @@
           </span>
           <span option>
             <select class="form-select">
-              <option>Любая</option>
+              <option v-for="(day, i) in GroupOption" :key="day" :value="day">{{ GroupOptionRU[i] }}</option>
             </select>
           </span>
         </GroupElements>
-        <button><font-awesome-icon :icon="['fas', 'fa-refresh']" /> Сброс</button>
+        <button class = 'refresh-button'><font-awesome-icon :icon="['fas', 'fa-refresh']" /> Сброс</button>
       </div>
       <div class="filter-enabled">задействован фильтр</div>
       <div class="class-list-card-wrapper">
@@ -88,25 +88,21 @@
         ></ClassListCard>
       </div>
     </section>
-    <button
-      type="button"
-      data-bs-toggle="modal"
-      data-bs-target="#createScheduleSubmitModal"
-    >
-      SUBMIT
-    </button>
-    <SubmitModal :date="new Date()" :union="shedule.name" :location="'актовый зал'"></SubmitModal>
+    <footer dev class="mt-sm-4">
+      classEntity: {{classForm}}
+    </footer>
   </div>
 </template>
 
 <script setup lang="ts">
   import { WeekDay, WeekDayRu } from '@/common/date/week-day.enum';
+  import { TypeOption, TypeOptionRU } from './type-option.enum';
+  import { GroupOption, GroupOptionRU } from './group-option.enum';
   import { PeriodOption, PeriodOptionRU } from './period-option.enum';
   import { ref } from 'vue';
   import GroupElements from '@/common/group-elements/GroupElements.vue'
   import ClassBooking from './ClassBooking.vue'
   import ClassListCard from './ClassListCard.vue'
-  import SubmitModal from './SubmitModal.vue'
 
   const starCount = 1;
   const shedule = ref({
@@ -259,6 +255,27 @@
   }
 
   // TODO: move switch as common component
+  .refresh-button {
+    width: 104px;
+    height: 35px;
+    top: 20px;
+    left: 20px;
+    padding: 7px 15px 29px 15px;
+    gap: 10px;
+    border-radius: 5px;
+    opacity: 1;
+
+    background-color: #ffffff;
+    color:#D22043;
+    border: 1px solid #D22043;
+    &:hover {
+            cursor: pointer;
+            background-color: #D22043;
+            color:#ffffff;
+            border-color: #D22043;
+          }
+  }
+
   .switch {
     --switch__bg-color: #ffffff;
     --switch__active_bg-color: #d9d9d9;
@@ -295,7 +312,7 @@
     }
   }
 
-  :deep(.class-booking:first-child) .class-booking__header {
+  ::v-deep .class-booking:first-child .class-booking__header {
     border-left: 1px solid #000000;
   }
 

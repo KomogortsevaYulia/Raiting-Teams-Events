@@ -92,6 +92,7 @@
   }
 
   .time-location-card__right {
+    padding: 0 1rem;
     grid-area: right;
     margin:auto;
     border-top-right-radius: var(--time-location-card__border-radius);
@@ -99,6 +100,7 @@
   }
 
   .date {
+    border-radius: 5px 0px 0px 5px;
     padding: 29px 20px;
     background-color: var(--time-location-card-primary__bg-color);
     & > * {
@@ -112,6 +114,7 @@
     }
   }
   .time {
+    padding: 5px;
     grid-area: time;
     text-align: center;
   }

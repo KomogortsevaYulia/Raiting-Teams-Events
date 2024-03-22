@@ -26,10 +26,10 @@
 
 <style lang="scss" scoped>
   .class-booking {
-    min-width: 33%;
+    width: 449px;
     margin-top: 1.25%;
     font-style: var(--font-family-title);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 16px;
     display: grid;
     grid-template-columns: 1.0fr 1fr;
