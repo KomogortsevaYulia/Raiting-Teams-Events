@@ -8,6 +8,6 @@ import { MailService } from './mail.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Dictionary])],
   controllers: [GeneralController],
-  providers: [GeneralService, MailService]
+  providers: [GeneralService, MailService],
 })
 export class GeneralModule {}

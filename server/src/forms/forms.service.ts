@@ -1,106 +1,77 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { createUserFormDto } from './dto/create-form.dto';
-import { createFormDto } from './dto/create-form.dto';
-import { createFormFieldsDto } from './dto/create-form.dto';
+import { Repository } from 'typeorm';
+import { CreateFormDto, CreateFormFieldsDto } from './dto/create-form.dto';
 import { Form } from './entities/form.entity';
 import { FormField } from './entities/form_field.entity';
-import { RequisitionFields } from './entities/requisition_fields.entity';
 import { UpdateFieldDto } from './dto/update-field';
+import { Team } from '../teams/entities/team.entity';
 
 @Injectable()
 export class FormsService {
   constructor(
-    @InjectRepository(Form)  // user //,
+    @InjectRepository(Form)
     private readonly formRepository: Repository<Form>,
-    @InjectRepository(FormField)  // user //,
+    @InjectRepository(FormField)
     private readonly formFieldsRepository: Repository<FormField>,
-    @InjectRepository(RequisitionFields)  
-    private readonly userFormRepository: Repository<RequisitionFields>
-  ) { }
-
-  findAll() {
-  }
+    @InjectRepository(Team)
+    private readonly teamRepository: Repository<Team>,
+  ) {}
 
   async findOnIdForm(team_id: number) {
-
-    let res_forms = await this.formRepository
-      .createQueryBuilder("form")
-      .where("team_id = :team_id", {team_id: team_id})
-      .getOne()
-    let res_form_str = res_forms.id
-  
-    return res_form_str;
+    const res_forms = await this.formRepository
+      .createQueryBuilder('form')
+      .where('team_id = :team_id', { team_id: team_id })
+      .getOne();
+    return res_forms.id;
   }
 
-  async findOnFormFields(team_id: number) {
-
-    let archive = false
-    let res_forms = await this.formRepository
-      .createQueryBuilder("form")
-      .where("team_id = :team_id", {team_id: team_id})
-      .leftJoinAndSelect("form.form_field", "form_field")
-      .andWhere("form_field.archive = :archive", {archive:archive})
-      .getOne()
-
-    // let res_form_str = res_forms.fields_id[0].toString()
-    // let fieldsIds = res_form_str
-    // .split('\n')
-    // .map(value => {
-    //   let parsedValue = parseInt(value, 10);
-    //   return isNaN(parsedValue) ? null : parsedValue;
-    // });
-    // let res_fields_form = await this.formFieldsRepository
-    //   .createQueryBuilder("form_fields")
-    //   .where("id = any(:ids)", {ids:fieldsIds})
-    //   .getMany()
-    return res_forms;
+  async findOnFormFields(team_id: number): Promise<Form | null> {
+    const archive = false;
+    return await this.formRepository
+      .createQueryBuilder('form')
+      .where('team_id = :team_id', { team_id: team_id })
+      .leftJoinAndSelect('form.form_field', 'form_field')
+      .andWhere('form_field.archive = :archive', { archive: archive })
+      .getOne();
   }
 
-  async createFormUser(createUserFormDto: createUserFormDto): Promise<RequisitionFields> {
+  // TODO feat make create user form
+  // async createFormUser(
+  //   createUserFormDto: createUserFormDto,
+  // ): Promise<RequisitionFields> {
+  //   const userForm = await this.userFormRepository.save({
+  //     // ...createUserFormDto,
+  //     // value: createUserFormDto.value,
+  //     // user: createUserFormDto.user,
+  //     // field: createUserFormDto.field,
+  //     // date: new Date()
+  //   });
+  //
+  //   return userForm;
+  // }
 
-    let userForm = await this.userFormRepository.save({
-      // ...createUserFormDto,
-      // value: createUserFormDto.value,
-      // user: createUserFormDto.user,
-      // field: createUserFormDto.field,
-      // date: new Date()
-    })
-
-    return userForm;
-  }
-
-  async createForm(createFormDto: createFormDto): Promise<Form> {
-
-    let form = await this.formRepository.save({
-      ...createFormDto,
+  async createForm(createFormDto: CreateFormDto): Promise<Form> {
+    const team = await this.teamRepository.findOneBy({
+      id: createFormDto.team_id,
+    });
+    return await this.formRepository.save({
+      team: team,
       date: new Date(),
-      description: "description",
-    })
-
-    return form;
+      description: '-',
+    });
   }
 
-  // async updateForm(id: number, UpdateFormDto: UpdateFormDto) {
-  //    return await this.formRepository.update(id, UpdateFormDto)
-  //   }
-
-  async createFormField(createFormFieldsDto: createFormFieldsDto) {
-
-    let field = await this.formFieldsRepository.save({
-      ...createFormFieldsDto
-    })
-
-    return field;
+  async createFormField(createFormFieldsDto: CreateFormFieldsDto) {
+    return await this.formFieldsRepository.save({
+      ...createFormFieldsDto,
+    });
   }
 
-  async updateFormField(field_id:number, updateFieldDto: UpdateFieldDto) {
- 
-    return await this.formFieldsRepository.update(field_id,{
+  async updateFormField(field_id: number, updateFieldDto: UpdateFieldDto) {
+    return await this.formFieldsRepository.update(field_id, {
       ...updateFieldDto,
-     
-    })
+    });
   }
 
   remove(id: number) {
@@ -108,16 +79,15 @@ export class FormsService {
   }
 
   // получить ответы пользователей на анкету
-  async fetchRequisitionForm(req_id: number) {
-    const users = await this.formRepository
-      .createQueryBuilder("form")
-      .leftJoinAndSelect("form.form_field", "form_fields")
-      .leftJoinAndSelect("form_fields.requisition_field", "req_field")
-      .leftJoin("req_field.requisition", "requisition")
-      .where("requisition.id = :id", {id:req_id})
-      .getOne()
-
-    return users;
+  async findRequisitionForm(req_id: number) {
+    const query = this.formRepository
+      .createQueryBuilder('form')
+      .leftJoinAndSelect('form.form_field', 'form_fields')
+      .leftJoinAndSelect('form_fields.requisition_field', 'req_field')
+      .leftJoin('req_field.requisition', 'requisition')
+      .andWhere('requisition.id = :id', {
+        id: req_id,
+      });
+    return query.getOne();
   }
-
 }
