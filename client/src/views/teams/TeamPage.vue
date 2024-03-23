@@ -30,28 +30,20 @@
       </div>
 
       <div v-if="selectedItem === 0">
-        <TeamMain :onUpdateTeam="handleUpdateTeam" :team="team" />
+        <TeamMain :onUpdateTeam="handleUpdateTeam" :teamId="teamId" />
       </div>
 
       <div v-if="selectedItem === 1">
         <!-- Блок с НОВОСТЯМИ -->
-        <TeamNews :idTeam="idTeam" />
+        <TeamNews :idTeam="teamId" />
       </div>
-
+<!--расписание-->
       <div v-if="selectedItem === 2">
-        <WIP />
+        <TeamSchedule :team-id="teamId"/>
       </div>
       <!-- участники -->
       <div v-if="selectedItem === 3">
-        <ParticipationsPage :idTeam="idTeam" />
-        <!--        <div v-for="item in teamUsers" v-bind:key="item.id">-->
-        <!--            <Participation-->
-        <!--                    :onDeleteMemberEvent="handleDeleteMemberEvent"-->
-        <!--                    :user="item.user"-->
-        <!--                    :func="item.function"-->
-        <!--                    :idTeam="idTeam"-->
-        <!--            />-->
-        <!--        </div>-->
+        <ParticipationsPage :idTeam="teamId" />
       </div>
 
       <div v-if="selectedItem === 4">
@@ -60,7 +52,7 @@
 
       <!-- заявки -->
       <div v-if="selectedItem == 5">
-        <TeamRequests :idTeam="idTeam" />
+        <TeamRequests :idTeam="teamId" />
       </div>
     </div>
   </div>
@@ -68,7 +60,7 @@
 
 <script setup lang="ts">
 import "@/assets/nav-second.scss";
-import WIP from "@/views/teams/TeamSchedule.vue";
+import TeamSchedule from "@/views/teams/schedule/TeamPage.vue";
 
 import { onBeforeMount, ref } from "vue";
 import Ankets from "@/views/teams/QuestionnairePage.vue";
@@ -88,7 +80,7 @@ const route = useRoute();
 const permissions_store = usePermissionsStore();
 const can = permissions_store.can;
 
-const idTeam = Number(route.params.id);
+const teamId = Number(route.params.id);
 const show = ref(true);
 
 

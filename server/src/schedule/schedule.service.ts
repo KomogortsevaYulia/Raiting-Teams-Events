@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { SearchVisitsDto } from './dto/search-visits.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,6 +16,14 @@ import { CreateCabinetDto } from './dto/create-cabinet.dto';
 import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
 import { SearchCabinetsDto } from './dto/search-cabinets.dto';
+import { SearchScheduleDto } from './dto/search-schedule.dto';
+import { CreateCabinetTimeDto } from './dto/create-cabinet-time.dto';
+import { CabinetsTime } from './entities/cabinets-time.entity';
+import { Dictionary } from '../general/entities/dictionary.entity';
+import { UpdateCabinetTimeDto } from './dto/update-cabinet-time.dto';
+import { CreateTeamScheduleDto } from './dto/create-team-schedule.dto';
+import { CreateTeamScheduleResponse } from './dto/create-team-schedule.response';
+import { TeamsService } from 'src/teams/teams.service';
 
 @Injectable()
 export class ScheduleService {
@@ -22,7 +34,12 @@ export class ScheduleService {
     private readonly teamVisitsRepository: Repository<TeamVisits>,
     @InjectRepository(Cabinets)
     private readonly cabinetsRepository: Repository<Cabinets>,
+    @InjectRepository(CabinetsTime)
+    private readonly cabinetsTimeRepository: Repository<CabinetsTime>,
+    @InjectRepository(Dictionary)
+    private readonly dictionaryRepository: Repository<Dictionary>,
     private readonly usersService: UsersService,
+    private readonly teamsService: TeamsService,
   ) {}
 
   async findVisits(searchVisitsDto: SearchVisitsDto) {
@@ -98,7 +115,10 @@ export class ScheduleService {
   public async getAllCabinets(
     searchCabinetsDto: SearchCabinetsDto,
   ): Promise<GetAllCabinetsResponse> {
-    const query = this.cabinetsRepository.createQueryBuilder('cabinets');
+    const query = this.cabinetsRepository
+      .createQueryBuilder('cabinets')
+      .leftJoinAndSelect('cabinets.cabinets_time', 'cabinets_time')
+      .leftJoinAndSelect('cabinets_time.day_week', 'day_week');
 
     // find cabinets by ids
     searchCabinetsDto.ids
@@ -107,7 +127,39 @@ export class ScheduleService {
         })
       : null;
 
-    const cabinets = await query.getManyAndCount();
+    // tags
+    searchCabinetsDto.tag
+      ? query.where(":tag = ANY(string_to_array(cabinets.tags, ','))", {
+          tag: searchCabinetsDto.tag,
+        })
+      : null;
+
+    // search text
+    searchCabinetsDto.search
+      ? query.andWhere('LOWER(cabinets.name) like LOWER(:search)', {
+          search: `%${searchCabinetsDto.search}%`,
+        })
+      : null;
+
+    // free_time
+    if (searchCabinetsDto.free_time) {
+      const subQuery = this.cabinetsRepository
+        .createQueryBuilder('inner_cabinets_time')
+        .select('inner_cabinets_time.id')
+        .leftJoin('inner_cabinets_time.cabinets_time', 'cabinets_time')
+        .andWhere(
+          '(cabinets_time.time_start <= :free_time OR :free_time >= cabinets_time.time_end)',
+        )
+        .getQuery();
+
+      query.andWhere(`cabinets.id NOT IN (${subQuery})`, {
+        free_time: searchCabinetsDto.free_time,
+      });
+    }
+
+    const cabinets = await query
+      .orderBy('cabinets.name', 'ASC')
+      .getManyAndCount();
 
     return {
       cabinets: cabinets[0],
@@ -134,5 +186,148 @@ export class ScheduleService {
     }
 
     return { message };
+  }
+
+  async findSchedule(searchScheduleDto: SearchScheduleDto) {
+    const query = this.teamSchedRepository
+      .createQueryBuilder('team_schedule')
+      .select(['team_schedule.id', 'user.id', 'user.fullname'])
+      .leftJoin('team_schedule.team', 'team')
+      // cabinets_time
+      .leftJoinAndSelect('team_schedule.cabinets_time', 'cabinets_time')
+      .leftJoinAndSelect('cabinets_time.day_week', 'day_week')
+      .leftJoinAndSelect('cabinets_time.cabinet', 'cabinet')
+      .leftJoin('cabinets_time.user', 'user');
+
+    // team_id
+    searchScheduleDto.team_id
+      ? query.andWhere('team.id = :id', { id: searchScheduleDto.team_id })
+      : query;
+
+    // cabinet_id
+    searchScheduleDto.cabinet_id
+      ? query.andWhere('cabinet.id = :cabinet_id', {
+          cabinet_id: searchScheduleDto.cabinet_id,
+        })
+      : query;
+
+    // day_week_id
+    searchScheduleDto.day_week_id
+      ? query.andWhere('day_week.id = :day_week_id', {
+          day_week_id: searchScheduleDto.day_week_id,
+        })
+      : query;
+
+    // time_start
+    searchScheduleDto.time_start
+      ? query.andWhere('cabinets_time.time_start >= :time_start', {
+          time_start: searchScheduleDto.time_start,
+        })
+      : query;
+
+    // time_end
+    searchScheduleDto.time_end
+      ? query.andWhere('cabinets_time.time_end <= :time_end', {
+          time_end: searchScheduleDto.time_end,
+        })
+      : query;
+
+    return await query.orderBy('cabinets_time.time_start', 'ASC').getOne();
+  }
+
+  public async createCabinetTime(dto: CreateCabinetTimeDto) {
+    const daysOfWeek = [
+      'Воскресенье',
+      'Понедельник',
+      'Вторник',
+      'Среда',
+      'Четверг',
+      'Пятница',
+      'Суббота',
+    ];
+    const date = new Date(dto.date);
+    const week = daysOfWeek[date.getDay()];
+
+    try {
+      const cabinet = await this.cabinetsRepository.findOneByOrFail({
+        id: dto.id_cabinet,
+      });
+      const teamSchedule = await this.teamSchedRepository.findOneByOrFail({
+        id: dto.id_team_schedule,
+      });
+
+      const user = await this.usersService.findOne(dto.user_id);
+
+      const dayWeek = await this.dictionaryRepository.findOneBy({
+        name: week,
+        class_id: 7,
+      });
+
+      return await this.cabinetsTimeRepository.save({
+        ...dto,
+        user: user,
+        cabinet: cabinet,
+        team_schedule: teamSchedule,
+        day_week: dayWeek,
+      });
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  public async deleteCabinetTime(id: number) {
+    const result = await this.cabinetsTimeRepository.delete(id);
+    const message = 'Кабинет успешно удален';
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Кабинет не найден!`);
+    }
+
+    return { message: message };
+  }
+
+  public async updateCabinetTime(id: number, dto: UpdateCabinetTimeDto) {
+    const cabinet = await this.cabinetsRepository.findOneBy({
+      id: dto.id_cabinet,
+    });
+    const dayWeek = await this.dictionaryRepository.findOneBy({
+      id: dto.id_day_week,
+    });
+
+    const result = await this.cabinetsTimeRepository.update(id, {
+      time_start: dto.time_start,
+      time_end: dto.time_end,
+      repeat: dto.repeat,
+      cabinet: cabinet,
+      day_week: dayWeek,
+    });
+    const message = 'Кабинет успешно обновлен';
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Кабинет не найден!`);
+    }
+
+    return { message: message };
+  }
+
+  public async createTeamSchedule(
+    dto: CreateTeamScheduleDto,
+  ): Promise<CreateTeamScheduleResponse> {
+    const { id_user, date_end, date_start, id_team } = dto;
+
+    const user = await this.usersService.findOne(id_user);
+    const team = await this.teamsService.findTeamById(id_team);
+
+    const teamSchedule = new TeamSchedule();
+    teamSchedule.user = user;
+    teamSchedule.team = team;
+    teamSchedule.date_start = date_start;
+    teamSchedule.date_end = date_end;
+
+    const newTeamShedule = await this.teamSchedRepository.save(teamSchedule);
+
+    return {
+      teamSchedule: newTeamShedule,
+    };
   }
 }

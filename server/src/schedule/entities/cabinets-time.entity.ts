@@ -8,6 +8,8 @@ import {
 } from 'typeorm';
 import { Cabinets } from './cabinets.entity';
 import { TeamSchedule } from './schedule.entity';
+import { Dictionary } from '../../general/entities/dictionary.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('cabinets_time')
 export class CabinetsTime {
@@ -24,20 +26,13 @@ export class CabinetsTime {
   time_end: string;
 
   @ApiProperty()
-  @Column({
-    type: 'enum',
-    enum: [
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-      'sunday',
-    ],
-    default: 'monday',
-  })
-  day_week: string;
+  @ManyToOne(() => Dictionary, (dict) => dict.id)
+  @JoinColumn([{ name: 'id_day_week' }])
+  day_week: Dictionary;
+
+  @ApiProperty()
+  @Column({ default: 'now()' })
+  date: Date;
 
   @ApiProperty()
   @Column({ default: true })
@@ -46,6 +41,10 @@ export class CabinetsTime {
   @ManyToOne(() => Cabinets, (cab) => cab.id, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'id_cabinet' }])
   cabinet: Cabinets;
+
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @JoinColumn([{ name: 'id_user' }])
+  user: User;
 
   @ManyToOne(() => TeamSchedule, (teamSchedule) => teamSchedule.id)
   @JoinColumn([{ name: 'id_team_schedule' }])

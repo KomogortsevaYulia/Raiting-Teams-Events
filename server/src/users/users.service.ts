@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -26,6 +27,7 @@ import { Permissions } from '../shared/permissions';
 import { PermissionsActions } from '../general/enums/action-permissions';
 import { UnauthorizedException } from '@nestjs/common';
 import axios from 'axios';
+import { TeamPermissions } from '../shared/teamPermissions';
 
 @Injectable()
 export class UsersService {
@@ -36,7 +38,6 @@ export class UsersService {
     private readonly userFunctionsRepository: Repository<UserFunction>,
     @InjectRepository(TeamFunction)
     private readonly functionsRepository: Repository<TeamFunction>,
-
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
   ) {}
@@ -148,7 +149,12 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return await this.usersRepository.findOne({ where: { id: id } });
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user)
+      throw new NotFoundException(`Пользователь с  ID "${id}" не найден!`);
+
+    return user;
   }
 
   async remove(id: string): Promise<void> {
@@ -214,7 +220,6 @@ export class UsersService {
     let userHaveAllPermissions = true;
     //  get user and its permissions
     user = await this.usersRepository.findOne({ where: { id: user.userId } });
-
     // check if it is admin
     const isAdmin = user.permissions.includes(Permissions.CAN_ALL);
     // go through req permissions (with AND checking for perms)
@@ -301,14 +306,9 @@ export class UsersService {
   async hasPermissionsInTeam(
     userId: number,
     teamId: number,
-    permissions: string[],
+    permissions: TeamPermissions[],
+    throwErr = false,
   ) {
-    const user = new User();
-    user.userId = userId;
-
-    const isAdmin = await this.checkPermissions(user, []);
-    if (isAdmin) return true;
-
     const permissisonsInTeam = await this.userFunctionsRepository
       .createQueryBuilder('user_function')
       .leftJoin('user_function.function', 'function')
@@ -321,7 +321,40 @@ export class UsersService {
       })
       .getMany();
 
-    return permissisonsInTeam && permissisonsInTeam.length > 0;
+    const havePerms = permissisonsInTeam && permissisonsInTeam.length > 0;
+
+    if (havePerms) return true;
+    else if (!throwErr) return false;
+    else {
+      throw new ForbiddenException(`У Вас нет разрешений: ${permissions}`);
+    }
+  }
+
+  async hasPermissionsSystemOrTeam(
+    user: User,
+    teamId: number,
+    teamPermissions: TeamPermissions[],
+    systemPermissions: Permissions[],
+  ) {
+    const systemP = await this.checkPermissions(user, systemPermissions, false);
+
+    const teamP = await this.hasPermissionsInTeam(
+      user.userId,
+      teamId,
+      teamPermissions,
+      false,
+    );
+
+    // console.log(systemP, teamP, user, teamId, teamPermissions, systemPermissions)
+    if (!systemP && !teamP)
+      throw new ForbiddenException(
+        'У вас нет разрешений: ' +
+          TeamPermissions.SPECIAL +
+          ' или ' +
+          Permissions.CAN_CREATE_TEAMS,
+      );
+
+    return true;
   }
 
   // checkers---------------------------------------------------------------------------

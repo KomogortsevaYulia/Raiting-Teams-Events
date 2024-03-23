@@ -18,6 +18,9 @@ import { FormsService } from '../forms/forms.service';
 import { TeamSchedule } from './entities/schedule.entity';
 import { TeamVisits } from './entities/visits.entity';
 import { Cabinets } from './entities/cabinets.entity';
+import { TeamPhoto } from '../teams/entities/team-photo.entity';
+import { UploadsService } from '../uploads/uploads.service';
+import { CabinetsTime } from './entities/cabinets-time.entity';
 
 @Module({
   imports: [
@@ -31,9 +34,11 @@ import { Cabinets } from './entities/cabinets.entity';
       Form,
       RequisitionFields,
       FormField,
+      TeamPhoto,
 
       TeamSchedule,
       TeamVisits,
+      CabinetsTime,
       Cabinets,
     ]),
   ],
@@ -44,6 +49,7 @@ import { Cabinets } from './entities/cabinets.entity';
     UsersService,
     GeneralService,
     FormsService,
+    UploadsService,
   ],
 })
 export class ScheduleModule {}

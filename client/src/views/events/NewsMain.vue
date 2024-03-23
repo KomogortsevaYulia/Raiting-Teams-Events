@@ -149,7 +149,7 @@
 
 <script setup lang="ts">
 import "@/assets/nav-second.scss";
-import Switch_toggle from "@/components/SwitchToggle.vue";
+import Switch_toggle from "@/components/Buttons/SwitchToggle.vue";
 import CheckBox_Menu from "@/components/CheckBoxMenu.vue";
 import { useEventStore } from "@/store/events_store";
 import { onBeforeMount, ref } from "vue";

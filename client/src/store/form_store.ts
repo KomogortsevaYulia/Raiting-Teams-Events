@@ -1,7 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import {ApiRequest} from "@/store/handleApiRequest";
+import type {IFormField} from "@/store/models/forms/form-field.model";
 
 export const useFormStore = defineStore("form", () => {
+  const apiRequest = new ApiRequest();
+
   async function fetchFormFields(team_id: number) {
     const res = await axios.get("/api/forms/" + team_id);
     const data = res.data;
@@ -19,36 +23,44 @@ export const useFormStore = defineStore("form", () => {
 
     return res.data;
   }
+  async function createFields(title: string, required: boolean, form_id: number,) {
+    return apiRequest.handleApiRequest(async () => {
+      return await axios.post("/api/forms/field", {
+        title: title,
+        required: required,
+        form: form_id,
+      });
+    });
+  }
 
-  // async function createForm(field_id: string, team_id: number) {
+  async function archiveField(deletedField: IFormField, is_archive: boolean) {
+        return apiRequest.handleApiRequest(async () => {
+         return await axios
+              .put(`/api/forms/field/${deletedField.id}`, {
+                archive: is_archive,
+              })
+        })
+  }
 
-  //     const formData = new FormData();
-  //     formData.append('field_id', field_id);
-  //     formData.append('team_id', team_id.toString());
+  async function createForm(idTeam: number) {
 
-  //     let responseMsg = "сохранено"
+    return apiRequest.handleApiRequest(async () => {
+      return await axios
+          .post("/api/forms", {
+            team_id: idTeam,
+          })
+    })
+  }
 
-  //     const config = {
-  //         headers: {
-  //             'Content-Type': 'multipart/form-data',
-  //         }
-  //     }
-
-  //     //create team
-  //     await axios.post("api/form", formData, config)
-  //         .catch((err) => {
-  //             if (err.response) {
-  //                 responseMsg =err.response.data.message
-
-  //             }
-  //         })
-
-  //     return responseMsg
-  // }
   return {
     fetchFormFields,
     fetchFormId,
+    createForm,
 
     fetchRequisitionAnswers,
+    createFields,
+    archiveField,
+
+    apiRequest
   };
 });

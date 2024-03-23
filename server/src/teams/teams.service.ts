@@ -4,11 +4,17 @@ import {
   HttpException,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  Brackets,
+  EntityManager,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
@@ -32,6 +38,11 @@ import { PermissionsActions } from '../general/enums/action-permissions';
 import { TeamFunction } from '../users/entities/function.entity';
 import { UserFunctionDto } from '../users/dto/user-functions.dto';
 import { FindRequisitionDto } from '../forms/dto/find-requisition.dto';
+import { CreateFormDto } from '../forms/dto/create-form.dto';
+import { TeamPhoto } from './entities/team-photo.entity';
+import { UploadsService } from '../uploads/uploads.service';
+import { ScheduleService } from '../schedule/schedule.service';
+import { TeamSchedule } from '../schedule/entities/schedule.entity';
 
 @Injectable()
 export class TeamsService {
@@ -46,11 +57,26 @@ export class TeamsService {
     private readonly requisitionsRepository: Repository<Requisitions>,
     @InjectRepository(RequisitionFields)
     private readonly requisitionsFieldsRepository: Repository<RequisitionFields>,
+    @InjectRepository(TeamPhoto)
+    private readonly requisitionsTPhotoRepository: Repository<TeamPhoto>,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly dictionaryService: GeneralService,
+    // private readonly scheduleService: ScheduleService,
     private readonly formService: FormsService,
+    private readonly uploadsService: UploadsService,
   ) {}
+
+  public async findTeamById(id: number) {
+    const team = await this.teamsRepository.findOne({ where: { id } });
+
+    if (!team)
+      throw new NotFoundException(`Коллектив с  ID "${id}" не найден!`);
+
+    return team;
+  }
 
   async findOne(id: number) {
     const head = TeamRoles.Leader;
@@ -63,6 +89,8 @@ export class TeamsService {
         'teams.title',
         'teams.tags',
         'teams.image',
+        'teams.phone',
+        'teams.links',
         'teams.description',
         'teams.short_description',
         'teams.type_team',
@@ -72,12 +100,16 @@ export class TeamsService {
         'teams.shortname',
         'teams.charter_team',
         'teams.id_parent',
+        //     team photos
+        'team_photos.image',
+        'team_photos.id',
       ])
       .where('teams.id = :id', { id: id })
       // .andWhere('teams.type_team = :type', { type: 'teams' })
       // select direction
       .leftJoin('teams.id_parent', 'direction')
       .addSelect('direction.id')
+      .leftJoin('teams.team_photos', 'team_photos')
       .leftJoinAndSelect(
         'teams.functions',
         'functions',
@@ -107,7 +139,7 @@ export class TeamsService {
     if (updateTeamDto.leaders && updateTeamDto.leaders.length > 0) {
       const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
       directionTeamLeaderDto.teamId = updatedTeam.id;
-      directionTeamLeaderDto.userIds = updateTeamDto.leaders;
+      directionTeamLeaderDto.userIds = updateTeamDto.leaders ?? [];
       directionTeamLeaderDto.roleName = TeamRoles.Leader;
       // назначить нового пользвоателя
       await this.assignTeamRole(user, directionTeamLeaderDto);
@@ -130,11 +162,20 @@ export class TeamsService {
 
     const directionTeamLeaderDto = new AssignDirectionTeamLeaderDto();
     directionTeamLeaderDto.teamId = team.id;
-    directionTeamLeaderDto.userIds = createTeamDto.leaders;
+    directionTeamLeaderDto.userIds = createTeamDto.leaders ?? [];
     directionTeamLeaderDto.roleName = TeamRoles.Leader;
 
     // назначить нового пользвоателя
     await this.assignTeamRole(user, directionTeamLeaderDto);
+
+    // create form for team
+    const fDto = new CreateFormDto();
+    fDto.team_id = team.id;
+    await this.formService.createForm(fDto);
+
+    // create schedule for team
+    const u = await this.usersService.findById(user.userId);
+    await this.entityManager.save(TeamSchedule, { team: team, user: u });
 
     return team;
   }
@@ -221,12 +262,14 @@ export class TeamsService {
             title: `%${params.title}%`,
           })
         : query;
+
       //if description
       params.description
         ? query.andWhere('LOWER(teams.description) like :description', {
             description: `%${params.description}%`,
           })
         : query;
+
       //if tags
       params.tags
         ? query.andWhere('LOWER(teams.tags) like :tags', {
@@ -357,7 +400,6 @@ export class TeamsService {
 
   // ----------------------------------------------------------------------------
   // requisition ------------------------------------------------------------------
-  // ----------------------------------------------------------------------------
 
   // обновить заявку пользователя на вступление
   async updateRequisition(id: number, updateRequisitionDto: RequisitionDto) {
@@ -542,6 +584,7 @@ export class TeamsService {
       .leftJoin('requisition.user', 'user')
       .leftJoin('requisition.team', 'team');
 
+    console.log(findRequisitionDto);
     //  requisition_id
     findRequisitionDto.requisition_id
       ? query.andWhere('requisition.id = :id', {
@@ -566,10 +609,7 @@ export class TeamsService {
     return query.getOne();
   }
 
-  async createRequisitionOrUpdate(
-    dto: CreateRequisitionDto,
-    user: User,
-  ): Promise<Requisitions> {
+  async createRequisitionOrUpdate(dto: CreateRequisitionDto, user: User) {
     // console.log(dto);
     const { team_id, fields } = dto;
     const team = await this.findOne(team_id);
@@ -578,7 +618,7 @@ export class TeamsService {
     const status = await this.dictionaryService.findOne(18);
 
     const findRequisitionDto = new FindRequisitionDto();
-    // findRequisitionDto.user_id = user.id;
+    findRequisitionDto.user_id = user.id;
     findRequisitionDto.team_id = team.id;
 
     let existingRequisition = await this.findOneRequisition(findRequisitionDto);
@@ -595,7 +635,11 @@ export class TeamsService {
 
     existingRequisition = await this.requisitionsRepository.save(requisition);
 
-    if (existingRequisition && form.form_field && form.form_field.length > 0) {
+    if (
+      existingRequisition &&
+      form?.form_field &&
+      form?.form_field.length > 0
+    ) {
       for (let i = 0; i < fields.length; i++) {
         const requisitionFieldDto = new CreateRequisitionFieldDto();
         requisitionFieldDto.value = fields[i];
@@ -626,7 +670,10 @@ export class TeamsService {
     return await this.teamsRepository.update(id, { is_archive: isArchive });
   }
 
-  async addImage(id: number, filePath: string): Promise<Team> {
+  // ------------------------------------------------------------------------------------------------------
+  // team avatars photo
+
+  async addTeamAvs(id: number, filePath: string): Promise<Team> {
     const team = await this.findOne(id);
     team.image.push(filePath);
 
@@ -636,9 +683,51 @@ export class TeamsService {
     });
   }
 
+  async deleteTeamAvs(idTeam: number, imagePath: string) {
+    const team = await this.findOne(idTeam);
+    team.image = team.image.filter((img) => {
+      return imagePath != img;
+    });
+
+    const savedTeam = await this.teamsRepository.save(team);
+    await this.uploadsService.deleteFileByUrl(imagePath);
+    return savedTeam;
+  }
+
+  // team avatars photo
+  // ------------------------------------------------------------------------------------------------------
+
+  // ------------------------------------------------------------------------------------------------------
+  // team  photos
+  async getTeamPhoto(id: number) {
+    return await this.requisitionsTPhotoRepository
+      .createQueryBuilder('team_photos')
+      .leftJoinAndSelect('team_photos.team', 'team')
+      .where('team_photos.id = :id', { id: id })
+      .getOne();
+  }
+
+  async addTeamPhotos(id: number, filePath: string) {
+    const team = await this.findOne(id);
+
+    return await this.requisitionsTPhotoRepository.save({
+      team: team,
+      image: filePath,
+    });
+  }
+
+  async deleteTeamPhotos(id: number) {
+    const teamPhoto = await this.requisitionsTPhotoRepository.findOneBy({ id });
+    await this.uploadsService.deleteFileByUrl(teamPhoto.image);
+
+    return await this.requisitionsTPhotoRepository.delete(id);
+  }
+
+  // team  photos
+  // ------------------------------------------------------------------------------------------------------
+
   // ----------------------------------------------------------------------------
   // add role and user in team
-  // ----------------------------------------------------------------------------
   async assignTeamRole(
     user: User,
     teamLeaderDto: AssignDirectionTeamLeaderDto,

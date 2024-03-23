@@ -23,10 +23,6 @@ export class createUserFormDto {
 }
 
 export class CreateFormDto {
-  // @IsOptional()
-  // @IsNotEmpty({ message: 'Поле пустое' })
-  // fields_id:string
-
   @IsNumber()
   @Type(() => Number)
   team_id: number;

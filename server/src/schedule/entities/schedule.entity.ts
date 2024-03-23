@@ -10,6 +10,7 @@ import {
 import { Team } from '../../teams/entities/team.entity';
 import { User } from '../../users/entities/user.entity';
 import { TeamVisits } from './visits.entity';
+import { CabinetsTime } from './cabinets-time.entity';
 
 @Entity('team_schedule')
 export class TeamSchedule {
@@ -37,4 +38,9 @@ export class TeamSchedule {
     cascade: true,
   })
   team_visits: TeamVisits[];
+
+  @OneToMany(() => CabinetsTime, (cabinetsTime) => cabinetsTime.team_schedule, {
+    cascade: true,
+  })
+  cabinets_time: CabinetsTime[];
 }

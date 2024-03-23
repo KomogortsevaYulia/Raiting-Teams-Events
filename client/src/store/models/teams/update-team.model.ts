@@ -1,4 +1,4 @@
-export default class UpdateTeam {
+export default class UpdateTeamModel {
   id = 0;
   leaders: number[] = [];
   title = "";
@@ -8,6 +8,8 @@ export default class UpdateTeam {
   documentPath = "";
   charterPath = "";
   id_parent = 0;
+  tags:string[] = [];
+  links:string[] = [];
 
   fileUstav: File | undefined;
   fileDocument: File | undefined;

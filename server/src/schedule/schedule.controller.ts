@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
@@ -24,6 +25,11 @@ import { CreateCabinetDto } from './dto/create-cabinet.dto';
 import { CreateCabinetResponse } from './dto/create-cabinet.response';
 import { DeleteCabinetResponse } from './dto/delete-cabinet.response';
 import { SearchCabinetsDto } from './dto/search-cabinets.dto';
+import { SearchScheduleDto } from './dto/search-schedule.dto';
+import { CreateCabinetTimeDto } from './dto/create-cabinet-time.dto';
+import { UpdateCabinetTimeDto } from './dto/update-cabinet-time.dto';
+import { CreateTeamScheduleResponse } from './dto/create-team-schedule.response';
+import { CreateTeamScheduleDto } from './dto/create-team-schedule.dto';
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -90,5 +96,75 @@ export class ScheduleController {
   @ApiQuery({ name: 'id', required: true, type: Number })
   deleteCabinet(@Param('id') id: number) {
     return this.scheduleService.deleteCabinet(id);
+  }
+
+  @Get('')
+  @ApiOperation({ summary: 'Получение расписания по id коллектива' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Успешно' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+  findSchedule(@Query() searchScheduleDto: SearchScheduleDto) {
+    return this.scheduleService.findSchedule(searchScheduleDto);
+  }
+
+  @Post('cabinets-time')
+  @ApiOperation({ summary: 'Резервирование аудитории' })
+  @ApiOkResponse({
+    status: HttpStatus.OK,
+    description: 'Успешно',
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request',
+  })
+  createCabinetTime(@Body() dto: CreateCabinetTimeDto) {
+    return this.scheduleService.createCabinetTime(dto);
+  }
+
+  @Delete('cabinets-time/:id')
+  @ApiOperation({ summary: 'Удаление зарезирвированной аудитории' })
+  @ApiOkResponse({
+    status: HttpStatus.OK,
+    description: 'Успешно',
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request',
+  })
+  @ApiQuery({ name: 'id', required: true, type: Number })
+  deleteCabinetTime(@Param('id') id: number) {
+    return this.scheduleService.deleteCabinetTime(id);
+  }
+
+  @Put('cabinets-time/:id')
+  @ApiOperation({ summary: 'Обновление зарезирвированной аудитории' })
+  @ApiOkResponse({
+    status: HttpStatus.OK,
+    description: 'Успешно',
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request',
+  })
+  @ApiQuery({ name: 'id', required: true, type: Number })
+  updateCabinetTime(
+    @Param('id') id: number,
+    @Body() updateCabinetTimeDto: UpdateCabinetTimeDto,
+  ) {
+    return this.scheduleService.updateCabinetTime(id, updateCabinetTimeDto);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Создание нового расписания' })
+  @ApiOkResponse({
+    type: CreateTeamScheduleResponse,
+    status: HttpStatus.OK,
+    description: 'Успешно',
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request',
+  })
+  createTeamSchedule(@Body() dto: CreateTeamScheduleDto) {
+    return this.scheduleService.createTeamSchedule(dto);
   }
 }

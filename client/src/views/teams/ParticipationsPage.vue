@@ -220,7 +220,7 @@ import { onBeforeMount, ref } from "vue";
 import { useFunctionsStore } from "@/store/fucntion_store";
 import { TeamRoles } from "@/store/enums/team_roles";
 import type { IUserFunction } from "@/store/models/user/user-functions.model";
-import SwitchToggle from "@/components/SwitchToggle.vue";
+import SwitchToggle from "@/components/Buttons/SwitchToggle.vue";
 import type { Ref } from "vue";
 import SearchField from "@/components/SearchField.vue";
 import type { IRUFunction } from "@/store/models/user/search-user-functions.model";

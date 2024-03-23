@@ -2,19 +2,20 @@
   <!-- Modal -->
   <div
     class="modal fade bd-example-modal-lg"
-    id="exampleModal"
+    :id="id"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-lg">
       <div class="modal-content px-3 py-4">
-        <div class="modal-header">
+        <div class="modal-header text-center">
           <h1 class="modal-title fs-5" id="exampleModalLabel">
             <!-- редактирование или создание нвого колелктива -->
-            <b v-if="isEditTeam"> Редактировать коллектив </b>
+            <b v-if="isEditTeam">
+              Редактировать коллектив {{ teamObj.shortname }}
+            </b>
             <b v-else>Создать коллектив </b>
-
             <!-- если коллектив в архиве -->
             <sup
               v-if="
@@ -46,8 +47,12 @@
               приказом!
             </div>
 
-            <div v-if="responseMsg" class="alert alert-warning" role="alert">
-              {{ responseMsg }}
+            <div
+              v-if="teamStore.apiRequest.message || teamStore.apiRequest.error"
+              class="alert alert-warning"
+              role="alert"
+            >
+              {{ teamStore.apiRequest.message ?? teamStore.apiRequest.error }}
             </div>
 
             <!-- Форма с полями для создания -->
@@ -57,12 +62,14 @@
             >
               <div class="create-filds">
                 <div class="filds-area">
+                  <div class="fw-bold">Название:</div>
                   <input
                     type="text"
                     placeholder="Название коллектива"
                     v-model="title"
                     required
                   />
+                  <div class="fw-bold">Краткое название:</div>
                   <input
                     type="text"
                     placeholder="Краткое название"
@@ -70,7 +77,72 @@
                     required
                   />
 
+                  <div
+                    v-if="can('can edit own teams') && isEditTeam"
+                    class="row g-2 mb-4"
+                  >
+                    <!--  tags-->
+                    <div class="fw-bold">Теги:</div>
+                    <div class="col-auto create-field">
+                      <input
+                        type="text"
+                        placeholder="Добавить"
+                        v-model="newTag"
+                      />
+                      <font-awesome-icon
+                        :icon="['fas', 'circle-plus']"
+                        class="btn-icon fa-lg"
+                        @click="addTag()"
+                      />
+                    </div>
+                    <div
+                      class="col-auto position-relative align-items-center d-flex"
+                      v-for="(tag, index) in teamObj?.tags"
+                      v-bind:key="index"
+                    >
+                      <TagElem :text="tag" />
+                      <div class="position-absolute top-0 end-0">
+                        <font-awesome-icon
+                          @click="deleteTag(index)"
+                          :icon="['fas', 'circle-xmark']"
+                          class="fa-lg btn-icon"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- links-->
+                    <div class="fw-bold">Ссылки:</div>
+                    <div class="col-auto create-field">
+                      <input
+                        type="text"
+                        placeholder="Добавить"
+                        v-model="newLink"
+                      />
+                      <font-awesome-icon
+                        :icon="['fas', 'circle-plus']"
+                        class="btn-icon fa-lg"
+                        @click="addLink()"
+                      />
+                    </div>
+                    <div
+                      class="col-auto position-relative align-items-center d-flex"
+                      v-for="(link, index) in links"
+                      v-bind:key="index"
+                    >
+                      <TagElem :text="link" />
+                      <div class="position-absolute top-0 end-0">
+                        <font-awesome-icon
+                          @click="deleteLink(index)"
+                          :icon="['fas', 'circle-xmark']"
+                          class="fa-lg btn-icon"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="fw-bold">Руководители:</div>
                   <v-select
+                    v-if="can('can create teams')"
                     placeholder="ФИО Руководителя или email"
                     class="v-select"
                     label="data"
@@ -79,8 +151,8 @@
                     v-model="leaderSelect"
                   ></v-select>
 
-                  <div class="row g-2 mb-4">
-                    <!-- selected cabinets-->
+                  <div v-if="can('can create teams')" class="row g-2 mb-4">
+                    <!-- selected leaders-->
                     <div
                       class="col-auto position-relative align-items-center d-flex"
                       v-for="(leader, index) in leaders"
@@ -97,8 +169,9 @@
                     </div>
                   </div>
 
-                  <div class="row">
+                  <div class="row" v-if="can('can create teams')">
                     <div class="col-auto">
+                      <div class="fw-bold">Направление:</div>
                       <!-- select direction -->
                       <select
                         class="form-select mb-3"
@@ -117,6 +190,7 @@
                     </div>
 
                     <div class="col">
+                      <div class="fw-bold">Аудитория:</div>
                       <v-select
                         placeholder="Аудитория(кабинет)"
                         class="v-select"
@@ -127,7 +201,7 @@
                     </div>
                   </div>
 
-                  <div class="row g-2 mb-4">
+                  <div class="row g-2 mb-4" v-if="can('can create teams')">
                     <!-- selected cabinets-->
                     <div
                       class="col-auto position-relative align-items-center d-flex"
@@ -145,11 +219,9 @@
                     </div>
                   </div>
 
-                  <div class="mb-2">
-                    <label for="formFile" class="form-label"
-                      >загрузить устав</label
-                    >
-                    <input
+                  <div v-if="can('can create teams')" class="mb-2">
+                      <div class="fw-bold">Устав:</div>
+                      <input
                       class="form-control"
                       type="file"
                       id="formFile"
@@ -166,10 +238,8 @@
                     />
                   </div>
 
-                  <div class="mb-2">
-                    <label for="formFile1" class="form-label"
-                      >загрузить документ(ы)</label
-                    >
+                  <div v-if="can('can create teams')" class="mb-2">
+                      <div class="fw-bold">Документы:</div>
                     <input
                       class="form-control"
                       type="file"
@@ -188,6 +258,66 @@
                   ></textarea>
                 </div>
 
+                <!-- main photos -->
+                <div
+                  class="row g-2 mb-4"
+                  v-if="can('can edit own teams') && isEditTeam"
+                >
+                  <b>Заглавные фотографии: </b>
+                  <!--       images      -->
+                  <div
+                    class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
+                    v-for="(img, index) in teamObj?.image"
+                    v-bind:key="index"
+                  >
+                    <AddedImage
+                      :handle-on-delete="handleOnDeleteAvatar"
+                      :index="index"
+                      :src="img"
+                    />
+                  </div>
+                  <!--  upload images-->
+                  <div class="col-12 d-flex align-items-center">
+                    <div>
+                      <input
+                        class="form-control"
+                        type="file"
+                        id="formFile"
+                        @change="(e) => handleAvatarUpload(e)"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- photo gallery -->
+                <div
+                  class="row g-2 mb-4"
+                  v-if="can('can edit own teams') && isEditTeam"
+                >
+                  <b>Фотографии из галереи: </b>
+                  <div
+                    class="col-md-6 col-lg-4 col-12 position-relative align-items-center"
+                    v-for="(teamPhoto, index) in teamObj?.team_photos"
+                    v-bind:key="index"
+                  >
+                    <AddedImage
+                      :handle-on-delete="handleOnDeletePhoto"
+                      :index="index"
+                      :src="teamPhoto.image"
+                    />
+                  </div>
+                  <div class="col-12 d-flex align-items-center">
+                    <div>
+                      <input
+                        class="form-control"
+                        type="file"
+                        id="formFile"
+                        @change="(e) => handlePhotoUpload(e)"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div class="fuck-off-btn">
                   <div class="row">
                     <div class="col">
@@ -198,10 +328,7 @@
                         type="button"
                         class="btn btn-secondary"
                         @click="
-                          archiveTeam(
-                            teamObj?.id ?? -1,
-                            teamObj?.is_archive ?? false,
-                          )
+                          archiveTeam(teamObj?.id ?? -1, !teamObj?.is_archive)
                         "
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
@@ -227,20 +354,27 @@ import { onBeforeMount, ref, watch } from "vue";
 import _ from "lodash";
 import { useTeamStore } from "@/store/team_store";
 import { useUserStore } from "@/store/user_store";
-import UpdateTeam from "./UpdateTeam";
+import UpdateTeamModel from "../../store/models/teams/update-team.model";
 import type { ITeam } from "@/store/models/teams/team.model";
 import { TeamRoles } from "@/store/enums/team_roles";
 import { FilterUser } from "@/store/models/user.model";
 import { useAuditoriesStore } from "@/store/schedule/cabinets_store";
 import TagElem from "@/components/TagElem.vue";
-import type { ISchedule } from "@/store/models/schedule/schedule.model";
+import type { ICabinetsSearch } from "@/store/models/schedule/schedule.model";
+import { usePermissionsStore } from "@/store/permissions_store";
+import AddedImage from "@/components/AddImage.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const teamStore = useTeamStore();
 const auditoryStore = useAuditoriesStore();
 
+const permissions_store = usePermissionsStore();
+const can = permissions_store.can;
+
 const props = defineProps<{
   isEditTeam: boolean; //если модальное окно вызвано для редактирования (не создание нового коллектива)
   teamId: number;
+  id: string;
   onSaveChanges: () => void;
 }>();
 
@@ -249,7 +383,14 @@ const teamObj: Ref<ITeam> = ref({});
 // values from form
 const title = ref("");
 const shortname = ref("");
+
+const newLink = ref("");
+const newTag = ref("");
+
 const leaders = ref<{ id: number; name: string; email: string }[]>([]);
+const tags = ref<string[]>([]);
+const links = ref<string[]>([]);
+
 const searchTxtUser = ref();
 const auditories = ref<{ id: number; name: string }[]>([]);
 
@@ -260,9 +401,6 @@ const charterTeamFile = ref();
 const documentFile = ref();
 
 const charterTeamBase64 = ref();
-
-// сообщение об ошибках
-const responseMsg = ref();
 
 // найденные юзеры
 const foundUsers = ref();
@@ -284,7 +422,6 @@ const auditorySelect = ref();
 async function onTextChange(e: InputEvent) {
   const el = e.target as HTMLInputElement;
   searchTxtUser.value = el.value;
-  leaderSelect.value = null;
   timerFetchUsers();
 }
 
@@ -297,6 +434,15 @@ async function deleteLeader(index: number) {
 async function deleteAuditory(index: number) {
   auditories.value.splice(index, 1);
 }
+
+watch(
+  () => props.teamId,
+  async (value) => {
+    if (value) {
+      await fetchTeam(value);
+    }
+  },
+);
 
 // on auditory selected
 watch(
@@ -311,34 +457,38 @@ watch(
 
 // on user selected
 watch(
-    () => leaderSelect.value,
-    async (value) => {
-        if (value?.id && !leaders.value.includes(value?.id)) {
-            leaders.value.push({ id: value.id, name: value.name, email:value.email});
-        }
-    },
-);
-
-watch(
-  () => props.teamId,
+  () => leaderSelect.value,
   async (value) => {
-    if (value) await fetchTeam(value);
-
-    responseMsg.value = "";
-    await fillForm();
+    if (value?.id && !leaders.value.includes(value?.id)) {
+      leaders.value.push({
+        id: value.id,
+        name: value.name,
+        email: value.email,
+      });
+    }
   },
 );
+
+onBeforeMount(() => {
+  fetchTeam(props.teamId);
+  fillForm();
+});
 
 async function fetchTeam(id: number) {
   if (id) {
     teamObj.value = await teamStore.fetchTeam(id);
   } else teamObj.value = {};
 
-  responseMsg.value = "";
+  tags.value = teamObj.value.tags ?? [];
+  links.value = teamObj.value.links ?? [];
 
   let ldrs = getLeaders(teamObj.value);
   leaders.value = ldrs?.map((el) => {
-    return { id: el?.id ?? -1, name: el?.fullname ?? "", email: el?.email ?? "" };
+    return {
+      id: el?.id ?? -1,
+      name: el?.fullname ?? "",
+      email: el?.email ?? "",
+    };
   });
 
   await fillForm();
@@ -429,18 +579,13 @@ async function getUsers() {
 }
 
 async function getAuditories() {
-  let sch: ISchedule = { ids: auditories.value.map((el) => el.id) };
+  let sch: ICabinetsSearch = { ids: auditories.value.map((el) => el.id) };
   let r = await auditoryStore.getCabinets(sch);
   foundAuditories.value = r.cabinets;
 }
 
 //создать коллектив
 async function createTeam() {
-  let userId = -1;
-  //проверить является id числом или нет и выбрана ли опция
-
-  userId = leaderSelect.value.id;
-
   //create team
   await teamStore
     .createTeam(
@@ -448,24 +593,20 @@ async function createTeam() {
       title.value,
       description.value,
       shortname.value,
-      userId,
+      leaders.value.map((el) => el.id),
       auditories.value.map((item) => item.id),
       charterTeamFile.value,
       documentFile.value,
     )
-    .then((msg) => {
-      if (msg) responseMsg.value = msg;
-      else {
-        responseMsg.value = "Сохранено";
-        props.onSaveChanges();
-      }
+    .then(() => {
+      props.onSaveChanges();
     });
 }
 
 // обночить коллектив
 async function updateTeam() {
   //create team
-  const uT = new UpdateTeam();
+  const uT = new UpdateTeamModel();
   uT.id_parent = selectedDirection.value;
   uT.cabinets = auditories.value.map((el) => el.id);
   uT.description = description.value;
@@ -475,18 +616,15 @@ async function updateTeam() {
   uT.title = title.value;
   uT.documentPath = teamObj.value.document ?? "";
   uT.charterPath = teamObj.value.charter_team ?? "";
+  uT.tags = tags.value;
+  uT.links = links.value;
+
   // files
   uT.fileUstav = charterTeamFile.value;
   uT.fileDocument = documentFile.value;
 
-  await teamStore.updateTeam(uT).then((res) => {
-    if (res.responseMsg) responseMsg.value = res.responseMsg;
-    else {
-      responseMsg.value = "Сохранено";
-      teamObj.value = res.team?.data;
-      props.onSaveChanges();
-    }
-  });
+  await teamStore.updateTeam(uT);
+  await fetchTeam(props.teamId);
 }
 
 async function handleFileUpload(
@@ -501,12 +639,25 @@ async function handleFileUpload(
   }
 }
 
+async function handleAvatarUpload(event: { target: { files: File[] } }) {
+  const file = event.target.files[0];
+  await teamStore.addImage(props.teamId, file).then(() => {
+    fetchTeam(props.teamId);
+  });
+}
+
+async function handlePhotoUpload(event: { target: { files: File[] } }) {
+  const file = event.target.files[0];
+  await teamStore.addPhoto(props.teamId, file).then(() => {
+    fetchTeam(props.teamId);
+  });
+}
+
 // архивировать коллектив
 async function archiveTeam(id: number, isArchive: boolean) {
-  let res = await teamStore.archiveTeam(id, isArchive);
-  responseMsg.value = res.responseMsg;
-
-  if (res.isOK) teamObj.value.is_archive = isArchive;
+  await teamStore.archiveTeam(id, isArchive).then(() => {
+    teamObj.value.is_archive = isArchive;
+  });
 }
 
 function getLeaders(team: ITeam) {
@@ -525,9 +676,52 @@ function getLeaders(team: ITeam) {
 
   return ldrs;
 }
+
+async function handleOnDeletePhoto(index: number) {
+  if (teamObj.value.team_photos) {
+    let photo = teamObj.value.team_photos[index];
+    await teamStore.deletePhotos(photo.id).then(() => {
+      fetchTeam(props.teamId);
+    });
+  }
+}
+
+async function handleOnDeleteAvatar(index: number) {
+  if (teamObj.value.image && teamObj.value.id) {
+    let img = teamObj.value.image[index];
+    await teamStore.deleteAvs(teamObj.value.id, img).then(() => {
+      fetchTeam(props.teamId);
+    });
+  }
+}
+
+async function deleteTag(index: number) {
+  tags.value.splice(index, 1);
+}
+
+async function deleteLink(index: number) {
+  links.value.splice(index, 1);
+}
+
+async function addLink() {
+  links.value = teamObj.value.links ?? [];
+  links.value.push(newLink.value);
+}
+
+async function addTag() {
+  tags.value = teamObj.value.tags ?? [];
+  tags.value.push(newTag.value);
+}
 </script>
 
 <style lang="scss" scoped>
+.btn-add {
+  padding: var(--padding-form);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
 .btn-close {
   &:hover {
     background-color: var(--main-color-hover);
@@ -572,6 +766,24 @@ function getLeaders(team: ITeam) {
           margin-bottom: 1rem;
         }
       }
+    }
+  }
+}
+
+.create-field {
+  border: var(--main-border-card);
+  border-radius: 50px;
+  overflow: hidden;
+
+  input {
+    border: none;
+    margin-bottom: 0 !important;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border: none;
+      box-shadow: none;
     }
   }
 }

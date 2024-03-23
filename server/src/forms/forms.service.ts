@@ -5,14 +5,17 @@ import { CreateFormDto, CreateFormFieldsDto } from './dto/create-form.dto';
 import { Form } from './entities/form.entity';
 import { FormField } from './entities/form_field.entity';
 import { UpdateFieldDto } from './dto/update-field';
+import { Team } from '../teams/entities/team.entity';
 
 @Injectable()
 export class FormsService {
   constructor(
-    @InjectRepository(Form) // user //,
+    @InjectRepository(Form)
     private readonly formRepository: Repository<Form>,
-    @InjectRepository(FormField) // user //,
+    @InjectRepository(FormField)
     private readonly formFieldsRepository: Repository<FormField>,
+    @InjectRepository(Team)
+    private readonly teamRepository: Repository<Team>,
   ) {}
 
   async findOnIdForm(team_id: number) {
@@ -23,7 +26,7 @@ export class FormsService {
     return res_forms.id;
   }
 
-  async findOnFormFields(team_id: number) {
+  async findOnFormFields(team_id: number): Promise<Form | null> {
     const archive = false;
     return await this.formRepository
       .createQueryBuilder('form')
@@ -49,16 +52,15 @@ export class FormsService {
   // }
 
   async createForm(createFormDto: CreateFormDto): Promise<Form> {
+    const team = await this.teamRepository.findOneBy({
+      id: createFormDto.team_id,
+    });
     return await this.formRepository.save({
-      ...createFormDto,
-      order: new Date(),
-      description: 'description',
+      team: team,
+      date: new Date(),
+      description: '-',
     });
   }
-
-  // async updateForm(id: number, UpdateFormDto: UpdateFormDto) {
-  //    return await this.formRepository.update(id, UpdateFormDto)
-  //   }
 
   async createFormField(createFormFieldsDto: CreateFormFieldsDto) {
     return await this.formFieldsRepository.save({

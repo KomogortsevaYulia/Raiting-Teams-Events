@@ -52,6 +52,6 @@ export class CreateTeamDto {
   charterTeam: string;
 
   get cabinetsAsNumbers(): number[] {
-    return this.cabinets.map((str) => parseInt(str));
+    return this.cabinets?.map((str) => parseInt(str));
   }
 }
