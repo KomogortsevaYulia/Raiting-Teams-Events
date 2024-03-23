@@ -113,9 +113,14 @@ const router = createRouter({
       },
     },
     {
-      path: "/schedule/add-class",
+   // /team/${teamId}/schedule/add-class/date=${dates.dateRange[index2]}&time=${hour}
+      path: "/team/:team_id/schedule/add-class",
       name: "create class to schedule",
-      component: () => import("@/views/schedule/create-page/ScheduleCreate.vue"),
+      props: (route) => ({
+        date: route.query.date,
+        time: route.query.time
+      }),
+      component: () => import("@/views/teams/schedule/create-page/ScheduleCreate.vue"),
       meta: {
         // requiresAuth: true,
         // permission: Permissions.CAN_CREATE_CLASS_TO_SCHEDULE

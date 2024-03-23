@@ -39,7 +39,7 @@
       </div>
 <!--расписание-->
       <div v-if="selectedItem === 2">
-        <TeamSchedule :team-id="teamId"/>
+        <TeamSchedule :team-id="teamId" :team-name="team.shortname ?? '-'"/>
       </div>
       <!-- участники -->
       <div v-if="selectedItem === 3">

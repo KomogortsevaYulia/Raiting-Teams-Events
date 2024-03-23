@@ -42,15 +42,15 @@
       "time-location-card chip-cards";
   }
 
-  .class-booking__header { 
+  .class-booking__header {
     grid-area: header;
   }
 
-  .class-booking__time-location-card { 
-    grid-area: time-location-card; 
+  .class-booking__time-location-card {
+    grid-area: time-location-card;
   }
 
-  .class-booking__chip-cards { 
+  .class-booking__chip-cards {
     grid-area: chip-cards;
     margin: auto;
     .chip {

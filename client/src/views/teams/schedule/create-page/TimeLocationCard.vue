@@ -1,9 +1,9 @@
 <template>
   <span class="time-location-card" :class="isPrimary ? 'primary' : 'secondary'">
     <div class="date">
-      <div class="day">{{ dateInfo.dayNumber }}</div>  
-      <div class="month">{{ dateInfo.monthName }}</div>  
-      <div class="week-day">{{ dateInfo.weekDay }}</div>  
+      <div class="day">{{ dateInfo.dayNumber }}</div>
+      <div class="month">{{ dateInfo.monthName }}</div>
+      <div class="week-day">{{ dateInfo.weekDay }}</div>
     </div>
     <div class="time-location-card__right">
       <div class="time" v-if="isPrimary">{{ dateInfo.time }}</div>
@@ -12,7 +12,7 @@
       <select>
         <option>Завершить</option>
         <option>Бронировать </option>
-      </select>  
+      </select>
     </div>
   </span>
 </template>

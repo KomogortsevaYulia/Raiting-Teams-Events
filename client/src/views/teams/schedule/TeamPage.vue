@@ -30,7 +30,7 @@
 
   <!--    schedule-->
   <div class="row my-3">
-    <TeamSchedule :dates="dates" :team-id="teamId" />
+    <TeamSchedule :dates="dates" :team-id="teamId"  :team-name="teamName"/>
   </div>
   <!--    visits-->
   <div class="row">
@@ -52,6 +52,7 @@ import DropdownBtn from "@/components/Buttons/DropdownBtn.vue";
 
 defineProps<{
   teamId: number;
+  teamName:string;
 }>();
 
 const selectedWeekStart = ref(getMonday(new Date())); // Используем функцию для получения понедельника

@@ -43,7 +43,9 @@
                     >
                       <FontAwesomeIcon icon="search" />
                     </div>
-                    <button class="btn-order">Забронировать</button>
+                    <router-link :to="`/team/${teamId}/schedule/add-class?date=${dates.dateRange[index2]}&time=${hour}&team_name=${teamName}`">
+                      <button class="btn-order">Забронировать</button>
+                    </router-link>
                   </div>
                   <!--  data-->
 
@@ -130,6 +132,7 @@ const cabinetsTimeStore = useCabinetsTimeStore();
 
 const props = defineProps<{
   teamId: number;
+  teamName:string;
   dates: {
     dateStart: Date;
     dateEnd: Date;
