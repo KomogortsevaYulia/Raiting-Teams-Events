@@ -38,9 +38,12 @@
         <TeamNews :idTeam="idTeam" />
       </div>
 
+      <!--Button  -->
       <div v-if="selectedItem === 2">
-        <WIP />
+        <ModalsChedule/>
+        <WIP/>
       </div>
+
       <!-- участники -->
       <div v-if="selectedItem === 3">
         <ParticipationsPage :idTeam="idTeam" />
@@ -83,6 +86,7 @@ import TeamMain from "./TeamMain.vue";
 import type { ITeam } from "@/store/models/teams/team.model";
 import type { Ref } from "vue";
 import ParticipationsPage from "@/views/teams/ParticipationsPage.vue";
+import ModalsChedule from "@/components/modals/ModalsChedule.vue";
 
 const route = useRoute();
 const permissions_store = usePermissionsStore();

@@ -8,10 +8,10 @@ export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
-    define:{
-      'process.env':{
-        BITRIX_CLIENT_ID:env.BITRIX_CLIENT_ID,
-        CAMPUS_LOGIN:env.CAMPUS_LOGIN
+    define: {
+      'process.env': {
+        BITRIX_CLIENT_ID: env.BITRIX_CLIENT_ID,
+        CAMPUS_LOGIN: env.CAMPUS_LOGIN
       }
     },
     plugins: [vue(), vueJsx()],
@@ -21,9 +21,9 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     server: {
-      port: Number(env.PORT),
+      port: 5173,
       proxy: {
-        "/api": env.PROXY,
+        "/api": "http://localhost:3000", // Изменяем порт прокси на 3000
       },
     },
   };
