@@ -1,7 +1,7 @@
 <template>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <button @click="showModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal_2" class="custom-button">
-    <i class="fas fa-pencil-alt"></i>
+    <i class="fas fa-pencil-alt"></i>пше 
 </button>
     <div class="modal fade" id="exampleModal_2" ref="exampleModal_2" tabindex="-1" aria-labelledby="exampleModalLabel_1" aria-hidden="true" v-show="isModalVisible" :class="{ 'd-none': !isModalVisible }">
         <transition name="modal-fade">
@@ -238,15 +238,7 @@ function showSaveNotification() {
     height: 55px;
     border-radius: 15px;
     border: 1.5px solid #cbcbcb;
-}
-
-    // .custom-date-picker .dp__pointer.dp__input_readonly.dp__input.dp__input_icon_pad.dp__input_reg {
-    // // Ваши собственные стили для поля ввода даты
-    //     width: 335px;
-    //     height: 55px;
-    //     border-radius: 15px;
-    //     border: 1.5px solid #cbcbcb;
-    // }
+    }
 
     .dp__pointer.dp__input_readonly.dp__input.dp__input_icon_pad.dp__input_reg{
         border: 1.5px solid #cbcbcb;
