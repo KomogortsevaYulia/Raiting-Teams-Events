@@ -1,0 +1,7 @@
+#!/bin/bash
+
+BE_PROCESS_NAME_=rating-teams-BE
+FE_PROCESS_NAME_=rating-teams-FE
+
+BE_BUILD_COOLDOWN_=10
+FE_BUILD_COOLDOWN_=0

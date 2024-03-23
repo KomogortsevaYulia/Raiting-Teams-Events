@@ -76,7 +76,7 @@ sudo -u postgres psql -d raiting_team_events < backup.sql
 ### npm
 запуск сервера
 ```bash
-$ кnpm run start:dev
+$ npm run start:dev
 ```
 
 ### yarn
