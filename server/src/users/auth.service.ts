@@ -1,7 +1,7 @@
 // import { Injectable } from '@nestjs/common';
 // import { InjectRepository } from '@nestjs/typeorm';
 // import {Repository } from 'typeorm';
-// import { User } from './entities/user.entity';
+// import { User } from './dto/user.entity';
 
 // @Injectable()
 // export class AuthService {
@@ -13,7 +13,6 @@
 
 //     // check permissions
 //     async hasPermissions(userId: number, requiredPermissions: string[]) {
-
 
 //         let userHaveAllPermissions = true
 //         //  get user and its permissions
@@ -41,6 +40,3 @@
 //     }
 
 // }
-
-
-
