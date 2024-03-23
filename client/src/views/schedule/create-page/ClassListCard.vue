@@ -49,7 +49,7 @@
     --class-list-card__secondary-color: #EBE8E8;
     --class-list-card__secondary-text-color: #747474;
 
-    width: 400px;
+    width: 33%;
     height: 365px;
     border: 1px solid var(--class-list-card__border-color);
     border-radius: 5px;

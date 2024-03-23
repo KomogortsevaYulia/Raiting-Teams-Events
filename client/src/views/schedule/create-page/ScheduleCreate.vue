@@ -88,13 +88,16 @@
         ></ClassListCard>
       </div>
     </section>
-    <button
-      type="button"
-      data-bs-toggle="modal"
-      data-bs-target="#createScheduleSubmitModal"
-    >
-      SUBMIT
-    </button>
+    <footer>
+      <button
+        type="submit"
+        class="submit"
+        data-bs-toggle="modal"
+        data-bs-target="#createScheduleSubmitModal"
+      >
+        Добавить
+      </button>
+    </footer>
     <SubmitModal :date="new Date()" :union="shedule.name" :location="'актовый зал'"></SubmitModal>
   </div>
 </template>
@@ -233,6 +236,8 @@
     border: var(--border-block);
     border-radius: 5px;
     padding: 15px 25px;
+    width: fit-content;
+    margin-left: -70px;
   }
   .week-day-select {
     height: 39px;
@@ -345,5 +350,18 @@
 
   .class-list-card-wrapper {
     display: flex;
+
+    :deep(.class-list-card):last-child {
+      margin-right: 25px;
+    }
+  }
+
+  footer {
+    margin-top: 15px;
+    text-align: center;
+
+    button.submit {
+      font-size: 18px;
+    }
   }
 </style>

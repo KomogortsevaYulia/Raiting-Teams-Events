@@ -26,7 +26,7 @@
 
 <style lang="scss" scoped>
   .class-booking {
-    width: 449px;
+    min-width: 460px;
     margin-top: 1.25%;
     font-style: var(--font-family-title);
     font-weight: 600;
