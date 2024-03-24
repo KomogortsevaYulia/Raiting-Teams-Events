@@ -106,7 +106,6 @@ watch(
     await getCabinets();
   },
 );
-
 onBeforeMount(() => {
   getCabinets();
 });
@@ -123,8 +122,20 @@ const selectedCategory = ref({
   category: categoryList[0],
 });
 
+watch(
+    () => selectedCategory.value.category,
+    async () => {
+      await handleOnCategory(selectedCategory.value.category.name);
+    },
+);
+
 async function handleOnSearch(searchTxt: string) {
   cabinetsSearch.value.search = searchTxt;
+  await getCabinets();
+}
+
+async function handleOnCategory(category: string) {
+  cabinetsSearch.value.tag = category;
   await getCabinets();
 }
 
