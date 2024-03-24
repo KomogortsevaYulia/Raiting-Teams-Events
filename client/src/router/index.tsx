@@ -1,5 +1,7 @@
 import { usePermissionsStore } from "@/store/permissions_store";
 import { createRouter, createWebHistory } from "vue-router";
+import type {Permission} from "@/types";
+import { Permissions } from "@/common/permissions/permissions.enum";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,135 +10,138 @@ const router = createRouter({
     {
       // Авторизация
       path: "/",
-      // @ts-ignore
-      component: () => import('@/views/events/News.vue'),
-      meta: {}
+      component: () => import("@/views/events/NewsMain.vue"),
+      meta: {},
     },
     {
       // Авторизация
       path: "/login",
-      // @ts-ignore
-      component: () => import('@/views/Login.vue'),
-      meta: {}
+      component: () => import("@/views/LoginForm.vue"),
+      meta: {},
     },
     {
       // Страница с мероприятиями (кто её news назвал??)
       path: "/news",
-      // @ts-ignore
-      component: () => import('@/views/events/News.vue'),
-      meta: {}
+      component: () => import("@/views/events/NewsMain.vue"),
+      meta: {},
     },
     {
       // Коллективы
       path: "/teams",
-      // @ts-ignore
-      component: () => import('@/views/teams/Teams.vue'),
-      meta: {}
+      component: () => import("@/views/teams/TeamsPage.vue"),
+      meta: {},
     },
     {
       path: "/team/:id?",
       name: "Team",
-      // @ts-ignore
-      component: () => import('@/views/teams/Team.vue'),
+      component: () => import("@/views/teams/TeamPage.vue"),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       // !Ответственный за направления
       path: "/directions",
-      // @ts-ignore
-      component: () => import('@/views/Directions.vue'),
+
+      component: () => import("@/views/DirectionsPage.vue"),
       meta: {
-        permission: 'can view directions'
-      }
+        permission: Permissions.CAN_VIEW_DIRECTIONS,
+      },
     },
     {
       path: "/statistic",
       name: "Statistic",
-      // @ts-ignore
-      component: () => import('@/views/report/Statistic.vue'),
+
+      component: () => import("@/views/report/StatisticPage.vue"),
       meta: {
         requiresAuth: true,
-        permission: 'can view directions'
-
-      }
+        permission: Permissions.CAN_VIEW_DIRECTIONS,
+      },
     },
     {
       path: "/event/:id?",
-      // @ts-ignore
-      component: () => import('@/views/events/Event.vue'),
-      meta: {}
+
+      component: () => import("@/views/events/EventMain.vue"),
+      meta: {},
     },
     {
       path: "/event-create",
-      // @ts-ignore
-      component: () => import('@/views/events/EventCreate.vue'),
-      meta: {
-      }
-    },
-    {
-      // Страница с личным кабинетом
-      path: "/account",
-      // @ts-ignore
-      component: () => import('@/views/Account.vue'),
-      meta: {
-        // isLoged: true
-      }
+
+      component: () => import("@/views/events/EventCreate.vue"),
+      meta: {},
     },
     {
       path: "/personal/:username",
       name: "Personal",
-      // @ts-ignore
-      component: () => import('@/views/Personal.vue'),
+      component: () => import("@/views/user/UserProfile.vue"),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
-    {//различные заяки, которые формировал юзер
+    {
+      //различные заяки, которые формировал юзер
       path: "/user-requests",
       name: "Requests",
-      props:(route)=>({userId:route.query.user_id}),
-      // @ts-ignore
-      component: () => import('@/views/user/Requests.vue'),
+      props: (route) => ({ userId: route.query.user_id }),
+
+      component: () => import("@/views/user/UserRequests.vue"),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
-    // {
-    //   path: "/questionnaire",
-    //   name: "Questionnaire",
-    //   // @ts-ignore
-    //   component: () => import('@/views/Questionnaire.vue'),
-    //   meta: {
-    //     requiresAuth: true
-    //   }
-    // }
+    {
+          //различные заяки, которые формировал юзер
+          path: "/bitrix-auth",
+          name: "BitrixAuth",
+          props: (route) => ({ code: route.query.code }),
+
+          component: () => import("@/views/user/BitrixAuth.vue"),
+          meta: {
+            requiresAuth: true
+          },
+        },
+    {
+      //различные заяки, которые формировал юзер
+      path: "/admin-panel",
+      name: "AdminMain",
+      props: (route) => ({ userId: route.query.user_id }),
+
+      component: () => import("@/views/admin_panel/AdminMain.vue"),
+      meta: {
+        requiresAuth: true,
+        permission: Permissions.CAN_ALL,
+      },
+    },
+    {
+   // /team/${teamId}/schedule/add-class/date=${dates.dateRange[index2]}&time=${hour}
+      path: "/team/:team_id/schedule/add-class",
+      name: "create class to schedule",
+      props: (route) => ({
+        date: route.query.date,
+        time: route.query.time
+      }),
+      component: () => import("@/views/teams/schedule/create-page/ScheduleCreate.vue"),
+      meta: {
+        // requiresAuth: true,
+        // permission: Permissions.CAN_CREATE_CLASS_TO_SCHEDULE
+      }
+    }
   ],
 });
 
-// Редирект на логин, если роут защищен 
+// Редирект на логин, если роут защищен
 router.beforeEach((to) => {
   const useStore = usePermissionsStore();
 
-  // @ts-ignore
-  if (to.meta.permission && !useStore.can(to.meta.permission)) {
+  const permission = to.meta.permission as Permission
+  if (permission && !useStore.can(permission)) {
     return {
-      path: '/login',
-      query: { next: to.fullPath }
-    }
+      path: "/login",
+      query: { next: to.fullPath },
+    };
   }
 
-  // if (to.meta.isLoged && !useStore.isLogged) {
-  //   console.log('omg see here!');
-  //   console.log(useStore.isLogged);
-  //   return {
-  //     path: '/login',
-  //     query: { next: to.fullPath }
-  //   }
-  // }
-
   return true;
-})
+});
 
 export default router;

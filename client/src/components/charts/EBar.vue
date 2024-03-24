@@ -1,5 +1,8 @@
-
-<!-- не использоуется -->
+<template>
+  <div class="charts-wrapper">
+    <v-chart class="chart" :option="options" />
+  </div>
+</template>
 
 <script setup lang="ts">
 import { use } from "echarts/core";
@@ -23,52 +26,43 @@ use([
   LegendComponent,
 ]);
 
-
 const props = defineProps<{
-  labels: string[],
-  data: number[],
-}>()
+  labels: string[];
+  data: number[];
+}>();
 
 const options = computed(() => {
   return {
     xAxis: {
-      type: 'category',
-      data: props.labels
+      type: "category",
+      data: props.labels,
     },
     yAxis: {
-      type: 'value'
+      type: "value",
     },
     series: [
       {
         data: props.data,
-        type: 'bar',
+        type: "bar",
         showBackground: true,
         backgroundStyle: {
-          color: 'rgba(180, 180, 180, 0.2)'
-        }
-      }
+          color: "rgba(180, 180, 180, 0.2)",
+        },
+      },
     ],
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
       axisPointer: {
-        type: 'cross',// Indicator type
+        type: "cross", // Indicator type
         label: {
           // Horizontal section indicator block color
-          backgroundColor: '#6a7985'
-        }
-      }
-    }
+          backgroundColor: "#6a7985",
+        },
+      },
+    },
   };
-})
-
-
+});
 </script>
-
-<template>
-  <div class="charts-wrapper">
-    <v-chart class="chart " :option="options" />
-  </div>
-</template>
 
 <style scoped>
 .charts-wrapper {
