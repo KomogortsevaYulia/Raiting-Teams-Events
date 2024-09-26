@@ -6,7 +6,7 @@ content-type: application/json
     "form_id":8,
     "title":"title23",
     "required":false
-   
+
 }
 
 ### CREATE ANKETA
@@ -15,7 +15,7 @@ content-type: application/json
 
 {
     "team_id":6
-   
+
 }
 
 ### Получение списка вопросов анкеты по id коллектива
@@ -27,12 +27,12 @@ GET http://localhost:3000/api/forms/id/6
 
 ###
 # Обновить поле
-put http://localhost:3000/api/forms/field/30 HTTP/1.1
+PUT http://localhost:3000/api/forms/field/30 HTTP/1.1
 content-type: application/json
 
 {
     "archive":true
-   
+
 }
 
 

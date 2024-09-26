@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+
+  db:
+    container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_DB_CONTAINER_NAME}
+    image: postgres:14-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DOCKER_DB_NAME}
+      POSTGRES_USER: ${DOCKER_DB_USER}
+      POSTGRES_PASSWORD: ${DOCKER_DB_PASSWORD}
+      PGPORT: ${PG_PORT}
+    ports:
+      - "${DOCKER_PG_PORT}:${PG_PORT}"
+    volumes:
+      - "./db/psql_protected:/var/lib/postgresql/data/"
+      - "./db/dump.sql:/docker-entrypoint-initdb.d/01-dump.sql"
+    networks:
+      - be-bridge
+
+  be:
+    container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}
+    env_file:
+      - ./server/.env
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - ${DOCKER_BE_PORT}:${BE_PORT}
+    environment:
+      - PORT=${BE_PORT}
+      - DB_NAME=${DOCKER_DB_NAME}
+      - DB_USER=${DOCKER_DB_USER}
+      - DB_PASSWORD=${DOCKER_DB_PASSWORD}
+      - DB_HOST=${DOCKER_CONTAINER_PREFIX}${DOCKER_DB_CONTAINER_NAME}
+      - DB_PORT=${PG_PORT}
+    depends_on:
+      - ${DOCKER_DB_CONTAINER_NAME}
+    networks:
+      - be-bridge
+      - fe-bridge
+
+  fe:
+    container_name: ${DOCKER_CONTAINER_PREFIX}${DOCKER_FE_CONTAINER_NAME}
+    env_file:
+      - ./client/.env
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - ${DOCKER_FE_PORT}:${FE_PORT}
+    environment:
+      - VITE_PUBLIC_HOST=localhost
+      - PORT=${FE_PORT}
+      - PROXY=http://${DOCKER_CONTAINER_PREFIX}${DOCKER_BE_CONTAINER_NAME}:${BE_PORT}
+    depends_on:
+      - ${DOCKER_BE_CONTAINER_NAME}
+    networks:
+      - fe-bridge
+
+networks:
+  fe-bridge:
+    driver: bridge
+  be-bridge:
+    driver: bridge  
+

@@ -5,14 +5,13 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(AppModule);
-  
+
   app.setGlobalPrefix('api');
-  
+
   //надо для проверки данных (когда создаем или обновляем)
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  
+
   const config = new DocumentBuilder()
     .setTitle('Raiting-teams-events API')
     .setDescription('The raiting-teams-events API description')
@@ -20,19 +19,30 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  
+
   SwaggerModule.setup('documentation', app, document);
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        secure: false,
+        httpOnly: false,
+        //   24 hours
+        maxAge: 24 * 60 * 60000,
+      },
     }),
   );
 
-  await app.listen(3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  // debug session
+  // app.use((req, res, next) => {
+  //   console.log(req.session);
+  //   next();
+  // });
 
+  await app.listen(process.env.PORT);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 
 bootstrap();

@@ -18,13 +18,12 @@ export enum Direction {
 }
 
 export enum TypeParticipation {
-  PASSIVE ,
-  ACTIVE 
+  PASSIVE,
+  ACTIVE,
 }
 
-
 export enum Format {
-  OCHNO ,
+  OCHNO,
   ONLINE,
   MULTIPLE,
   TRAVEL,
@@ -40,7 +39,7 @@ export enum ClarifyingDirection {
   LABOR,
   CULTURE,
   SCIENSE,
-  ANOTHER
+  ANOTHER,
 }
 
 export enum CharacterEvent {

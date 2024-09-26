@@ -1,95 +1,276 @@
+<template>
+  <!-- Блок с НОВОСТЯМИ -->
+  <div class="news-panel">
+    <div class="filters row g-3">
+      <div class="col-auto">
+        <SearchField :handle-timer-search="handleTimerSearch" />
+      </div>
+
+      <div class="col-auto">
+        <div class="dropdown">
+          <div
+            class="block order"
+            @click="isOrderExpanded = !isOrderExpanded"
+            type="button"
+            id="dropdownOrder"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <FontAwesomeIcon icon="sort" class="mx-2" />
+            {{ filters.selectedFilterDate.name }}
+            <FontAwesomeIcon
+              v-if="!isOrderExpanded"
+              icon="angle-down"
+              class="mx-2"
+            />
+            <FontAwesomeIcon
+              v-if="isOrderExpanded"
+              icon="angle-up"
+              class="mx-2"
+            />
+          </div>
+          <ul class="block dropdown-menu" aria-labelledby="dropdownOrder">
+            <li
+              v-for="value in filterDate"
+              @click="
+                filters.selectedFilterDate = value;
+                fetchEvents();
+              "
+              v-bind:key="value.id"
+            >
+              <div class="dropdown-item">
+                <FontAwesomeIcon icon="sort" />
+                {{ value.name }}
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div v-if="events?.length <= 0 && !eventStore.apiRequest.loading" class="alert alert-warning" role="alert">
+        Мероприятий нет
+      </div>
+
+      <div
+        v-if="eventStore.apiRequest.loading"
+        class="d-flex align-items-center justify-content-center mt-4"
+      >
+        <LoadingElem size-fa-icon="fa-3x" />
+      </div>
+
+      <div class="card mb-3 rounded-3" v-for="event in events" :key="event.id">
+        <div class="row g-0">
+          <div class="col-lg-4">
+            <img
+              :src="event.images ? event.images[0] : ''"
+              class="img-fluid rounded-3"
+              alt=""
+            />
+          </div>
+          <div class="col-lg-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ event.title }}</h5>
+              <p class="card-text">
+                {{
+                  event.description?.length > 200
+                    ? event.description?.slice(0, 200) + "..."
+                    : "описания нет"
+                }}
+              </p>
+              <p class="card-text">
+                <small class="text-muted"
+                  >Дата проведения:
+                  {{
+                    event.dateStartRegistration
+                      ? new Date(
+                          event.dateStartRegistration,
+                        ).toLocaleDateString()
+                      : "-"
+                  }}</small
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <Pagination
+        :max-page="maxPages"
+        :visible-pages="visiblePages"
+        :handleEventChangePage="handleEventChangePage"
+      />
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
+import { onBeforeMount, ref, watch } from "vue";
+import type { Ref } from "vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import SearchField from "@/components/SearchField.vue";
+import { useEventStore } from "@/store/events_store";
+import type { IEvent, IEventSearch } from "@/store/models/event/events.model";
+import LoadingElem from "@/components/LoadingElem.vue";
+import Pagination from "@/components/PaginationElem.vue";
+
+const eventStore = useEventStore();
+
+//pagination ---------------------------------------------------------------------
+const limit = 5; //сколько колелктивов отображается на странице
+const offset = ref(0); //сколько коллективов пропустить прежде чем отобрад+зить
+
+const maxPages = ref(1);
+const visiblePages = 7;
+//pagination ---------------------------------------------------------------------
+
+const isCalendarExpanded = ref(false);
+const calendarPicked = ref({
+  start: new Date(new Date().getTime() - 31556952000),
+  end: new Date(),
+});
+
+const isOrderExpanded = ref(false);
+const events: Ref<IEvent[]> = ref([]);
+const searchTxt = ref("");
+
+const filterEvents: Ref<IEventSearch> = ref({});
+
+const filterDate = [
+  { id: 0, name: "Сначала новые", order: "DESC" },
+  { id: 1, name: "Сначала старые", order: "ASC" },
+];
+
+const filters = ref({
+  selectedFilterDate: filterDate[0],
+});
 
 const props = defineProps<{
-    team: any,           //коллектив
-   
-}>()
+  idTeam: number; //коллектив
+}>();
 
+onBeforeMount(() => {
+  filterEvents.value.limit = limit;
+  filterEvents.value.offset = offset.value;
 
-const newsList = [
-    {
-        id: 1,
-        title: 'Выступление на встрече',
-        description: '28 марта прошла встреча с Жугдэрдэмидийн Гуррагча, президентом Общества "Монголия - Россия", героем Советского Союза, первым космонавтом Монгольской Народной Республики (МНР).',
-        imageUrl: 'https://sun9-80.userapi.com/impg/v16lLdu-5nAWk8CFWXfgBTKbry5ySAaxpg07pA/_VQyOnsIS2U.jpg?size=1600x1067&quality=95&sign=29b4aa0494f355212449ccb5b2d438d4&type=album'
-    },
-    {
-        id: 2,
-        title: 'Гала-концерт',
-        description: '18 марта на сцене ИРНИТУ состоялся гала-концерт межрегионального многожанрового музыкального конкурса, посвящённого 75-летию со дня рождения поэта, композитора, телеведущего, Народного артиста России Геннадия Дмитриевича Заволокина.',
-        imageUrl: 'https://sun9-72.userapi.com/impg/3fBWXOId3AxVXmsor6HR50f5IOf7A0K-sp-iPA/GMnrC6OqDew.jpg?size=2560x1707&quality=95&sign=6a57308ab9691669faf9452b1f3e1f85&type=album'
-    },
-    {
-        id: 3,
-        title: 'Выступление на ректорском приеме',
-        description: 'Ректорский прием, посвященный международному женскому дню, состоялся 7 марта. Наш коллектив также принял участие в концертной программе и поздравил прекрасную половину нашего университета с праздником!',
-        imageUrl: 'https://sun9-35.userapi.com/impg/qo49V2NSbiMOrTTqwmnJoffy7v7tzMv3pPs6Bg/44aBwrBj2Ak.jpg?size=1280x853&quality=95&sign=f8ced23a9edd565a4e14e94858a709c0&type=album'
-    },
-]
+  fetchEvents();
+});
 
+watch(
+  () => calendarPicked.value.end,
+  async () => {
+    isCalendarExpanded.value = !isCalendarExpanded.value;
+  },
+);
+
+async function handleEventChangePage(currentPage: number) {
+  offset.value = (currentPage - 1) * limit;
+  filterEvents.value.offset = offset.value;
+
+  await fetchEvents();
+}
+
+async function fetchEvents() {
+  filterEvents.value.journal_team_id = props.idTeam;
+  filterEvents.value.search_text = searchTxt.value;
+  filterEvents.value.date_update_order = filters.value.selectedFilterDate.order;
+  const data = await eventStore.fetchEvents(filterEvents.value);
+  events.value = data[0];
+
+  const eventsCount = data[1];
+  maxPages.value = eventsCount >= limit ? Math.ceil(eventsCount / limit) : 1;
+}
+
+async function handleTimerSearch(seachText: string) {
+  searchTxt.value = seachText;
+
+  await fetchEvents();
+}
 </script>
-
-<template>
-    <!-- Блок с НОВОСТЯМИ -->
-    <div class="news-panel">
-        <div class="news-card" v-for="news in newsList" :key="news.id">
-            <div class="image-container">
-                <img :src="news.imageUrl">
-            </div>
-            <div class="text-container">
-                <h2 class="title">{{ news.title }}</h2>
-                <label class="description">{{ news.description }}</label>
-            </div>
-        </div>
-    </div>
-</template>
 
 <style lang="scss" scoped>
 .news-panel {
+  .filters {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 30px;
 
-    .news-card {
-        display: flex;
-        align-items: center;
-        height: 230px;
-        // width: 80%;
-        // background-color: #B7EAED;
-        // border-style: #000000,10px;
-        border: 2px solid #B7EAED;
-
-        margin-bottom: 20px;
-        border-radius: 25px;
-
-        h2 {
-            padding: 0;
-            margin: 0;
-            font-size: 32px;
-        }
-
-        img {
-            height: 225px;
-            width: 225px;
-            border-radius: 25px;
-            object-fit: cover;
-            overflow: hidden;
-        }
-
-        .title {
-            margin-top: 0;
-        }
-
-        .description {
-            margin-bottom: 0;
-        }
-
-        .text-container {
-            flex: 1;
-            padding: 25px;
-        }
+    .block {
+      padding: 7px 15px;
+      border: 1.5px solid rgba(61, 61, 61, 0.1);
+      border-radius: 15px;
     }
 
+    .search {
+      .icon {
+        margin-right: 10px;
+      }
+
+      display: flex;
+      align-items: center;
+    }
+
+    .date {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .order {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    .news-card {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .news-card {
+    .date {
+      text-align: right;
+      font-weight: bold;
+      font-size: 10px;
+      color: #7d7d7d;
+    }
+
+    .title {
+      font-weight: bold;
+    }
+
+    .description {
+      text-align: justify;
+      font-size: 12px;
+    }
+  }
+}
+
+.dropdown {
+  width: fit-content;
+}
+
+//for calendar
+.calendar {
+  display: none;
+  position: absolute;
+  right: 0px;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  z-index: 1;
+  border-radius: 20px;
+
+  &-visible {
+    display: block;
+  }
 }
 </style>

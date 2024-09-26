@@ -1,0 +1,33 @@
+### EVENTS--------------------------------------------------------
+GET http://localhost:3000/api/events?id=20
+
+### enent id
+GET http://localhost:3000/api/events/5
+
+### events
+GET http://localhost:3000/api/events?journal_team_id=6&limit=1&offset=1
+
+### events_of_team
+GET http://localhost:3000/api/events/events_of_team/7?level=
+
+
+###
+GET http://localhost:3000/api/events?limit=5&offset=0&dateStart=2018-08-17T02:27:52.713Z&
+    dateEnd=2023-08-17T07:33:52.713Z
+
+### update event
+PUT  http://localhost:3000/api/events/20 HTTP/1.1
+content-type: application/json
+
+{
+  "status": true
+}
+
+
+###
+# journals
+GET http://localhost:3000/api/events/journal
+
+###
+GET http://localhost:3000/api/events/external
+

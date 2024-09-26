@@ -1,8 +1,6 @@
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
-export class UpdateEventDto  {
-
-    @IsOptional()
-    status: string // статус
-  
+export class UpdateEventDto {
+  @IsOptional()
+  status: string; // статус
 }

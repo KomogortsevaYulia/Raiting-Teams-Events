@@ -1,0 +1,7 @@
+GET http://localhost:3000/api/uploads/compress-img HTTP/1.1
+content-type: application/json
+
+{
+  "filepath":"C:/Users/1/WebstormProjects/Raiting-Teams-Events2/server/public/media/2023.10/21/1697893593876_shh277.webp"
+
+}

@@ -3,28 +3,22 @@ import { TeamsController } from './teams.controller';
 import { TeamsService } from './teams.service';
 import { UploadsService } from '../uploads/uploads.service';
 import { UsersService } from '../users/users.service';
-import { getCustomRepositoryToken, getRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Team } from './entities/team.entity';
-import { Repository } from 'typeorm';
 import { UserFunction } from '../users/entities/user_function.entity';
-import { Function } from '../users/entities/function.entity';
+import { TeamFunction } from '../users/entities/function.entity';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { plainToInstance } from 'class-transformer';
 import { ValidationError, validate } from 'class-validator';
 
-// @ts-ignore
-// export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
-//   findOne: jest.fn(entity => entity),
-//   // ...
-// }));
-
 describe('TeamsController', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let controller: TeamsController;
-  let service: TeamsService
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let service: TeamsService;
 
   beforeEach(async () => {
- 
     const module: TestingModule = await Test.createTestingModule({
       // imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function])],
 
@@ -46,12 +40,11 @@ describe('TeamsController', () => {
           useValue: {},
         },
         {
-          provide: getRepositoryToken(Function),
+          provide: getRepositoryToken(TeamFunction),
           useValue: {},
         },
       ],
-    })
-      .compile();
+    }).compile();
 
     service = module.get<TeamsService>(TeamsService);
     controller = module.get<TeamsController>(TeamsController);
@@ -59,57 +52,58 @@ describe('TeamsController', () => {
   });
 
   describe('test Dto of create team', () => {
-
     const createTeamDto: CreateTeamDto = {
-      "userID": 5,
-      "shortname": "dddd2",
-      "description": "Хотим подняться на гору",
-      "title": "hddddhh",
-      "document": "hddddhh",
-      "charterTeam": "dddddd",
-      "cabinet": "8"
-
+      userID: 5,
+      shortname: 'dddd2',
+      description: 'Хотим подняться на гору',
+      title: 'hddddhh',
+      document: 'hddddhh',
+      charterTeam: 'dddddd',
+      cabinet: '8',
     };
 
     it('Если краткое название коллектива превышает 50 символов, то пользователь получит предупреждение об ошибке', async () => {
-
-      createTeamDto.shortname = "t".repeat(51)
-      const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto)
-      const errors = await validate(ofImportDto)
-      expect(errors.length).not.toBe(0)
-      expect(stringified(errors)).toContain(`Краткое название, максимальная длина текста 50`)
-    })
+      createTeamDto.shortname = 't'.repeat(51);
+      const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto);
+      const errors = await validate(ofImportDto);
+      expect(errors.length).not.toBe(0);
+      expect(stringified(errors)).toContain(
+        `Краткое название, максимальная длина текста 50`,
+      );
+    });
 
     it('Если название коллектива превышает 100 символов, то пользователь получит предупреждение об ошибке', async () => {
-
-      createTeamDto.title = "t".repeat(101)
-      const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto)
-      const errors = await validate(ofImportDto)
-      expect(errors.length).not.toBe(0)
-      expect(stringified(errors)).toContain(`Название коллектива, максимальная длина текста 100`)
-    })
-
+      createTeamDto.title = 't'.repeat(101);
+      const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto);
+      const errors = await validate(ofImportDto);
+      expect(errors.length).not.toBe(0);
+      expect(stringified(errors)).toContain(
+        `Название коллектива, максимальная длина текста 100`,
+      );
+    });
 
     it('Если описание коллектива превышает 3000 символов, то пользователь получит предупреждение об ошибке', async () => {
-
-      createTeamDto.description = "t".repeat(3001)
-      const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto)
-      const errors = await validate(ofImportDto)
+      createTeamDto.description = 't'.repeat(3001);
+      const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto);
+      const errors = await validate(ofImportDto);
       // expect(errors.length).not.toBe(0)
-      expect(stringified(errors)).toContain(`Описание, максимальная длина текста 3000`)
-    })
+      expect(stringified(errors)).toContain(
+        `Описание, максимальная длина текста 3000`,
+      );
+    });
 
     it('Если руководитель не был передан в систему, то предупреждение об ошибке', async () => {
-
-      createTeamDto.userID = null
-      const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto)
-      const errors = await validate(ofImportDto)
-      expect(errors.length).not.toBe(0)
-      expect(stringified(errors)).toContain(`userID must be a number conforming to the specified constraints`)
-    })
+      createTeamDto.userID = null;
+      const ofImportDto = plainToInstance(CreateTeamDto, createTeamDto);
+      const errors = await validate(ofImportDto);
+      expect(errors.length).not.toBe(0);
+      expect(stringified(errors)).toContain(
+        `userID must be a number conforming to the specified constraints`,
+      );
+    });
   });
 });
 
 export function stringified(errors: ValidationError[]): string {
-  return JSON.stringify(errors)
+  return JSON.stringify(errors);
 }

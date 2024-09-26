@@ -1,248 +1,233 @@
+@import "constants";
+
 @font-face {
-    font-family: 'Montserrat';
-    src: url('./fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+  font-family: Montserrat;
+  src: url("./fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
 }
-
-
-:root {
-    --main-border-bottom: 5px solid #e3254b;
-    --main-color: #e3254b;
-    --main-color-hover: #AF1E3B;
-    --main-border-card: 1px solid #d9d9d9;
-    --main-navigation-color: #348498;
-
-    // --second-color-hover: #9DD9D2;
-    --second-color: #5BD1D7;
-    --second-accept: #3b8a8f;
-
-    // shadow
-    --box-shadow: 0 0 5px 1px rgba(221, 221, 221, 1);
-    --hover-elem: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
-
-    // fonts
-    --font-family-title: 'Montserrat';
-    --font-family-primary: 'Montserrat';
-}
-
 
 // для элемента формы
 @mixin form-elem {
-    border: none;
-    box-shadow: var(--box-shadow);
-    border-radius: 0.25rem;
-    padding: 0.6rem;
-    background-color: #fff;
-    font-family: var(--font-family-primary);
+  border: var(--border-block);
+  border-radius: var(--border-radius);
+  padding: var(--padding-form);
+  background-color: #fff;
+  font-family: var(--font-family-primary);
 
-
-    &:focus {
-        box-shadow: var(--hover-elem);
-        outline: 0;
-    }
+  &:focus {
+    box-shadow: var(--hover-elem);
+    outline: 0;
+  }
 }
 
 body {
-    font-family: var(--font-family-primary);
-    font-size: 14px;
+  font-family: var(--font-family-primary);
+  font-size: 14px;
 }
 
 h1,
 h2,
 h3,
 h4 {
-    font-weight: 400;
+  font-weight: 400;
+}
+
+.border-block {
+  border: var(--border-block);
+  border-radius: var(--border-radius);
 }
 
 // Обёртка на формы
 .wrapper-content {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border-radius: 5px;
-    background-color: #fff;
-    box-shadow: var(--box-shadow);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  border: var(--border-block);
 }
 
 .link {
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: black;
 }
 
 label {
-    font-size: 15px;
+  font-size: 15px;
 }
 
 .form-label {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 button {
-    padding: 0.5rem 2rem 0.5rem 2rem;
-    border: 0;
-    border-radius: 10px;
-    background-color: var(--main-color);
-    color: #fff;
-    font-family: var(--font-family-title);
-    font-weight: 400;
+  padding: 0.5rem 2rem;
+  border: 0;
+  border-radius: 10px;
+  background-color: var(--main-color);
+  color: #fff;
+  font-family: var(--font-family-title);
+  font-weight: 400;
 
+  &:hover {
+    opacity: 0.8;
+    transition: 0.3s;
+  }
 
-    &:hover {
-        opacity: 0.8;
-        transition: 0.3s;
-    }
-
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--second-color);
-    }
 }
 
 input {
-    @include form-elem();
-    transition: 0.3s;
+  @include form-elem;
+
+  transition: 0.3s;
 }
 
 textarea {
-    @include form-elem();
+  @include form-elem;
 }
 
 .form-control {
-    &:focus {
-        box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
-        outline: 0;
-    }
+  &:focus {
+    box-shadow: 0 0 0.1rem 0.15rem var(--second-color);
+    outline: 0;
+  }
 }
 
 // кнопки ------------------------------------------------------------------------------------------
 // вторичная кнопка
 .btn-custom-secondary {
-    background: gray;
+  background: gray;
 }
 
 // кнопка принять
 .btn-custom-accept {
-    background: var(--second-accept);
+  background: var(--second-accept);
 }
 
 // главная кнопка - побуждает к действию (выделяется)
 .btn-custom-primary {
-    background: var(--main-color);
+  background: var(--main-color);
 }
 
-// вторичная кнопка
+// вторичная кнопка иконка с закруглением
 .btn-icon-rounded {
-    background: white;
-    border-radius: 50px;
-    color: black;
-    padding: 0.6rem 0.9rem;
-    box-shadow: var(--box-shadow);
+  background: white;
+  border-radius: 50px;
+  color: black;
+  padding: 0.6rem 0.7rem;
+  border: var(--border-block);
 
-    &:hover {
-        color: var(--main-color);
-    }
+  &:hover {
+    color: var(--main-color);
+  }
 }
 
+// кнопка иконка
+.btn-icon {
+  background: white;
+  color: black;
+
+  &:hover {
+    color: var(--main-color);
+  }
+}
 
 // кнопки ------------------------------------------------------------------------------------------
 
-
 a {
-    font-size: 14px;
-    text-decoration: none;
-    color: black;
+  font-size: 14px;
+  text-decoration: none;
+  color: black;
 
-    &:hover {
-        color: var(--main-color);
-        border-bottom-color: var(--main-color);
-    }
+  &:hover {
+    color: var(--main-color);
+    border-bottom-color: var(--main-color);
+  }
 
-    &:active {
-        transition: all 0.4s;
-        color: var(--main-color-hover);
-        border-bottom-color: var(--main-color-hover);
-    }
+  &:active {
+    transition: all 0.4s;
+    color: var(--main-color-hover);
+    border-bottom-color: var(--main-color-hover);
+  }
 }
 
-//выпадающий список с поиском
+// выпадающий список с поиском
 .v-select {
-    min-width: 200px;
+  min-width: 200px;
 
-    .vs__dropdown-toggle {
-        @include form-elem();
-        transition: 0.3s;
-    }
+  .vs__dropdown-toggle {
+    @include form-elem;
 
+    transition: 0.3s;
+  }
 
-    &:focus {
-        box-shadow: 0 0 0.1rem 0.15rem rgba(91, 209, 215, 0.493);
-        outline: 0;
-        border: 0;
-    }
+  .vs__search {
+    font-size: 14px;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0.1rem 0.15rem var(--second-color);
+    outline: 0;
+    border: 0;
+  }
 }
-
 
 .form-check {
-    .form-check-input:checked {
-        background-color: var(--second-color);
-        border-color: var(--second-color);
-    }
+  .form-check-input:checked {
+    background-color: var(--second-color);
+    border-color: var(--second-color);
+  }
 }
 
 //   individual dtyle for VDATEPICKER
 
 .vc-pane-container,
 .vc-popover-content-wrapper {
-    button {
-        background: none;
-        padding: 0em;
-        color: black;
-    }
+  button {
+    background: none;
+    padding: 0;
+    color: black;
+  }
 }
-
 
 // form-select, accordion
 
 .form-select,
 .accordion-header {
-    @include form-elem();
-    transition: 0.3s;
+  // @include form-elem();
+  transition: 0.3s;
 }
 
 .accordion-header {
-    padding: 0;
+  padding: 0;
 }
 
 .form-select {
-    padding-right: 2rem;
+  padding-right: 2rem;
+  border-radius: var(--border-radius);
+
+  &:focus {
+    box-shadow: none;
+    border: var(--border-block);
+  }
 }
 
 .accordion-item {
-    .accordion-header {
-
-        .accordion-button {
-
-            &:focus,
-            &:hover {
-                color: black;
-                background: white;
-                box-shadow: var(--box-shadow);
-                outline: 0;
-                border: 0;
-            }
-        }
+  .accordion-header {
+    .accordion-button {
+      &:focus,
+      &:hover {
+        color: black;
+        background: white;
+        box-shadow: var(--box-shadow);
+        outline: 0;
+        border: 0;
+      }
     }
-
+  }
 }
 
-// иконка процесса загрузки
-.loading {
-    color: var(--second-color);
-}
-
-
-// meadia
-@media (min-width: 768px) {
-    .nav-collapse {
-        display: block !important;
-    }
+// media
+@media (width >= 768px) {
+  .nav-collapse {
+    display: block !important;
+  }
 }

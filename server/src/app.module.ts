@@ -11,30 +11,29 @@ import { GeneralModule } from './general/general.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ScheduleModule } from './schedule/schedule.module';
 
 @Module({
   imports: [
-    //@ts-ignore
     TypeOrmModule.forRoot({
       ...CONNECTION,
       synchronize: false,
       autoLoadEntities: true,
-      
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public/'),
       exclude: ['/api/(.*)'],
-      serveRoot: '/public/' //last slash was important, otherwise he is looking for index.html
-  }),
+      serveRoot: '/public/', //last slash was important, otherwise he is looking for index.html
+    }),
     UsersModule,
     TeamsModule,
     EventsModule,
     FormsModule,
     GeneralModule,
     UploadsModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
-
 })
-export class AppModule { }
+export class AppModule {}

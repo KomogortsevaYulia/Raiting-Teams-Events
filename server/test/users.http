@@ -1,14 +1,34 @@
-###
-# USERS
-# login
+### login
 POST http://localhost:3000/api/users/login HTTP/1.1
 content-type: application/json
 
 {
     "user":{
-        "username":"admLin",
+        "username":"admin",
         "password":"123"
     }
-   
+
 }
 
+### bitrix-auth
+GET http://localhost:3000/api/users/bitrix-auth?code=553147650067eafa003c21de00007475000003e82aed5dcaaaa8cf625e5584e442695a
+
+# int.istu.edu/oauth/authorize/?client_id=local.65367fd5848af7.93871536
+### check-login
+GET http://localhost:3000/api/users/check-login
+
+### user
+GET http://localhost:3000/api/users/3
+
+### permissions
+POST http://localhost:3000/api/users/permissions HTTP/1.1
+content-type: application/json
+
+{
+    "userId":11,
+    "permissions":["kk"]
+
+}
+
+### get all users from specific team
+GET http://localhost:3000/api/users?limit=4&email=mail

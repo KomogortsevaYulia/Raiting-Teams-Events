@@ -4,7 +4,7 @@
 # compiled output
 /dist
 /node_modules
-/public
+/public/media/*
 package-lock.json
 yarn.lock
  
