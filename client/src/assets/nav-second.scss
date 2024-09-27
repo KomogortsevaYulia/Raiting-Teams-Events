@@ -1,27 +1,29 @@
 // эта штука часто повторяется и много где надо, поэтому в отдельный файл
-
 .wrapper-second__navigation {
-    padding-bottom: 4rem;
-    width: 100%;
+  padding-bottom: 2rem;
+
+  a {
+    cursor: pointer;
+    font-family: var(--font-family-title);
+    font-weight: 600;
+    font-size: 14px;
     transition: 0.3s;
+    color: var(--main-navigation-color);
+    margin-inline: 1rem;
+    padding-bottom: 0.75rem;
 
-    a {
-        cursor: pointer;
-        font-size: 14px;
-        padding: 0 0.75rem 0.75rem 0.75rem;
-
-        &:hover {
-            color: var(--main-color);
-        }
-
-        &:active {
-            transition: all 0.4s;
-            color: var(--main-color-hover);
-            border-bottom-color: var(--main-color-hover);
-        }
+    &:hover {
+      color: var(--main-color);
     }
+  }
 
-    .active {
-        border-bottom: var(--main-border-bottom);
-    }
+  // Первому элементу ставим отступ = 0, чтобы не выпирал
+  a:first-child {
+    margin-left: 0;
+  }
+
+  .active {
+    color: var(--main-color);
+    border-bottom: var(--main-border-bottom);
+  }
 }

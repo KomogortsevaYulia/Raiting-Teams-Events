@@ -1,5 +1,3 @@
-
-
 // export enum Direction{
 //   NID = "Научная деятельность",
 //   KTD ="Культурно-массовая деятельность",
@@ -13,20 +11,20 @@ export enum Level {
   UNIVERSITY = "Вузовский",
   CITY = "Городской",
   REGION = "Региональный",
-  ALL = "Все"
+  ALL = "Все",
 }
 
 export enum Status {
   CREATED = "Создана",
   ACCEPTED = "Принята",
   CANCELLED = "Отклонена",
-  ALL = "Все"
+  ALL = "Все",
 }
 
 export enum Type {
   OUTSIDE = "Внешнее",
   INSIDE = "Внутреннее",
-  ALL = "Все"
+  ALL = "Все",
 }
 
 export enum Direction {
@@ -35,7 +33,7 @@ export enum Direction {
   UD = "УД",
   SD = "СД",
   OD = "ОД",
-  ALL = "Все"
+  ALL = "Все",
 }
 
 export enum DirectionId {
@@ -44,5 +42,5 @@ export enum DirectionId {
   UD = 8,
   SD = 9,
   OD = 10,
-  ALL = 0
+  ALL = 0,
 }

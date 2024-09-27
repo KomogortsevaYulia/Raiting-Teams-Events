@@ -2,33 +2,41 @@ import { defineStore } from "pinia";
 import axios from "axios";
 
 export const useUserStore = defineStore("user", () => {
-
-  async function getUsersByNameEmail(limit: Number, fullname: String, email: String) {
+  //получить юзерова по имени, емеил
+  async function getUsersByNameEmail(
+    limit: number,
+    fullname: string,
+    email: string,
+  ) {
     return await axios.get("/api/users", {
       params: {
         limit: limit,
         fullname: fullname,
-        email: email
-      }
+        email: email,
+      },
     });
   }
-  
-  async function update(education_group:string,title_role:string,id:number) {
-    await axios.patch("/api/users/"+id, {
+
+  //обновить роль юзера
+  async function update(
+    education_group: string,
+    title_role: string,
+    id: number,
+  ) {
+    await axios.patch("/api/users/" + id, {
       education_group,
       title_role,
-    })
+    });
   }
 
+  // получить фцнкции юзера по ид фукнции
   async function getUsersFunction(id: number) {
-    return await axios.get("/api/users/functions/" + id)
-}
+    return await axios.get("/api/users/functions/" + id);
+  }
 
-   return {
+  return {
     getUsersByNameEmail,
     update,
-    getUsersFunction
-  }
+    getUsersFunction,
+  };
 });
-
-

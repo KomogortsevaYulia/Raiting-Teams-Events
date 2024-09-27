@@ -1,6 +1,4 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
-// import type { Permission } from "@/types";
 import axios from "axios";
 
 export const useUploadsStore = defineStore("uploads", () => {

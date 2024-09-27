@@ -12,10 +12,32 @@ import { Requisitions } from './entities/requisition.entity';
 import { Dictionary } from '../general/entities/dictionary.entity';
 import { GeneralService } from '../general/general.service';
 import { Form } from '../forms/entities/form.entity';
+import { RequisitionFields } from 'src/forms/entities/requisition_fields.entity';
+import { FormField } from 'src/forms/entities/form_field.entity';
+import { FormsService } from 'src/forms/forms.service';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team, User, UserFunction, Function, Requisitions, Dictionary, Form])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Team,
+      User,
+      UserFunction,
+      Function,
+      Requisitions,
+      Dictionary,
+      Form,
+      RequisitionFields,
+      FormField,
+    ]),
+  ],
   controllers: [TeamsController],
-  providers: [TeamsService, UsersService, UploadsService, GeneralService],
+  providers: [
+    TeamsService,
+    UsersService,
+    UploadsService,
+    GeneralService,
+    FormsService,
+  ],
 })
 export class TeamsModule {}

@@ -2,41 +2,38 @@ import axios from "axios";
 import { defineStore } from "pinia";
 
 export const useFileStore = defineStore("file", () => {
+  async function loadFile(formData: FormData) {
+    const res = await axios.post("api/uploads", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-    async function loadFile(formData: FormData) {
+    // console.log(res.data.path); // This will log the path to the uploaded file on the server
+    return res.data;
+  }
 
-        const res = await axios.post('api/uploads', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+  async function getImageBase64(path: string) {
+    let imageData = null;
 
-        // console.log(res.data.path); // This will log the path to the uploaded file on the server
-        return res.data
-    }
+    const res = await axios
+      .get("api/uploads/image_base64", { params: { path: path } })
+      .then((response) => {
+        imageData = response.data;
+        // const imageUrl = URL.createObjectURL(response.data);
+        // imageData = imageUrl
+        // console.log(imageUrl)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
-    async function getImageBase64(path: string) {
+    // console.log(res.data.path); // This will log the path to the uploaded file on the server
+    return imageData;
+  }
 
-        let imageData = null
-
-        const res = await axios.get('api/uploads/image_base64', { params: { path: path } })
-            .then(response => {
-                imageData = response.data
-                // const imageUrl = URL.createObjectURL(response.data);
-                // imageData = imageUrl
-                // console.log(imageUrl)
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-        // console.log(res.data.path); // This will log the path to the uploaded file on the server
-        return imageData
-    }
-
-
-    return {
-        loadFile,
-        getImageBase64
-    }
+  return {
+    loadFile,
+    getImageBase64,
+  };
 });
